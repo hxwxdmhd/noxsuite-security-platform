@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  mariadb:
+    image: mariadb:10.11
+    environment:
+      MYSQL_ROOT_PASSWORD: noxsuite_root_secure
+      MYSQL_DATABASE: noxsuite_prod
+      MYSQL_USER: noxsuite_user
+      MYSQL_PASSWORD: noxsuite_secure_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./sql/init:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    
+volumes:
+  mariadb_data:

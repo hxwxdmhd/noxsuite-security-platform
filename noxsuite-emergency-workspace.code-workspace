@@ -1,0 +1,289 @@
+{
+  "folders": [
+    {
+      "name": "🔒 NoxSuite Security Emergency",
+      "path": "."
+    },
+    {
+      "name": "🚨 Emergency Patches",
+      "path": "./emergency_backups"
+    },
+    {
+      "name": "📊 Documentation",
+      "path": "./docs"
+    },
+    {
+      "name": "🧪 Tests",
+      "path": "./tests"
+    }
+  ],
+  "settings": {
+    "python.defaultInterpreterPath": "./.venv/bin/python",
+    "python.linting.enabled": true,
+    "python.linting.banditEnabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.formatting.provider": "black",
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+      "tests/"
+    ],
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "git.enableSmartCommit": true,
+    "git.autofetch": true,
+    "files.associations": {
+      "emergency_*.py": "python",
+      "audit_*.py": "python",
+      "*.emergency": "markdown",
+      "EMERGENCY_*.md": "markdown",
+      "NOXSUITE_*.md": "markdown"
+    },
+    "files.exclude": {
+      "**/__pycache__": true,
+      "**/.pytest_cache": true,
+      "**/.mypy_cache": true,
+      "**/node_modules": true,
+      "**/.git": false
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/bower_components": true,
+      "**/*.code-search": true,
+      "**/__pycache__": true,
+      "**/.pytest_cache": true
+    },
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.profiles.windows": {
+      "PowerShell": {
+        "source": "PowerShell",
+        "icon": "terminal-powershell"
+      },
+      "Command Prompt": {
+        "path": [
+          "${env:windir}\\Sysnative\\cmd.exe",
+          "${env:windir}\\System32\\cmd.exe"
+        ],
+        "args": [],
+        "icon": "terminal-cmd"
+      }
+    },
+    "workbench.colorTheme": "Default Dark+",
+    "workbench.iconTheme": "vs-seti",
+    "editor.minimap.enabled": true,
+    "editor.rulers": [80, 100],
+    "editor.wordWrap": "on",
+    "editor.lineNumbers": "on",
+    "breadcrumbs.enabled": true,
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "problems.decorations.enabled": true,
+    "editor.semanticHighlighting.enabled": true,
+    "markdown.preview.fontSize": 14,
+    "markdown.preview.lineHeight": 1.6,
+    "security.workspace.trust.untrustedFiles": "open",
+    "todo-tree.tree.showScanModeButton": false,
+    "todo-tree.filtering.excludeGlobs": [
+      "**/node_modules/**",
+      "**/.git/**",
+      "**/dist/**",
+      "**/build/**"
+    ],
+    "todo-tree.highlights.defaultHighlight": {
+      "icon": "alert",
+      "type": "text",
+      "foreground": "red",
+      "background": "white",
+      "opacity": 50,
+      "iconColour": "blue"
+    },
+    "todo-tree.highlights.customHighlight": {
+      "TODO": {
+        "icon": "check",
+        "foreground": "black",
+        "background": "yellow",
+        "iconColour": "yellow"
+      },
+      "FIXME": {
+        "icon": "beaker",
+        "foreground": "white",
+        "background": "red",
+        "iconColour": "red"
+      },
+      "SECURITY": {
+        "icon": "shield",
+        "foreground": "white", 
+        "background": "red",
+        "iconColour": "red"
+      },
+      "EMERGENCY": {
+        "icon": "flame",
+        "foreground": "white",
+        "background": "orange",
+        "iconColour": "orange"
+      },
+      "ADHD": {
+        "icon": "heart",
+        "foreground": "white",
+        "background": "purple",
+        "iconColour": "purple"
+      }
+    }
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "🚨 Emergency Security Validator",
+        "type": "shell",
+        "command": "python",
+        "args": ["emergency_security_validator.py"],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "new"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "🔍 Run Audit Engine (All Gates)",
+        "type": "shell", 
+        "command": "python",
+        "args": ["audit_engine_v4.py", "--all"],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "new"
+        }
+      },
+      {
+        "label": "🔒 Security Scan (Bandit)",
+        "type": "shell",
+        "command": "python",
+        "args": ["-m", "bandit", "-r", ".", "-f", "json", "-o", "security_report.json"],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "new"
+        }
+      },
+      {
+        "label": "🧪 Run All Tests",
+        "type": "shell",
+        "command": "python", 
+        "args": ["-m", "pytest", "tests/", "-v", "--cov=.", "--cov-report=html"],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "new"
+        }
+      },
+      {
+        "label": "🎯 Gate 2 Security Check",
+        "type": "shell",
+        "command": "python",
+        "args": ["audit_engine_v4.py", "--gate", "2"],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": true,
+          "panel": "new"
+        }
+      },
+      {
+        "label": "🔧 Format Code (Black + isort)",
+        "type": "shell",
+        "command": "python",
+        "args": ["-m", "black", ".", "&&", "python", "-m", "isort", "."],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "silent",
+          "focus": false,
+          "panel": "shared"
+        }
+      },
+      {
+        "label": "📊 Generate Project Status",
+        "type": "shell",
+        "command": "python",
+        "args": ["-c", "import json; print(json.dumps(json.load(open('project_state.json')), indent=2))"],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "new"
+        }
+      }
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "🚀 Run Flask Server",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/main_unified_server.py",
+        "args": [],
+        "console": "integratedTerminal",
+        "env": {
+          "FLASK_ENV": "development",
+          "FLASK_DEBUG": "1",
+          "EMERGENCY_PASSWORD": "emergency_dev_password_2025",
+          "EMERGENCY_API_KEY": "dev-api-key-emergency-2025"
+        }
+      },
+      {
+        "name": "🔍 Debug Security Validator", 
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/emergency_security_validator.py",
+        "args": [],
+        "console": "integratedTerminal"
+      },
+      {
+        "name": "📊 Debug Audit Engine",
+        "type": "debugpy", 
+        "request": "launch",
+        "program": "${workspaceFolder}/audit_engine_v4.py",
+        "args": ["--gate", "2"],
+        "console": "integratedTerminal"
+      }
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-python.flake8",
+      "ms-python.black-formatter",
+      "ms-python.isort",
+      "ms-python.pylint",
+      "njpwerner.autodocstring",
+      "gruntfuggly.todo-tree",
+      "github.vscode-pull-request-github",
+      "github.copilot",
+      "github.copilot-chat",
+      "ms-vscode.vscode-json",
+      "redhat.vscode-yaml",
+      "ms-vscode.powershell",
+      "visualstudioexptteam.vscodeintellicode",
+      "aaron-bond.better-comments",
+      "streetsidesoftware.code-spell-checker",
+      "ms-vsliveshare.vsliveshare"
+    ]
+  }
+}

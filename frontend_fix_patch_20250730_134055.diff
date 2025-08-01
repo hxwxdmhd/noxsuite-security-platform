@@ -1,0 +1,83 @@
+# Frontend Container Fix Patch - 20250730_134055
+# Addresses: Frontend Container Not Accessible
+
+## ISSUE ANALYSIS
+- Target Port: 3001
+- Expected Service: Grafana Dashboard
+- Current Status: Missing - needs deployment
+
+## DOCKER-COMPOSE FIXES
+
+### 1. Simplified Grafana Service (Standalone)
+version: '3.8'
+services:
+  grafana-standalone:
+    image: grafana/grafana:latest
+    container_name: noxsuite-grafana-fixed
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=noxsuite123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3001
+    volumes:
+      - grafana_data_fixed:/var/lib/grafana
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  grafana_data_fixed:
+
+### 2. Quick Frontend React App (Alternative)
+version: '3.8'
+services:
+  frontend-quick:
+    image: node:18-alpine
+    container_name: noxsuite-frontend-quick
+    working_dir: /app
+    ports:
+      - "3001:3000"
+    command: >
+      sh -c "
+        echo 'Creating quick React frontend...' &&
+        npx create-react-app . --template minimal &&
+        npm start
+      "
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_GRAFANA_URL=http://localhost:3000
+    volumes:
+      - frontend_quick_data:/app
+
+volumes:
+  frontend_quick_data:
+
+## DEPLOYMENT COMMANDS
+
+# Option 1: Deploy fixed Grafana
+docker-compose -f frontend-fix-grafana.yml up -d
+
+# Option 2: Deploy quick React frontend  
+docker-compose -f frontend-fix-react.yml up -d
+
+# Validation
+curl -f http://localhost:3001/api/health  # For Grafana
+curl -f http://localhost:3001/            # For React app
+
+## DOCKER RESOURCE OPTIMIZATION
+# Resource limits for better performance
+deploy:
+  resources:
+    limits:
+      memory: 512M
+      cpus: '0.3'
+    reservations:
+      memory: 256M
+      cpus: '0.1'
+

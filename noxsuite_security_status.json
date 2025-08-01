@@ -1,0 +1,8 @@
+{
+  "timestamp": "2025-07-30T21:08:48.773003",
+  "mfa_enabled_users": 1,
+  "total_users": 2,
+  "roles_configured": 6,
+  "permissions_available": 10,
+  "database_path": "noxsuite_auth.db"
+}

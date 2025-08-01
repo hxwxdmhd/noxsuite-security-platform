@@ -1,0 +1,98 @@
+networks:
+  noxguard-network:
+    driver: bridge
+services:
+  grafana:
+    container_name: noxguard-grafana
+    depends_on:
+    - prometheus
+    environment:
+    - GF_SECURITY_ADMIN_PASSWORD=noxguard_admin
+    image: grafana/grafana-oss:latest
+    networks:
+    - noxguard-network
+    ports:
+    - 3001:3000
+    restart: unless-stopped
+    volumes:
+    - grafana_data:/var/lib/grafana
+  noxguard-fastapi-prod:
+    build: ./backend
+    container_name: noxguard-fastapi-prod
+    environment:
+    - ENVIRONMENT=production
+    - ENABLE_HTTPS=true
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost:8000/health
+      timeout: 10s
+    networks:
+    - noxguard-network
+    ports:
+    - 8000:8000
+    restart: unless-stopped
+    security_opt:
+    - no-new-privileges:true
+    volumes:
+    - ./certs:/certs:ro
+    - ./logs:/app/logs
+  noxguard-frontend-prod:
+    build: ./frontend
+    container_name: noxguard-frontend-prod
+    depends_on:
+    - noxguard-fastapi-prod
+    environment:
+    - NODE_ENV=production
+    - API_URL=http://noxguard-fastapi-prod:8000
+    networks:
+    - noxguard-network
+    ports:
+    - 3000:3000
+    restart: unless-stopped
+    security_opt:
+    - no-new-privileges:true
+    volumes:
+    - ./certs:/certs:ro
+    - ./frontend/logs:/app/logs
+  noxguard-langflow-prod:
+    build: ./langflow
+    container_name: noxguard-langflow-prod
+    environment:
+    - LANGFLOW_ENV=production
+    networks:
+    - noxguard-network
+    ports:
+    - 7860:7860
+    restart: unless-stopped
+    security_opt:
+    - no-new-privileges:true
+    volumes:
+    - ./certs:/certs:ro
+    - ./langflow/logs:/app/logs
+  prometheus:
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --web.console.libraries=/etc/prometheus/console_libraries
+    - --web.console.templates=/etc/prometheus/consoles
+    - --storage.tsdb.retention.time=200h
+    - --web.enable-lifecycle
+    container_name: noxguard-prometheus
+    image: prom/prometheus:latest
+    networks:
+    - noxguard-network
+    ports:
+    - 9090:9090
+    restart: unless-stopped
+    volumes:
+    - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    - prometheus_data:/prometheus
+version: "3.8"
+volumes:
+  grafana_data: {}
+  prometheus_data: {}

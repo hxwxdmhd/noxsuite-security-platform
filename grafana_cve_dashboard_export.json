@@ -1,0 +1,220 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "NoxSuite CVE Security Monitoring Dashboard",
+    "tags": ["security", "cve", "noxsuite", "monitoring"],
+    "style": "dark",
+    "timezone": "browser",
+    "refresh": "5m",
+    "time": {
+      "from": "now-24h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "CVE Count by Severity",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "cve_vulnerabilities_total{severity=\"critical\"}",
+            "legendFormat": "Critical CVEs"
+          },
+          {
+            "expr": "cve_vulnerabilities_total{severity=\"high\"}",
+            "legendFormat": "High CVEs"
+          },
+          {
+            "expr": "cve_vulnerabilities_total{severity=\"medium\"}",
+            "legendFormat": "Medium CVEs"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 1
+                },
+                {
+                  "color": "red",
+                  "value": 3
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": 2,
+        "title": "Security Health Score",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "security_health_score",
+            "legendFormat": "Security Score"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 70
+                },
+                {
+                  "color": "green",
+                  "value": 90
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        }
+      },
+      {
+        "id": 3,
+        "title": "Dependency Health Status",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "dependency_status",
+            "legendFormat": "{{package}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 8
+        }
+      },
+      {
+        "id": 4,
+        "title": "CVE Timeline",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(cve_discovered_total[5m])",
+            "legendFormat": "CVEs Discovered"
+          },
+          {
+            "expr": "rate(cve_fixed_total[5m])",
+            "legendFormat": "CVEs Fixed"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 16
+        }
+      },
+      {
+        "id": 5,
+        "title": "Package Update Status",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "package_status",
+            "legendFormat": "{{status}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 24
+        }
+      },
+      {
+        "id": 6,
+        "title": "Security Score Trend",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "security_health_score",
+            "legendFormat": "Security Health"
+          },
+          {
+            "expr": "development_progress_score",
+            "legendFormat": "Development Progress"
+          },
+          {
+            "expr": "testsprite_pass_rate",
+            "legendFormat": "TestSprite Pass Rate"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 24
+        }
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "name": "CVE Alerts",
+          "datasource": "Prometheus",
+          "enable": true,
+          "expr": "ALERTS{alertname=\"HighSeverityCVE\"}",
+          "iconColor": "red"
+        }
+      ]
+    },
+    "templating": {
+      "list": [
+        {
+          "name": "severity",
+          "type": "query",
+          "query": "label_values(cve_vulnerabilities_total, severity)",
+          "refresh": 1,
+          "includeAll": true,
+          "allValue": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "type": "db",
+    "canSave": true,
+    "canEdit": true,
+    "canAdmin": true,
+    "canStar": true,
+    "slug": "noxsuite-cve-security-monitoring",
+    "url": "/d/noxsuite-cve/noxsuite-cve-security-monitoring",
+    "expires": "0001-01-01T00:00:00Z",
+    "created": "2025-07-30T12:59:59Z",
+    "updated": "2025-07-30T12:59:59Z",
+    "updatedBy": "noxsuite-mcp-agent",
+    "version": 1
+  }
+}

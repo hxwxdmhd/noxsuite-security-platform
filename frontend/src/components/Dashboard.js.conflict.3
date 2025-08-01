@@ -1,0 +1,670 @@
+/**
+ * Main Dashboard Component - Real-time Security and System Monitoring
+ * Features: ADHD-friendly design, real-time updates, accessibility compliance
+ * @author @hxwxdmhd
+ * @version 1.0.0
+ */
+
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  Box,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Alert,
+  Chip,
+  IconButton,
+  Tooltip,
+  Switch,
+  FormControlLabel,
+  LinearProgress,
+  Badge,
+  Paper,
+  Divider,
+  CircularProgress
+} from '@mui/material';
+import {
+  Security as SecurityIcon,
+  Dashboard as DashboardIcon,
+  Timeline as TimelineIcon,
+  Notifications as NotificationsIcon,
+  Refresh as RefreshIcon,
+  Warning as WarningIcon,
+  CheckCircle as CheckCircleIcon,
+  Error as ErrorIcon,
+  Speed as SpeedIcon,
+  Memory as MemoryIcon,
+  Storage as StorageIcon,
+  NetworkCheck as NetworkIcon,
+  Bug as BugIcon,
+  Shield as ShieldIcon
+} from '@mui/icons-material';
+import {
+  Line,
+  Doughnut,
+  Bar,
+  Area
+} from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip as ChartTooltip,
+  Legend,
+  ArcElement,
+  BarElement,
+  Filler
+} from 'chart.js';
+
+import { useAccessibility } from '../contexts/AccessibilityContext';
+import { useSocket, useDashboardData, useSystemMetrics, useSecurityAlerts } from '../contexts/SocketContext';
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  ChartTooltip,
+  Legend,
+  Filler
+);
+
+const Dashboard = () => {
+  const {
+    theme,
+    reducedMotion,
+    highContrast,
+    focusIndicators,
+    cognitiveLoad,
+    announceToScreenReader
+  } = useAccessibility();
+  
+  const {
+    isConnected,
+    connectionStatus,
+    notifications,
+    getUnreadCount
+  } = useSocket();
+  
+  const dashboardData = useDashboardData();
+  const systemMetrics = useSystemMetrics();
+  const securityAlerts = useSecurityAlerts();
+  
+  // Local state for dashboard
+  const [refreshing, setRefreshing] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [selectedTimeRange, setSelectedTimeRange] = useState('1h');
+  const [expandedCards, setExpandedCards] = useState({});
+
+  // Auto-refresh mechanism
+  useEffect(() => {
+    if (autoRefresh && isConnected) {
+      const interval = setInterval(() => {
+        // Refresh requests are handled by socket hooks
+        setRefreshing(true);
+        setTimeout(() => setRefreshing(false), 1000);
+      }, 30000); // Every 30 seconds
+      
+      return () => clearInterval(interval);
+    }
+  }, [autoRefresh, isConnected]);
+
+  // Announce connection status changes
+  useEffect(() => {
+    if (connectionStatus === 'connected') {
+      announceToScreenReader('Dashboard connected to real-time data');
+    } else if (connectionStatus === 'disconnected') {
+      announceToScreenReader('Dashboard disconnected from real-time data');
+    }
+  }, [connectionStatus, announceToScreenReader]);
+
+  // Theme-aware chart options
+  const chartOptions = useMemo(() => {
+    const textColor = highContrast ? '#FFFFFF' : theme.text;
+    const gridColor = highContrast ? '#444444' : '#E0E0E0';
+    
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: reducedMotion.enabled ? false : {
+        duration: 750,
+        easing: 'easeInOutQuart'
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor,
+            font: {
+              size: cognitiveLoad.simplified ? 14 : 12
+            }
+          }
+        },
+        tooltip: {
+          titleColor: textColor,
+          bodyColor: textColor,
+          backgroundColor: highContrast ? '#000000' : 'rgba(0,0,0,0.8)',
+          borderColor: theme.primary,
+          borderWidth: 1
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: textColor
+          },
+          grid: {
+            color: gridColor
+          }
+        },
+        y: {
+          ticks: {
+            color: textColor
+          },
+          grid: {
+            color: gridColor
+          }
+        }
+      }
+    };
+  }, [theme, highContrast, reducedMotion, cognitiveLoad]);
+
+  // Security status data for charts
+  const securityData = useMemo(() => {
+    const recentAlerts = securityAlerts.slice(0, 10);
+    const alertTypes = {};
+    
+    recentAlerts.forEach(alert => {
+      alertTypes[alert.type] = (alertTypes[alert.type] || 0) + 1;
+    });
+
+    return {
+      labels: Object.keys(alertTypes),
+      datasets: [{
+        label: 'Security Alerts',
+        data: Object.values(alertTypes),
+        backgroundColor: [
+          '#FF6B6B',
+          '#4ECDC4',
+          '#45B7D1',
+          '#96CEB4',
+          '#FECA57',
+          '#FF9FF3'
+        ],
+        borderWidth: 2,
+        borderColor: '#FFFFFF'
+      }]
+    };
+  }, [securityAlerts]);
+
+  // System metrics data for charts
+  const metricsData = useMemo(() => {
+    const times = Array.from({ length: 12 }, (_, i) => {
+      const time = new Date();
+      time.setMinutes(time.getMinutes() - (11 - i) * 5);
+      return time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    });
+
+    return {
+      labels: times,
+      datasets: [
+        {
+          label: 'CPU Usage %',
+          data: systemMetrics.cpu_history || Array(12).fill(0),
+          borderColor: '#FF6B6B',
+          backgroundColor: 'rgba(255, 107, 107, 0.1)',
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'Memory Usage %',
+          data: systemMetrics.memory_history || Array(12).fill(0),
+          borderColor: '#4ECDC4',
+          backgroundColor: 'rgba(78, 205, 196, 0.1)',
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'Network I/O',
+          data: systemMetrics.network_history || Array(12).fill(0),
+          borderColor: '#45B7D1',
+          backgroundColor: 'rgba(69, 183, 209, 0.1)',
+          tension: 0.4,
+          fill: true
+        }
+      ]
+    };
+  }, [systemMetrics]);
+
+  // Get status color based on severity
+  const getStatusColor = (severity) => {
+    switch (severity) {
+      case 'critical': return '#FF4444';
+      case 'high': return '#FF8800';
+      case 'medium': return '#FFAA00';
+      case 'low': return '#4CAF50';
+      default: return '#9E9E9E';
+    }
+  };
+
+  // Get status icon based on type
+  const getStatusIcon = (type, status) => {
+    if (status === 'error') return <ErrorIcon color="error" />;
+    if (status === 'warning') return <WarningIcon color="warning" />;
+    if (status === 'success') return <CheckCircleIcon color="success" />;
+    
+    switch (type) {
+      case 'security': return <SecurityIcon />;
+      case 'performance': return <SpeedIcon />;
+      case 'network': return <NetworkIcon />;
+      case 'storage': return <StorageIcon />;
+      case 'memory': return <MemoryIcon />;
+      default: return <DashboardIcon />;
+    }
+  };
+
+  // Manual refresh handler
+  const handleRefresh = () => {
+    setRefreshing(true);
+    announceToScreenReader('Refreshing dashboard data');
+    
+    // Refresh requests are handled by socket hooks
+    setTimeout(() => {
+      setRefreshing(false);
+      announceToScreenReader('Dashboard data refreshed');
+    }, 1000);
+  };
+
+  // Toggle card expansion
+  const toggleCardExpansion = (cardId) => {
+    setExpandedCards(prev => ({
+      ...prev,
+      [cardId]: !prev[cardId]
+    }));
+  };
+
+  return (
+    <Box
+      sx={{
+        p: { xs: 1, sm: 2, md: 3 },
+        minHeight: '100vh',
+        backgroundColor: theme.background,
+        color: theme.text
+      }}
+      role="main"
+      aria-label="NoxSuite Dashboard"
+    >
+      {/* Header */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 3,
+          flexWrap: 'wrap',
+          gap: 2
+        }}
+      >
+        <Box>
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              fontWeight: 600,
+              color: theme.primary,
+              fontSize: cognitiveLoad.simplified ? '2rem' : '2.5rem'
+            }}
+          >
+            🛡️ NoxSuite Dashboard
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              color: theme.textSecondary,
+              fontSize: cognitiveLoad.simplified ? '1rem' : '1.1rem'
+            }}
+          >
+            Real-time Security & System Monitoring
+          </Typography>
+        </Box>
+        
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {/* Connection Status */}
+          <Chip
+            icon={isConnected ? <CheckCircleIcon /> : <ErrorIcon />}
+            label={isConnected ? 'Connected' : 'Disconnected'}
+            color={isConnected ? 'success' : 'error'}
+            variant="outlined"
+          />
+          
+          {/* Notifications Badge */}
+          <Badge badgeContent={getUnreadCount()} color="error">
+            <IconButton
+              aria-label={`${getUnreadCount()} unread notifications`}
+              sx={{
+                color: theme.primary,
+                '&:focus': focusIndicators.enabled ? {
+                  outline: `2px solid ${theme.primary}`,
+                  outlineOffset: '2px'
+                } : {}
+              }}
+            >
+              <NotificationsIcon />
+            </IconButton>
+          </Badge>
+          
+          {/* Auto-refresh Toggle */}
+          <FormControlLabel
+            control={
+              <Switch
+                checked={autoRefresh}
+                onChange={(e) => setAutoRefresh(e.target.checked)}
+                color="primary"
+              />
+            }
+            label="Auto-refresh"
+            sx={{ color: theme.text }}
+          />
+          
+          {/* Manual Refresh */}
+          <IconButton
+            onClick={handleRefresh}
+            disabled={refreshing}
+            aria-label="Refresh dashboard data"
+            sx={{
+              color: theme.primary,
+              '&:focus': focusIndicators.enabled ? {
+                outline: `2px solid ${theme.primary}`,
+                outlineOffset: '2px'
+              } : {}
+            }}
+          >
+            {refreshing ? <CircularProgress size={24} /> : <RefreshIcon />}
+          </IconButton>
+        </Box>
+      </Box>
+
+      {/* Connection Alert */}
+      {!isConnected && (
+        <Alert
+          severity="warning"
+          sx={{ mb: 3 }}
+          aria-live="polite"
+        >
+          Real-time connection lost. Dashboard showing cached data.
+        </Alert>
+      )}
+
+      {/* Main Dashboard Grid */}
+      <Grid container spacing={3}>
+        {/* Security Overview */}
+        <Grid item xs={12} md={6} lg={4}>
+          <Card
+            sx={{
+              height: '400px',
+              backgroundColor: theme.cardBackground,
+              border: highContrast ? `2px solid ${theme.primary}` : 'none'
+            }}
+          >
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <SecurityIcon sx={{ color: theme.primary, mr: 1 }} />
+                <Typography variant="h6" component="h2">
+                  Security Status
+                </Typography>
+              </Box>
+              
+              <Box sx={{ height: '300px' }}>
+                {securityData.labels.length > 0 ? (
+                  <Doughnut
+                    data={securityData}
+                    options={{
+                      ...chartOptions,
+                      plugins: {
+                        ...chartOptions.plugins,
+                        legend: {
+                          position: 'bottom'
+                        }
+                      }
+                    }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '100%',
+                      color: theme.textSecondary
+                    }}
+                  >
+                    <Typography>No security alerts</Typography>
+                  </Box>
+                )}
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* System Metrics */}
+        <Grid item xs={12} md={6} lg={8}>
+          <Card
+            sx={{
+              height: '400px',
+              backgroundColor: theme.cardBackground,
+              border: highContrast ? `2px solid ${theme.primary}` : 'none'
+            }}
+          >
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <TimelineIcon sx={{ color: theme.primary, mr: 1 }} />
+                <Typography variant="h6" component="h2">
+                  System Performance
+                </Typography>
+              </Box>
+              
+              <Box sx={{ height: '300px' }}>
+                <Line data={metricsData} options={chartOptions} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Quick Stats */}
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            {[
+              {
+                title: 'CPU Usage',
+                value: `${systemMetrics.cpu_usage || 0}%`,
+                icon: <SpeedIcon />,
+                color: systemMetrics.cpu_usage > 80 ? '#FF4444' : '#4CAF50'
+              },
+              {
+                title: 'Memory Usage',
+                value: `${systemMetrics.memory_usage || 0}%`,
+                icon: <MemoryIcon />,
+                color: systemMetrics.memory_usage > 85 ? '#FF4444' : '#4CAF50'
+              },
+              {
+                title: 'Active Threats',
+                value: securityAlerts.filter(alert => alert.severity === 'critical').length,
+                icon: <ShieldIcon />,
+                color: securityAlerts.length > 0 ? '#FF4444' : '#4CAF50'
+              },
+              {
+                title: 'Network Status',
+                value: isConnected ? 'Online' : 'Offline',
+                icon: <NetworkIcon />,
+                color: isConnected ? '#4CAF50' : '#FF4444'
+              }
+            ].map((stat, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <Card
+                  sx={{
+                    backgroundColor: theme.cardBackground,
+                    border: highContrast ? `2px solid ${theme.primary}` : 'none',
+                    transition: reducedMotion.enabled ? 'none' : 'transform 0.2s',
+                    '&:hover': reducedMotion.enabled ? {} : {
+                      transform: 'translateY(-2px)'
+                    }
+                  }}
+                >
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Box sx={{ color: stat.color }}>
+                        {stat.icon}
+                      </Box>
+                      <Box>
+                        <Typography
+                          variant="h4"
+                          sx={{
+                            fontWeight: 700,
+                            color: stat.color,
+                            fontSize: cognitiveLoad.simplified ? '1.8rem' : '2rem'
+                          }}
+                        >
+                          {stat.value}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: theme.textSecondary }}
+                        >
+                          {stat.title}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+
+        {/* Recent Security Alerts */}
+        <Grid item xs={12} lg={6}>
+          <Card
+            sx={{
+              backgroundColor: theme.cardBackground,
+              border: highContrast ? `2px solid ${theme.primary}` : 'none',
+              maxHeight: '500px'
+            }}
+          >
+            <CardContent>
+              <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+                Recent Security Alerts
+              </Typography>
+              
+              <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
+                {securityAlerts.slice(0, 10).map((alert, index) => (
+                  <Paper
+                    key={alert.id || index}
+                    sx={{
+                      p: 2,
+                      mb: 1,
+                      backgroundColor: theme.background,
+                      border: `1px solid ${getStatusColor(alert.severity)}`
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                      <Box sx={{ color: getStatusColor(alert.severity) }}>
+                        {getStatusIcon('security', alert.severity)}
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                          {alert.title}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: theme.textSecondary, mb: 1 }}
+                        >
+                          {alert.message}
+                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Chip
+                            label={alert.severity}
+                            size="small"
+                            sx={{
+                              backgroundColor: getStatusColor(alert.severity),
+                              color: '#FFFFFF'
+                            }}
+                          />
+                          <Typography variant="caption" sx={{ color: theme.textSecondary }}>
+                            {new Date(alert.timestamp).toLocaleString()}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Paper>
+                ))}
+                
+                {securityAlerts.length === 0 && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '200px',
+                      color: theme.textSecondary
+                    }}
+                  >
+                    <Typography>No security alerts</Typography>
+                  </Box>
+                )}
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* System Information */}
+        <Grid item xs={12} lg={6}>
+          <Card
+            sx={{
+              backgroundColor: theme.cardBackground,
+              border: highContrast ? `2px solid ${theme.primary}` : 'none',
+              maxHeight: '500px'
+            }}
+          >
+            <CardContent>
+              <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+                System Information
+              </Typography>
+              
+              <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
+                {[
+                  { label: 'Uptime', value: systemMetrics.uptime || 'N/A' },
+                  { label: 'Load Average', value: systemMetrics.load_average || 'N/A' },
+                  { label: 'Disk Usage', value: `${systemMetrics.disk_usage || 0}%` },
+                  { label: 'Active Connections', value: systemMetrics.connections || 0 },
+                  { label: 'Running Processes', value: systemMetrics.processes || 0 },
+                  { label: 'Last Update', value: systemMetrics.lastUpdate ? new Date(systemMetrics.lastUpdate).toLocaleString() : 'N/A' }
+                ].map((info, index) => (
+                  <Box key={index} sx={{ mb: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                      <Typography variant="body2" sx={{ color: theme.textSecondary }}>
+                        {info.label}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        {info.value}
+                      </Typography>
+                    </Box>
+                    {index < 5 && <Divider />}
+                  </Box>
+                ))}
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </Box>
+  );
+};
+
+export default Dashboard;

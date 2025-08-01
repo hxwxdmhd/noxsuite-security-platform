@@ -1,0 +1,88 @@
+{
+  "metadata": {
+    "timestamp": "2025-07-29T07:08:02.192137+00:00",
+    "generator": "NoxSuite Integration Bridge",
+    "version": "1.0.0",
+    "integration_mode": "TypeScript-Python"
+  },
+  "noxsuite_status": {
+    "timestamp": "2025-07-29T07:08:02.192137+00:00",
+    "system_health": {
+      "memory_usage": 85.8,
+      "cpu_usage": 34.4,
+      "api_response_time": 2054.6281337738037,
+      "error_rate": 0.0,
+      "uptime_hours": 27.089446951680713
+    },
+    "noxsuite_config": {
+      "agent_mode": 91,
+      "api_integration": 95,
+      "parallel_workers": 6,
+      "plugin_count": 4,
+      "theme_mode": "spicy"
+    },
+    "plugins": [
+      {
+        "id": 2101,
+        "name": "PowerShell_Automation",
+        "state": "active",
+        "last_update": "2025-07-29T07:08:02.192137+00:00",
+        "performance_score": 86.0
+      },
+      {
+        "id": 3302,
+        "name": "MariaDB_Integration",
+        "state": "active",
+        "last_update": "2025-07-29T07:08:02.192137+00:00",
+        "performance_score": 87.0
+      },
+      {
+        "id": 4501,
+        "name": "WebUI_Framework",
+        "state": "active",
+        "last_update": "2025-07-29T07:08:02.192137+00:00",
+        "performance_score": 86.0
+      },
+      {
+        "id": 6200,
+        "name": "LLM_Orchestration",
+        "state": "active",
+        "last_update": "2025-07-29T07:08:02.192137+00:00",
+        "performance_score": 90.0
+      }
+    ],
+    "theme": {
+      "mode": "spicy",
+      "contrast": "normal",
+      "animations_enabled": true,
+      "adhd_features_active": true,
+      "accessibility_score": 92.5
+    },
+    "performance_score": 68.387
+  },
+  "monitoring_data": {
+    "metadata": {
+      "timestamp": "2025-07-29T07:08:02.184110+00:00",
+      "generator": "@hxwxdmhd",
+      "version": "2.0.0",
+      "mode": "ENHANCED_CRITICAL_MONITORING",
+      "report_period": {
+        "start": "2025-07-29T06:08:02.184110+00:00",
+        "end": "2025-07-29T07:08:02.184110+00:00"
+      }
+    },
+    "system_health": {
+      "memory_usage_percent": 85.8,
+      "cpu_usage_percent": 34.4,
+      "disk_usage_percent": 0.0,
+      "api_response_time_ms": 2054.6281337738037,
+      "error_rate_percent": 0.0,
+      "uptime_hours": 27.08944569826126,
+      "active_connections": 113
+    },
+    "incidents": [
+      {
+        "id": "THRESHOLD_SYS_MEM_001_1753772877",
+        "timestamp": "2025-07-29T07:07:57.858978+00:00",
+        "pattern_id": "THRESHOLD_SYS_MEM_001",
+        "severity": 

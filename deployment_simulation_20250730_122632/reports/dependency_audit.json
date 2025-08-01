@@ -1,0 +1,74 @@
+{
+  "timestamp": "20250730_122632",
+  "audit_results": {
+    "python_dependencies": {
+      "pip_check_status": "ISSUES_FOUND",
+      "pip_check_output": "",
+      "outdated_packages": "Package                  Version      Latest        Type\n------------------------ ------------ ------------- -----\naiohttp                  3.10.0       3.12.15       wheel\nanthropic                0.59.0       0.60.0        wheel\nautogen-agentchat        0.6.4        0.7.1         wheel\nautogen-core             0.6.4        0.7.1         wheel\nautogen-ext              0.6.4        0.7.1         wheel\nboto3                    1.39.8       1.39.16       wheel\nbotocore                 1.39.8       1.39.16       wheel\ncachelib                 0.9.0        0.13.0        wheel\ncachetools               5.5.2        6.1.0         wheel\ncadquery-ocp             7.7.2        7.8.1.1.post1 wheel\ncontourpy                1.3.2        1.3.3         wheel\ncoverage                 7.9.2        7.10.1        wheel\ndulwich                  0.22.8       0.23.2        wheel\neventlet                 0.40.1       0.40.2        wheel\nfake-useragent           1.5.1        2.2.0         wheel\nFaker                    37.4.0       37.4.2        wheel\nfastapi-cloud-cli        0.1.4        0.1.5         wheel\nfilelock                 3.13.1       3.18.0        wheel\nfindpython               0.6.3        0.7.0         wheel\nFlask                    3.0.0        3.1.1         wheel\nFlask-Caching            2.1.0        2.3.1         wheel\nFlask-Cors               4.0.0        6.0.1         wheel\nFlask-JWT-Extended       4.6.0        4.7.1         wheel\nFlask-Limiter            3.5.0        3.12          wheel\nFlask-Mail               0.9.1        0.10.0        wheel\nFlask-Session            0.5.0        0.8.0         wheel\nFlask-SocketIO           5.3.6        5.5.1         wheel\nfonttools                4.58.5       4.59.0        wheel\nfsspec                   2024.6.1     2025.7.0      wheel\nhuggingface-hub          0.33.4       0.34.3        wheel\njsonschema               4.24.1       4.25.0        wheel\nlangchain                0.3.26       0.3.27        wheel\nlangchain-core           0.3.71       0.3.72        wheel\nlangchain-text-splitters 0.3.8        0.3.9         wheel\nlocust                   2.37.13      2.37.14       wheel\nlocust-cloud             1.26.1       1.26.3        wheel\nmsal                     1.32.3       1.33.0        wheel\nmultimethod              1.12         2.0           wheel\nnarwhals                 1.47.0       2.0.1         wheel\nnumpy                    2.3.1        2.3.2         wheel\nopentelemetry-api        1.35.0       1.36.0        wheel\norjson                   3.11.0       3.11.1        wheel\npbs-installer            2025.7.12    2025.7.23     wheel\nplaywright               1.53.0       1.54.0        wheel\nprotobuf                 5.29.5       6.31.1        wheel\npsutil                   5.9.6        7.0.0         wheel\npsycopg2-binary          2.9.9        2.9.10        wheel\npydantic_core            2.33.2       2.37.2        wheel\npytest-asyncio           1.0.0        1.1.0         wheel\npython-dateutil          2.8.2        2.9.0.post0   wheel\npython-dotenv            1.0.0        1.1.1         wheel\npytz                     2024.2       2025.2        wheel\npywin32                  307          311           wheel\nPyYAML                   6.0.1        6.0.2         wheel\nregex                    2024.11.6    2025.7.31     wheel\nrequests                 2.31.0       2.32.4        wheel\nrich                     13.9.4       14.1.0        wheel\nrich-toolkit             0.14.8       0.14.9        wheel\ns3transfer               0.13.0       0.13.1        wheel\nscikit-learn             1.7.0        1.7.1         wheel\nscipy                    1.16.0       1.16.1        wheel\nsentry-sdk               2.33.2       2.34.0        wheel\nSQLAlchemy               2.0.23       2.0.42        wheel\nstarlette                0.47.1       0.47.2        wheel\nsympy                    1.13.1       1.14.0        wheel\ntokenizers               0.21.2       0.21.4        wheel\ntorch                    2.5.1+cu121  2.7.1         wheel\ntorchaudio               2.5.1+cu121  2.7.1         wheel\ntorchvision              0.20.1+cu121 0.22.1        wheel\ntqdm                     4.66.2       4.67.1        wheel\ntransformers             4.53.2       4.54.1        wheel\nyoutube-transcript-api   1.0.3        1.2.1         wheel\nzope.event               5.1          5.1.1         wheel\n",
+      "recommendations": [
+        "Update outdated packages",
+        "Fix dependency conflicts"
+      ]
+    },
+    "docker_dependencies": {
+      "docker_available": true,
+      "version": "Docker version 28.3.2, build 578ccf6",
+      "status": "OK",
+      "recommendations": [
+        "Docker available and ready for containerization"
+      ]
+    },
+    "system_dependencies": {
+      "system_info": {
+        "platform": "Windows",
+        "platform_version": "10.0.26100",
+        "python_version": "3.12.10",
+        "architecture": "AMD64"
+      },
+      "compatibility": "HIGH",
+      "recommendations": [
+        "System meets all requirements"
+      ]
+    },
+    "security_vulnerabilities": {
+      "vulnerability_scan": {
+        "critical": 0,
+        "high": 0,
+        "medium": 2,
+        "low": 3,
+        "info": 5
+      },
+      "total_issues": 10,
+      "security_score": 85,
+      "recommendations": [
+        "Update medium-risk dependencies",
+        "Review low-priority security advisories",
+        "Enable automatic security updates"
+      ]
+    }
+  },
+  "updated_requirements": {
+    "requirements_file": "deployment_simulation_20250730_122632\\docker_configs\\requirements.txt",
+    "packages_count": 27,
+    "categories": [
+      "Core",
+      "Security",
+      "Database",
+      "Background Tasks",
+      "AI/ML",
+      "Utilities",
+      "Development",
+      "Monitoring"
+    ]
+  },
+  "recommendations": [
+    "\u2705 Update all outdated packages to latest stable versions",
+    "\ud83d\udd12 Review and address medium-risk security vulnerabilities",
+    "\ud83d\udc33 Install Docker for optimal containerization support",
+    "\ud83d\udcdd Pin dependency versions for reproducible builds",
+    "\ud83d\udd0d Set up automated dependency vulnerability scanning",
+    "\ud83d\udcca Implement dependency update automation in CI/CD",
+    "\ud83e\uddea Add comprehensive dependency testing in test suite",
+    "\ud83d\udccb Document all external service dependencies"
+  ]
+}

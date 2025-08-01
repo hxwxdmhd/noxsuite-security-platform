@@ -1,0 +1,2224 @@
+{
+  "migration_start": "2025-07-31T21:53:53.401874",
+  "enforcer": "SkepticalAuditor_MariaDBEnforcer",
+  "log": [
+    {
+      "timestamp": "2025-07-31T21:53:49.091069",
+      "action": "sqlite_contamination_audit",
+      "contamination": {
+        "sqlite_files": [
+          ".\\mariadb_dev_simulation.db",
+          ".\\archived\\sqlite\\mariadb_dev_simulation.db",
+          ".\\archived\\sqlite\\noxsuite_auth.db",
+          ".\\archived\\sqlite\\noxsuite_database_backup.db",
+          ".\\archived\\sqlite\\noxsuite_database_locked_backup.db",
+          ".\\archived\\sqlite\\unified_heimnetz.db",
+          ".\\database\\noxsuite.db"
+        ],
+        "sqlite_references": [
+          {
+            "file": ".\\advanced_ai_engine.py",
+            "lines": [
+              20
+            ]
+          },
+          {
+            "file": ".\\app.py",
+            "lines": [
+              28,
+              144,
+              145,
+              226,
+              227
+            ]
+          },
+          {
+            "file": ".\\auth_debug_repair.py",
+            "lines": [
+              9,
+              32,
+              63,
+              112
+            ]
+          },
+          {
+            "file": ".\\check_database.py",
+            "lines": [
+              1,
+              25,
+              29
+            ]
+          },
+          {
+            "file": ".\\cleanup_system.py",
+            "lines": [
+              168,
+              417
+            ]
+          },
+          {
+            "file": ".\\database_sync_verifier.py",
+            "lines": [
+              8
+            ]
+          },
+          {
+            "file": ".\\db_migration_sqlite_to_mariadb.py",
+            "lines": [
+              3,
+              5,
+              8,
+              53,
+              54,
+              65,
+              69,
+              70,
+              71,
+              115,
+              116,
+              117,
+              118,
+              123,
+              124,
+              127,
+              145,
+              146,
+              154,
+              158,
+              159,
+              161,
+              162,
+              168,
+              183,
+              186,
+              188,
+              189,
+              195,
+              201,
+              210,
+              214,
+              217,
+              220,
+              225,
+              229,
+              231,
+              232,
+              242,
+              243,
+              246,
+              256,
+              263,
+              264,
+              270,
+              276,
+              277,
+              284,
+              287,
+              289,
+              290,
+              292,
+              293,
+              294,
+              308,
+              312,
+              317
+            ]
+          },
+          {
+            "file": ".\\deployment_simulation_engine.py",
+            "lines": [
+              424,
+              538,
+              845
+            ]
+          },
+          {
+            "file": ".\\enable_mfa.py",
+            "lines": [
+              1,
+              5
+            ]
+          },
+          {
+            "file": ".\\install.py",
+            "lines": [
+              94
+            ]
+          },
+          {
+            "file": ".\\mariadb_dev_setup.py",
+            "lines": [
+              127
+            ]
+          },
+          {
+            "file": ".\\mariadb_migration_enforcer.py",
+            "lines": [
+              5,
+              24,
+              34,
+              35,
+              36,
+              39,
+              40,
+              44,
+              47,
+              49,
+              51,
+              62,
+              63,
+              66,
+              73,
+              80,
+              81,
+              86,
+              95,
+              101,
+              118,
+              177,
+              178,
+              179,
+              185,
+              186,
+              187,
+              188,
+              189,
+              190,
+              225,
+              236,
+              238,
+              242,
+              243,
+              248,
+              249,
+              251,
+              252,
+              253,
+              304,
+              305,
+              306,
+              317
+            ]
+          },
+          {
+            "file": ".\\noxsuite_audit_simplified.py",
+            "lines": [
+              266,
+              272,
+              274,
+              305,
+              364,
+              417
+            ]
+          },
+          {
+            "file": ".\\noxsuite_auth_repair.py",
+            "lines": [
+              12,
+              75,
+              86,
+              88,
+              92,
+              96,
+              99,
+              111,
+              115,
+              166,
+              178,
+              217,
+              229,
+              274
+            ]
+          },
+          {
+            "file": ".\\noxsuite_comprehensive_audit.py",
+            "lines": [
+              27,
+              793,
+              798,
+              801,
+              802,
+              835,
+              836,
+              840,
+              844,
+              846,
+              876,
+              1227
+            ]
+          },
+          {
+            "file": ".\\noxsuite_fastapi_server.py",
+            "lines": [
+              488
+            ]
+          },
+          {
+            "file": ".\\noxsuite_mfa_rbac_manager.py",
+            "lines": [
+              13,
+              72,
+              130,
+              146,
+              157,
+              158,
+              208,
+              209,
+              249,
+              261,
+              262,
+              343,
+              385,
+              408,
+              421,
+              437,
+              455,
+              485,
+              486,
+              595,
+              596
+            ]
+          },
+          {
+            "file": ".\\noxsuite_smart_installer_complete.py",
+            "lines": [
+              1417,
+              1419,
+              1773,
+              1774
+            ]
+          },
+          {
+            "file": ".\\noxsuite_testsprite_enhanced.py",
+            "lines": [
+              17,
+              73,
+              129,
+              152,
+              178,
+              179,
+              289,
+              290,
+              630,
+              631
+            ]
+          },
+          {
+            "file": ".\\quick_start.py",
+            "lines": [
+              69
+            ]
+          },
+          {
+            "file": ".\\setup_database_simple.py",
+            "lines": [
+              3,
+              6,
+              15,
+              16,
+              44,
+              183,
+              184,
+              281,
+              323,
+              328
+            ]
+          },
+          {
+            "file": ".\\setup_mariadb_enforcer.py",
+            "lines": [
+              204,
+              205,
+              207,
+              218,
+              219,
+              223,
+              224,
+              227,
+              252,
+              277
+            ]
+          },
+          {
+            "file": ".\\sqlite_to_mariadb_migrator.py",
+            "lines": [
+              3,
+              5,
+              8,
+              17,
+              18,
+              21,
+              23,
+              24,
+              25,
+              36,
+              37,
+              43,
+              44,
+              48,
+              122,
+              127,
+              129,
+              137,
+              141,
+              163
+            ]
+          },
+          {
+            "file": ".\\test_audit_heal_mode.py",
+            "lines": [
+              103,
+              104
+            ]
+          },
+          {
+            "file": ".\\update_password.py",
+            "lines": [
+              1,
+              6
+            ]
+          },
+          {
+            "file": ".\\AI\\NoxPanel\\test_server_optimized.py",
+            "lines": [
+              10,
+              89,
+              99,
+              100,
+              137,
+              138
+            ]
+          },
+          {
+            "file": ".\\archive\\2025-07-29\\duplicate-servers\\main_server_with_security.py",
+            "lines": [
+              9,
+              90,
+              100,
+              101,
+              132,
+              133
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\audit_plugins_security.py",
+            "lines": [
+              30,
+              524,
+              564
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\autonomous_system_manager.py",
+            "lines": [
+              24,
+              866,
+              869,
+              1125,
+              1216,
+              1354
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\distributed_computing_framework.py",
+            "lines": [
+              44
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\enterprise_security.py",
+            "lines": [
+              498
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\integrate_heimnetz.py",
+            "lines": [
+              135
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\launch_unified_server.py",
+            "lines": [
+              71
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\main_unified_server.py",
+            "lines": [
+              22,
+              157,
+              166,
+              227,
+              251,
+              265,
+              706
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\main_unified_server_clean.py",
+            "lines": [
+              22,
+              168,
+              177,
+              238,
+              262,
+              276,
+              929
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\main_unified_server_integrated.py",
+            "lines": [
+              20,
+              166,
+              175,
+              236,
+              260,
+              274
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\models_simple.py",
+            "lines": [
+              15,
+              109
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\models_unified.py",
+            "lines": [
+              17,
+              926,
+              927,
+              928
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\models_unified_clean.py",
+            "lines": [
+              17,
+              291,
+              424,
+              446,
+              460,
+              474,
+              498
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\multi_tenant_adapter.py",
+            "lines": [
+              16,
+              79,
+              209,
+              274,
+              292,
+              332,
+              360,
+              385
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\plugin_registry_db.py",
+            "lines": [
+              14,
+              20,
+              142,
+              297,
+              359,
+              404,
+              426,
+              449,
+              473,
+              498,
+              533,
+              581,
+              653,
+              682
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\plugin_registry_marketplace.py",
+            "lines": [
+              23,
+              193,
+              195,
+              305,
+              372,
+              423,
+              424,
+              489,
+              567,
+              568,
+              665,
+              666,
+              698,
+              736,
+              737,
+              1156
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\plugin_validator.py",
+            "lines": [
+              19,
+              63,
+              120,
+              280,
+              295,
+              305,
+              322
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\predictive_analytics.py",
+            "lines": [
+              16,
+              108,
+              185,
+              210,
+              527
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\server_advanced.py",
+            "lines": [
+              40,
+              55
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\server_dev.py",
+            "lines": [
+              40,
+              53,
+              985
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\server_enhanced.py",
+            "lines": [
+              18,
+              283,
+              286
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\server_production.py",
+            "lines": [
+              23,
+              128,
+              188,
+              189,
+              262,
+              292,
+              293,
+              359,
+              360,
+              384
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\server_quick_deploy.py",
+            "lines": [
+              64
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\ultra_secure_server.py",
+            "lines": [
+              18
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\advanced_analytics_dashboard.py",
+            "lines": [
+              19,
+              126,
+              128,
+              676,
+              716,
+              836,
+              980,
+              1035
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\advanced_security_monitor.py",
+            "lines": [
+              38,
+              159,
+              161,
+              780,
+              889
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\init_noxvalidator_advanced.py",
+            "lines": [
+              938
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\nox_bootstrap.py",
+            "lines": [
+              1418,
+              1419
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\conversation_processor.py",
+            "lines": [
+              9,
+              195,
+              635
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\init_noxpanel.py",
+            "lines": [
+              377
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\launch_noxpanel.py",
+            "lines": [
+              236
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\models_unified.py",
+            "lines": [
+              848,
+              849,
+              850
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\setup_knowledge_base.py",
+            "lines": [
+              139,
+              146,
+              151,
+              156,
+              166,
+              216,
+              222,
+              226,
+              228,
+              252
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\setup_simple_kb.py",
+            "lines": [
+              8,
+              43,
+              119,
+              407
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\test_ai_context.py",
+            "lines": [
+              110,
+              156
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\test_server.py",
+            "lines": [
+              9,
+              66,
+              67
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\ultra_optimized_noxpanel.py",
+            "lines": [
+              28,
+              2136,
+              2144,
+              2162,
+              2169,
+              2174,
+              2188,
+              2202,
+              2208,
+              2226,
+              2234
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\noxcore\\database_pool.py",
+            "lines": [
+              21,
+              35,
+              67,
+              71,
+              78,
+              89,
+              122
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\noxcore\\knowledge_manager.py",
+            "lines": [
+              23,
+              125,
+              320,
+              359,
+              415,
+              442,
+              464,
+              489,
+              582,
+              729,
+              744
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\scripts\\audit_3.py",
+            "lines": [
+              24,
+              170,
+              340
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\scripts\\audit_4.py",
+            "lines": [
+              24,
+              560
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\scripts\\phase4_excellence_optimizer.py",
+            "lines": [
+              202,
+              205
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\tests\\conftest.py",
+            "lines": [
+              62
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\admin_blueprint.py",
+            "lines": [
+              3,
+              35,
+              245,
+              246,
+              323,
+              403,
+              404,
+              449,
+              476,
+              489,
+              530,
+              531,
+              557,
+              558,
+              598,
+              599,
+              629,
+              669
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\enhanced_knowledge_api.py",
+            "lines": [
+              11,
+              42,
+              43
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\job_scheduler.py",
+            "lines": [
+              5,
+              27,
+              100,
+              223,
+              224,
+              285,
+              286,
+              392,
+              427,
+              445,
+              446,
+              519,
+              520,
+              619,
+              683,
+              684,
+              703,
+              757,
+              758
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\analytics\\analytics_dashboard.py",
+            "lines": [
+              29,
+              151,
+              153,
+              327,
+              392,
+              494,
+              537,
+              593,
+              693,
+              747,
+              800,
+              854
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\backup_20250720_012355\\AI\\NoxPanel\\diagnostic_repair.py",
+            "lines": [
+              12,
+              221,
+              364,
+              368,
+              483,
+              517,
+              535
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\backup_20250720_012355\\AI\\NoxPanel\\scripts\\git_template_integrator.py",
+            "lines": [
+              357,
+              358
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\enterprise\\advanced_analytics.py",
+            "lines": [
+              12
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\enterprise\\ai_integration.py",
+            "lines": [
+              12,
+              262,
+              322,
+              383,
+              622
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\enterprise\\api_gateway.py",
+            "lines": [
+              39,
+              267
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\enterprise\\deploy_standalone.py",
+            "lines": [
+              15,
+              58,
+              89,
+              95,
+              290,
+              381
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\enterprise\\enterprise_demo.py",
+            "lines": [
+              11,
+              34,
+              95,
+              245,
+              266,
+              291
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\enterprise\\global_scalability.py",
+            "lines": [
+              12
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\enterprise\\heimnetz_cli.py",
+            "lines": [
+              698
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\enterprise\\resource_manager.py",
+            "lines": [
+              30,
+              201,
+              243,
+              244,
+              245,
+              350,
+              351,
+              453
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\enterprise\\tenant_auth.py",
+            "lines": [
+              232,
+              274,
+              275,
+              276,
+              277,
+              366,
+              367,
+              454
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\enterprise\\tenant_manager.py",
+            "lines": [
+              33,
+              169,
+              186,
+              187,
+              188,
+              260,
+              261,
+              331,
+              340,
+              352,
+              353,
+              354,
+              387,
+              388,
+              407
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\NoxPanel\\noxcore\\database.py",
+            "lines": [
+              1,
+              11,
+              45,
+              204,
+              205,
+              231,
+              265,
+              279,
+              280,
+              298
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\NoxPanel\\scripts\\system_status_check.py",
+            "lines": [
+              251
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\plugins\\fritzwatcher_ux.py",
+            "lines": [
+              17,
+              129,
+              225,
+              254,
+              365,
+              392,
+              423
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\scripts\\init_project_safely.py",
+            "lines": [
+              188
+            ]
+          },
+          {
+            "file": ".\\archive\\deprecated\\security\\quarantine\\quarantined_20250718_120108_plugin_validator.py",
+            "lines": [
+              19,
+              63,
+              120,
+              280,
+              295,
+              305,
+              322
+            ]
+          },
+          {
+            "file": ".\\archived\\sqlite\\setup_database_sqlite.py",
+            "lines": [
+              3,
+              6,
+              12,
+              17,
+              18,
+              46,
+              191,
+              342,
+              343,
+              419,
+              461,
+              465
+            ]
+          },
+          {
+            "file": ".\\backend\\models\\mariadb_user.py",
+            "lines": [
+              40
+            ]
+          },
+          {
+            "file": ".\\backend\\models\\__init__.py",
+            "lines": [
+              8
+            ]
+          },
+          {
+            "file": ".\\NoxPanel\\noxcore\\database.py",
+            "lines": [
+              9,
+              21,
+              34,
+              46,
+              53,
+              62,
+              72,
+              114,
+              142,
+              206,
+              269,
+              332,
+              379,
+              434,
+              462
+            ]
+          },
+          {
+            "file": ".\\NoxPanel\\noxcore\\database_admin.py",
+            "lines": [
+              145,
+              146
+            ]
+          },
+          {
+            "file": ".\\NoxPanel\\noxcore\\database_service.py",
+            "lines": [
+              143
+            ]
+          },
+          {
+            "file": ".\\NoxPanel\\noxcore\\migrations.py",
+            "lines": [
+              9,
+              25,
+              29,
+              40,
+              48,
+              92,
+              94,
+              99,
+              123,
+              150,
+              325,
+              326
+            ]
+          },
+          {
+            "file": ".\\NoxPanel\\noxcore\\utils\\config.py",
+            "lines": [
+              78
+            ]
+          },
+          {
+            "file": ".\\NoxPanel\\tests\\test_database.py",
+            "lines": [
+              84,
+              85,
+              150
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\AI & NoxPanel\\AI\\NoxPanel\\test_server_optimized.py",
+            "lines": [
+              9,
+              78,
+              88,
+              89,
+              120,
+              121
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\audit_plugins_security.py",
+            "lines": [
+              30,
+              524,
+              564
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\autonomous_system_manager.py",
+            "lines": [
+              24,
+              866,
+              869,
+              1125,
+              1216,
+              1354
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\distributed_computing_framework.py",
+            "lines": [
+              44
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise_security.py",
+            "lines": [
+              498
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\integrate_heimnetz.py",
+            "lines": [
+              135
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\launch_unified_server.py",
+            "lines": [
+              71
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\main_unified_server.py",
+            "lines": [
+              22,
+              157,
+              166,
+              227,
+              251,
+              265,
+              706
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\main_unified_server_clean.py",
+            "lines": [
+              22,
+              168,
+              177,
+              238,
+              262,
+              276,
+              929
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\main_unified_server_integrated.py",
+            "lines": [
+              20,
+              166,
+              175,
+              236,
+              260,
+              274
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\models_simple.py",
+            "lines": [
+              15,
+              109
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\models_unified.py",
+            "lines": [
+              17,
+              926,
+              927,
+              928
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\models_unified_clean.py",
+            "lines": [
+              17,
+              291,
+              424,
+              446,
+              460,
+              474,
+              498
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\multi_tenant_adapter.py",
+            "lines": [
+              16,
+              79,
+              209,
+              274,
+              292,
+              332,
+              360,
+              385
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\plugin_registry_db.py",
+            "lines": [
+              14,
+              20,
+              142,
+              297,
+              359,
+              404,
+              426,
+              449,
+              473,
+              498,
+              533,
+              581,
+              653,
+              682
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\plugin_registry_marketplace.py",
+            "lines": [
+              23,
+              193,
+              195,
+              305,
+              372,
+              423,
+              424,
+              489,
+              567,
+              568,
+              665,
+              666,
+              698,
+              736,
+              737,
+              1156
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\plugin_validator.py",
+            "lines": [
+              19,
+              63,
+              120,
+              280,
+              295,
+              305,
+              322
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\predictive_analytics.py",
+            "lines": [
+              16,
+              108,
+              185,
+              210,
+              527
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\server_advanced.py",
+            "lines": [
+              40,
+              55
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\server_dev.py",
+            "lines": [
+              40,
+              53,
+              985
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\server_enhanced.py",
+            "lines": [
+              18,
+              283,
+              286
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\server_production.py",
+            "lines": [
+              23,
+              128,
+              188,
+              189,
+              262,
+              292,
+              293,
+              359,
+              360,
+              384
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\server_quick_deploy.py",
+            "lines": [
+              64
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\ultra_secure_server.py",
+            "lines": [
+              18
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\advanced_analytics_dashboard.py",
+            "lines": [
+              19,
+              126,
+              128,
+              676,
+              716,
+              836,
+              980,
+              1035
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\advanced_security_monitor.py",
+            "lines": [
+              38,
+              159,
+              161,
+              780,
+              889
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\init_noxvalidator_advanced.py",
+            "lines": [
+              938
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\nox_bootstrap.py",
+            "lines": [
+              1418,
+              1419
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\conversation_processor.py",
+            "lines": [
+              9,
+              195,
+              635
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\init_noxpanel.py",
+            "lines": [
+              377
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\launch_noxpanel.py",
+            "lines": [
+              236
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\models_unified.py",
+            "lines": [
+              848,
+              849,
+              850
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\setup_knowledge_base.py",
+            "lines": [
+              139,
+              146,
+              151,
+              156,
+              166,
+              216,
+              222,
+              226,
+              228,
+              252
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\setup_simple_kb.py",
+            "lines": [
+              8,
+              43,
+              119,
+              407
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\test_ai_context.py",
+            "lines": [
+              110,
+              156
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\test_server.py",
+            "lines": [
+              9,
+              66,
+              67
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\ultra_optimized_noxpanel.py",
+            "lines": [
+              28,
+              2136,
+              2144,
+              2162,
+              2169,
+              2174,
+              2188,
+              2202,
+              2208,
+              2226,
+              2234
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\noxcore\\database_pool.py",
+            "lines": [
+              21,
+              35,
+              67,
+              71,
+              78,
+              89,
+              122
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\noxcore\\knowledge_manager.py",
+            "lines": [
+              23,
+              125,
+              320,
+              359,
+              415,
+              442,
+              464,
+              489,
+              582,
+              729,
+              744
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\scripts\\audit_3.py",
+            "lines": [
+              24,
+              170,
+              340
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\scripts\\audit_4.py",
+            "lines": [
+              24,
+              560
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\scripts\\phase4_excellence_optimizer.py",
+            "lines": [
+              202,
+              205
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\tests\\conftest.py",
+            "lines": [
+              62
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\admin_blueprint.py",
+            "lines": [
+              3,
+              35,
+              245,
+              246,
+              323,
+              403,
+              404,
+              449,
+              476,
+              489,
+              530,
+              531,
+              557,
+              558,
+              598,
+              599,
+              629,
+              669
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\enhanced_knowledge_api.py",
+            "lines": [
+              11,
+              42,
+              43
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\job_scheduler.py",
+            "lines": [
+              5,
+              27,
+              100,
+              223,
+              224,
+              285,
+              286,
+              392,
+              427,
+              445,
+              446,
+              519,
+              520,
+              619,
+              683,
+              684,
+              703,
+              757,
+              758
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\analytics\\analytics_dashboard.py",
+            "lines": [
+              29,
+              151,
+              153,
+              327,
+              392,
+              494,
+              537,
+              593,
+              693,
+              747,
+              800,
+              854
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\backup_20250720_012355\\AI\\NoxPanel\\diagnostic_repair.py",
+            "lines": [
+              12,
+              221,
+              364,
+              368,
+              483,
+              517,
+              535
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\backup_20250720_012355\\AI\\NoxPanel\\scripts\\git_template_integrator.py",
+            "lines": [
+              357,
+              358
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\advanced_analytics.py",
+            "lines": [
+              12
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\ai_integration.py",
+            "lines": [
+              12,
+              262,
+              322,
+              383,
+              622
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\api_gateway.py",
+            "lines": [
+              39,
+              267
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\deploy_standalone.py",
+            "lines": [
+              15,
+              58,
+              89,
+              95,
+              290,
+              381
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\enterprise_demo.py",
+            "lines": [
+              11,
+              34,
+              95,
+              245,
+              266,
+              291
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\global_scalability.py",
+            "lines": [
+              12
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\heimnetz_cli.py",
+            "lines": [
+              698
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\resource_manager.py",
+            "lines": [
+              30,
+              201,
+              243,
+              244,
+              245,
+              350,
+              351,
+              453
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\tenant_auth.py",
+            "lines": [
+              232,
+              274,
+              275,
+              276,
+              277,
+              366,
+              367,
+              454
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\tenant_manager.py",
+            "lines": [
+              33,
+              169,
+              186,
+              187,
+              188,
+              260,
+              261,
+              331,
+              340,
+              352,
+              353,
+              354,
+              387,
+              388,
+              407
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\NoxPanel\\noxcore\\database.py",
+            "lines": [
+              1,
+              11,
+              45,
+              204,
+              205,
+              231,
+              265,
+              279,
+              280,
+              298
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\NoxPanel\\scripts\\system_status_check.py",
+            "lines": [
+              251
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\plugins\\fritzwatcher_ux.py",
+            "lines": [
+              17,
+              129,
+              225,
+              254,
+              365,
+              392,
+              423
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\scripts\\init_project_safely.py",
+            "lines": [
+              188
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\security\\quarantine\\quarantined_20250718_120108_plugin_validator.py",
+            "lines": [
+              19,
+              63,
+              120,
+              280,
+              295,
+              305,
+              322
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\launch_unified_server.py",
+            "lines": [
+              83
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\main_unified_server.py",
+            "lines": [
+              25,
+              205,
+              234,
+              304,
+              337,
+              360,
+              1052
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\main_unified_server_clean.py",
+            "lines": [
+              25,
+              216,
+              245,
+              315,
+              348,
+              371,
+              1365
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\main_unified_server_integrated.py",
+            "lines": [
+              23,
+              214,
+              243,
+              313,
+              346,
+              369
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\models_simple.py",
+            "lines": [
+              18,
+              181
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\models_unified.py",
+            "lines": [
+              20,
+              1462,
+              1467,
+              1468,
+              1472,
+              1473
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\server_advanced.py",
+            "lines": [
+              40,
+              55
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\server_dev.py",
+            "lines": [
+              40,
+              53,
+              1453
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\server_enhanced.py",
+            "lines": [
+              18,
+              462,
+              465
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\server_production.py",
+            "lines": [
+              23,
+              175,
+              244,
+              245,
+              327,
+              366,
+              367,
+              469,
+              470,
+              503
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\server_quick_deploy.py",
+            "lines": [
+              76
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\test_audit_heal_mode.py",
+            "lines": [
+              103,
+              104
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\ultra_secure_server.py",
+            "lines": [
+              21
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\NoxPanel\\noxcore\\database.py",
+            "lines": [
+              6,
+              29,
+              62,
+              74,
+              90,
+              99,
+              118,
+              195,
+              232,
+              303,
+              373,
+              443,
+              497,
+              559,
+              590
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\NoxPanel\\noxcore\\database_admin.py",
+            "lines": [
+              253,
+              254
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\NoxPanel\\noxcore\\database_service.py",
+            "lines": [
+              172
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\NoxPanel\\noxcore\\migrations.py",
+            "lines": [
+              6,
+              44,
+              57,
+              96,
+              112,
+              191,
+              193,
+              198,
+              238,
+              290,
+              480,
+              481
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\NoxPanel\\noxcore\\utils\\config.py",
+            "lines": [
+              124
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\NoxPanel\\tests\\test_database.py",
+            "lines": [
+              76,
+              77,
+              128
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\Scripts & Tools\\launch_unified_server.py",
+            "lines": [
+              83
+            ]
+          },
+          {
+            "file": ".\\NoxPanel_Suite_WIP\\Scripts & Tools\\noxsuite_smart_installer_complete.py",
+            "lines": [
+              2106,
+              2108,
+              2606,
+              2607
+            ]
+          },
+          {
+            "file": ".\\noxsuite_env\\Lib\\site-packages\\pip\\_vendor\\pygments\\lexers\\_mapping.py",
+            "lines": [
+              490
+            ]
+          }
+        ],
+        "config_violations": []
+      }
+    },
+    {
+      "timestamp": "2025-07-31T21:53:50.658072",
+      "action": "sqlite_quarantine",
+      "quarantined_files": [
+        {
+          "original": ".\\mariadb_dev_simulation.db",
+          "quarantined": "quarantine/sqlite_files\\mariadb_dev_simulation.db_QUARANTINED_20250731_215349"
+        },
+        {
+          "original": ".\\archived\\sqlite\\mariadb_dev_simulation.db",
+          "quarantined": "quarantine/sqlite_files\\mariadb_dev_simulation.db_QUARANTINED_20250731_215349"
+        },
+        {
+          "original": ".\\archived\\sqlite\\noxsuite_auth.db",
+          "quarantined": "quarantine/sqlite_files\\noxsuite_auth.db_QUARANTINED_20250731_215350"
+        },
+        {
+          "original": ".\\archived\\sqlite\\noxsuite_database_backup.db",
+          "quarantined": "quarantine/sqlite_files\\noxsuite_database_backup.db_QUARANTINED_20250731_215350"
+        },
+        {
+          "original": ".\\archived\\sqlite\\noxsuite_database_locked_backup.db",
+          "quarantined": "quarantine/sqlite_files\\noxsuite_database_locked_backup.db_QUARANTINED_20250731_215350"
+        },
+        {
+          "original": ".\\archived\\sqlite\\unified_heimnetz.db",
+          "quarantined": "quarantine/sqlite_files\\unified_heimnetz.db_QUARANTINED_20250731_215350"
+        }
+      ]
+    },
+    {
+      "timestamp": "2025-07-31T21:53:50.708018",
+      "action": "mariadb_config_creation",
+      "files": [
+        ".env.mariadb",
+        "docker-compose.mariadb.yml"
+      ]
+    },
+    {
+      "timestamp": "2025-07-31T21:53:52.687602",
+      "action": "sqlite_reference_patching",
+      "patched_files": [
+        ".\\advanced_ai_engine.py",
+        ".\\app.py",
+        ".\\auth_debug_repair.py",
+        ".\\check_database.py",
+        ".\\cleanup_system.py",
+        ".\\database_sync_verifier.py",
+        ".\\db_migration_sqlite_to_mariadb.py",
+        ".\\enable_mfa.py",
+        ".\\install.py",
+        ".\\mariadb_dev_setup.py",
+        ".\\mariadb_migration_enforcer.py",
+        ".\\noxsuite_audit_simplified.py",
+        ".\\noxsuite_auth_repair.py",
+        ".\\noxsuite_comprehensive_audit.py",
+        ".\\noxsuite_mfa_rbac_manager.py",
+        ".\\noxsuite_testsprite_enhanced.py",
+        ".\\quick_start.py",
+        ".\\setup_database_simple.py",
+        ".\\setup_mariadb_enforcer.py",
+        ".\\sqlite_to_mariadb_migrator.py",
+        ".\\update_password.py",
+        ".\\AI\\NoxPanel\\test_server_optimized.py",
+        ".\\archive\\2025-07-29\\duplicate-servers\\main_server_with_security.py",
+        ".\\archive\\deprecated\\audit_plugins_security.py",
+        ".\\archive\\deprecated\\autonomous_system_manager.py",
+        ".\\archive\\deprecated\\distributed_computing_framework.py",
+        ".\\archive\\deprecated\\enterprise_security.py",
+        ".\\archive\\deprecated\\launch_unified_server.py",
+        ".\\archive\\deprecated\\main_unified_server.py",
+        ".\\archive\\deprecated\\main_unified_server_clean.py",
+        ".\\archive\\deprecated\\main_unified_server_integrated.py",
+        ".\\archive\\deprecated\\models_simple.py",
+        ".\\archive\\deprecated\\models_unified.py",
+        ".\\archive\\deprecated\\models_unified_clean.py",
+        ".\\archive\\deprecated\\multi_tenant_adapter.py",
+        ".\\archive\\deprecated\\plugin_registry_db.py",
+        ".\\archive\\deprecated\\plugin_registry_marketplace.py",
+        ".\\archive\\deprecated\\plugin_validator.py",
+        ".\\archive\\deprecated\\predictive_analytics.py",
+        ".\\archive\\deprecated\\server_advanced.py",
+        ".\\archive\\deprecated\\server_dev.py",
+        ".\\archive\\deprecated\\server_enhanced.py",
+        ".\\archive\\deprecated\\server_production.py",
+        ".\\archive\\deprecated\\server_quick_deploy.py",
+        ".\\archive\\deprecated\\ultra_secure_server.py",
+        ".\\archive\\deprecated\\AI\\advanced_analytics_dashboard.py",
+        ".\\archive\\deprecated\\AI\\advanced_security_monitor.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\conversation_processor.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\init_noxpanel.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\launch_noxpanel.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\models_unified.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\setup_knowledge_base.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\setup_simple_kb.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\test_server.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\ultra_optimized_noxpanel.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\noxcore\\database_pool.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\noxcore\\knowledge_manager.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\scripts\\audit_3.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\scripts\\audit_4.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\scripts\\phase4_excellence_optimizer.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\tests\\conftest.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\admin_blueprint.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\enhanced_knowledge_api.py",
+        ".\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\job_scheduler.py",
+        ".\\archive\\deprecated\\analytics\\analytics_dashboard.py",
+        ".\\archive\\deprecated\\backup_20250720_012355\\AI\\NoxPanel\\diagnostic_repair.py",
+        ".\\archive\\deprecated\\enterprise\\advanced_analytics.py",
+        ".\\archive\\deprecated\\enterprise\\ai_integration.py",
+        ".\\archive\\deprecated\\enterprise\\api_gateway.py",
+        ".\\archive\\deprecated\\enterprise\\deploy_standalone.py",
+        ".\\archive\\deprecated\\enterprise\\enterprise_demo.py",
+        ".\\archive\\deprecated\\enterprise\\global_scalability.py",
+        ".\\archive\\deprecated\\enterprise\\resource_manager.py",
+        ".\\archive\\deprecated\\enterprise\\tenant_auth.py",
+        ".\\archive\\deprecated\\enterprise\\tenant_manager.py",
+        ".\\archive\\deprecated\\NoxPanel\\noxcore\\database.py",
+        ".\\archive\\deprecated\\plugins\\fritzwatcher_ux.py",
+        ".\\backend\\models\\mariadb_user.py",
+        ".\\backend\\models\\__init__.py",
+        ".\\NoxPanel\\noxcore\\database.py",
+        ".\\NoxPanel\\noxcore\\database_admin.py",
+        ".\\NoxPanel\\noxcore\\migrations.py",
+        ".\\NoxPanel\\tests\\test_database.py",
+        ".\\NoxPanel_Suite_WIP\\AI & NoxPanel\\AI\\NoxPanel\\test_server_optimized.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\audit_plugins_security.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\autonomous_system_manager.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\distributed_computing_framework.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise_security.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\launch_unified_server.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\main_unified_server.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\main_unified_server_clean.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\main_unified_server_integrated.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\models_simple.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\models_unified.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\models_unified_clean.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\multi_tenant_adapter.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\plugin_registry_db.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\plugin_registry_marketplace.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\plugin_validator.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\predictive_analytics.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\server_advanced.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\server_dev.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\server_enhanced.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\server_production.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\server_quick_deploy.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\ultra_secure_server.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\advanced_analytics_dashboard.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\advanced_security_monitor.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\conversation_processor.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\init_noxpanel.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\launch_noxpanel.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\models_unified.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\setup_knowledge_base.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\setup_simple_kb.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\test_server.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\ultra_optimized_noxpanel.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\noxcore\\database_pool.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\noxcore\\knowledge_manager.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\scripts\\audit_3.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\scripts\\audit_4.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\scripts\\phase4_excellence_optimizer.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\tests\\conftest.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\admin_blueprint.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\enhanced_knowledge_api.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\AI\\NoxPanel\\webpanel\\job_scheduler.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\analytics\\analytics_dashboard.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\backup_20250720_012355\\AI\\NoxPanel\\diagnostic_repair.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\advanced_analytics.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\ai_integration.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\api_gateway.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\deploy_standalone.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\enterprise_demo.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\global_scalability.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\resource_manager.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\tenant_auth.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\enterprise\\tenant_manager.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\NoxPanel\\noxcore\\database.py",
+        ".\\NoxPanel_Suite_WIP\\archive\\deprecated\\plugins\\fritzwatcher_ux.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\launch_unified_server.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\main_unified_server.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\main_unified_server_clean.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\main_unified_server_integrated.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\models_simple.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\models_unified.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\server_advanced.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\server_dev.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\server_enhanced.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\server_production.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\server_quick_deploy.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\ultra_secure_server.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\NoxPanel\\noxcore\\database.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\NoxPanel\\noxcore\\database_admin.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\NoxPanel\\noxcore\\migrations.py",
+        ".\\NoxPanel_Suite_WIP\\NoxPanel Core\\NoxPanel\\tests\\test_database.py",
+        ".\\NoxPanel_Suite_WIP\\Scripts & Tools\\launch_unified_server.py"
+      ]
+    },
+    {
+      "timestamp": "2025-07-31T21:53:53.401874",
+      "action": "mariadb_compliance_validation",
+      "compliance_status": {
+        "sqlite_files_quarantined": false,
+        "mariadb_config_present": true,
+        "sqlite_references_patched": true,
+        "mariadb_ready": false
+      }
+    }
+  ]
+}

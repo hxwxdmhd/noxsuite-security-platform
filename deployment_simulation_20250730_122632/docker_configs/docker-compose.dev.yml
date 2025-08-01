@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker_configs/Dockerfile.fastapi_backend
+      target: development
+    volumes:
+      - ./backend:/app/backend
+      - ./config:/app/config
+    environment:
+      - DEBUG=true
+      - LOG_LEVEL=debug
+    ports:
+      - "8000:8000"
+
+  langflow:
+    volumes:
+      - ./langflow:/app/langflow
+    environment:
+      - LANGFLOW_DEBUG=true
+    ports:
+      - "7860:7860"
+
+  # Development database (SQLite)
+  db_dev:
+    image: alpine:latest
+    command: tail -f /dev/null
+    volumes:
+      - ./data:/data

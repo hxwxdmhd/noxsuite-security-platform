@@ -1,0 +1,622 @@
+{
+  "data": {
+    "nodes": {
+      "predictive_analyzer": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Predictive Analyzer\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'predictive_maintenance',\n                \"type\": \"str\"\n            },\n            \"analyze_trends\": {\n                \"display_name\": \"Analyze Trends\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"failure_prediction\": {\n                \"display_name\": \"Failure Prediction\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"health_score_calculation\": {\n                \"display_name\": \"Health Score Calculation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"component_lifecycle_tracking\": {\n                \"display_name\": \"Component Lifecycle Tracking\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"mtbf_analysis\": {\n                \"display_name\": \"Mtbf Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"degradation_patterns\": {\n                \"display_name\": \"Degradation Patterns\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"predictive_analyzer\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "predictive_maintenance",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "analyze_trends": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "analyze_trends",
+                "show": true,
+                "advanced": false
+              },
+              "failure_prediction": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "failure_prediction",
+                "show": true,
+                "advanced": false
+              },
+              "health_score_calculation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "health_score_calculation",
+                "show": true,
+                "advanced": false
+              },
+              "component_lifecycle_tracking": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "component_lifecycle_tracking",
+                "show": true,
+                "advanced": false
+              },
+              "mtbf_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "mtbf_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "degradation_patterns": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "degradation_patterns",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Predictive Analyzer",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "predictive_maintenance",
+              "analyze_trends": true,
+              "failure_prediction": true,
+              "health_score_calculation": true,
+              "component_lifecycle_tracking": true,
+              "mtbf_analysis": true,
+              "degradation_patterns": true,
+              "langflow_id": "predictive_analyzer",
+              "display_name": "Predictive Analyzer"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "predictive_analyzer"
+        },
+        "id": "predictive_analyzer",
+        "position": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "ai_diagnostic_engine": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Ai Diagnostic Engine\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'intelligent_diagnosis',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"root_cause_analysis\": \"identify_failure_origins\", \"impact_assessment\": \"calculate_business_impact\", \"repair_planning\": \"generate_fix_strategies\", \"prevention_optimization\": \"improve_resilience\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 4,\n                \"type\": \"str\"\n            },\n            \"ai_diagnostics\": {\n                \"display_name\": \"Ai Diagnostics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"self_learning\": {\n                \"display_name\": \"Self Learning\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"pattern_memory\": {\n                \"display_name\": \"Pattern Memory\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"task_timeout\": {\n                \"display_name\": \"Task Timeout\",\n                \"value\": 90,\n                \"type\": \"str\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"ai_diagnostic_engine\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "intelligent_diagnosis",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"root_cause_analysis\": \"identify_failure_origins\", \"impact_assessment\": \"calculate_business_impact\", \"repair_planning\": \"generate_fix_strategies\", \"prevention_optimization\": \"improve_resilience\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 4,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "ai_diagnostics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "ai_diagnostics",
+                "show": true,
+                "advanced": false
+              },
+              "self_learning": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "self_learning",
+                "show": true,
+                "advanced": false
+              },
+              "pattern_memory": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "pattern_memory",
+                "show": true,
+                "advanced": false
+              },
+              "task_timeout": {
+                "type": "int",
+                "required": false,
+                "value": 90,
+                "name": "task_timeout",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Ai Diagnostic Engine",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "intelligent_diagnosis",
+              "agent_tasks": "{\"root_cause_analysis\": \"identify_failure_origins\", \"impact_assessment\": \"calculate_business_impact\", \"repair_planning\": \"generate_fix_strategies\", \"prevention_optimization\": \"improve_resilience\"}",
+              "max_concurrent_agents": 4,
+              "ai_diagnostics": true,
+              "self_learning": true,
+              "pattern_memory": true,
+              "task_timeout": 90,
+              "langflow_id": "ai_diagnostic_engine",
+              "display_name": "Ai Diagnostic Engine"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "ai_diagnostic_engine"
+        },
+        "id": "ai_diagnostic_engine",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "autonomous_healer": {
+        "data": {
+          "type": "NoxSuiteDockerManager",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteDockerManager(CustomComponent):\n    display_name: str = \"Autonomous Healer\"\n    description: str = \"NoxSuite NoxSuiteDockerManager Component\"\n    \n    def build_config(self):\n        return {\n            \"action\": {\n                \"display_name\": \"Action\",\n                \"value\": 'autonomous_healing',\n                \"type\": \"str\"\n            },\n            \"self_repair_enabled\": {\n                \"display_name\": \"Self Repair Enabled\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"preventive_maintenance\": {\n                \"display_name\": \"Preventive Maintenance\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"component_replacement\": {\n                \"display_name\": \"Component Replacement\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"backup_restoration\": {\n                \"display_name\": \"Backup Restoration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"configuration_optimization\": {\n                \"display_name\": \"Configuration Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_tuning\": {\n                \"display_name\": \"Performance Tuning\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteDockerManager\",\n            \"component_id\": \"autonomous_healer\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "action": {
+                "type": "str",
+                "required": false,
+                "value": "autonomous_healing",
+                "name": "action",
+                "show": true,
+                "advanced": false
+              },
+              "self_repair_enabled": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "self_repair_enabled",
+                "show": true,
+                "advanced": false
+              },
+              "preventive_maintenance": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "preventive_maintenance",
+                "show": true,
+                "advanced": false
+              },
+              "component_replacement": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "component_replacement",
+                "show": true,
+                "advanced": false
+              },
+              "backup_restoration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "backup_restoration",
+                "show": true,
+                "advanced": false
+              },
+              "configuration_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "configuration_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "performance_tuning": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_tuning",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteDockerManager",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Autonomous Healer",
+            "documentation": "",
+            "custom_fields": {
+              "action": "autonomous_healing",
+              "self_repair_enabled": true,
+              "preventive_maintenance": true,
+              "component_replacement": true,
+              "backup_restoration": true,
+              "configuration_optimization": true,
+              "performance_tuning": true,
+              "langflow_id": "autonomous_healer",
+              "display_name": "Autonomous Healer"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteDockerManager",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "autonomous_healer"
+        },
+        "id": "autonomous_healer",
+        "position": {
+          "x": 100,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "mcp_orchestrator_healer": {
+        "data": {
+          "type": "NoxSuiteMCPOrchestrator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMCPOrchestrator(CustomComponent):\n    display_name: str = \"Mcp Orchestrator Healer\"\n    description: str = \"NoxSuite NoxSuiteMCPOrchestrator Component\"\n    \n    def build_config(self):\n        return {\n            \"operation\": {\n                \"display_name\": \"Operation\",\n                \"value\": 'self_healing_orchestration',\n                \"type\": \"str\"\n            },\n            \"workflow_recovery\": {\n                \"display_name\": \"Workflow Recovery\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"dependency_healing\": {\n                \"display_name\": \"Dependency Healing\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"service_mesh_repair\": {\n                \"display_name\": \"Service Mesh Repair\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"data_consistency_check\": {\n                \"display_name\": \"Data Consistency Check\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"state_reconciliation\": {\n                \"display_name\": \"State Reconciliation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"rollback_capabilities\": {\n                \"display_name\": \"Rollback Capabilities\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMCPOrchestrator\",\n            \"component_id\": \"mcp_orchestrator_healer\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "operation": {
+                "type": "str",
+                "required": false,
+                "value": "self_healing_orchestration",
+                "name": "operation",
+                "show": true,
+                "advanced": false
+              },
+              "workflow_recovery": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "workflow_recovery",
+                "show": true,
+                "advanced": false
+              },
+              "dependency_healing": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "dependency_healing",
+                "show": true,
+                "advanced": false
+              },
+              "service_mesh_repair": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "service_mesh_repair",
+                "show": true,
+                "advanced": false
+              },
+              "data_consistency_check": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "data_consistency_check",
+                "show": true,
+                "advanced": false
+              },
+              "state_reconciliation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "state_reconciliation",
+                "show": true,
+                "advanced": false
+              },
+              "rollback_capabilities": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "rollback_capabilities",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMCPOrchestrator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Mcp Orchestrator Healer",
+            "documentation": "",
+            "custom_fields": {
+              "operation": "self_healing_orchestration",
+              "workflow_recovery": true,
+              "dependency_healing": true,
+              "service_mesh_repair": true,
+              "data_consistency_check": true,
+              "state_reconciliation": true,
+              "rollback_capabilities": true,
+              "langflow_id": "mcp_orchestrator_healer",
+              "display_name": "Mcp Orchestrator Healer"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMCPOrchestrator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "mcp_orchestrator_healer"
+        },
+        "id": "mcp_orchestrator_healer",
+        "position": {
+          "x": 400,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "learning_optimizer": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Learning Optimizer\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'continuous_learning',\n                \"type\": \"str\"\n            },\n            \"failure_pattern_learning\": {\n                \"display_name\": \"Failure Pattern Learning\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"optimization_suggestions\": {\n                \"display_name\": \"Optimization Suggestions\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"knowledge_base_updates\": {\n                \"display_name\": \"Knowledge Base Updates\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"predictive_model_training\": {\n                \"display_name\": \"Predictive Model Training\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"system_evolution_tracking\": {\n                \"display_name\": \"System Evolution Tracking\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"learning_optimizer\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "continuous_learning",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "failure_pattern_learning": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "failure_pattern_learning",
+                "show": true,
+                "advanced": false
+              },
+              "optimization_suggestions": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "optimization_suggestions",
+                "show": true,
+                "advanced": false
+              },
+              "knowledge_base_updates": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "knowledge_base_updates",
+                "show": true,
+                "advanced": false
+              },
+              "predictive_model_training": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "predictive_model_training",
+                "show": true,
+                "advanced": false
+              },
+              "system_evolution_tracking": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "system_evolution_tracking",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Learning Optimizer",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "continuous_learning",
+              "failure_pattern_learning": true,
+              "optimization_suggestions": true,
+              "knowledge_base_updates": true,
+              "predictive_model_training": true,
+              "system_evolution_tracking": true,
+              "langflow_id": "learning_optimizer",
+              "display_name": "Learning Optimizer"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "learning_optimizer"
+        },
+        "id": "learning_optimizer",
+        "position": {
+          "x": 700,
+          "y": 200
+        },
+        "type": "genericNode"
+      }
+    },
+    "edges": [
+      {
+        "source": "predictive_analyzer",
+        "target": "ai_diagnostic_engine",
+        "sourceHandle": "prediction_data",
+        "targetHandle": "diagnostic_input",
+        "id": "e1",
+        "type": "default"
+      },
+      {
+        "source": "ai_diagnostic_engine",
+        "target": "autonomous_healer",
+        "sourceHandle": "healing_plan",
+        "targetHandle": "repair_instructions",
+        "id": "e2",
+        "type": "default"
+      },
+      {
+        "source": "ai_diagnostic_engine",
+        "target": "mcp_orchestrator_healer",
+        "sourceHandle": "orchestration_plan",
+        "targetHandle": "healing_workflow",
+        "id": "e3",
+        "type": "default"
+      },
+      {
+        "source": "autonomous_healer",
+        "target": "learning_optimizer",
+        "sourceHandle": "healing_results",
+        "targetHandle": "learning_input",
+        "id": "e4",
+        "type": "default"
+      },
+      {
+        "source": "mcp_orchestrator_healer",
+        "target": "learning_optimizer",
+        "sourceHandle": "orchestration_results",
+        "targetHandle": "learning_input",
+        "id": "e5",
+        "type": "default"
+      }
+    ],
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "description": "Autonomous System Self-Healing with Predictive Maintenance",
+  "name": "NoxSuite_Autonomous_Self_Healing",
+  "id": "noxsuite_autonomous_self_healing"
+}

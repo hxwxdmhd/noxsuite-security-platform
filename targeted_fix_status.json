@@ -1,0 +1,17 @@
+{
+  "timestamp": 1753886953.5645294,
+  "langflow_url": "http://localhost:7860",
+  "available_endpoints": [
+    "/api/v1/flows",
+    "/api/v1/projects",
+    "/api/docs",
+    "/docs"
+  ],
+  "mcp_endpoint": "/api/v1/mcp",
+  "native_mcp_support": true,
+  "recommendation": "native",
+  "files_created": [
+    "test_mcp_connection.py",
+    "restart_langflow_simple.bat"
+  ]
+}

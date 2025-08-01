@@ -1,0 +1,102 @@
+version: "3.8"
+
+services:
+  # Database
+  database:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_DB: noxsuite
+      POSTGRES_USER: noxuser
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - noxsuite_network
+    restart: unless-stopped
+
+  # Redis for caching and background jobs
+  redis:
+    image: redis:6-alpine
+    volumes:
+      - redis_data:/data
+    networks:
+      - noxsuite_network
+    restart: unless-stopped
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: .
+      dockerfile: docker_configs/Dockerfile.fastapi_backend
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - DB_CONNECTION=postgresql://noxuser:${DB_PASSWORD}@database:5432/noxsuite
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - database
+      - redis
+    networks:
+      - noxsuite_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Langflow Engine
+  langflow:
+    build:
+      context: .
+      dockerfile: docker_configs/Dockerfile.langflow_engine
+    environment:
+      - LANGFLOW_CONFIG=/app/config/langflow.json
+    volumes:
+      - langflow_data:/app/data
+    networks:
+      - noxsuite_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/api/v1/health"]
+      interval: 60s
+      timeout: 30s
+      retries: 3
+
+  # Web Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: docker_configs/Dockerfile.web_frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    networks:
+      - noxsuite_network
+    restart: unless-stopped
+
+  # Background Workers
+  worker:
+    build:
+      context: .
+      dockerfile: docker_configs/Dockerfile.fastapi_backend
+    command: celery -A backend.fastapi.workers worker --loglevel=info
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DB_CONNECTION=postgresql://noxuser:${DB_PASSWORD}@database:5432/noxsuite
+    depends_on:
+      - database
+      - redis
+    networks:
+      - noxsuite_network
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  redis_data:
+  langflow_data:
+
+networks:
+  noxsuite_network:
+    driver: bridge

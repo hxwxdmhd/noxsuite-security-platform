@@ -1,0 +1,25 @@
+{
+  "service": "NoxSuite AetherCore MSP Server",
+  "status": "running",
+  "port": 8001,
+  "host": "0.0.0.0",
+  "timestamp": "2025-07-29T17:03:32.316202",
+  "version": "1.0.0",
+  "integration": {
+    "mcp_server": "http://localhost:8000",
+    "langflow": "http://localhost:7860",
+    "main_server": "http://localhost:5000"
+  },
+  "endpoints": {
+    "health": "http://localhost:8001/health",
+    "heartbeat": "http://localhost:8001/heartbeat",
+    "metrics": "http://localhost:8001/metrics",
+    "models": "http://localhost:8001/models",
+    "web": "http://localhost:8001/"
+  },
+  "performance": {
+    "avg_response_time_ms": 150,
+    "throughput_rps": 1000,
+    "error_rate": 0.01
+  }
+}

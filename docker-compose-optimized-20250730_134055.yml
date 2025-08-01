@@ -1,0 +1,36 @@
+services:
+  noxguard-api-optimized:
+    container_name: noxguard-api-optimized
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.2'
+          memory: 256M
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost:8000/health
+      timeout: 10s
+    image: noxguard---noxpanel-main-noxguard-api
+    ports:
+    - 8000:8000
+    restart: unless-stopped
+  noxguard-monitor-optimized:
+    container_name: noxguard-monitor-optimized
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 256M
+    image: noxguard---noxpanel-main-noxguard-monitor
+    ports:
+    - 8001:8001
+    restart: unless-stopped
+version: "3.8"

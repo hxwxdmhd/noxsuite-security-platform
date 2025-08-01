@@ -1,0 +1,133 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for NoxSuite Security Platform
+title: "[FEATURE] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible to help us understand your request.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: A brief summary of the feature you'd like to see added.
+      placeholder: Briefly describe the feature...
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? What use case does it address?
+      placeholder: |
+        As a [user type], I want [functionality] so that [benefit/value].
+        
+        The current situation is...
+        This causes problems because...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your ideal solution to the problem.
+      placeholder: |
+        I would like to see...
+        This could work by...
+        The user experience would be...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component would this feature affect?
+      options:
+        - Authentication/MFA
+        - RBAC/Permissions
+        - Database/MariaDB
+        - API Endpoints
+        - Security Auditor
+        - TestSprite Integration
+        - Docker/Deployment
+        - Documentation
+        - Frontend/UI
+        - Configuration
+        - Monitoring/Logging
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Critical (Blocking current work)
+        - High (Important for productivity)
+        - Medium (Nice to have)
+        - Low (Would be cool someday)
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What alternatives have you considered? What workarounds are you currently using?
+      placeholder: |
+        I've considered...
+        Currently I work around this by...
+        Other solutions might include...
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: How would you know this feature is working correctly? What should be testable?
+      placeholder: |
+        This feature should:
+        - [ ] Allow users to...
+        - [ ] Provide feedback when...
+        - [ ] Integrate with...
+        - [ ] Maintain security by...
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact Assessment
+      description: Who would benefit from this feature? How would it affect existing functionality?
+      placeholder: |
+        This would benefit:
+        - Administrators by...
+        - End users by...
+        - Developers by...
+        
+        Potential risks or breaking changes:
+        - ...
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: Mockups/Examples
+      description: If you have any mockups, diagrams, or examples, please include them here.
+      placeholder: Drag and drop images or provide links...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched for similar feature requests before creating this one
+          required: true
+        - label: This feature aligns with NoxSuite's security-first principles
+          required: true
+        - label: I would be willing to help test this feature when it's ready
+          required: false

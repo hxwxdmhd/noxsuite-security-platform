@@ -1,0 +1,408 @@
+# =============================================================================
+# NoxSuite Ultimate Production Deployment
+# Complete Docker Compose orchestration with 11-service architecture
+# @author @hxwxdmhd
+# @version 11.0.0
+# ADHD-Friendly Production Stack
+# =============================================================================
+
+version: "3.8"
+
+# =============================================================================
+# Network Configuration
+# =============================================================================
+networks:
+  noxsuite-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+  noxsuite-internal:
+    driver: bridge
+    internal: true
+
+# =============================================================================
+# Volume Configuration for Data Persistence
+# =============================================================================
+volumes:
+  noxsuite-db:
+    driver: local
+  noxsuite-logs:
+    driver: local
+  noxsuite-configs:
+    driver: local
+  redis-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  nginx-certs:
+    driver: local
+
+# =============================================================================
+# Services Configuration
+# =============================================================================
+services:
+
+  # ---------------------------------------------------------------------------
+  # 1. Nginx Reverse Proxy with SSL Termination
+  # ---------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: noxsuite-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - nginx-certs:/etc/nginx/certs:ro
+      - noxsuite-logs:/var/log/nginx
+    networks:
+      - noxsuite-network
+    depends_on:
+      - noxsuite-backend
+      - noxsuite-frontend
+    environment:
+      - NGINX_ENTRYPOINT_QUIET_LOGS=1
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "traefik.enable=false"
+      - "com.noxsuite.service=nginx"
+
+  # ---------------------------------------------------------------------------
+  # 2. NoxSuite Backend API Server
+  # ---------------------------------------------------------------------------
+  noxsuite-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      args:
+        - BUILD_ENV=production
+    container_name: noxsuite-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - noxsuite-db:/app/data
+      - noxsuite-logs:/app/logs
+      - noxsuite-configs:/app/config
+      - ./src:/app/src:ro
+    networks:
+      - noxsuite-network
+      - noxsuite-internal
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=${SECRET_KEY:-noxsuite-production-key-2025}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-noxsuite-jwt-secret-2025}
+      - DATABASE_URL=sqlite:///data/noxsuite.db
+      - REDIS_URL=redis://redis:6379/0
+      - MONITORING_ENABLED=true
+      - LOG_LEVEL=INFO
+      - PYTHONPATH=/app/src:/app
+    depends_on:
+      - redis
+      - postgresql
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    labels:
+      - "com.noxsuite.service=backend"
+      - "com.noxsuite.component=api"
+
+  # ---------------------------------------------------------------------------
+  # 3. React Frontend Application
+  # ---------------------------------------------------------------------------
+  noxsuite-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:5000/api}
+        - REACT_APP_WS_URL=${REACT_APP_WS_URL:-ws://localhost:5000}
+    container_name: noxsuite-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src:ro
+      - ./frontend/public:/app/public:ro
+    networks:
+      - noxsuite-network
+    environment:
+      - NODE_ENV=production
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:5000/api}
+      - REACT_APP_WS_URL=${REACT_APP_WS_URL:-ws://localhost:5000}
+      - GENERATE_SOURCEMAP=false
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "com.noxsuite.service=frontend"
+      - "com.noxsuite.component=ui"
+
+  # ---------------------------------------------------------------------------
+  # 4. PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  postgresql:
+    image: postgres:15-alpine
+    container_name: noxsuite-postgresql
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - noxsuite-db:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    networks:
+      - noxsuite-internal
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-noxsuite}
+      - POSTGRES_USER=${POSTGRES_USER:-noxuser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-noxsuite2025!}
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-noxuser} -d ${POSTGRES_DB:-noxsuite}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    labels:
+      - "com.noxsuite.service=postgresql"
+      - "com.noxsuite.component=database"
+
+  # ---------------------------------------------------------------------------
+  # 5. Redis Cache and Session Store
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: noxsuite-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    networks:
+      - noxsuite-internal
+    command: redis-server /usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-noxredis2025!}
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    labels:
+      - "com.noxsuite.service=redis"
+      - "com.noxsuite.component=cache"
+
+  # ---------------------------------------------------------------------------
+  # 6. Prometheus Monitoring
+  # ---------------------------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: noxsuite-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus-data:/prometheus
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/rules:/etc/prometheus/rules:ro
+    networks:
+      - noxsuite-network
+      - noxsuite-internal
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "com.noxsuite.service=prometheus"
+      - "com.noxsuite.component=monitoring"
+
+  # ---------------------------------------------------------------------------
+  # 7. Grafana Dashboard
+  # ---------------------------------------------------------------------------
+  grafana:
+    image: grafana/grafana:latest
+    container_name: noxsuite-grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - noxsuite-network
+      - noxsuite-internal
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-noxgrafana2025!}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/login || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      - "com.noxsuite.service=grafana"
+      - "com.noxsuite.component=visualization"
+
+  # ---------------------------------------------------------------------------
+  # 8. Node Exporter for System Metrics
+  # ---------------------------------------------------------------------------
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: noxsuite-node-exporter
+    restart: unless-stopped
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    networks:
+      - noxsuite-internal
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    labels:
+      - "com.noxsuite.service=node-exporter"
+      - "com.noxsuite.component=metrics"
+
+  # ---------------------------------------------------------------------------
+  # 9. Elasticsearch for Log Aggregation
+  # ---------------------------------------------------------------------------
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: noxsuite-elasticsearch
+    restart: unless-stopped
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - noxsuite-logs:/usr/share/elasticsearch/logs
+    networks:
+      - noxsuite-internal
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -vq '\"status\":\"red\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    labels:
+      - "com.noxsuite.service=elasticsearch"
+      - "com.noxsuite.component=logging"
+
+  # ---------------------------------------------------------------------------
+  # 10. Kibana for Log Visualization
+  # ---------------------------------------------------------------------------
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: noxsuite-kibana
+    restart: unless-stopped
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    networks:
+      - noxsuite-network
+      - noxsuite-internal
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - SERVER_NAME=kibana.noxsuite.local
+    depends_on:
+      - elasticsearch
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 200 OK'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    labels:
+      - "com.noxsuite.service=kibana"
+      - "com.noxsuite.component=log-visualization"
+
+  # ---------------------------------------------------------------------------
+  # 11. NoxSuite AI/ML Service
+  # ---------------------------------------------------------------------------
+  noxsuite-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai
+    container_name: noxsuite-ai
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ai:/app/ai:ro
+      - noxsuite-logs:/app/logs
+    networks:
+      - noxsuite-internal
+    environment:
+      - PYTHONPATH=/app
+      - AI_MODEL_PATH=/app/models
+      - CUDA_VISIBLE_DEVICES=-1  # CPU only for now
+      - TF_CPP_MIN_LOG_LEVEL=2
+    depends_on:
+      - redis
+      - postgresql
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+    labels:
+      - "com.noxsuite.service=ai"
+      - "com.noxsuite.component=machine-learning"
+
+# =============================================================================
+# Environment Variables and Secrets
+# =============================================================================
+
+# To use this docker-compose file:
+# 1. Copy .env.example to .env
+# 2. Update environment variables as needed
+# 3. Run: docker-compose up -d
+# 4. Access NoxSuite at: http://localhost
+
+# Default URLs:
+# - Main Application: http://localhost
+# - Backend API: http://localhost:5000
+# - Frontend: http://localhost:3000
+# - Grafana: http://localhost:3001
+# - Kibana: http://localhost:5601
+# - Prometheus: http://localhost:9090

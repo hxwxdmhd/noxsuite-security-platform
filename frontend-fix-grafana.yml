@@ -1,0 +1,25 @@
+services:
+  grafana-standalone:
+    container_name: noxsuite-grafana-fixed
+    environment:
+    - GF_SECURITY_ADMIN_USER=admin
+    - GF_SECURITY_ADMIN_PASSWORD=noxsuite123
+    - GF_USERS_ALLOW_SIGN_UP=false
+    - GF_SERVER_ROOT_URL=http://localhost:3001
+    healthcheck:
+      interval: 30s
+      retries: 3
+      start_period: 40s
+      test:
+      - CMD-SHELL
+      - curl -f http://localhost:3000/api/health || exit 1
+      timeout: 10s
+    image: grafana/grafana:latest
+    ports:
+    - 3001:3000
+    restart: unless-stopped
+    volumes:
+    - grafana_data_fixed:/var/lib/grafana
+version: '3.8'
+volumes:
+  grafana_data_fixed: null

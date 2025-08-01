@@ -1,0 +1,269 @@
+{
+  "timestamp": "2025-07-30T13:32:23.232816",
+  "modules": {
+    "auth_security": {
+      "description": "Authentication, JWT, MFA, RBAC implementation",
+      "files_found": 0,
+      "files_expected": 4,
+      "test_files_found": 0,
+      "test_files_expected": 3,
+      "completion_percentage": 0.0,
+      "status": "\ud83d\udd34",
+      "file_details": [
+        {
+          "file": "jwt_utils.py",
+          "exists": false
+        },
+        {
+          "file": "auth_service.py",
+          "exists": false
+        },
+        {
+          "file": "mfa_service.py",
+          "exists": false
+        },
+        {
+          "file": "rbac_service.py",
+          "exists": false
+        }
+      ],
+      "test_details": [
+        {
+          "file": "test_auth.py",
+          "exists": false
+        },
+        {
+          "file": "test_jwt.py",
+          "exists": false
+        },
+        {
+          "file": "test_mfa.py",
+          "exists": false
+        }
+      ]
+    },
+    "backend_api": {
+      "description": "FastAPI backend services and endpoints",
+      "files_found": 0,
+      "files_expected": 4,
+      "test_files_found": 0,
+      "test_files_expected": 3,
+      "completion_percentage": 0.0,
+      "status": "\ud83d\udd34",
+      "file_details": [
+        {
+          "file": "main.py",
+          "exists": false
+        },
+        {
+          "file": "api_routes.py",
+          "exists": false
+        },
+        {
+          "file": "user_service.py",
+          "exists": false
+        },
+        {
+          "file": "admin_service.py",
+          "exists": false
+        }
+      ],
+      "test_details": [
+        {
+          "file": "test_api.py",
+          "exists": false
+        },
+        {
+          "file": "test_users.py",
+          "exists": false
+        },
+        {
+          "file": "test_admin.py",
+          "exists": false
+        }
+      ]
+    },
+    "frontend_ui": {
+      "description": "React frontend UI components",
+      "files_found": 0,
+      "files_expected": 4,
+      "test_files_found": 0,
+      "test_files_expected": 3,
+      "completion_percentage": 0.0,
+      "status": "\ud83d\udd34",
+      "file_details": [
+        {
+          "file": "App.jsx",
+          "exists": false
+        },
+        {
+          "file": "Login.jsx",
+          "exists": false
+        },
+        {
+          "file": "Dashboard.jsx",
+          "exists": false
+        },
+        {
+          "file": "AdminPanel.jsx",
+          "exists": false
+        }
+      ],
+      "test_details": [
+        {
+          "file": "App.test.js",
+          "exists": false
+        },
+        {
+          "file": "Login.test.js",
+          "exists": false
+        },
+        {
+          "file": "Dashboard.test.js",
+          "exists": false
+        }
+      ]
+    },
+    "monitoring": {
+      "description": "Prometheus/Grafana monitoring setup",
+      "files_found": 0,
+      "files_expected": 3,
+      "test_files_found": 0,
+      "test_files_expected": 2,
+      "completion_percentage": 0.0,
+      "status": "\ud83d\udd34",
+      "file_details": [
+        {
+          "file": "prometheus_config.py",
+          "exists": false
+        },
+        {
+          "file": "grafana_config.py",
+          "exists": false
+        },
+        {
+          "file": "metrics_service.py",
+          "exists": false
+        }
+      ],
+      "test_details": [
+        {
+          "file": "test_monitoring.py",
+          "exists": false
+        },
+        {
+          "file": "test_metrics.py",
+          "exists": false
+        }
+      ]
+    },
+    "testing": {
+      "description": "TestSprite integration and testing framework",
+      "files_found": 0,
+      "files_expected": 3,
+      "test_files_found": 0,
+      "test_files_expected": 2,
+      "completion_percentage": 0.0,
+      "status": "\ud83d\udd34",
+      "file_details": [
+        {
+          "file": "testsprite_config.py",
+          "exists": false
+        },
+        {
+          "file": "test_runner.py",
+          "exists": false
+        },
+        {
+          "file": "integration_tests.py",
+          "exists": false
+        }
+      ],
+      "test_details": [
+        {
+          "file": "test_testsprite.py",
+          "exists": false
+        },
+        {
+          "file": "test_integration.py",
+          "exists": false
+        }
+      ]
+    },
+    "installer": {
+      "description": "Windows 11 installation and deployment scripts",
+      "files_found": 1,
+      "files_expected": 3,
+      "test_files_found": 0,
+      "test_files_expected": 2,
+      "completion_percentage": 23.3,
+      "status": "\ud83d\udd34",
+      "file_details": [
+        {
+          "file": "install.ps1",
+          "exists": false
+        },
+        {
+          "file": "setup.py",
+          "exists": false
+        },
+        {
+          "file": "docker-compose.yml",
+          "exists": true,
+          "size_bytes": 7504,
+          "last_modified": 1753278174.3794394
+        }
+      ],
+      "test_details": [
+        {
+          "file": "test_installer.py",
+          "exists": false
+        },
+        {
+          "file": "test_deployment.py",
+          "exists": false
+        }
+      ]
+    },
+    "docker": {
+      "description": "Docker containerization and orchestration",
+      "files_found": 3,
+      "files_expected": 3,
+      "test_files_found": 0,
+      "test_files_expected": 2,
+      "completion_percentage": 70.0,
+      "status": "\u26a0\ufe0f",
+      "file_details": [
+        {
+          "file": "Dockerfile",
+          "exists": true,
+          "size_bytes": 1884,
+          "last_modified": 1753278173.361904
+        },
+        {
+          "file": "docker-compose-prod.yml",
+          "exists": true,
+          "size_bytes": 1544,
+          "last_modified": 1753872037.4078462
+        },
+        {
+          "file": "docker-compose-ascii.yml",
+          "exists": true,
+          "size_bytes": 638,
+          "last_modified": 1753872274.6351082
+        }
+      ],
+      "test_details": [
+        {
+          "file": "test_docker.py",
+          "exists": false
+        },
+        {
+          "file": "test_containers.py",
+          "exists": false
+        }
+      ]
+    }
+  },
+  "overall_completion": 13.3
+}

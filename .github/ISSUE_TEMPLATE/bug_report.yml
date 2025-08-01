@@ -1,0 +1,134 @@
+name: Bug Report
+description: Report a bug or issue with NoxSuite Security Platform
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the information below to help us investigate and fix the issue.
+
+        **⚠️ Security Notice**: If this is a security vulnerability, please do not create a public issue. Instead, email us at security@noxsuite.local
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe what happened...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: A clear and concise description of what actually happened.
+      placeholder: What actually happened?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component is affected?
+      options:
+        - Authentication/MFA
+        - RBAC/Permissions
+        - Database/MariaDB
+        - API Endpoints
+        - Security Auditor
+        - TestSprite Integration
+        - Docker/Deployment
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Critical (System unusable)
+        - High (Major functionality broken)
+        - Medium (Feature partially broken)
+        - Low (Minor issue)
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version of NoxSuite are you running?
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        Please provide details about your environment:
+      value: |
+        - OS: [e.g. Ubuntu 22.04, Windows 11, macOS 13]
+        - Python version: [e.g. 3.12.10]
+        - MariaDB version: [e.g. 10.11]
+        - Docker version: [e.g. 24.0.0]
+        - Browser (if applicable): [e.g. Chrome 118, Firefox 119]
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code.
+      render: shell
+      placeholder: Paste logs here...
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+      placeholder: Drag and drop screenshots here...
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched for similar issues before creating this report
+          required: true
+        - label: I have provided all required information above
+          required: true
+        - label: This is not a security vulnerability (those should be reported via email)
+          required: true

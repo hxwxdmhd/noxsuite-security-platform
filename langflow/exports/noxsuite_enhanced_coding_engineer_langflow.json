@@ -1,0 +1,959 @@
+{
+  "data": {
+    "nodes": {
+      "code_intelligence_hub": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Code Intelligence Hub\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'code_intelligence_monitoring',\n                \"type\": \"str\"\n            },\n            \"syntax_analysis\": {\n                \"display_name\": \"Syntax Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"complexity_assessment\": {\n                \"display_name\": \"Complexity Assessment\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"dependency_tracking\": {\n                \"display_name\": \"Dependency Tracking\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_profiling\": {\n                \"display_name\": \"Performance Profiling\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_vulnerability_scanning\": {\n                \"display_name\": \"Security Vulnerability Scanning\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"code_quality_metrics\": {\n                \"display_name\": \"Code Quality Metrics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"technical_debt_analysis\": {\n                \"display_name\": \"Technical Debt Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"refactoring_opportunities\": {\n                \"display_name\": \"Refactoring Opportunities\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"design_pattern_detection\": {\n                \"display_name\": \"Design Pattern Detection\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"api_usage_analysis\": {\n                \"display_name\": \"Api Usage Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"code_intelligence_hub\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "code_intelligence_monitoring",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "syntax_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "syntax_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "complexity_assessment": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "complexity_assessment",
+                "show": true,
+                "advanced": false
+              },
+              "dependency_tracking": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "dependency_tracking",
+                "show": true,
+                "advanced": false
+              },
+              "performance_profiling": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_profiling",
+                "show": true,
+                "advanced": false
+              },
+              "security_vulnerability_scanning": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_vulnerability_scanning",
+                "show": true,
+                "advanced": false
+              },
+              "code_quality_metrics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "code_quality_metrics",
+                "show": true,
+                "advanced": false
+              },
+              "technical_debt_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "technical_debt_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "refactoring_opportunities": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "refactoring_opportunities",
+                "show": true,
+                "advanced": false
+              },
+              "design_pattern_detection": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "design_pattern_detection",
+                "show": true,
+                "advanced": false
+              },
+              "api_usage_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "api_usage_analysis",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Code Intelligence Hub",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "code_intelligence_monitoring",
+              "syntax_analysis": true,
+              "complexity_assessment": true,
+              "dependency_tracking": true,
+              "performance_profiling": true,
+              "security_vulnerability_scanning": true,
+              "code_quality_metrics": true,
+              "technical_debt_analysis": true,
+              "refactoring_opportunities": true,
+              "design_pattern_detection": true,
+              "api_usage_analysis": true,
+              "langflow_id": "code_intelligence_hub",
+              "display_name": "Code Intelligence Hub"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "code_intelligence_hub"
+        },
+        "id": "code_intelligence_hub",
+        "position": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "engineering_ai_coordinator": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Engineering Ai Coordinator\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'enhanced_engineering_intelligence',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"code_architect\": \"design_system_architecture\", \"performance_engineer\": \"optimize_code_performance\", \"security_engineer\": \"implement_security_best_practices\", \"quality_engineer\": \"ensure_code_quality_standards\", \"devops_engineer\": \"automate_deployment_processes\", \"test_engineer\": \"create_comprehensive_test_suites\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 8,\n                \"type\": \"str\"\n            },\n            \"ai_code_generation\": {\n                \"display_name\": \"Ai Code Generation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"intelligent_refactoring\": {\n                \"display_name\": \"Intelligent Refactoring\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"automated_testing\": {\n                \"display_name\": \"Automated Testing\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_optimization\": {\n                \"display_name\": \"Performance Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_hardening\": {\n                \"display_name\": \"Security Hardening\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"documentation_generation\": {\n                \"display_name\": \"Documentation Generation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"task_timeout\": {\n                \"display_name\": \"Task Timeout\",\n                \"value\": 45,\n                \"type\": \"str\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"engineering_ai_coordinator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "enhanced_engineering_intelligence",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"code_architect\": \"design_system_architecture\", \"performance_engineer\": \"optimize_code_performance\", \"security_engineer\": \"implement_security_best_practices\", \"quality_engineer\": \"ensure_code_quality_standards\", \"devops_engineer\": \"automate_deployment_processes\", \"test_engineer\": \"create_comprehensive_test_suites\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 8,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "ai_code_generation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "ai_code_generation",
+                "show": true,
+                "advanced": false
+              },
+              "intelligent_refactoring": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "intelligent_refactoring",
+                "show": true,
+                "advanced": false
+              },
+              "automated_testing": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "automated_testing",
+                "show": true,
+                "advanced": false
+              },
+              "performance_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "security_hardening": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_hardening",
+                "show": true,
+                "advanced": false
+              },
+              "documentation_generation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "documentation_generation",
+                "show": true,
+                "advanced": false
+              },
+              "task_timeout": {
+                "type": "int",
+                "required": false,
+                "value": 45,
+                "name": "task_timeout",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Engineering Ai Coordinator",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "enhanced_engineering_intelligence",
+              "agent_tasks": "{\"code_architect\": \"design_system_architecture\", \"performance_engineer\": \"optimize_code_performance\", \"security_engineer\": \"implement_security_best_practices\", \"quality_engineer\": \"ensure_code_quality_standards\", \"devops_engineer\": \"automate_deployment_processes\", \"test_engineer\": \"create_comprehensive_test_suites\"}",
+              "max_concurrent_agents": 8,
+              "ai_code_generation": true,
+              "intelligent_refactoring": true,
+              "automated_testing": true,
+              "performance_optimization": true,
+              "security_hardening": true,
+              "documentation_generation": true,
+              "task_timeout": 45,
+              "langflow_id": "engineering_ai_coordinator",
+              "display_name": "Engineering Ai Coordinator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "engineering_ai_coordinator"
+        },
+        "id": "engineering_ai_coordinator",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "development_environment_manager": {
+        "data": {
+          "type": "NoxSuiteDockerManager",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteDockerManager(CustomComponent):\n    display_name: str = \"Development Environment Manager\"\n    description: str = \"NoxSuite NoxSuiteDockerManager Component\"\n    \n    def build_config(self):\n        return {\n            \"action\": {\n                \"display_name\": \"Action\",\n                \"value\": 'enhanced_development_environment',\n                \"type\": \"str\"\n            },\n            \"ide_optimization\": {\n                \"display_name\": \"Ide Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"development_containers\": {\n                \"display_name\": \"Development Containers\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"testing_environments\": {\n                \"display_name\": \"Testing Environments\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"continuous_integration\": {\n                \"display_name\": \"Continuous Integration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"code_compilation\": {\n                \"display_name\": \"Code Compilation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"dependency_management\": {\n                \"display_name\": \"Dependency Management\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"environment_isolation\": {\n                \"display_name\": \"Environment Isolation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_monitoring\": {\n                \"display_name\": \"Performance Monitoring\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"resource_optimization\": {\n                \"display_name\": \"Resource Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"hot_reloading\": {\n                \"display_name\": \"Hot Reloading\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteDockerManager\",\n            \"component_id\": \"development_environment_manager\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "action": {
+                "type": "str",
+                "required": false,
+                "value": "enhanced_development_environment",
+                "name": "action",
+                "show": true,
+                "advanced": false
+              },
+              "ide_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "ide_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "development_containers": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "development_containers",
+                "show": true,
+                "advanced": false
+              },
+              "testing_environments": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "testing_environments",
+                "show": true,
+                "advanced": false
+              },
+              "continuous_integration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "continuous_integration",
+                "show": true,
+                "advanced": false
+              },
+              "code_compilation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "code_compilation",
+                "show": true,
+                "advanced": false
+              },
+              "dependency_management": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "dependency_management",
+                "show": true,
+                "advanced": false
+              },
+              "environment_isolation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "environment_isolation",
+                "show": true,
+                "advanced": false
+              },
+              "performance_monitoring": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_monitoring",
+                "show": true,
+                "advanced": false
+              },
+              "resource_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "resource_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "hot_reloading": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "hot_reloading",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteDockerManager",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Development Environment Manager",
+            "documentation": "",
+            "custom_fields": {
+              "action": "enhanced_development_environment",
+              "ide_optimization": true,
+              "development_containers": true,
+              "testing_environments": true,
+              "continuous_integration": true,
+              "code_compilation": true,
+              "dependency_management": true,
+              "environment_isolation": true,
+              "performance_monitoring": true,
+              "resource_optimization": true,
+              "hot_reloading": true,
+              "langflow_id": "development_environment_manager",
+              "display_name": "Development Environment Manager"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteDockerManager",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "development_environment_manager"
+        },
+        "id": "development_environment_manager",
+        "position": {
+          "x": 100,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "engineering_workflow_orchestrator": {
+        "data": {
+          "type": "NoxSuiteMCPOrchestrator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMCPOrchestrator(CustomComponent):\n    display_name: str = \"Engineering Workflow Orchestrator\"\n    description: str = \"NoxSuite NoxSuiteMCPOrchestrator Component\"\n    \n    def build_config(self):\n        return {\n            \"operation\": {\n                \"display_name\": \"Operation\",\n                \"value\": 'engineering_workflow_automation',\n                \"type\": \"str\"\n            },\n            \"code_review_automation\": {\n                \"display_name\": \"Code Review Automation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"pull_request_analysis\": {\n                \"display_name\": \"Pull Request Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"automated_testing_pipeline\": {\n                \"display_name\": \"Automated Testing Pipeline\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"code_quality_gates\": {\n                \"display_name\": \"Code Quality Gates\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"deployment_automation\": {\n                \"display_name\": \"Deployment Automation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"documentation_generation\": {\n                \"display_name\": \"Documentation Generation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_benchmarking\": {\n                \"display_name\": \"Performance Benchmarking\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_compliance\": {\n                \"display_name\": \"Security Compliance\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"technical_debt_tracking\": {\n                \"display_name\": \"Technical Debt Tracking\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"knowledge_base_integration\": {\n                \"display_name\": \"Knowledge Base Integration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMCPOrchestrator\",\n            \"component_id\": \"engineering_workflow_orchestrator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "operation": {
+                "type": "str",
+                "required": false,
+                "value": "engineering_workflow_automation",
+                "name": "operation",
+                "show": true,
+                "advanced": false
+              },
+              "code_review_automation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "code_review_automation",
+                "show": true,
+                "advanced": false
+              },
+              "pull_request_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "pull_request_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "automated_testing_pipeline": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "automated_testing_pipeline",
+                "show": true,
+                "advanced": false
+              },
+              "code_quality_gates": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "code_quality_gates",
+                "show": true,
+                "advanced": false
+              },
+              "deployment_automation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "deployment_automation",
+                "show": true,
+                "advanced": false
+              },
+              "documentation_generation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "documentation_generation",
+                "show": true,
+                "advanced": false
+              },
+              "performance_benchmarking": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_benchmarking",
+                "show": true,
+                "advanced": false
+              },
+              "security_compliance": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_compliance",
+                "show": true,
+                "advanced": false
+              },
+              "technical_debt_tracking": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "technical_debt_tracking",
+                "show": true,
+                "advanced": false
+              },
+              "knowledge_base_integration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "knowledge_base_integration",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMCPOrchestrator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Engineering Workflow Orchestrator",
+            "documentation": "",
+            "custom_fields": {
+              "operation": "engineering_workflow_automation",
+              "code_review_automation": true,
+              "pull_request_analysis": true,
+              "automated_testing_pipeline": true,
+              "code_quality_gates": true,
+              "deployment_automation": true,
+              "documentation_generation": true,
+              "performance_benchmarking": true,
+              "security_compliance": true,
+              "technical_debt_tracking": true,
+              "knowledge_base_integration": true,
+              "langflow_id": "engineering_workflow_orchestrator",
+              "display_name": "Engineering Workflow Orchestrator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMCPOrchestrator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "engineering_workflow_orchestrator"
+        },
+        "id": "engineering_workflow_orchestrator",
+        "position": {
+          "x": 400,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "intelligent_code_assistant": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Intelligent Code Assistant\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'intelligent_coding_assistance',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"code_completion\": \"provide_intelligent_suggestions\", \"bug_detection\": \"identify_potential_issues\", \"optimization_advisor\": \"recommend_improvements\", \"documentation_writer\": \"generate_code_documentation\", \"test_generator\": \"create_unit_tests\", \"refactoring_assistant\": \"suggest_code_improvements\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 6,\n                \"type\": \"str\"\n            },\n            \"ai_powered_suggestions\": {\n                \"display_name\": \"Ai Powered Suggestions\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"context_aware_completion\": {\n                \"display_name\": \"Context Aware Completion\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"intelligent_debugging\": {\n                \"display_name\": \"Intelligent Debugging\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"automated_documentation\": {\n                \"display_name\": \"Automated Documentation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"smart_refactoring\": {\n                \"display_name\": \"Smart Refactoring\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_insights\": {\n                \"display_name\": \"Performance Insights\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"intelligent_code_assistant\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "intelligent_coding_assistance",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"code_completion\": \"provide_intelligent_suggestions\", \"bug_detection\": \"identify_potential_issues\", \"optimization_advisor\": \"recommend_improvements\", \"documentation_writer\": \"generate_code_documentation\", \"test_generator\": \"create_unit_tests\", \"refactoring_assistant\": \"suggest_code_improvements\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 6,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "ai_powered_suggestions": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "ai_powered_suggestions",
+                "show": true,
+                "advanced": false
+              },
+              "context_aware_completion": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "context_aware_completion",
+                "show": true,
+                "advanced": false
+              },
+              "intelligent_debugging": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "intelligent_debugging",
+                "show": true,
+                "advanced": false
+              },
+              "automated_documentation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "automated_documentation",
+                "show": true,
+                "advanced": false
+              },
+              "smart_refactoring": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "smart_refactoring",
+                "show": true,
+                "advanced": false
+              },
+              "performance_insights": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_insights",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Intelligent Code Assistant",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "intelligent_coding_assistance",
+              "agent_tasks": "{\"code_completion\": \"provide_intelligent_suggestions\", \"bug_detection\": \"identify_potential_issues\", \"optimization_advisor\": \"recommend_improvements\", \"documentation_writer\": \"generate_code_documentation\", \"test_generator\": \"create_unit_tests\", \"refactoring_assistant\": \"suggest_code_improvements\"}",
+              "max_concurrent_agents": 6,
+              "ai_powered_suggestions": true,
+              "context_aware_completion": true,
+              "intelligent_debugging": true,
+              "automated_documentation": true,
+              "smart_refactoring": true,
+              "performance_insights": true,
+              "langflow_id": "intelligent_code_assistant",
+              "display_name": "Intelligent Code Assistant"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "intelligent_code_assistant"
+        },
+        "id": "intelligent_code_assistant",
+        "position": {
+          "x": 700,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "engineering_analytics_center": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Engineering Analytics Center\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'engineering_productivity_analytics',\n                \"type\": \"str\"\n            },\n            \"development_velocity_tracking\": {\n                \"display_name\": \"Development Velocity Tracking\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"code_quality_trends\": {\n                \"display_name\": \"Code Quality Trends\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"team_productivity_metrics\": {\n                \"display_name\": \"Team Productivity Metrics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"technical_debt_monitoring\": {\n                \"display_name\": \"Technical Debt Monitoring\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_benchmarks\": {\n                \"display_name\": \"Performance Benchmarks\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_posture_assessment\": {\n                \"display_name\": \"Security Posture Assessment\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"deployment_success_rates\": {\n                \"display_name\": \"Deployment Success Rates\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"bug_resolution_times\": {\n                \"display_name\": \"Bug Resolution Times\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"feature_delivery_metrics\": {\n                \"display_name\": \"Feature Delivery Metrics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"knowledge_sharing_analytics\": {\n                \"display_name\": \"Knowledge Sharing Analytics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"engineering_analytics_center\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "engineering_productivity_analytics",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "development_velocity_tracking": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "development_velocity_tracking",
+                "show": true,
+                "advanced": false
+              },
+              "code_quality_trends": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "code_quality_trends",
+                "show": true,
+                "advanced": false
+              },
+              "team_productivity_metrics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "team_productivity_metrics",
+                "show": true,
+                "advanced": false
+              },
+              "technical_debt_monitoring": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "technical_debt_monitoring",
+                "show": true,
+                "advanced": false
+              },
+              "performance_benchmarks": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_benchmarks",
+                "show": true,
+                "advanced": false
+              },
+              "security_posture_assessment": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_posture_assessment",
+                "show": true,
+                "advanced": false
+              },
+              "deployment_success_rates": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "deployment_success_rates",
+                "show": true,
+                "advanced": false
+              },
+              "bug_resolution_times": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "bug_resolution_times",
+                "show": true,
+                "advanced": false
+              },
+              "feature_delivery_metrics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "feature_delivery_metrics",
+                "show": true,
+                "advanced": false
+              },
+              "knowledge_sharing_analytics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "knowledge_sharing_analytics",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Engineering Analytics Center",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "engineering_productivity_analytics",
+              "development_velocity_tracking": true,
+              "code_quality_trends": true,
+              "team_productivity_metrics": true,
+              "technical_debt_monitoring": true,
+              "performance_benchmarks": true,
+              "security_posture_assessment": true,
+              "deployment_success_rates": true,
+              "bug_resolution_times": true,
+              "feature_delivery_metrics": true,
+              "knowledge_sharing_analytics": true,
+              "langflow_id": "engineering_analytics_center",
+              "display_name": "Engineering Analytics Center"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "engineering_analytics_center"
+        },
+        "id": "engineering_analytics_center",
+        "position": {
+          "x": 700,
+          "y": 300
+        },
+        "type": "genericNode"
+      }
+    },
+    "edges": [
+      {
+        "source": "code_intelligence_hub",
+        "target": "engineering_ai_coordinator",
+        "sourceHandle": "code_analysis_data",
+        "targetHandle": "engineering_input",
+        "id": "e1",
+        "type": "default"
+      },
+      {
+        "source": "engineering_ai_coordinator",
+        "target": "development_environment_manager",
+        "sourceHandle": "environment_requirements",
+        "targetHandle": "environment_trigger",
+        "id": "e2",
+        "type": "default"
+      },
+      {
+        "source": "engineering_ai_coordinator",
+        "target": "engineering_workflow_orchestrator",
+        "sourceHandle": "workflow_plan",
+        "targetHandle": "orchestration_trigger",
+        "id": "e3",
+        "type": "default"
+      },
+      {
+        "source": "code_intelligence_hub",
+        "target": "intelligent_code_assistant",
+        "sourceHandle": "code_context",
+        "targetHandle": "assistance_input",
+        "id": "e4",
+        "type": "default"
+      },
+      {
+        "source": "development_environment_manager",
+        "target": "engineering_analytics_center",
+        "sourceHandle": "development_metrics",
+        "targetHandle": "analytics_input",
+        "id": "e5",
+        "type": "default"
+      },
+      {
+        "source": "engineering_workflow_orchestrator",
+        "target": "engineering_analytics_center",
+        "sourceHandle": "workflow_metrics",
+        "targetHandle": "analytics_input",
+        "id": "e6",
+        "type": "default"
+      },
+      {
+        "source": "intelligent_code_assistant",
+        "target": "engineering_analytics_center",
+        "sourceHandle": "assistance_metrics",
+        "targetHandle": "analytics_input",
+        "id": "e7",
+        "type": "default"
+      },
+      {
+        "source": "engineering_analytics_center",
+        "target": "engineering_ai_coordinator",
+        "sourceHandle": "optimization_insights",
+        "targetHandle": "feedback_input",
+        "id": "e8",
+        "type": "default"
+      }
+    ],
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "description": "Advanced Coding & Engineering Intelligence Agent with AI-powered development assistance, automated quality assurance, and intelligent workflow optimization",
+  "name": "NoxSuite_Enhanced_Coding_Engineer",
+  "id": "noxsuite_enhanced_coding_engineer"
+}

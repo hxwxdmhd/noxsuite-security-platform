@@ -1,0 +1,60 @@
+{
+  "timestamp": "2025-07-29T15:26:51.709838",
+  "servers": {
+    "noxsuite-orchestrator": {
+      "name": "noxsuite-orchestrator",
+      "pid": 9844,
+      "status": "crashed",
+      "start_time": "2025-07-29T15:11:50.819466",
+      "last_health_check": null,
+      "restart_count": 3,
+      "error_message": "Process exited with code 1",
+      "memory_usage": 0.0,
+      "cpu_usage": 0.0
+    },
+    "noxsuite-knowledge": {
+      "name": "noxsuite-knowledge",
+      "pid": 36356,
+      "status": "crashed",
+      "start_time": "2025-07-29T15:11:50.893248",
+      "last_health_check": null,
+      "restart_count": 3,
+      "error_message": "Process exited with code 1",
+      "memory_usage": 0.0,
+      "cpu_usage": 0.0
+    },
+    "noxsuite-annotator": {
+      "name": "noxsuite-annotator",
+      "pid": 31156,
+      "status": "crashed",
+      "start_time": "2025-07-29T15:11:50.947985",
+      "last_health_check": null,
+      "restart_count": 3,
+      "error_message": "Process exited with code 1",
+      "memory_usage": 0.0,
+      "cpu_usage": 0.0
+    },
+    "noxsuite-installer": {
+      "name": "noxsuite-installer",
+      "pid": 26272,
+      "status": "crashed",
+      "start_time": "2025-07-29T15:11:50.986134",
+      "last_health_check": null,
+      "restart_count": 3,
+      "error_message": "Process exited with code 1",
+      "memory_usage": 0.0,
+      "cpu_usage": 0.0
+    },
+    "noxsuite-cicd": {
+      "name": "noxsuite-cicd",
+      "pid": 42048,
+      "status": "running",
+      "start_time": "2025-07-29T15:10:50.351927",
+      "last_health_check": "2025-07-29T15:26:51.709838",
+      "restart_count": 0,
+      "error_message": null,
+      "memory_usage": 15.41796875,
+      "cpu_usage": 0.0
+    }
+  }
+}

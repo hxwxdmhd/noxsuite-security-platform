@@ -1,0 +1,780 @@
+{
+  "data": {
+    "nodes": {
+      "threat_hunter": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Threat Hunter\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'advanced_threat_hunting',\n                \"type\": \"str\"\n            },\n            \"behavioral_analysis\": {\n                \"display_name\": \"Behavioral Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"zero_day_detection\": {\n                \"display_name\": \"Zero Day Detection\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"apt_tracking\": {\n                \"display_name\": \"Apt Tracking\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"network_forensics\": {\n                \"display_name\": \"Network Forensics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"malware_analysis\": {\n                \"display_name\": \"Malware Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"threat_intelligence_integration\": {\n                \"display_name\": \"Threat Intelligence Integration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"honeypot_monitoring\": {\n                \"display_name\": \"Honeypot Monitoring\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"threat_hunter\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "advanced_threat_hunting",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "behavioral_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "behavioral_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "zero_day_detection": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "zero_day_detection",
+                "show": true,
+                "advanced": false
+              },
+              "apt_tracking": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "apt_tracking",
+                "show": true,
+                "advanced": false
+              },
+              "network_forensics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "network_forensics",
+                "show": true,
+                "advanced": false
+              },
+              "malware_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "malware_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "threat_intelligence_integration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "threat_intelligence_integration",
+                "show": true,
+                "advanced": false
+              },
+              "honeypot_monitoring": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "honeypot_monitoring",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Threat Hunter",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "advanced_threat_hunting",
+              "behavioral_analysis": true,
+              "zero_day_detection": true,
+              "apt_tracking": true,
+              "network_forensics": true,
+              "malware_analysis": true,
+              "threat_intelligence_integration": true,
+              "honeypot_monitoring": true,
+              "langflow_id": "threat_hunter",
+              "display_name": "Threat Hunter"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "threat_hunter"
+        },
+        "id": "threat_hunter",
+        "position": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "ai_security_analyst": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Ai Security Analyst\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'cybersecurity_analysis',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"threat_classification\": \"categorize_attack_vectors\", \"vulnerability_assessment\": \"identify_security_gaps\", \"incident_response\": \"coordinate_defense_actions\", \"forensic_analysis\": \"investigate_security_incidents\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 6,\n                \"type\": \"str\"\n            },\n            \"cybersecurity_ai\": {\n                \"display_name\": \"Cybersecurity Ai\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"threat_intelligence\": {\n                \"display_name\": \"Threat Intelligence\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"automated_response\": {\n                \"display_name\": \"Automated Response\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"task_timeout\": {\n                \"display_name\": \"Task Timeout\",\n                \"value\": 20,\n                \"type\": \"str\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"ai_security_analyst\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "cybersecurity_analysis",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"threat_classification\": \"categorize_attack_vectors\", \"vulnerability_assessment\": \"identify_security_gaps\", \"incident_response\": \"coordinate_defense_actions\", \"forensic_analysis\": \"investigate_security_incidents\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 6,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "cybersecurity_ai": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "cybersecurity_ai",
+                "show": true,
+                "advanced": false
+              },
+              "threat_intelligence": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "threat_intelligence",
+                "show": true,
+                "advanced": false
+              },
+              "automated_response": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "automated_response",
+                "show": true,
+                "advanced": false
+              },
+              "task_timeout": {
+                "type": "int",
+                "required": false,
+                "value": 20,
+                "name": "task_timeout",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Ai Security Analyst",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "cybersecurity_analysis",
+              "agent_tasks": "{\"threat_classification\": \"categorize_attack_vectors\", \"vulnerability_assessment\": \"identify_security_gaps\", \"incident_response\": \"coordinate_defense_actions\", \"forensic_analysis\": \"investigate_security_incidents\"}",
+              "max_concurrent_agents": 6,
+              "cybersecurity_ai": true,
+              "threat_intelligence": true,
+              "automated_response": true,
+              "task_timeout": 20,
+              "langflow_id": "ai_security_analyst",
+              "display_name": "Ai Security Analyst"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "ai_security_analyst"
+        },
+        "id": "ai_security_analyst",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "security_fortress": {
+        "data": {
+          "type": "NoxSuiteDockerManager",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteDockerManager(CustomComponent):\n    display_name: str = \"Security Fortress\"\n    description: str = \"NoxSuite NoxSuiteDockerManager Component\"\n    \n    def build_config(self):\n        return {\n            \"action\": {\n                \"display_name\": \"Action\",\n                \"value\": 'security_hardening',\n                \"type\": \"str\"\n            },\n            \"container_isolation\": {\n                \"display_name\": \"Container Isolation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_scanning\": {\n                \"display_name\": \"Security Scanning\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"compliance_enforcement\": {\n                \"display_name\": \"Compliance Enforcement\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"access_control\": {\n                \"display_name\": \"Access Control\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"encryption_management\": {\n                \"display_name\": \"Encryption Management\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_policy_enforcement\": {\n                \"display_name\": \"Security Policy Enforcement\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"vulnerability_patching\": {\n                \"display_name\": \"Vulnerability Patching\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteDockerManager\",\n            \"component_id\": \"security_fortress\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "action": {
+                "type": "str",
+                "required": false,
+                "value": "security_hardening",
+                "name": "action",
+                "show": true,
+                "advanced": false
+              },
+              "container_isolation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "container_isolation",
+                "show": true,
+                "advanced": false
+              },
+              "security_scanning": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_scanning",
+                "show": true,
+                "advanced": false
+              },
+              "compliance_enforcement": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "compliance_enforcement",
+                "show": true,
+                "advanced": false
+              },
+              "access_control": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "access_control",
+                "show": true,
+                "advanced": false
+              },
+              "encryption_management": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "encryption_management",
+                "show": true,
+                "advanced": false
+              },
+              "security_policy_enforcement": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_policy_enforcement",
+                "show": true,
+                "advanced": false
+              },
+              "vulnerability_patching": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "vulnerability_patching",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteDockerManager",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Security Fortress",
+            "documentation": "",
+            "custom_fields": {
+              "action": "security_hardening",
+              "container_isolation": true,
+              "security_scanning": true,
+              "compliance_enforcement": true,
+              "access_control": true,
+              "encryption_management": true,
+              "security_policy_enforcement": true,
+              "vulnerability_patching": true,
+              "langflow_id": "security_fortress",
+              "display_name": "Security Fortress"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteDockerManager",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "security_fortress"
+        },
+        "id": "security_fortress",
+        "position": {
+          "x": 100,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "mcp_security_orchestrator": {
+        "data": {
+          "type": "NoxSuiteMCPOrchestrator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMCPOrchestrator(CustomComponent):\n    display_name: str = \"Mcp Security Orchestrator\"\n    description: str = \"NoxSuite NoxSuiteMCPOrchestrator Component\"\n    \n    def build_config(self):\n        return {\n            \"operation\": {\n                \"display_name\": \"Operation\",\n                \"value\": 'security_workflow_orchestration',\n                \"type\": \"str\"\n            },\n            \"incident_response_automation\": {\n                \"display_name\": \"Incident Response Automation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"threat_containment\": {\n                \"display_name\": \"Threat Containment\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_policy_enforcement\": {\n                \"display_name\": \"Security Policy Enforcement\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"compliance_monitoring\": {\n                \"display_name\": \"Compliance Monitoring\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_audit_automation\": {\n                \"display_name\": \"Security Audit Automation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"breach_notification\": {\n                \"display_name\": \"Breach Notification\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"recovery_orchestration\": {\n                \"display_name\": \"Recovery Orchestration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMCPOrchestrator\",\n            \"component_id\": \"mcp_security_orchestrator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "operation": {
+                "type": "str",
+                "required": false,
+                "value": "security_workflow_orchestration",
+                "name": "operation",
+                "show": true,
+                "advanced": false
+              },
+              "incident_response_automation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "incident_response_automation",
+                "show": true,
+                "advanced": false
+              },
+              "threat_containment": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "threat_containment",
+                "show": true,
+                "advanced": false
+              },
+              "security_policy_enforcement": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_policy_enforcement",
+                "show": true,
+                "advanced": false
+              },
+              "compliance_monitoring": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "compliance_monitoring",
+                "show": true,
+                "advanced": false
+              },
+              "security_audit_automation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_audit_automation",
+                "show": true,
+                "advanced": false
+              },
+              "breach_notification": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "breach_notification",
+                "show": true,
+                "advanced": false
+              },
+              "recovery_orchestration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "recovery_orchestration",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMCPOrchestrator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Mcp Security Orchestrator",
+            "documentation": "",
+            "custom_fields": {
+              "operation": "security_workflow_orchestration",
+              "incident_response_automation": true,
+              "threat_containment": true,
+              "security_policy_enforcement": true,
+              "compliance_monitoring": true,
+              "security_audit_automation": true,
+              "breach_notification": true,
+              "recovery_orchestration": true,
+              "langflow_id": "mcp_security_orchestrator",
+              "display_name": "Mcp Security Orchestrator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMCPOrchestrator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "mcp_security_orchestrator"
+        },
+        "id": "mcp_security_orchestrator",
+        "position": {
+          "x": 400,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "deception_engine": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Deception Engine\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'deception_technology',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"honeypot_management\": \"deploy_decoy_systems\", \"threat_misdirection\": \"confuse_attackers\", \"intelligence_gathering\": \"collect_attack_data\", \"adaptive_deception\": \"evolve_defense_strategies\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 4,\n                \"type\": \"str\"\n            },\n            \"deception_technology\": {\n                \"display_name\": \"Deception Technology\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"adaptive_defense\": {\n                \"display_name\": \"Adaptive Defense\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"threat_misdirection\": {\n                \"display_name\": \"Threat Misdirection\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"deception_engine\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "deception_technology",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"honeypot_management\": \"deploy_decoy_systems\", \"threat_misdirection\": \"confuse_attackers\", \"intelligence_gathering\": \"collect_attack_data\", \"adaptive_deception\": \"evolve_defense_strategies\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 4,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "deception_technology": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "deception_technology",
+                "show": true,
+                "advanced": false
+              },
+              "adaptive_defense": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "adaptive_defense",
+                "show": true,
+                "advanced": false
+              },
+              "threat_misdirection": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "threat_misdirection",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Deception Engine",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "deception_technology",
+              "agent_tasks": "{\"honeypot_management\": \"deploy_decoy_systems\", \"threat_misdirection\": \"confuse_attackers\", \"intelligence_gathering\": \"collect_attack_data\", \"adaptive_deception\": \"evolve_defense_strategies\"}",
+              "max_concurrent_agents": 4,
+              "deception_technology": true,
+              "adaptive_defense": true,
+              "threat_misdirection": true,
+              "langflow_id": "deception_engine",
+              "display_name": "Deception Engine"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "deception_engine"
+        },
+        "id": "deception_engine",
+        "position": {
+          "x": 700,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "security_intelligence": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Security Intelligence\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'security_intelligence',\n                \"type\": \"str\"\n            },\n            \"threat_landscape_analysis\": {\n                \"display_name\": \"Threat Landscape Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"attack_pattern_learning\": {\n                \"display_name\": \"Attack Pattern Learning\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_metrics_tracking\": {\n                \"display_name\": \"Security Metrics Tracking\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"compliance_reporting\": {\n                \"display_name\": \"Compliance Reporting\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_posture_assessment\": {\n                \"display_name\": \"Security Posture Assessment\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"risk_analysis\": {\n                \"display_name\": \"Risk Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"security_intelligence\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "security_intelligence",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "threat_landscape_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "threat_landscape_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "attack_pattern_learning": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "attack_pattern_learning",
+                "show": true,
+                "advanced": false
+              },
+              "security_metrics_tracking": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_metrics_tracking",
+                "show": true,
+                "advanced": false
+              },
+              "compliance_reporting": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "compliance_reporting",
+                "show": true,
+                "advanced": false
+              },
+              "security_posture_assessment": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_posture_assessment",
+                "show": true,
+                "advanced": false
+              },
+              "risk_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "risk_analysis",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Security Intelligence",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "security_intelligence",
+              "threat_landscape_analysis": true,
+              "attack_pattern_learning": true,
+              "security_metrics_tracking": true,
+              "compliance_reporting": true,
+              "security_posture_assessment": true,
+              "risk_analysis": true,
+              "langflow_id": "security_intelligence",
+              "display_name": "Security Intelligence"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "security_intelligence"
+        },
+        "id": "security_intelligence",
+        "position": {
+          "x": 700,
+          "y": 300
+        },
+        "type": "genericNode"
+      }
+    },
+    "edges": [
+      {
+        "source": "threat_hunter",
+        "target": "ai_security_analyst",
+        "sourceHandle": "threat_data",
+        "targetHandle": "analysis_input",
+        "id": "e1",
+        "type": "default"
+      },
+      {
+        "source": "ai_security_analyst",
+        "target": "security_fortress",
+        "sourceHandle": "security_actions",
+        "targetHandle": "hardening_trigger",
+        "id": "e2",
+        "type": "default"
+      },
+      {
+        "source": "ai_security_analyst",
+        "target": "mcp_security_orchestrator",
+        "sourceHandle": "response_plan",
+        "targetHandle": "orchestration_trigger",
+        "id": "e3",
+        "type": "default"
+      },
+      {
+        "source": "threat_hunter",
+        "target": "deception_engine",
+        "sourceHandle": "attack_patterns",
+        "targetHandle": "deception_input",
+        "id": "e4",
+        "type": "default"
+      },
+      {
+        "source": "security_fortress",
+        "target": "security_intelligence",
+        "sourceHandle": "security_metrics",
+        "targetHandle": "intelligence_input",
+        "id": "e5",
+        "type": "default"
+      },
+      {
+        "source": "mcp_security_orchestrator",
+        "target": "security_intelligence",
+        "sourceHandle": "incident_data",
+        "targetHandle": "intelligence_input",
+        "id": "e6",
+        "type": "default"
+      },
+      {
+        "source": "deception_engine",
+        "target": "security_intelligence",
+        "sourceHandle": "deception_metrics",
+        "targetHandle": "intelligence_input",
+        "id": "e7",
+        "type": "default"
+      }
+    ],
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "description": "Advanced Cybersecurity Defense & Threat Hunting System with AI-powered threat detection, deception technology, and automated incident response",
+  "name": "NoxSuite_Cyber_Defense_Matrix",
+  "id": "noxsuite_cyber_defense_matrix"
+}

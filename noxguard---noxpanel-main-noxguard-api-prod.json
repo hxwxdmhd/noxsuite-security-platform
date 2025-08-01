@@ -1,0 +1,245 @@
+{
+    "Id": "3bc1446469ca8c77cf9d2be1f6411538c0515c9a05b49059ed68ffba58e6bfd3",
+    "Created": "2025-07-30T10:45:03.354674834Z",
+    "Path": "python",
+    "Args": [
+        "main.py"
+    ],
+    "State": {
+        "Status": "created",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 128,
+        "Error": "failed to set up container networking: driver failed programming external connectivity on endpoint noxguard-api-prod (3ecd8a5abf60f1fca647993fe99a212828c78b5da18bd75c860fd64478740e08): Bind for 0.0.0.0:8080 failed: port is already allocated",
+        "StartedAt": "0001-01-01T00:00:00Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+    },
+    "Image": "sha256:b759c5763ac0d0448594328255983e3dc34ca10afe94e5e7a167f9935908b6bb",
+    "ResolvConfPath": "/var/lib/docker/containers/3bc1446469ca8c77cf9d2be1f6411538c0515c9a05b49059ed68ffba58e6bfd3/resolv.conf",
+    "HostnamePath": "/var/lib/docker/containers/3bc1446469ca8c77cf9d2be1f6411538c0515c9a05b49059ed68ffba58e6bfd3/hostname",
+    "HostsPath": "/var/lib/docker/containers/3bc1446469ca8c77cf9d2be1f6411538c0515c9a05b49059ed68ffba58e6bfd3/hosts",
+    "LogPath": "/var/lib/docker/containers/3bc1446469ca8c77cf9d2be1f6411538c0515c9a05b49059ed68ffba58e6bfd3/3bc1446469ca8c77cf9d2be1f6411538c0515c9a05b49059ed68ffba58e6bfd3-json.log",
+    "Name": "/noxguard-api-prod",
+    "RestartCount": 0,
+    "Driver": "overlayfs",
+    "Platform": "linux",
+    "MountLabel": "",
+    "ProcessLabel": "",
+    "AppArmorProfile": "",
+    "ExecIDs": null,
+    "HostConfig": {
+        "Binds": null,
+        "ContainerIDFile": "",
+        "LogConfig": {
+            "Type": "json-file",
+            "Config": {}
+        },
+        "NetworkMode": "noxguard---noxpanel-main_noxguard-prod",
+        "PortBindings": {
+            "8080/tcp": [
+                {
+                    "HostIp": "",
+                    "HostPort": "8081"
+                }
+            ]
+        },
+        "RestartPolicy": {
+            "Name": "unless-stopped",
+            "MaximumRetryCount": 0
+        },
+        "AutoRemove": false,
+        "VolumeDriver": "",
+        "VolumesFrom": null,
+        "ConsoleSize": [
+            0,
+            0
+        ],
+        "CapAdd": null,
+        "CapDrop": null,
+        "CgroupnsMode": "private",
+        "Dns": [],
+        "DnsOptions": [],
+        "DnsSearch": [],
+        "ExtraHosts": [],
+        "GroupAdd": null,
+        "IpcMode": "private",
+        "Cgroup": "",
+        "Links": null,
+        "OomScoreAdj": 0,
+        "PidMode": "",
+        "Privileged": false,
+        "PublishAllPorts": false,
+        "ReadonlyRootfs": false,
+        "SecurityOpt": [
+            "no-new-privileges:true"
+        ],
+        "UTSMode": "",
+        "UsernsMode": "",
+        "ShmSize": 67108864,
+        "Runtime": "runc",
+        "Isolation": "",
+        "CpuShares": 0,
+        "Memory": 0,
+        "NanoCpus": 0,
+        "CgroupParent": "",
+        "BlkioWeight": 0,
+        "BlkioWeightDevice": null,
+        "BlkioDeviceReadBps": null,
+        "BlkioDeviceWriteBps": null,
+        "BlkioDeviceReadIOps": null,
+        "BlkioDeviceWriteIOps": null,
+        "CpuPeriod": 0,
+        "CpuQuota": 0,
+        "CpuRealtimePeriod": 0,
+        "CpuRealtimeRuntime": 0,
+        "CpusetCpus": "",
+        "CpusetMems": "",
+        "Devices": null,
+        "DeviceCgroupRules": null,
+        "DeviceRequests": null,
+        "MemoryReservation": 0,
+        "MemorySwap": 0,
+        "MemorySwappiness": null,
+        "OomKillDisable": null,
+        "PidsLimit": null,
+        "Ulimits": null,
+        "CpuCount": 0,
+        "CpuPercent": 0,
+        "IOMaximumIOps": 0,
+        "IOMaximumBandwidth": 0,
+        "MaskedPaths": [
+            "/proc/asound",
+            "/proc/acpi",
+            "/proc/interrupts",
+            "/proc/kcore",
+            "/proc/keys",
+            "/proc/latency_stats",
+            "/proc/timer_list",
+            "/proc/timer_stats",
+            "/proc/sched_debug",
+            "/proc/scsi",
+            "/sys/firmware",
+            "/sys/devices/virtual/powercap"
+        ],
+        "ReadonlyPaths": [
+            "/proc/bus",
+            "/proc/fs",
+            "/proc/irq",
+            "/proc/sys",
+            "/proc/sysrq-trigger"
+        ]
+    },
+    "GraphDriver": {
+        "Data": null,
+        "Name": "overlayfs"
+    },
+    "Mounts": [],
+    "Config": {
+        "Hostname": "3bc1446469ca",
+        "Domainname": "",
+        "User": "appuser",
+        "AttachStdin": false,
+        "AttachStdout": true,
+        "AttachStderr": true,
+        "ExposedPorts": {
+            "8080/tcp": {}
+        },
+        "Tty": false,
+        "OpenStdin": false,
+        "StdinOnce": false,
+        "Env": [
+            "ENVIRONMENT=production",
+            "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+            "LANG=C.UTF-8",
+            "GPG_KEY=A035C8C19219BA821ECEA86B64E628F8D684696D",
+            "PYTHON_VERSION=3.11.13",
+            "PYTHON_SHA256=8fb5f9fbc7609fa822cb31549884575db7fd9657cbffb89510b5d7975963a83a"
+        ],
+        "Cmd": [
+            "python",
+            "main.py"
+        ],
+        "Healthcheck": {
+            "Test": [
+                "CMD-SHELL",
+                "curl -f http://localhost:8080/health || exit 1"
+            ],
+            "Interval": 30000000000,
+            "Timeout": 10000000000,
+            "Retries": 3
+        },
+        "Image": "noxguard---noxpanel-main-noxguard-api-prod",
+        "Volumes": null,
+        "WorkingDir": "/app",
+        "Entrypoint": null,
+        "OnBuild": null,
+        "Labels": {
+            "com.docker.compose.config-hash": "bc1dcbf644b3e74270e7cc884724c34a14c39157361d3a1d039e758a5aa26e47",
+            "com.docker.compose.container-number": "1",
+            "com.docker.compose.depends_on": "",
+            "com.docker.compose.oneoff": "False",
+            "com.docker.compose.project": "noxguard---noxpanel-main",
+            "com.docker.compose.project.config_files": "K:\\NoxGuard---NoxPanel-main\\docker-compose-ascii.yml",
+            "com.docker.compose.project.working_dir": "K:\\NoxGuard---NoxPanel-main",
+            "com.docker.compose.service": "noxguard-api-prod",
+            "com.docker.compose.version": "2.38.2"
+        }
+    },
+    "NetworkSettings": {
+        "Bridge": "",
+        "SandboxID": "",
+        "SandboxKey": "",
+        "Ports": {},
+        "HairpinMode": false,
+        "LinkLocalIPv6Address": "",
+        "LinkLocalIPv6PrefixLen": 0,
+        "SecondaryIPAddresses": null,
+        "SecondaryIPv6Addresses": null,
+        "EndpointID": "",
+        "Gateway": "",
+        "GlobalIPv6Address": "",
+        "GlobalIPv6PrefixLen": 0,
+        "IPAddress": "",
+        "IPPrefixLen": 0,
+        "IPv6Gateway": "",
+        "MacAddress": "",
+        "Networks": {
+            "noxguard---noxpanel-main_noxguard-prod": {
+                "IPAMConfig": null,
+                "Links": null,
+                "Aliases": [
+                    "noxguard-api-prod",
+                    "noxguard-api-prod"
+                ],
+                "MacAddress": "",
+                "DriverOpts": null,
+                "GwPriority": 0,
+                "NetworkID": "015763dba7647c1ff0fd4226b0b64b14d7b5b5131e8f3dc4ed283fac52ac4a42",
+                "EndpointID": "",
+                "Gateway": "",
+                "IPAddress": "",
+                "IPPrefixLen": 0,
+                "IPv6Gateway": "",
+                "GlobalIPv6Address": "",
+                "GlobalIPv6PrefixLen": 0,
+                "DNSNames": [
+                    "noxguard-api-prod",
+                    "3bc1446469ca"
+                ]
+            }
+        }
+    },
+    "ImageManifestDescriptor": {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:bdbee02d0fe373af14fb936ea77eab012e618d9e06d5dc6c83c1e1371c8b721a",
+        "size": 2192,
+        "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+        }
+    }
+}

@@ -1,0 +1,35 @@
+apiVersion: v2
+name: heimnetz
+description: Heimnetz NoxSuite - EMERGENCY SECURITY PATCH - Gate 2 Foundation
+type: application
+version: 2.0.0-security-emergency
+appVersion: "2.0-audit4"
+home: https://github.com/hxwxdmhd/NoxPanel_Suite_WIP
+sources:
+  - https://github.com/hxwxdmhd/NoxPanel_Suite_WIP
+maintainers:
+  - name: NoxSuite Security Team
+    email: security@noxsuite.dev
+keywords:
+  - noxsuite
+  - security-emergency
+  - audit-4-0
+  - gate-2-foundation
+  - emergency-patch
+annotations:
+  category: SecurityPatch
+  licenses: MIT
+  security.status: "CRITICAL - Emergency authentication implementation required"
+  audit.version: "4.0.0"
+  audit.date: "2025-07-29"
+  gate.status: "Gate 1: PASSED (80/100) | Gate 2: BLOCKED (0/100) | Gate 3: FAILED"
+  emergency.timeline: "6-hour security response activated"
+dependencies:
+  - name: redis
+    version: "^17.0.0"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
+  - name: postgresql
+    version: "^12.0.0"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled

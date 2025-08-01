@@ -1,0 +1,595 @@
+{
+  "data": {
+    "nodes": {
+      "data_ingestion_monitor": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Data Ingestion Monitor\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'data_sources',\n                \"type\": \"str\"\n            },\n            \"watch_directories\": {\n                \"display_name\": \"Watch Directories\",\n                \"value\": ['/data/incoming', '/logs', '/metrics'],\n                \"type\": \"str\"\n            },\n            \"file_types\": {\n                \"display_name\": \"File Types\",\n                \"value\": ['.csv', '.json', '.log', '.parquet'],\n                \"type\": \"str\"\n            },\n            \"real_time_processing\": {\n                \"display_name\": \"Real Time Processing\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"data_quality_check\": {\n                \"display_name\": \"Data Quality Check\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"data_ingestion_monitor\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "data_sources",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "watch_directories": {
+                "type": "int",
+                "required": false,
+                "value": [
+                  "/data/incoming",
+                  "/logs",
+                  "/metrics"
+                ],
+                "name": "watch_directories",
+                "show": true,
+                "advanced": false
+              },
+              "file_types": {
+                "type": "int",
+                "required": false,
+                "value": [
+                  ".csv",
+                  ".json",
+                  ".log",
+                  ".parquet"
+                ],
+                "name": "file_types",
+                "show": true,
+                "advanced": false
+              },
+              "real_time_processing": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "real_time_processing",
+                "show": true,
+                "advanced": false
+              },
+              "data_quality_check": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "data_quality_check",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Data Ingestion Monitor",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "data_sources",
+              "watch_directories": [
+                "/data/incoming",
+                "/logs",
+                "/metrics"
+              ],
+              "file_types": [
+                ".csv",
+                ".json",
+                ".log",
+                ".parquet"
+              ],
+              "real_time_processing": true,
+              "data_quality_check": true,
+              "langflow_id": "data_ingestion_monitor",
+              "display_name": "Data Ingestion Monitor"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "data_ingestion_monitor"
+        },
+        "id": "data_ingestion_monitor",
+        "position": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "ml_data_processor": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Ml Data Processor\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'parallel',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"data_cleaning\": \"clean_and_validate\", \"feature_extraction\": \"extract_insights\", \"anomaly_detection\": \"detect_outliers\", \"prediction_models\": \"generate_forecasts\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 4,\n                \"type\": \"str\"\n            },\n            \"machine_learning\": {\n                \"display_name\": \"Machine Learning\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"data_analytics\": {\n                \"display_name\": \"Data Analytics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"task_timeout\": {\n                \"display_name\": \"Task Timeout\",\n                \"value\": 120,\n                \"type\": \"str\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"ml_data_processor\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "parallel",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"data_cleaning\": \"clean_and_validate\", \"feature_extraction\": \"extract_insights\", \"anomaly_detection\": \"detect_outliers\", \"prediction_models\": \"generate_forecasts\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 4,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "machine_learning": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "machine_learning",
+                "show": true,
+                "advanced": false
+              },
+              "data_analytics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "data_analytics",
+                "show": true,
+                "advanced": false
+              },
+              "task_timeout": {
+                "type": "int",
+                "required": false,
+                "value": 120,
+                "name": "task_timeout",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Ml Data Processor",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "parallel",
+              "agent_tasks": "{\"data_cleaning\": \"clean_and_validate\", \"feature_extraction\": \"extract_insights\", \"anomaly_detection\": \"detect_outliers\", \"prediction_models\": \"generate_forecasts\"}",
+              "max_concurrent_agents": 4,
+              "machine_learning": true,
+              "data_analytics": true,
+              "task_timeout": 120,
+              "langflow_id": "ml_data_processor",
+              "display_name": "Ml Data Processor"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "ml_data_processor"
+        },
+        "id": "ml_data_processor",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "docker_ml_cluster": {
+        "data": {
+          "type": "NoxSuiteDockerManager",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteDockerManager(CustomComponent):\n    display_name: str = \"Docker Ml Cluster\"\n    description: str = \"NoxSuite NoxSuiteDockerManager Component\"\n    \n    def build_config(self):\n        return {\n            \"action\": {\n                \"display_name\": \"Action\",\n                \"value\": 'ml_cluster_management',\n                \"type\": \"str\"\n            },\n            \"auto_scale_workers\": {\n                \"display_name\": \"Auto Scale Workers\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"gpu_acceleration\": {\n                \"display_name\": \"Gpu Acceleration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"distributed_computing\": {\n                \"display_name\": \"Distributed Computing\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"model_deployment\": {\n                \"display_name\": \"Model Deployment\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"resource_optimization\": {\n                \"display_name\": \"Resource Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteDockerManager\",\n            \"component_id\": \"docker_ml_cluster\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "action": {
+                "type": "str",
+                "required": false,
+                "value": "ml_cluster_management",
+                "name": "action",
+                "show": true,
+                "advanced": false
+              },
+              "auto_scale_workers": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "auto_scale_workers",
+                "show": true,
+                "advanced": false
+              },
+              "gpu_acceleration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "gpu_acceleration",
+                "show": true,
+                "advanced": false
+              },
+              "distributed_computing": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "distributed_computing",
+                "show": true,
+                "advanced": false
+              },
+              "model_deployment": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "model_deployment",
+                "show": true,
+                "advanced": false
+              },
+              "resource_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "resource_optimization",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteDockerManager",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Docker Ml Cluster",
+            "documentation": "",
+            "custom_fields": {
+              "action": "ml_cluster_management",
+              "auto_scale_workers": true,
+              "gpu_acceleration": true,
+              "distributed_computing": true,
+              "model_deployment": true,
+              "resource_optimization": true,
+              "langflow_id": "docker_ml_cluster",
+              "display_name": "Docker Ml Cluster"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteDockerManager",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "docker_ml_cluster"
+        },
+        "id": "docker_ml_cluster",
+        "position": {
+          "x": 100,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "mcp_analytics_orchestrator": {
+        "data": {
+          "type": "NoxSuiteMCPOrchestrator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMCPOrchestrator(CustomComponent):\n    display_name: str = \"Mcp Analytics Orchestrator\"\n    description: str = \"NoxSuite NoxSuiteMCPOrchestrator Component\"\n    \n    def build_config(self):\n        return {\n            \"operation\": {\n                \"display_name\": \"Operation\",\n                \"value\": 'analytics_pipeline',\n                \"type\": \"str\"\n            },\n            \"data_flow_management\": {\n                \"display_name\": \"Data Flow Management\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"real_time_analytics\": {\n                \"display_name\": \"Real Time Analytics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"batch_processing\": {\n                \"display_name\": \"Batch Processing\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"model_serving\": {\n                \"display_name\": \"Model Serving\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"result_visualization\": {\n                \"display_name\": \"Result Visualization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMCPOrchestrator\",\n            \"component_id\": \"mcp_analytics_orchestrator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "operation": {
+                "type": "str",
+                "required": false,
+                "value": "analytics_pipeline",
+                "name": "operation",
+                "show": true,
+                "advanced": false
+              },
+              "data_flow_management": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "data_flow_management",
+                "show": true,
+                "advanced": false
+              },
+              "real_time_analytics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "real_time_analytics",
+                "show": true,
+                "advanced": false
+              },
+              "batch_processing": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "batch_processing",
+                "show": true,
+                "advanced": false
+              },
+              "model_serving": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "model_serving",
+                "show": true,
+                "advanced": false
+              },
+              "result_visualization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "result_visualization",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMCPOrchestrator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Mcp Analytics Orchestrator",
+            "documentation": "",
+            "custom_fields": {
+              "operation": "analytics_pipeline",
+              "data_flow_management": true,
+              "real_time_analytics": true,
+              "batch_processing": true,
+              "model_serving": true,
+              "result_visualization": true,
+              "langflow_id": "mcp_analytics_orchestrator",
+              "display_name": "Mcp Analytics Orchestrator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMCPOrchestrator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "mcp_analytics_orchestrator"
+        },
+        "id": "mcp_analytics_orchestrator",
+        "position": {
+          "x": 400,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "insights_generator": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Insights Generator\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'business_intelligence',\n                \"type\": \"str\"\n            },\n            \"generate_reports\": {\n                \"display_name\": \"Generate Reports\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"automated_insights\": {\n                \"display_name\": \"Automated Insights\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"trend_analysis\": {\n                \"display_name\": \"Trend Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"predictive_analytics\": {\n                \"display_name\": \"Predictive Analytics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"dashboard_updates\": {\n                \"display_name\": \"Dashboard Updates\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"insights_generator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "business_intelligence",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "generate_reports": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "generate_reports",
+                "show": true,
+                "advanced": false
+              },
+              "automated_insights": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "automated_insights",
+                "show": true,
+                "advanced": false
+              },
+              "trend_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "trend_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "predictive_analytics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "predictive_analytics",
+                "show": true,
+                "advanced": false
+              },
+              "dashboard_updates": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "dashboard_updates",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Insights Generator",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "business_intelligence",
+              "generate_reports": true,
+              "automated_insights": true,
+              "trend_analysis": true,
+              "predictive_analytics": true,
+              "dashboard_updates": true,
+              "langflow_id": "insights_generator",
+              "display_name": "Insights Generator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "insights_generator"
+        },
+        "id": "insights_generator",
+        "position": {
+          "x": 700,
+          "y": 200
+        },
+        "type": "genericNode"
+      }
+    },
+    "edges": [
+      {
+        "source": "data_ingestion_monitor",
+        "target": "ml_data_processor",
+        "sourceHandle": "new_data",
+        "targetHandle": "processing_trigger",
+        "id": "e1",
+        "type": "default"
+      },
+      {
+        "source": "ml_data_processor",
+        "target": "docker_ml_cluster",
+        "sourceHandle": "ml_jobs",
+        "targetHandle": "cluster_trigger",
+        "id": "e2",
+        "type": "default"
+      },
+      {
+        "source": "ml_data_processor",
+        "target": "mcp_analytics_orchestrator",
+        "sourceHandle": "pipeline_config",
+        "targetHandle": "orchestration_trigger",
+        "id": "e3",
+        "type": "default"
+      },
+      {
+        "source": "docker_ml_cluster",
+        "target": "insights_generator",
+        "sourceHandle": "ml_results",
+        "targetHandle": "insights_input",
+        "id": "e4",
+        "type": "default"
+      },
+      {
+        "source": "mcp_analytics_orchestrator",
+        "target": "insights_generator",
+        "sourceHandle": "analytics_output",
+        "targetHandle": "insights_input",
+        "id": "e5",
+        "type": "default"
+      }
+    ],
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "description": "Intelligent Data Pipeline with ML Analytics and automated data processing workflows",
+  "name": "NoxSuite_Smart_Data_Pipeline",
+  "id": "noxsuite_smart_data_pipeline"
+}

@@ -1,0 +1,66 @@
+networks:
+  noxguard-net:
+    driver: bridge
+services:
+  grafana:
+    container_name: noxguard-grafana
+    depends_on:
+    - prometheus
+    environment:
+    - GF_SECURITY_ADMIN_PASSWORD=noxguard123
+    image: grafana/grafana-oss:latest
+    networks:
+    - noxguard-net
+    ports:
+    - 3001:3000
+    restart: unless-stopped
+  noxguard-api:
+    build: ./production_backend
+    container_name: noxguard-api
+    environment:
+    - ENVIRONMENT=production
+    healthcheck:
+      interval: 30s
+      retries: 3
+      test:
+      - CMD
+      - curl
+      - -f
+      - http://localhost:8000/health
+      timeout: 10s
+    networks:
+    - noxguard-net
+    ports:
+    - 8000:8000
+    restart: unless-stopped
+    security_opt:
+    - no-new-privileges:true
+  noxguard-monitor:
+    build: ./production_monitor
+    container_name: noxguard-monitor
+    depends_on:
+    - noxguard-api
+    environment:
+    - ENVIRONMENT=production
+    networks:
+    - noxguard-net
+    ports:
+    - 8001:8001
+    restart: unless-stopped
+    security_opt:
+    - no-new-privileges:true
+  prometheus:
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --storage.tsdb.retention.time=200h
+    - --web.enable-lifecycle
+    container_name: noxguard-prometheus
+    image: prom/prometheus:latest
+    networks:
+    - noxguard-net
+    ports:
+    - 9090:9090
+    restart: unless-stopped
+    volumes:
+    - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro

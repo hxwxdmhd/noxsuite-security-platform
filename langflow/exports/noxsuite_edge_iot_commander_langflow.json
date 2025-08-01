@@ -1,0 +1,789 @@
+{
+  "data": {
+    "nodes": {
+      "iot_device_manager": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Iot Device Manager\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'iot_device_monitoring',\n                \"type\": \"str\"\n            },\n            \"device_discovery\": {\n                \"display_name\": \"Device Discovery\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"health_monitoring\": {\n                \"display_name\": \"Health Monitoring\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"firmware_management\": {\n                \"display_name\": \"Firmware Management\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"connectivity_tracking\": {\n                \"display_name\": \"Connectivity Tracking\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"power_optimization\": {\n                \"display_name\": \"Power Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_monitoring\": {\n                \"display_name\": \"Security Monitoring\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_analytics\": {\n                \"display_name\": \"Performance Analytics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"iot_device_manager\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "iot_device_monitoring",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "device_discovery": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "device_discovery",
+                "show": true,
+                "advanced": false
+              },
+              "health_monitoring": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "health_monitoring",
+                "show": true,
+                "advanced": false
+              },
+              "firmware_management": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "firmware_management",
+                "show": true,
+                "advanced": false
+              },
+              "connectivity_tracking": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "connectivity_tracking",
+                "show": true,
+                "advanced": false
+              },
+              "power_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "power_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "security_monitoring": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_monitoring",
+                "show": true,
+                "advanced": false
+              },
+              "performance_analytics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_analytics",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Iot Device Manager",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "iot_device_monitoring",
+              "device_discovery": true,
+              "health_monitoring": true,
+              "firmware_management": true,
+              "connectivity_tracking": true,
+              "power_optimization": true,
+              "security_monitoring": true,
+              "performance_analytics": true,
+              "langflow_id": "iot_device_manager",
+              "display_name": "Iot Device Manager"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "iot_device_manager"
+        },
+        "id": "iot_device_manager",
+        "position": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "edge_computing_orchestrator": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Edge Computing Orchestrator\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'edge_computing_optimization',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"resource_allocation\": \"optimize_edge_resources\", \"workload_distribution\": \"balance_processing_loads\", \"latency_optimization\": \"minimize_response_times\", \"data_processing\": \"real_time_analytics\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 8,\n                \"type\": \"str\"\n            },\n            \"edge_optimization\": {\n                \"display_name\": \"Edge Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"real_time_processing\": {\n                \"display_name\": \"Real Time Processing\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"adaptive_scheduling\": {\n                \"display_name\": \"Adaptive Scheduling\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"task_timeout\": {\n                \"display_name\": \"Task Timeout\",\n                \"value\": 15,\n                \"type\": \"str\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"edge_computing_orchestrator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "edge_computing_optimization",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"resource_allocation\": \"optimize_edge_resources\", \"workload_distribution\": \"balance_processing_loads\", \"latency_optimization\": \"minimize_response_times\", \"data_processing\": \"real_time_analytics\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 8,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "edge_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "edge_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "real_time_processing": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "real_time_processing",
+                "show": true,
+                "advanced": false
+              },
+              "adaptive_scheduling": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "adaptive_scheduling",
+                "show": true,
+                "advanced": false
+              },
+              "task_timeout": {
+                "type": "int",
+                "required": false,
+                "value": 15,
+                "name": "task_timeout",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Edge Computing Orchestrator",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "edge_computing_optimization",
+              "agent_tasks": "{\"resource_allocation\": \"optimize_edge_resources\", \"workload_distribution\": \"balance_processing_loads\", \"latency_optimization\": \"minimize_response_times\", \"data_processing\": \"real_time_analytics\"}",
+              "max_concurrent_agents": 8,
+              "edge_optimization": true,
+              "real_time_processing": true,
+              "adaptive_scheduling": true,
+              "task_timeout": 15,
+              "langflow_id": "edge_computing_orchestrator",
+              "display_name": "Edge Computing Orchestrator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "edge_computing_orchestrator"
+        },
+        "id": "edge_computing_orchestrator",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "smart_container_fleet": {
+        "data": {
+          "type": "NoxSuiteDockerManager",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteDockerManager(CustomComponent):\n    display_name: str = \"Smart Container Fleet\"\n    description: str = \"NoxSuite NoxSuiteDockerManager Component\"\n    \n    def build_config(self):\n        return {\n            \"action\": {\n                \"display_name\": \"Action\",\n                \"value\": 'edge_container_orchestration',\n                \"type\": \"str\"\n            },\n            \"lightweight_containers\": {\n                \"display_name\": \"Lightweight Containers\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"edge_deployment\": {\n                \"display_name\": \"Edge Deployment\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"resource_optimization\": {\n                \"display_name\": \"Resource Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"offline_capability\": {\n                \"display_name\": \"Offline Capability\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"auto_scaling\": {\n                \"display_name\": \"Auto Scaling\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"fault_tolerance\": {\n                \"display_name\": \"Fault Tolerance\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_hardening\": {\n                \"display_name\": \"Security Hardening\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteDockerManager\",\n            \"component_id\": \"smart_container_fleet\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "action": {
+                "type": "str",
+                "required": false,
+                "value": "edge_container_orchestration",
+                "name": "action",
+                "show": true,
+                "advanced": false
+              },
+              "lightweight_containers": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "lightweight_containers",
+                "show": true,
+                "advanced": false
+              },
+              "edge_deployment": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "edge_deployment",
+                "show": true,
+                "advanced": false
+              },
+              "resource_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "resource_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "offline_capability": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "offline_capability",
+                "show": true,
+                "advanced": false
+              },
+              "auto_scaling": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "auto_scaling",
+                "show": true,
+                "advanced": false
+              },
+              "fault_tolerance": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "fault_tolerance",
+                "show": true,
+                "advanced": false
+              },
+              "security_hardening": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_hardening",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteDockerManager",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Smart Container Fleet",
+            "documentation": "",
+            "custom_fields": {
+              "action": "edge_container_orchestration",
+              "lightweight_containers": true,
+              "edge_deployment": true,
+              "resource_optimization": true,
+              "offline_capability": true,
+              "auto_scaling": true,
+              "fault_tolerance": true,
+              "security_hardening": true,
+              "langflow_id": "smart_container_fleet",
+              "display_name": "Smart Container Fleet"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteDockerManager",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "smart_container_fleet"
+        },
+        "id": "smart_container_fleet",
+        "position": {
+          "x": 100,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "edge_mcp_coordinator": {
+        "data": {
+          "type": "NoxSuiteMCPOrchestrator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMCPOrchestrator(CustomComponent):\n    display_name: str = \"Edge Mcp Coordinator\"\n    description: str = \"NoxSuite NoxSuiteMCPOrchestrator Component\"\n    \n    def build_config(self):\n        return {\n            \"operation\": {\n                \"display_name\": \"Operation\",\n                \"value\": 'edge_workflow_coordination',\n                \"type\": \"str\"\n            },\n            \"edge_device_management\": {\n                \"display_name\": \"Edge Device Management\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"distributed_processing\": {\n                \"display_name\": \"Distributed Processing\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"data_synchronization\": {\n                \"display_name\": \"Data Synchronization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"offline_operation\": {\n                \"display_name\": \"Offline Operation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"bandwidth_optimization\": {\n                \"display_name\": \"Bandwidth Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"edge_ai_deployment\": {\n                \"display_name\": \"Edge Ai Deployment\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"iot_integration\": {\n                \"display_name\": \"Iot Integration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMCPOrchestrator\",\n            \"component_id\": \"edge_mcp_coordinator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "operation": {
+                "type": "str",
+                "required": false,
+                "value": "edge_workflow_coordination",
+                "name": "operation",
+                "show": true,
+                "advanced": false
+              },
+              "edge_device_management": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "edge_device_management",
+                "show": true,
+                "advanced": false
+              },
+              "distributed_processing": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "distributed_processing",
+                "show": true,
+                "advanced": false
+              },
+              "data_synchronization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "data_synchronization",
+                "show": true,
+                "advanced": false
+              },
+              "offline_operation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "offline_operation",
+                "show": true,
+                "advanced": false
+              },
+              "bandwidth_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "bandwidth_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "edge_ai_deployment": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "edge_ai_deployment",
+                "show": true,
+                "advanced": false
+              },
+              "iot_integration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "iot_integration",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMCPOrchestrator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Edge Mcp Coordinator",
+            "documentation": "",
+            "custom_fields": {
+              "operation": "edge_workflow_coordination",
+              "edge_device_management": true,
+              "distributed_processing": true,
+              "data_synchronization": true,
+              "offline_operation": true,
+              "bandwidth_optimization": true,
+              "edge_ai_deployment": true,
+              "iot_integration": true,
+              "langflow_id": "edge_mcp_coordinator",
+              "display_name": "Edge Mcp Coordinator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMCPOrchestrator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "edge_mcp_coordinator"
+        },
+        "id": "edge_mcp_coordinator",
+        "position": {
+          "x": 400,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "ai_edge_processor": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Ai Edge Processor\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'edge_ai_processing',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"computer_vision\": \"process_camera_feeds\", \"sensor_fusion\": \"combine_sensor_data\", \"predictive_maintenance\": \"analyze_device_health\", \"anomaly_detection\": \"identify_unusual_patterns\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 6,\n                \"type\": \"str\"\n            },\n            \"edge_ai\": {\n                \"display_name\": \"Edge Ai\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"real_time_inference\": {\n                \"display_name\": \"Real Time Inference\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"model_optimization\": {\n                \"display_name\": \"Model Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"federated_learning\": {\n                \"display_name\": \"Federated Learning\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"ai_edge_processor\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "edge_ai_processing",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"computer_vision\": \"process_camera_feeds\", \"sensor_fusion\": \"combine_sensor_data\", \"predictive_maintenance\": \"analyze_device_health\", \"anomaly_detection\": \"identify_unusual_patterns\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 6,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "edge_ai": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "edge_ai",
+                "show": true,
+                "advanced": false
+              },
+              "real_time_inference": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "real_time_inference",
+                "show": true,
+                "advanced": false
+              },
+              "model_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "model_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "federated_learning": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "federated_learning",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Ai Edge Processor",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "edge_ai_processing",
+              "agent_tasks": "{\"computer_vision\": \"process_camera_feeds\", \"sensor_fusion\": \"combine_sensor_data\", \"predictive_maintenance\": \"analyze_device_health\", \"anomaly_detection\": \"identify_unusual_patterns\"}",
+              "max_concurrent_agents": 6,
+              "edge_ai": true,
+              "real_time_inference": true,
+              "model_optimization": true,
+              "federated_learning": true,
+              "langflow_id": "ai_edge_processor",
+              "display_name": "Ai Edge Processor"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "ai_edge_processor"
+        },
+        "id": "ai_edge_processor",
+        "position": {
+          "x": 700,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "iot_intelligence_hub": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Iot Intelligence Hub\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'iot_intelligence_analytics',\n                \"type\": \"str\"\n            },\n            \"device_behavior_analysis\": {\n                \"display_name\": \"Device Behavior Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"predictive_analytics\": {\n                \"display_name\": \"Predictive Analytics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"usage_pattern_learning\": {\n                \"display_name\": \"Usage Pattern Learning\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"optimization_recommendations\": {\n                \"display_name\": \"Optimization Recommendations\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_threat_detection\": {\n                \"display_name\": \"Security Threat Detection\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_optimization\": {\n                \"display_name\": \"Performance Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"iot_intelligence_hub\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "iot_intelligence_analytics",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "device_behavior_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "device_behavior_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "predictive_analytics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "predictive_analytics",
+                "show": true,
+                "advanced": false
+              },
+              "usage_pattern_learning": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "usage_pattern_learning",
+                "show": true,
+                "advanced": false
+              },
+              "optimization_recommendations": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "optimization_recommendations",
+                "show": true,
+                "advanced": false
+              },
+              "security_threat_detection": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_threat_detection",
+                "show": true,
+                "advanced": false
+              },
+              "performance_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_optimization",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Iot Intelligence Hub",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "iot_intelligence_analytics",
+              "device_behavior_analysis": true,
+              "predictive_analytics": true,
+              "usage_pattern_learning": true,
+              "optimization_recommendations": true,
+              "security_threat_detection": true,
+              "performance_optimization": true,
+              "langflow_id": "iot_intelligence_hub",
+              "display_name": "Iot Intelligence Hub"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "iot_intelligence_hub"
+        },
+        "id": "iot_intelligence_hub",
+        "position": {
+          "x": 700,
+          "y": 300
+        },
+        "type": "genericNode"
+      }
+    },
+    "edges": [
+      {
+        "source": "iot_device_manager",
+        "target": "edge_computing_orchestrator",
+        "sourceHandle": "device_data",
+        "targetHandle": "orchestration_input",
+        "id": "e1",
+        "type": "default"
+      },
+      {
+        "source": "edge_computing_orchestrator",
+        "target": "smart_container_fleet",
+        "sourceHandle": "deployment_plan",
+        "targetHandle": "container_trigger",
+        "id": "e2",
+        "type": "default"
+      },
+      {
+        "source": "edge_computing_orchestrator",
+        "target": "edge_mcp_coordinator",
+        "sourceHandle": "workflow_plan",
+        "targetHandle": "coordination_trigger",
+        "id": "e3",
+        "type": "default"
+      },
+      {
+        "source": "iot_device_manager",
+        "target": "ai_edge_processor",
+        "sourceHandle": "sensor_data",
+        "targetHandle": "ai_input",
+        "id": "e4",
+        "type": "default"
+      },
+      {
+        "source": "smart_container_fleet",
+        "target": "iot_intelligence_hub",
+        "sourceHandle": "performance_metrics",
+        "targetHandle": "analytics_input",
+        "id": "e5",
+        "type": "default"
+      },
+      {
+        "source": "edge_mcp_coordinator",
+        "target": "iot_intelligence_hub",
+        "sourceHandle": "coordination_metrics",
+        "targetHandle": "analytics_input",
+        "id": "e6",
+        "type": "default"
+      },
+      {
+        "source": "ai_edge_processor",
+        "target": "iot_intelligence_hub",
+        "sourceHandle": "ai_insights",
+        "targetHandle": "analytics_input",
+        "id": "e7",
+        "type": "default"
+      }
+    ],
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "description": "Intelligent Edge Computing & IoT Device Management System with real-time AI processing and distributed coordination",
+  "name": "NoxSuite_Edge_IoT_Commander",
+  "id": "noxsuite_edge_iot_commander"
+}

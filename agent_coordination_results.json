@@ -1,0 +1,15 @@
+{
+  "coordination_result": {
+    "timestamp": "2025-07-29T17:36:01.410186",
+    "agents": {
+      "supermaven": {
+        "status": "unknown",
+        "last_ping": null
+      },
+      "langflow": {
+        "status": "unavailable",
+        "last_ping": null
+      },
+      "ollama": {
+        "status": "healthy",
+        "last_ping": 

@@ -1,0 +1,26 @@
+networks:
+  noxguard-prod:
+    driver: bridge
+services:
+  noxguard-api-prod:
+    build: ./noxguard_production_api
+    container_name: noxguard-api-prod
+    environment:
+    - ENVIRONMENT=production
+    networks:
+    - noxguard-prod
+    ports:
+    - 8080:8080
+    restart: unless-stopped
+    security_opt:
+    - no-new-privileges:true
+  noxguard-prometheus-prod:
+    container_name: noxguard-prometheus-prod
+    image: prom/prometheus:v2.40.0
+    networks:
+    - noxguard-prod
+    ports:
+    - 9091:9090
+    restart: unless-stopped
+    volumes:
+    - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro

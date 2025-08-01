@@ -1,0 +1,201 @@
+{
+  "timestamp": "2025-07-30T13:32:23.595516",
+  "matrix_data": [
+    {
+      "module": "Auth Security",
+      "status": "\ud83d\udd34",
+      "status_text": "Needs Work",
+      "completion_pct": 0.0,
+      "testsprite_pass_pct": 98,
+      "linked_failing_tests": [
+        "TS-Auth-12"
+      ],
+      "action_notes": "Implement missing files (0/4)",
+      "description": "Authentication, JWT, MFA, RBAC implementation"
+    },
+    {
+      "module": "Backend Api",
+      "status": "\ud83d\udd34",
+      "status_text": "Needs Work",
+      "completion_pct": 0.0,
+      "testsprite_pass_pct": 82,
+      "linked_failing_tests": [
+        "TS-API-09",
+        "TS-API-15",
+        "TS-API-22"
+      ],
+      "action_notes": "Implement missing files (0/4); Fix failing tests (3 failures)",
+      "description": "FastAPI backend services and endpoints"
+    },
+    {
+      "module": "Frontend Ui",
+      "status": "\ud83d\udd34",
+      "status_text": "Needs Work",
+      "completion_pct": 0.0,
+      "testsprite_pass_pct": 78,
+      "linked_failing_tests": [
+        "TS-UI-07",
+        "TS-UI-14",
+        "TS-UI-19"
+      ],
+      "action_notes": "Implement missing files (0/4); Fix failing tests (3 failures)",
+      "description": "React frontend UI components"
+    },
+    {
+      "module": "Monitoring",
+      "status": "\ud83d\udd34",
+      "status_text": "Needs Work",
+      "completion_pct": 0.0,
+      "testsprite_pass_pct": 96,
+      "linked_failing_tests": [
+        "TS-Monitor-04"
+      ],
+      "action_notes": "Implement missing files (0/3)",
+      "description": "Prometheus/Grafana monitoring setup"
+    },
+    {
+      "module": "Testing",
+      "status": "\ud83d\udd34",
+      "status_text": "Needs Work",
+      "completion_pct": 0.0,
+      "testsprite_pass_pct": 100,
+      "linked_failing_tests": [],
+      "action_notes": "Implement missing files (0/3)",
+      "description": "TestSprite integration and testing framework"
+    },
+    {
+      "module": "Installer",
+      "status": "\ud83d\udd34",
+      "status_text": "Needs Work",
+      "completion_pct": 23.3,
+      "testsprite_pass_pct": 100,
+      "linked_failing_tests": [],
+      "action_notes": "Implement missing files (1/3)",
+      "description": "Windows 11 installation and deployment scripts"
+    },
+    {
+      "module": "Docker",
+      "status": "\u26a0\ufe0f",
+      "status_text": "In Progress",
+      "completion_pct": 70.0,
+      "testsprite_pass_pct": 80,
+      "linked_failing_tests": [
+        "TS-Docker-05",
+        "TS-Docker-11"
+      ],
+      "action_notes": "Implement missing files (3/3); Fix failing tests (2 failures)",
+      "description": "Docker containerization and orchestration"
+    }
+  ],
+  "summary": {
+    "total_modules": 7,
+    "modules_complete": 0,
+    "modules_in_progress": 1,
+    "modules_needs_work": 6,
+    "overall_pass_rate": 90.6
+  },
+  "failing_tests_detail": {
+    "auth_security": {
+      "failed_tests": [
+        "TS-Auth-12"
+      ],
+      "total_tests": 25,
+      "module_description": "Authentication, JWT, MFA, RBAC implementation"
+    },
+    "backend_api": {
+      "failed_tests": [
+        "TS-API-09",
+        "TS-API-15",
+        "TS-API-22"
+      ],
+      "total_tests": 34,
+      "module_description": "FastAPI backend services and endpoints"
+    },
+    "frontend_ui": {
+      "failed_tests": [
+        "TS-UI-07",
+        "TS-UI-14",
+        "TS-UI-19"
+      ],
+      "total_tests": 28,
+      "module_description": "React frontend UI components"
+    },
+    "monitoring": {
+      "failed_tests": [
+        "TS-Monitor-04"
+      ],
+      "total_tests": 18,
+      "module_description": "Prometheus/Grafana monitoring setup"
+    },
+    "docker": {
+      "failed_tests": [
+        "TS-Docker-05",
+        "TS-Docker-11"
+      ],
+      "total_tests": 20,
+      "module_description": "Docker containerization and orchestration"
+    }
+  },
+  "priority_actions": [
+    {
+      "test_id": "TS-Auth-12",
+      "module": "auth_security",
+      "priority": "\ud83d\udd25 Critical",
+      "description": "Authentication, JWT, MFA, RBAC implementation"
+    },
+    {
+      "test_id": "TS-API-09",
+      "module": "backend_api",
+      "priority": "\ud83d\udd25 Critical",
+      "description": "FastAPI backend services and endpoints"
+    },
+    {
+      "test_id": "TS-API-15",
+      "module": "backend_api",
+      "priority": "\ud83d\udd25 Critical",
+      "description": "FastAPI backend services and endpoints"
+    },
+    {
+      "test_id": "TS-API-22",
+      "module": "backend_api",
+      "priority": "\ud83d\udd25 Critical",
+      "description": "FastAPI backend services and endpoints"
+    },
+    {
+      "test_id": "TS-UI-07",
+      "module": "frontend_ui",
+      "priority": "\u26a0\ufe0f High",
+      "description": "React frontend UI components"
+    },
+    {
+      "test_id": "TS-UI-14",
+      "module": "frontend_ui",
+      "priority": "\u26a0\ufe0f High",
+      "description": "React frontend UI components"
+    },
+    {
+      "test_id": "TS-UI-19",
+      "module": "frontend_ui",
+      "priority": "\u26a0\ufe0f High",
+      "description": "React frontend UI components"
+    },
+    {
+      "test_id": "TS-Monitor-04",
+      "module": "monitoring",
+      "priority": "\ud83d\udee0\ufe0f Medium",
+      "description": "Prometheus/Grafana monitoring setup"
+    },
+    {
+      "test_id": "TS-Docker-05",
+      "module": "docker",
+      "priority": "\ud83d\udee0\ufe0f Medium",
+      "description": "Docker containerization and orchestration"
+    },
+    {
+      "test_id": "TS-Docker-11",
+      "module": "docker",
+      "priority": "\ud83d\udee0\ufe0f Medium",
+      "description": "Docker containerization and orchestration"
+    }
+  ]
+}

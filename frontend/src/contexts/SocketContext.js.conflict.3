@@ -1,0 +1,430 @@
+/**
+ * Socket Context for Real-time WebSocket Integration
+ * Manages WebSocket connections and real-time data streaming
+ * @author @hxwxdmhd
+ * @version 1.0.0
+ */
+
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import io from 'socket.io-client';
+import { useAccessibility } from './AccessibilityContext';
+
+// Socket connection status
+const CONNECTION_STATUS = {
+  DISCONNECTED: 'disconnected',
+  CONNECTING: 'connecting',
+  CONNECTED: 'connected',
+  RECONNECTING: 'reconnecting',
+  ERROR: 'error'
+};
+
+// Event types for real-time data
+const EVENT_TYPES = {
+  // Dashboard events
+  DASHBOARD_UPDATE: 'dashboard_update',
+  METRICS_UPDATE: 'metrics_update',
+  SYSTEM_STATUS: 'system_status',
+  
+  // Security events
+  SECURITY_ALERT: 'security_alert',
+  THREAT_DETECTED: 'threat_detected',
+  SCAN_COMPLETE: 'scan_complete',
+  
+  // Crawler events
+  CRAWLER_STATUS: 'crawler_status',
+  CRAWLER_PROGRESS: 'crawler_progress',
+  CRAWLER_RESULTS: 'crawler_results',
+  
+  // Plugin events
+  PLUGIN_STATUS: 'plugin_status',
+  PLUGIN_INSTALLED: 'plugin_installed',
+  PLUGIN_ERROR: 'plugin_error',
+  
+  // System events
+  NOTIFICATION: 'notification',
+  USER_ACTIVITY: 'user_activity',
+  HEALTH_CHECK: 'health_check'
+};
+
+// Create context
+const SocketContext = createContext();
+
+// Provider component
+export const SocketProvider = ({ children }) => {
+  const [socket, setSocket] = useState(null);
+  const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS.DISCONNECTED);
+  const [lastError, setLastError] = useState(null);
+  const [reconnectAttempts, setReconnectAttempts] = useState(0);
+  
+  // Real-time data state
+  const [dashboardData, setDashboardData] = useState({});
+  const [securityAlerts, setSecurityAlerts] = useState([]);
+  const [crawlerStatus, setCrawlerStatus] = useState({});
+  const [systemMetrics, setSystemMetrics] = useState({});
+  const [notifications, setNotifications] = useState([]);
+  
+  const { announceToScreenReader, screenReader } = useAccessibility();
+
+  // Initialize socket connection
+  useEffect(() => {
+    const initializeSocket = () => {
+      try {
+        setConnectionStatus(CONNECTION_STATUS.CONNECTING);
+        
+        const newSocket = io(process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000', {
+          transports: ['websocket', 'polling'],
+          upgrade: true,
+          rememberUpgrade: true,
+          timeout: 20000,
+          retries: 3,
+          retryDelayStart: 1000,
+          retryDelayMax: 5000,
+          maxReconnectionDelay: 10000,
+          reconnectionAttempts: 5,
+          forceNew: true
+        });
+
+        // Connection event handlers
+        newSocket.on('connect', () => {
+          console.log('✅ Socket connected:', newSocket.id);
+          setConnectionStatus(CONNECTION_STATUS.CONNECTED);
+          setLastError(null);
+          setReconnectAttempts(0);
+          
+          if (screenReader.announcements) {
+            announceToScreenReader('Real-time connection established');
+          }
+        });
+
+        newSocket.on('disconnect', (reason) => {
+          console.log('🔌 Socket disconnected:', reason);
+          setConnectionStatus(CONNECTION_STATUS.DISCONNECTED);
+          
+          if (screenReader.announcements) {
+            announceToScreenReader('Real-time connection lost');
+          }
+        });
+
+        newSocket.on('connect_error', (error) => {
+          console.error('❌ Socket connection error:', error);
+          setConnectionStatus(CONNECTION_STATUS.ERROR);
+          setLastError(error.message);
+        });
+
+        newSocket.on('reconnect', (attemptNumber) => {
+          console.log(`🔄 Socket reconnected after ${attemptNumber} attempts`);
+          setConnectionStatus(CONNECTION_STATUS.CONNECTED);
+          setReconnectAttempts(attemptNumber);
+          
+          if (screenReader.announcements) {
+            announceToScreenReader('Real-time connection restored');
+          }
+        });
+
+        newSocket.on('reconnect_attempt', (attemptNumber) => {
+          console.log(`🔄 Socket reconnection attempt ${attemptNumber}`);
+          setConnectionStatus(CONNECTION_STATUS.RECONNECTING);
+          setReconnectAttempts(attemptNumber);
+        });
+
+        newSocket.on('reconnect_error', (error) => {
+          console.error('❌ Socket reconnection error:', error);
+          setLastError(error.message);
+        });
+
+        // Real-time event handlers
+        setupEventHandlers(newSocket);
+        
+        setSocket(newSocket);
+        
+      } catch (error) {
+        console.error('❌ Failed to initialize socket:', error);
+        setConnectionStatus(CONNECTION_STATUS.ERROR);
+        setLastError(error.message);
+      }
+    };
+
+    initializeSocket();
+
+    // Cleanup on unmount
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+  }, []);
+
+  // Setup event handlers for real-time data
+  const setupEventHandlers = useCallback((socketInstance) => {
+    // Dashboard data updates
+    socketInstance.on(EVENT_TYPES.DASHBOARD_UPDATE, (data) => {
+      setDashboardData(prevData => ({
+        ...prevData,
+        ...data,
+        lastUpdate: new Date().toISOString()
+      }));
+    });
+
+    socketInstance.on(EVENT_TYPES.METRICS_UPDATE, (metrics) => {
+      setSystemMetrics(prevMetrics => ({
+        ...prevMetrics,
+        ...metrics,
+        timestamp: new Date().toISOString()
+      }));
+    });
+
+    // Security events
+    socketInstance.on(EVENT_TYPES.SECURITY_ALERT, (alert) => {
+      setSecurityAlerts(prevAlerts => {
+        const newAlerts = [alert, ...prevAlerts.slice(0, 99)]; // Keep last 100 alerts
+        
+        // Announce critical alerts to screen reader
+        if (alert.severity === 'critical' && screenReader.announcements) {
+          announceToScreenReader(`Critical security alert: ${alert.title}`);
+        }
+        
+        return newAlerts;
+      });
+      
+      // Add to notifications
+      addNotification({
+        id: alert.id,
+        type: 'security',
+        severity: alert.severity,
+        title: alert.title,
+        message: alert.message,
+        timestamp: alert.timestamp
+      });
+    });
+
+    socketInstance.on(EVENT_TYPES.THREAT_DETECTED, (threat) => {
+      if (screenReader.announcements) {
+        announceToScreenReader(`Threat detected: ${threat.type}`);
+      }
+    });
+
+    // Crawler events
+    socketInstance.on(EVENT_TYPES.CRAWLER_STATUS, (status) => {
+      setCrawlerStatus(prevStatus => ({
+        ...prevStatus,
+        ...status,
+        lastUpdate: new Date().toISOString()
+      }));
+    });
+
+    socketInstance.on(EVENT_TYPES.CRAWLER_PROGRESS, (progress) => {
+      setCrawlerStatus(prevStatus => ({
+        ...prevStatus,
+        progress: progress,
+        lastUpdate: new Date().toISOString()
+      }));
+    });
+
+    // System notifications
+    socketInstance.on(EVENT_TYPES.NOTIFICATION, (notification) => {
+      addNotification(notification);
+      
+      if (notification.announce && screenReader.announcements) {
+        announceToScreenReader(notification.message);
+      }
+    });
+
+    // Health check responses
+    socketInstance.on(EVENT_TYPES.HEALTH_CHECK, (health) => {
+      setSystemMetrics(prevMetrics => ({
+        ...prevMetrics,
+        health: health,
+        lastHealthCheck: new Date().toISOString()
+      }));
+    });
+
+  }, [announceToScreenReader, screenReader.announcements]);
+
+  // Add notification helper
+  const addNotification = useCallback((notification) => {
+    const newNotification = {
+      ...notification,
+      id: notification.id || Date.now(),
+      timestamp: notification.timestamp || new Date().toISOString(),
+      read: false
+    };
+    
+    setNotifications(prevNotifications => {
+      const updated = [newNotification, ...prevNotifications.slice(0, 49)]; // Keep last 50
+      return updated;
+    });
+  }, []);
+
+  // Emit event helper
+  const emit = useCallback((eventType, data) => {
+    if (socket && connectionStatus === CONNECTION_STATUS.CONNECTED) {
+      socket.emit(eventType, data);
+      return true;
+    }
+    console.warn('⚠️ Cannot emit event: socket not connected');
+    return false;
+  }, [socket, connectionStatus]);
+
+  // Subscribe to specific events
+  const subscribe = useCallback((eventType, handler) => {
+    if (socket) {
+      socket.on(eventType, handler);
+      return () => socket.off(eventType, handler);
+    }
+    return () => {};
+  }, [socket]);
+
+  // Mark notification as read
+  const markNotificationRead = useCallback((notificationId) => {
+    setNotifications(prevNotifications =>
+      prevNotifications.map(notification =>
+        notification.id === notificationId
+          ? { ...notification, read: true }
+          : notification
+      )
+    );
+  }, []);
+
+  // Clear all notifications
+  const clearNotifications = useCallback(() => {
+    setNotifications([]);
+  }, []);
+
+  // Get unread notification count
+  const getUnreadCount = useCallback(() => {
+    return notifications.filter(notification => !notification.read).length;
+  }, [notifications]);
+
+  // Request real-time data
+  const requestDashboardData = useCallback(() => {
+    emit('request_dashboard_data');
+  }, [emit]);
+
+  const requestSecurityStatus = useCallback(() => {
+    emit('request_security_status');
+  }, [emit]);
+
+  const requestCrawlerStatus = useCallback(() => {
+    emit('request_crawler_status');
+  }, [emit]);
+
+  const requestSystemMetrics = useCallback(() => {
+    emit('request_system_metrics');
+  }, [emit]);
+
+  // Connection management
+  const reconnect = useCallback(() => {
+    if (socket) {
+      socket.disconnect();
+      socket.connect();
+    }
+  }, [socket]);
+
+  // Context value
+  const value = {
+    // Connection state
+    socket,
+    connectionStatus,
+    lastError,
+    reconnectAttempts,
+    isConnected: connectionStatus === CONNECTION_STATUS.CONNECTED,
+    
+    // Real-time data
+    dashboardData,
+    securityAlerts,
+    crawlerStatus,
+    systemMetrics,
+    notifications,
+    
+    // Actions
+    emit,
+    subscribe,
+    reconnect,
+    
+    // Notifications
+    addNotification,
+    markNotificationRead,
+    clearNotifications,
+    getUnreadCount,
+    
+    // Data requests
+    requestDashboardData,
+    requestSecurityStatus,
+    requestCrawlerStatus,
+    requestSystemMetrics,
+    
+    // Constants
+    EVENT_TYPES,
+    CONNECTION_STATUS
+  };
+
+  return (
+    <SocketContext.Provider value={value}>
+      {children}
+    </SocketContext.Provider>
+  );
+};
+
+// Hook for using socket context
+export const useSocket = () => {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error('useSocket must be used within a SocketProvider');
+  }
+  return context;
+};
+
+// Custom hooks for specific data types
+export const useDashboardData = () => {
+  const { dashboardData, requestDashboardData, isConnected } = useSocket();
+  
+  useEffect(() => {
+    if (isConnected) {
+      requestDashboardData();
+      const interval = setInterval(requestDashboardData, 30000); // Request every 30 seconds
+      return () => clearInterval(interval);
+    }
+  }, [isConnected, requestDashboardData]);
+  
+  return dashboardData;
+};
+
+export const useSecurityAlerts = () => {
+  const { securityAlerts, requestSecurityStatus, isConnected } = useSocket();
+  
+  useEffect(() => {
+    if (isConnected) {
+      requestSecurityStatus();
+    }
+  }, [isConnected, requestSecurityStatus]);
+  
+  return securityAlerts;
+};
+
+export const useCrawlerStatus = () => {
+  const { crawlerStatus, requestCrawlerStatus, isConnected } = useSocket();
+  
+  useEffect(() => {
+    if (isConnected) {
+      requestCrawlerStatus();
+    }
+  }, [isConnected, requestCrawlerStatus]);
+  
+  return crawlerStatus;
+};
+
+export const useSystemMetrics = () => {
+  const { systemMetrics, requestSystemMetrics, isConnected } = useSocket();
+  
+  useEffect(() => {
+    if (isConnected) {
+      requestSystemMetrics();
+      const interval = setInterval(requestSystemMetrics, 10000); // Request every 10 seconds
+      return () => clearInterval(interval);
+    }
+  }, [isConnected, requestSystemMetrics]);
+  
+  return systemMetrics;
+};
+
+export default SocketContext;

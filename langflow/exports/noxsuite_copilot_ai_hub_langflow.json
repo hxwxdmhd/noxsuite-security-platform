@@ -1,0 +1,622 @@
+{
+  "data": {
+    "nodes": {
+      "tool_usage_monitor": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Tool Usage Monitor\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'copilot_tools',\n                \"type\": \"str\"\n            },\n            \"track_tool_usage\": {\n                \"display_name\": \"Track Tool Usage\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"monitor_128_limit\": {\n                \"display_name\": \"Monitor 128 Limit\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"tool_efficiency_analysis\": {\n                \"display_name\": \"Tool Efficiency Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"usage_pattern_detection\": {\n                \"display_name\": \"Usage Pattern Detection\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"optimization_opportunities\": {\n                \"display_name\": \"Optimization Opportunities\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"emergency_throttling\": {\n                \"display_name\": \"Emergency Throttling\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"tool_usage_monitor\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "copilot_tools",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "track_tool_usage": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "track_tool_usage",
+                "show": true,
+                "advanced": false
+              },
+              "monitor_128_limit": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "monitor_128_limit",
+                "show": true,
+                "advanced": false
+              },
+              "tool_efficiency_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "tool_efficiency_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "usage_pattern_detection": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "usage_pattern_detection",
+                "show": true,
+                "advanced": false
+              },
+              "optimization_opportunities": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "optimization_opportunities",
+                "show": true,
+                "advanced": false
+              },
+              "emergency_throttling": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "emergency_throttling",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Tool Usage Monitor",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "copilot_tools",
+              "track_tool_usage": true,
+              "monitor_128_limit": true,
+              "tool_efficiency_analysis": true,
+              "usage_pattern_detection": true,
+              "optimization_opportunities": true,
+              "emergency_throttling": true,
+              "langflow_id": "tool_usage_monitor",
+              "display_name": "Tool Usage Monitor"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "tool_usage_monitor"
+        },
+        "id": "tool_usage_monitor",
+        "position": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "ai_collaboration_coordinator": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Ai Collaboration Coordinator\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'ai_collaboration',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"copilot_optimization\": \"optimize_tool_usage\", \"chatgpt_integration\": \"coordinate_ai_responses\", \"workflow_intelligence\": \"enhance_automation\", \"knowledge_synthesis\": \"combine_ai_insights\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 4,\n                \"type\": \"str\"\n            },\n            \"ai_collaboration\": {\n                \"display_name\": \"Ai Collaboration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"intelligent_routing\": {\n                \"display_name\": \"Intelligent Routing\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"context_sharing\": {\n                \"display_name\": \"Context Sharing\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"task_timeout\": {\n                \"display_name\": \"Task Timeout\",\n                \"value\": 45,\n                \"type\": \"str\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"ai_collaboration_coordinator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "ai_collaboration",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"copilot_optimization\": \"optimize_tool_usage\", \"chatgpt_integration\": \"coordinate_ai_responses\", \"workflow_intelligence\": \"enhance_automation\", \"knowledge_synthesis\": \"combine_ai_insights\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 4,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "ai_collaboration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "ai_collaboration",
+                "show": true,
+                "advanced": false
+              },
+              "intelligent_routing": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "intelligent_routing",
+                "show": true,
+                "advanced": false
+              },
+              "context_sharing": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "context_sharing",
+                "show": true,
+                "advanced": false
+              },
+              "task_timeout": {
+                "type": "int",
+                "required": false,
+                "value": 45,
+                "name": "task_timeout",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Ai Collaboration Coordinator",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "ai_collaboration",
+              "agent_tasks": "{\"copilot_optimization\": \"optimize_tool_usage\", \"chatgpt_integration\": \"coordinate_ai_responses\", \"workflow_intelligence\": \"enhance_automation\", \"knowledge_synthesis\": \"combine_ai_insights\"}",
+              "max_concurrent_agents": 4,
+              "ai_collaboration": true,
+              "intelligent_routing": true,
+              "context_sharing": true,
+              "task_timeout": 45,
+              "langflow_id": "ai_collaboration_coordinator",
+              "display_name": "Ai Collaboration Coordinator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "ai_collaboration_coordinator"
+        },
+        "id": "ai_collaboration_coordinator",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "emergency_throttler": {
+        "data": {
+          "type": "NoxSuiteDockerManager",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteDockerManager(CustomComponent):\n    display_name: str = \"Emergency Throttler\"\n    description: str = \"NoxSuite NoxSuiteDockerManager Component\"\n    \n    def build_config(self):\n        return {\n            \"action\": {\n                \"display_name\": \"Action\",\n                \"value\": 'copilot_emergency_management',\n                \"type\": \"str\"\n            },\n            \"throttling_enabled\": {\n                \"display_name\": \"Throttling Enabled\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"tool_limit_enforcement\": {\n                \"display_name\": \"Tool Limit Enforcement\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"automatic_reset\": {\n                \"display_name\": \"Automatic Reset\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"priority_tool_management\": {\n                \"display_name\": \"Priority Tool Management\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"fallback_strategies\": {\n                \"display_name\": \"Fallback Strategies\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_optimization\": {\n                \"display_name\": \"Performance Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteDockerManager\",\n            \"component_id\": \"emergency_throttler\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "action": {
+                "type": "str",
+                "required": false,
+                "value": "copilot_emergency_management",
+                "name": "action",
+                "show": true,
+                "advanced": false
+              },
+              "throttling_enabled": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "throttling_enabled",
+                "show": true,
+                "advanced": false
+              },
+              "tool_limit_enforcement": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "tool_limit_enforcement",
+                "show": true,
+                "advanced": false
+              },
+              "automatic_reset": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "automatic_reset",
+                "show": true,
+                "advanced": false
+              },
+              "priority_tool_management": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "priority_tool_management",
+                "show": true,
+                "advanced": false
+              },
+              "fallback_strategies": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "fallback_strategies",
+                "show": true,
+                "advanced": false
+              },
+              "performance_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_optimization",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteDockerManager",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Emergency Throttler",
+            "documentation": "",
+            "custom_fields": {
+              "action": "copilot_emergency_management",
+              "throttling_enabled": true,
+              "tool_limit_enforcement": true,
+              "automatic_reset": true,
+              "priority_tool_management": true,
+              "fallback_strategies": true,
+              "performance_optimization": true,
+              "langflow_id": "emergency_throttler",
+              "display_name": "Emergency Throttler"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteDockerManager",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "emergency_throttler"
+        },
+        "id": "emergency_throttler",
+        "position": {
+          "x": 100,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "mcp_ai_orchestrator": {
+        "data": {
+          "type": "NoxSuiteMCPOrchestrator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMCPOrchestrator(CustomComponent):\n    display_name: str = \"Mcp Ai Orchestrator\"\n    description: str = \"NoxSuite NoxSuiteMCPOrchestrator Component\"\n    \n    def build_config(self):\n        return {\n            \"operation\": {\n                \"display_name\": \"Operation\",\n                \"value\": 'ai_workflow_orchestration',\n                \"type\": \"str\"\n            },\n            \"copilot_workflow_management\": {\n                \"display_name\": \"Copilot Workflow Management\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"ai_tool_coordination\": {\n                \"display_name\": \"Ai Tool Coordination\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"intelligent_task_routing\": {\n                \"display_name\": \"Intelligent Task Routing\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"context_preservation\": {\n                \"display_name\": \"Context Preservation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"multi_ai_collaboration\": {\n                \"display_name\": \"Multi Ai Collaboration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"knowledge_graph_integration\": {\n                \"display_name\": \"Knowledge Graph Integration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMCPOrchestrator\",\n            \"component_id\": \"mcp_ai_orchestrator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "operation": {
+                "type": "str",
+                "required": false,
+                "value": "ai_workflow_orchestration",
+                "name": "operation",
+                "show": true,
+                "advanced": false
+              },
+              "copilot_workflow_management": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "copilot_workflow_management",
+                "show": true,
+                "advanced": false
+              },
+              "ai_tool_coordination": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "ai_tool_coordination",
+                "show": true,
+                "advanced": false
+              },
+              "intelligent_task_routing": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "intelligent_task_routing",
+                "show": true,
+                "advanced": false
+              },
+              "context_preservation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "context_preservation",
+                "show": true,
+                "advanced": false
+              },
+              "multi_ai_collaboration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "multi_ai_collaboration",
+                "show": true,
+                "advanced": false
+              },
+              "knowledge_graph_integration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "knowledge_graph_integration",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMCPOrchestrator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Mcp Ai Orchestrator",
+            "documentation": "",
+            "custom_fields": {
+              "operation": "ai_workflow_orchestration",
+              "copilot_workflow_management": true,
+              "ai_tool_coordination": true,
+              "intelligent_task_routing": true,
+              "context_preservation": true,
+              "multi_ai_collaboration": true,
+              "knowledge_graph_integration": true,
+              "langflow_id": "mcp_ai_orchestrator",
+              "display_name": "Mcp Ai Orchestrator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMCPOrchestrator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "mcp_ai_orchestrator"
+        },
+        "id": "mcp_ai_orchestrator",
+        "position": {
+          "x": 400,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "ai_insights_aggregator": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Ai Insights Aggregator\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'ai_intelligence',\n                \"type\": \"str\"\n            },\n            \"copilot_insights_tracking\": {\n                \"display_name\": \"Copilot Insights Tracking\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"ai_performance_metrics\": {\n                \"display_name\": \"Ai Performance Metrics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"collaboration_effectiveness\": {\n                \"display_name\": \"Collaboration Effectiveness\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"tool_optimization_suggestions\": {\n                \"display_name\": \"Tool Optimization Suggestions\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"ai_workflow_improvements\": {\n                \"display_name\": \"Ai Workflow Improvements\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"ai_insights_aggregator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "ai_intelligence",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "copilot_insights_tracking": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "copilot_insights_tracking",
+                "show": true,
+                "advanced": false
+              },
+              "ai_performance_metrics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "ai_performance_metrics",
+                "show": true,
+                "advanced": false
+              },
+              "collaboration_effectiveness": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "collaboration_effectiveness",
+                "show": true,
+                "advanced": false
+              },
+              "tool_optimization_suggestions": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "tool_optimization_suggestions",
+                "show": true,
+                "advanced": false
+              },
+              "ai_workflow_improvements": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "ai_workflow_improvements",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Ai Insights Aggregator",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "ai_intelligence",
+              "copilot_insights_tracking": true,
+              "ai_performance_metrics": true,
+              "collaboration_effectiveness": true,
+              "tool_optimization_suggestions": true,
+              "ai_workflow_improvements": true,
+              "langflow_id": "ai_insights_aggregator",
+              "display_name": "Ai Insights Aggregator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "ai_insights_aggregator"
+        },
+        "id": "ai_insights_aggregator",
+        "position": {
+          "x": 700,
+          "y": 200
+        },
+        "type": "genericNode"
+      }
+    },
+    "edges": [
+      {
+        "source": "tool_usage_monitor",
+        "target": "ai_collaboration_coordinator",
+        "sourceHandle": "tool_usage_data",
+        "targetHandle": "coordination_input",
+        "id": "e1",
+        "type": "default"
+      },
+      {
+        "source": "ai_collaboration_coordinator",
+        "target": "emergency_throttler",
+        "sourceHandle": "throttling_commands",
+        "targetHandle": "emergency_actions",
+        "id": "e2",
+        "type": "default"
+      },
+      {
+        "source": "ai_collaboration_coordinator",
+        "target": "mcp_ai_orchestrator",
+        "sourceHandle": "orchestration_plan",
+        "targetHandle": "ai_workflow_trigger",
+        "id": "e3",
+        "type": "default"
+      },
+      {
+        "source": "emergency_throttler",
+        "target": "ai_insights_aggregator",
+        "sourceHandle": "throttling_results",
+        "targetHandle": "insights_input",
+        "id": "e4",
+        "type": "default"
+      },
+      {
+        "source": "mcp_ai_orchestrator",
+        "target": "ai_insights_aggregator",
+        "sourceHandle": "orchestration_insights",
+        "targetHandle": "insights_input",
+        "id": "e5",
+        "type": "default"
+      }
+    ],
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "description": "Advanced Copilot Tool Management & AI Collaboration Hub",
+  "name": "NoxSuite_Copilot_AI_Hub",
+  "id": "noxsuite_copilot_ai_hub"
+}

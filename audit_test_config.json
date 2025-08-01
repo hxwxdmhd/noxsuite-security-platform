@@ -1,0 +1,256 @@
+{
+  "gates": [
+    {
+      "id": 1,
+      "name": "Foundation",
+      "description": "Project foundation and structure",
+      "pass_threshold": 70,
+      "tests": [
+        {
+          "id": "foundation-1",
+          "name": "Project Structure",
+          "weight": 20,
+          "description": "Verify that the project has the correct directory structure"
+        },
+        {
+          "id": "foundation-2",
+          "name": "Core System Files",
+          "weight": 25,
+          "description": "Check that essential system files are present"
+        },
+        {
+          "id": "foundation-3",
+          "name": "Configuration Files",
+          "weight": 15,
+          "description": "Validate that configuration files are properly defined"
+        },
+        {
+          "id": "foundation-4",
+          "name": "Docker Infrastructure",
+          "weight": 20,
+          "description": "Check Docker configuration and container setup"
+        },
+        {
+          "id": "foundation-5",
+          "name": "Documentation",
+          "weight": 20,
+          "description": "Verify that basic documentation is present"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Security",
+      "description": "Security implementation and testing",
+      "dependencies": [1],
+      "pass_threshold": 80,
+      "tests": [
+        {
+          "id": "security-1",
+          "name": "Authentication",
+          "weight": 30,
+          "description": "Test authentication mechanisms"
+        },
+        {
+          "id": "security-2",
+          "name": "Authorization",
+          "weight": 25,
+          "description": "Test authorization and access control"
+        },
+        {
+          "id": "security-3",
+          "name": "Data Encryption",
+          "weight": 25,
+          "description": "Validate data encryption at rest and in transit"
+        },
+        {
+          "id": "security-4",
+          "name": "Security Headers",
+          "weight": 20,
+          "description": "Check for appropriate security headers"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Performance",
+      "description": "System performance and optimization",
+      "dependencies": [1, 2],
+      "pass_threshold": 75,
+      "tests": [
+        {
+          "id": "performance-1",
+          "name": "Response Time",
+          "weight": 30,
+          "description": "Measure API endpoint response times"
+        },
+        {
+          "id": "performance-2",
+          "name": "Throughput",
+          "weight": 25,
+          "description": "Test system throughput under load"
+        },
+        {
+          "id": "performance-3",
+          "name": "Resource Usage",
+          "weight": 25,
+          "description": "Monitor CPU, memory, and disk usage"
+        },
+        {
+          "id": "performance-4",
+          "name": "Scalability",
+          "weight": 20,
+          "description": "Test system behavior with increasing load"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "API Stability",
+      "description": "API design, documentation, and stability",
+      "dependencies": [1, 2, 3],
+      "pass_threshold": 80,
+      "tests": [
+        {
+          "id": "api-1",
+          "name": "API Versioning",
+          "weight": 25,
+          "description": "Check API version management"
+        },
+        {
+          "id": "api-2",
+          "name": "Documentation",
+          "weight": 25,
+          "description": "Validate API documentation completeness"
+        },
+        {
+          "id": "api-3",
+          "name": "Backward Compatibility",
+          "weight": 30,
+          "description": "Test backward compatibility with previous versions"
+        },
+        {
+          "id": "api-4",
+          "name": "Error Handling",
+          "weight": 20,
+          "description": "Verify consistent error responses"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Data Integrity",
+      "description": "Data validation and integrity checks",
+      "dependencies": [1, 2],
+      "pass_threshold": 85,
+      "tests": [
+        {
+          "id": "data-1",
+          "name": "Data Validation",
+          "weight": 35,
+          "description": "Test input data validation"
+        },
+        {
+          "id": "data-2",
+          "name": "Data Consistency",
+          "weight": 35,
+          "description": "Check data consistency across operations"
+        },
+        {
+          "id": "data-3",
+          "name": "Transaction Integrity",
+          "weight": 30,
+          "description": "Validate transaction integrity and rollbacks"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "UI",
+      "description": "User interface and experience",
+      "dependencies": [1],
+      "pass_threshold": 75,
+      "tests": [
+        {
+          "id": "ui-1",
+          "name": "Responsive Design",
+          "weight": 35,
+          "description": "Test UI responsiveness across devices"
+        },
+        {
+          "id": "ui-2",
+          "name": "Accessibility",
+          "weight": 35,
+          "description": "Check accessibility compliance"
+        },
+        {
+          "id": "ui-3",
+          "name": "User Experience",
+          "weight": 30,
+          "description": "Validate consistent user experience"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Documentation",
+      "description": "Project documentation and guides",
+      "dependencies": [1, 4, 6],
+      "pass_threshold": 80,
+      "tests": [
+        {
+          "id": "docs-1",
+          "name": "User Documentation",
+          "weight": 35,
+          "description": "Check user documentation completeness"
+        },
+        {
+          "id": "docs-2",
+          "name": "Developer Documentation",
+          "weight": 35,
+          "description": "Validate developer documentation quality"
+        },
+        {
+          "id": "docs-3",
+          "name": "Architecture Documentation",
+          "weight": 30,
+          "description": "Verify architecture documentation clarity"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Release Readiness",
+      "description": "Release readiness and deployment preparation",
+      "dependencies": [1, 2, 3, 4, 5, 6, 7],
+      "pass_threshold": 90,
+      "tests": [
+        {
+          "id": "release-1",
+          "name": "Version Management",
+          "weight": 30,
+          "description": "Check version management consistency"
+        },
+        {
+          "id": "release-2",
+          "name": "Deployment Readiness",
+          "weight": 40,
+          "description": "Validate deployment scripts and configurations"
+        },
+        {
+          "id": "release-3",
+          "name": "Final Testing",
+          "weight": 30,
+          "description": "Verify all tests are passing"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "global_pass_threshold": 75,
+    "require_gate_dependencies": true,
+    "allow_skipping_gates": false,
+    "report_format": "markdown",
+    "report_output_dir": "./audit_reports"
+  }
+}

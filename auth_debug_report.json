@@ -1,0 +1,110 @@
+{
+  "timestamp": "2025-07-31T18:20:38.799168",
+  "database_users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@noxsuite.local",
+      "password_hash": "$2b$12$ZRU/EhMbTeU2lRHQuJQW/ut7Cv8arLZ/E60TsPxcLUm...",
+      "mfa_enabled": 0,
+      "hash_length": 60
+    },
+    {
+      "id": 2,
+      "username": "mfa_test",
+      "email": "mfa_test@noxsuite.local",
+      "password_hash": "$2b$12$jBBPJcxbb2rmxsqs1s8qbO0Sj0DfYkwm1vA33d/k3iG...",
+      "mfa_enabled": 1,
+      "hash_length": 60
+    },
+    {
+      "id": 3,
+      "username": "user",
+      "email": "user@noxsuite.local",
+      "password_hash": "$2b$12$AvUKeQDYaZ9NGq4JRyr3mOCf213NFGCeqOctHc1fH8e...",
+      "mfa_enabled": 0,
+      "hash_length": 60
+    }
+  ],
+  "password_tests": [
+    {
+      "username": "admin",
+      "password": "admin123",
+      "verified": true,
+      "hash_prefix": "$2b$12$ZRU/EhMbTeU2lRHQuJQW/u"
+    },
+    {
+      "username": "admin",
+      "password": "AdminPassword123!",
+      "verified": false,
+      "hash_prefix": "$2b$12$ZRU/EhMbTeU2lRHQuJQW/u"
+    },
+    {
+      "username": "admin",
+      "password": "admin",
+      "verified": false,
+      "hash_prefix": "$2b$12$ZRU/EhMbTeU2lRHQuJQW/u"
+    },
+    {
+      "username": "admin",
+      "password": "password",
+      "verified": false,
+      "hash_prefix": "$2b$12$ZRU/EhMbTeU2lRHQuJQW/u"
+    },
+    {
+      "username": "admin",
+      "password": "noxsuite123",
+      "verified": false,
+      "hash_prefix": "$2b$12$ZRU/EhMbTeU2lRHQuJQW/u"
+    },
+    {
+      "username": "admin",
+      "password": "Admin123",
+      "verified": false,
+      "hash_prefix": "$2b$12$ZRU/EhMbTeU2lRHQuJQW/u"
+    },
+    {
+      "username": "admin",
+      "password": "admin@123",
+      "verified": false,
+      "hash_prefix": "$2b$12$ZRU/EhMbTeU2lRHQuJQW/u"
+    },
+    {
+      "username": "mfa_test",
+      "password": "MfaUser123!",
+      "verified": false,
+      "hash_prefix": "$2b$12$jBBPJcxbb2rmxsqs1s8qbO"
+    },
+    {
+      "username": "mfa_test",
+      "password": "mfa_test",
+      "verified": false,
+      "hash_prefix": "$2b$12$jBBPJcxbb2rmxsqs1s8qbO"
+    },
+    {
+      "username": "mfa_test",
+      "password": "password",
+      "verified": false,
+      "hash_prefix": "$2b$12$jBBPJcxbb2rmxsqs1s8qbO"
+    },
+    {
+      "username": "mfa_test",
+      "password": "user123",
+      "verified": true,
+      "hash_prefix": "$2b$12$jBBPJcxbb2rmxsqs1s8qbO"
+    }
+  ],
+  "hash_analysis": {},
+  "fixes_applied": [
+    {
+      "username": "admin",
+      "action": "password_hash_updated",
+      "new_hash_prefix": "$2b$12$suImYCO3MdsVrTQnrdklOu"
+    },
+    {
+      "username": "mfa_test",
+      "action": "password_hash_updated",
+      "new_hash_prefix": "$2b$12$IKKsOKlcGrgtZc1iMJEgUO"
+    }
+  ]
+}

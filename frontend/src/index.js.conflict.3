@@ -1,0 +1,345 @@
+/**
+ * NoxSuite Frontend Entry Point
+ * Initializes React application with accessibility and performance monitoring
+ * @author @hxwxdmhd
+ * @version 11.0.0
+ */
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { reportWebVitals } from './reportWebVitals';
+
+// Enhanced console branding for ADHD-friendly development
+console.log(
+  '%c🛡️ NoxSuite Frontend v11.0',
+  'color: #45B7D1; font-size: 24px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);'
+);
+
+console.log(
+  '%c✨ ADHD-Friendly Design • Real-time Security • Accessibility First',
+  'color: #4CAF50; font-size: 14px; font-weight: 600;'
+);
+
+console.log(
+  '%c🎯 Features: High Contrast, Reduced Motion, Screen Reader Support, Keyboard Navigation',
+  'color: #FF8800; font-size: 12px; font-style: italic;'
+);
+
+// Global error boundary for better error handling
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    this.setState({
+      error: error,
+      errorInfo: errorInfo
+    });
+    
+    // Log error for monitoring
+    console.error('🚨 NoxSuite Frontend Error:', error);
+    console.error('📍 Error Info:', errorInfo);
+    
+    // Report to monitoring if available
+    if (window.noxSuiteMonitoring) {
+      window.noxSuiteMonitoring.reportError({
+        error: error.toString(),
+        stack: error.stack,
+        componentStack: errorInfo.componentStack,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent,
+        url: window.location.href
+      });
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '100vh',
+            backgroundColor: '#1a1a1a',
+            color: '#ffffff',
+            fontFamily: 'Arial, sans-serif',
+            padding: '20px',
+            textAlign: 'center'
+          }}
+        >
+          <div style={{ fontSize: '64px', marginBottom: '20px' }}>⚠️</div>
+          <h1 style={{ 
+            color: '#FF4444', 
+            fontSize: '2.5rem', 
+            marginBottom: '16px',
+            fontWeight: '600'
+          }}>
+            NoxSuite Error
+          </h1>
+          <p style={{ 
+            fontSize: '1.2rem', 
+            marginBottom: '24px',
+            maxWidth: '600px',
+            lineHeight: '1.6'
+          }}>
+            Something went wrong with the NoxSuite frontend. Please refresh the page or contact support if the problem persists.
+          </p>
+          
+          <div style={{ 
+            backgroundColor: '#2a2a2a', 
+            padding: '20px', 
+            borderRadius: '8px',
+            marginBottom: '24px',
+            maxWidth: '800px',
+            width: '100%'
+          }}>
+            <h3 style={{ color: '#45B7D1', marginBottom: '12px' }}>Error Details:</h3>
+            <pre style={{ 
+              fontSize: '0.9rem', 
+              color: '#cccccc',
+              textAlign: 'left',
+              overflow: 'auto',
+              maxHeight: '200px'
+            }}>
+              {this.state.error && this.state.error.toString()}
+            </pre>
+          </div>
+          
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                backgroundColor: '#45B7D1',
+                color: 'white',
+                border: 'none',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseOver={(e) => e.target.style.backgroundColor = '#3a9bc1'}
+              onMouseOut={(e) => e.target.style.backgroundColor = '#45B7D1'}
+            >
+              🔄 Refresh Page
+            </button>
+            
+            <button
+              onClick={() => window.open('mailto:support@noxsuite.com?subject=Frontend Error Report', '_blank')}
+              style={{
+                backgroundColor: '#666666',
+                color: 'white',
+                border: 'none',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseOver={(e) => e.target.style.backgroundColor = '#777777'}
+              onMouseOut={(e) => e.target.style.backgroundColor = '#666666'}
+            >
+              📧 Contact Support
+            </button>
+          </div>
+          
+          <p style={{ 
+            fontSize: '0.9rem', 
+            color: '#888888',
+            marginTop: '24px'
+          }}>
+            Error ID: {Date.now().toString(36)} • NoxSuite v11.0
+          </p>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+// Initialize React application
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+// Enhanced render with error boundary
+root.render(
+  <React.StrictMode>
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  </React.StrictMode>
+);
+
+// Performance monitoring for ADHD-friendly optimization
+const handleWebVitals = (metric) => {
+  // Log performance metrics
+  console.log(`📊 ${metric.name}:`, metric.value);
+  
+  // Report to monitoring if available
+  if (window.noxSuiteMonitoring) {
+    window.noxSuiteMonitoring.reportPerformance(metric);
+  }
+  
+  // ADHD-specific performance alerts
+  if (metric.name === 'FCP' && metric.value > 2000) {
+    console.warn('⚠️ Slow First Contentful Paint detected. Consider ADHD-friendly loading optimizations.');
+  }
+  
+  if (metric.name === 'LCP' && metric.value > 3000) {
+    console.warn('⚠️ Slow Largest Contentful Paint detected. Users with ADHD may experience attention issues.');
+  }
+  
+  if (metric.name === 'CLS' && metric.value > 0.1) {
+    console.warn('⚠️ High Cumulative Layout Shift detected. This can be disorienting for ADHD users.');
+  }
+};
+
+// Start web vitals monitoring
+reportWebVitals(handleWebVitals);
+
+// Accessibility announcements for screen readers
+if ('speechSynthesis' in window) {
+  // Announce app load for screen reader users
+  setTimeout(() => {
+    const utterance = new SpeechSynthesisUtterance('NoxSuite frontend loaded successfully');
+    utterance.volume = 0.7;
+    utterance.rate = 0.9;
+    speechSynthesis.speak(utterance);
+  }, 1000);
+}
+
+// Global keyboard shortcuts for accessibility
+document.addEventListener('keydown', (event) => {
+  // Alt + H: Help/Accessibility shortcuts
+  if (event.altKey && event.key === 'h') {
+    event.preventDefault();
+    console.log('🔑 NoxSuite Accessibility Shortcuts:');
+    console.log('Alt + H: Show this help');
+    console.log('Alt + 1: Go to Dashboard');
+    console.log('Alt + 2: Go to Security');
+    console.log('Alt + 3: Go to Plugin Manager');
+    console.log('Alt + C: Toggle High Contrast');
+    console.log('Alt + M: Toggle Reduced Motion');
+    console.log('Alt + S: Toggle Simplified Interface');
+    
+    // Announce shortcuts
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance('Accessibility shortcuts available. Check console for details.');
+      speechSynthesis.speak(utterance);
+    }
+  }
+  
+  // Alt + C: Toggle high contrast (global shortcut)
+  if (event.altKey && event.key === 'c') {
+    event.preventDefault();
+    const event_detail = new CustomEvent('noxsuite:toggle-contrast');
+    document.dispatchEvent(event_detail);
+  }
+  
+  // Alt + M: Toggle reduced motion (global shortcut)
+  if (event.altKey && event.key === 'm') {
+    event.preventDefault();
+    const event_detail = new CustomEvent('noxsuite:toggle-motion');
+    document.dispatchEvent(event_detail);
+  }
+  
+  // Alt + S: Toggle simplified interface (global shortcut)
+  if (event.altKey && event.key === 's') {
+    event.preventDefault();
+    const event_detail = new CustomEvent('noxsuite:toggle-simplified');
+    document.dispatchEvent(event_detail);
+  }
+});
+
+// Enhanced focus management for ADHD users
+document.addEventListener('focusin', (event) => {
+  // Add focus ring for keyboard navigation
+  if (event.target.matches('button, a, input, select, textarea, [tabindex]')) {
+    event.target.setAttribute('data-focus-visible', 'true');
+  }
+});
+
+document.addEventListener('focusout', (event) => {
+  // Remove focus ring
+  event.target.removeAttribute('data-focus-visible');
+});
+
+// Mouse/touch interaction tracking for accessibility
+document.addEventListener('mousedown', () => {
+  document.body.setAttribute('data-input-method', 'mouse');
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Tab') {
+    document.body.setAttribute('data-input-method', 'keyboard');
+  }
+});
+
+// Service Worker registration for offline support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('✅ Service Worker registered successfully:', registration.scope);
+      })
+      .catch((error) => {
+        console.warn('❌ Service Worker registration failed:', error);
+      });
+  });
+}
+
+// Initialize NoxSuite monitoring object
+window.noxSuiteMonitoring = {
+  errors: [],
+  performance: [],
+  
+  reportError: (error) => {
+    window.noxSuiteMonitoring.errors.push({
+      ...error,
+      id: Date.now().toString(36)
+    });
+    
+    // Limit stored errors to prevent memory issues
+    if (window.noxSuiteMonitoring.errors.length > 50) {
+      window.noxSuiteMonitoring.errors = window.noxSuiteMonitoring.errors.slice(-25);
+    }
+  },
+  
+  reportPerformance: (metric) => {
+    window.noxSuiteMonitoring.performance.push({
+      ...metric,
+      timestamp: Date.now()
+    });
+    
+    // Limit stored metrics
+    if (window.noxSuiteMonitoring.performance.length > 100) {
+      window.noxSuiteMonitoring.performance = window.noxSuiteMonitoring.performance.slice(-50);
+    }
+  },
+  
+  getErrorReport: () => {
+    return {
+      errors: window.noxSuiteMonitoring.errors,
+      performance: window.noxSuiteMonitoring.performance,
+      userAgent: navigator.userAgent,
+      url: window.location.href,
+      timestamp: new Date().toISOString(),
+      version: '11.0.0'
+    };
+  }
+};
+
+console.log('🚀 NoxSuite Frontend initialized successfully!');
+console.log('💡 Type window.noxSuiteMonitoring.getErrorReport() to get diagnostic information');

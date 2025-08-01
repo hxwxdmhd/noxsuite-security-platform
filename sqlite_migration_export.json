@@ -1,0 +1,2509 @@
+[
+  {
+    "database": "mariadb_dev_simulation.db",
+    "tables": {
+      "users": [
+        {
+          "id": 1,
+          "username": "admin",
+          "email": "admin@noxsuite.local",
+          "password_hash": "$2b$12$LSNCqKxcJir6FtUtlDfQ7ex6x7eXqV/ArkjLygWitoUu1.9MwR7ay",
+          "is_active": 1,
+          "is_admin": 1,
+          "created_at": "2025-07-31 15:27:03.923806",
+          "last_login": null,
+          "mfa_enabled": 0,
+          "mfa_secret": null,
+          "backup_codes": null
+        },
+        {
+          "id": 2,
+          "username": "mfa_test",
+          "email": "mfa_test@noxsuite.local",
+          "password_hash": "$2b$12$mu4VkeFYO7eul1/fvNIlP.m1nRB9cJfAmO0iAGBFsjC2IsxnaRxkm",
+          "is_active": 1,
+          "is_admin": 0,
+          "created_at": "2025-07-31 15:27:04.156254",
+          "last_login": null,
+          "mfa_enabled": 1,
+          "mfa_secret": "ABCDEFGHIJKLMNOP",
+          "backup_codes": null
+        }
+      ],
+      "roles": [
+        {
+          "id": 1,
+          "name": "admin",
+          "description": "System Administrator",
+          "is_system_role": 1,
+          "permissions": "[\"user.create\", \"user.read\", \"user.update\", \"user.delete\", \"role.manage\", \"audit.read\", \"system.admin\"]",
+          "created_at": "2025-07-31 15:27:03.918806"
+        },
+        {
+          "id": 2,
+          "name": "user",
+          "description": "Standard User",
+          "is_system_role": 1,
+          "permissions": "[\"user.read_own\", \"user.update_own\"]",
+          "created_at": "2025-07-31 15:27:03.918806"
+        },
+        {
+          "id": 3,
+          "name": "moderator",
+          "description": "Content Moderator",
+          "is_system_role": 0,
+          "permissions": "[\"user.read\", \"content.moderate\", \"audit.read\"]",
+          "created_at": "2025-07-31 15:27:03.918806"
+        }
+      ],
+      "user_roles": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "role_id": 1,
+          "assigned_at": "2025-07-31 15:27:04.161260",
+          "expires_at": null,
+          "assigned_by": 1
+        },
+        {
+          "id": 2,
+          "user_id": 2,
+          "role_id": 2,
+          "assigned_at": "2025-07-31 15:27:04.173297",
+          "expires_at": null,
+          "assigned_by": 1
+        }
+      ],
+      "user_sessions": [],
+      "audit_logs": []
+    },
+    "schema": {
+      "users": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "username",
+          "type": "VARCHAR(50)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "email",
+          "type": "VARCHAR(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "password_hash",
+          "type": "VARCHAR(255)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "is_admin",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "created_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "last_login",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "mfa_enabled",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "mfa_secret",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "backup_codes",
+          "type": "JSON",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "roles": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "VARCHAR(50)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "description",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "is_system_role",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "permissions",
+          "type": "JSON",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "user_roles": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "role_id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "assigned_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "expires_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "assigned_by",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "user_sessions": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "session_token",
+          "type": "VARCHAR(255)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "refresh_token",
+          "type": "VARCHAR(255)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "expires_at",
+          "type": "DATETIME",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "ip_address",
+          "type": "VARCHAR(45)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "user_agent",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "audit_logs": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "action",
+          "type": "VARCHAR(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "category",
+          "type": "VARCHAR(50)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "details",
+          "type": "JSON",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "ip_address",
+          "type": "VARCHAR(45)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "user_agent",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "timestamp",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ]
+    }
+  },
+  {
+    "database": "archived/sqlite/noxsuite_auth.db",
+    "tables": {
+      "mfa_users": [
+        {
+          "id": "662be436-50a8-4746-ab8c-692ce8f59920",
+          "username": "admin",
+          "email": "admin@noxsuite.com",
+          "password_hash": "scrypt:32768:8:1$Yl6612RcgYnBVpZZ$1da87ffe8d13157cec41c06d6363d88c2036626541a765a99d94ecd604c336a008d55f840fefc633544ec0a56ac8909ce0e678256193744dc5aea69c4cdfacf8",
+          "role": "admin",
+          "mfa_enabled": 1,
+          "mfa_secret": "KXAQJP4MVNDQGE4ZX7Z7LTZ33PMXUQVN",
+          "backup_codes": "[\"A366B823\", \"87AB382E\", \"4B306CE7\", \"7C7BCFF7\", \"87D74C90\", \"CCC414B6\", \"15E5908F\", \"525A0D9A\"]",
+          "email_verified": 0,
+          "phone_number": null,
+          "phone_verified": 0,
+          "created_at": "2025-07-30 19:08:48",
+          "last_login": null,
+          "failed_login_attempts": 0,
+          "locked_until": null,
+          "is_active": 1,
+          "mfa_methods": "[\"totp\", \"backup_codes\"]"
+        },
+        {
+          "id": "11de6698-1655-47c3-87a1-27f4d7e5bd93",
+          "username": "user",
+          "email": "user@noxsuite.com",
+          "password_hash": "scrypt:32768:8:1$1XS9xg7xPz5pbbnA$b70dbf78b6f045d19c920b03fd512ebd1983a1f192ec075b1ea9e1b9b82556be9e97c41a86107d804765871bbfd19691741ffb68eb4ffa3c8efb134e08389026",
+          "role": "user",
+          "mfa_enabled": 0,
+          "mfa_secret": null,
+          "backup_codes": null,
+          "email_verified": 0,
+          "phone_number": null,
+          "phone_verified": 0,
+          "created_at": "2025-07-30 19:08:48",
+          "last_login": null,
+          "failed_login_attempts": 0,
+          "locked_until": null,
+          "is_active": 1,
+          "mfa_methods": "[]"
+        }
+      ],
+      "mfa_sessions": [],
+      "mfa_attempts": [],
+      "rbac_permissions": [
+        {
+          "id": "ad175a70-1c31-40c6-9d88-13e6e8bcea62",
+          "role": "admin",
+          "permission": "read",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "a64ba093-1e76-4f05-aae4-7d835bd1b06c",
+          "role": "admin",
+          "permission": "write",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "e497a8e0-070a-41f6-93dd-c2a5c4d9bcd1",
+          "role": "admin",
+          "permission": "delete",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "4e259b53-3cea-40f3-8f4b-e305491b80b5",
+          "role": "admin",
+          "permission": "execute",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "e78f5016-83f3-4afa-b90d-4fa8dd3450fc",
+          "role": "admin",
+          "permission": "manage_users",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "cd586d33-00b5-4b96-bd49-2f61933d4fc6",
+          "role": "admin",
+          "permission": "manage_security",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "c4011783-c94b-4de5-b502-92604419b4b5",
+          "role": "admin",
+          "permission": "manage_network",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "966eb6d2-065e-45de-83ef-519be7800d09",
+          "role": "admin",
+          "permission": "manage_system",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "63def423-cdd0-4c24-848d-83ed482d4d58",
+          "role": "admin",
+          "permission": "view_logs",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "39993d77-deef-41fb-819c-08edcddd9fa2",
+          "role": "admin",
+          "permission": "view_metrics",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "38da97ae-9177-46de-b7b8-05de1c07e36f",
+          "role": "security_analyst",
+          "permission": "read",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "5de148ad-99c2-47b9-96d8-9146345e6357",
+          "role": "security_analyst",
+          "permission": "write",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "63f1b2e3-5f0b-485e-a72b-1e442953df47",
+          "role": "security_analyst",
+          "permission": "manage_security",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "d2adb2d5-f51c-42c2-94ed-800a82981818",
+          "role": "security_analyst",
+          "permission": "view_logs",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "5060e5ba-dec8-4e5e-aec9-451fc68f2d7f",
+          "role": "security_analyst",
+          "permission": "view_metrics",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "6fb1ec9a-f475-4029-bf56-ebb5b6451ac9",
+          "role": "network_operator",
+          "permission": "read",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "95204871-4935-41ac-b51e-05dff5b7c3bd",
+          "role": "network_operator",
+          "permission": "write",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "c927dafc-9366-4e04-95e3-feada8f45179",
+          "role": "network_operator",
+          "permission": "manage_network",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "d31f84b8-7d17-4d78-8a72-4a17bfdcdda8",
+          "role": "network_operator",
+          "permission": "view_logs",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "f101a34c-150d-4931-8c67-7690f1cb3c59",
+          "role": "network_operator",
+          "permission": "view_metrics",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "541222cd-8faa-48c2-bd0b-a0a40be26f72",
+          "role": "user",
+          "permission": "read",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "375ce2a0-6eea-42f4-96d9-4359fd4bd8c3",
+          "role": "user",
+          "permission": "write",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "1b05d8c2-6340-40dc-967f-15f6c8892261",
+          "role": "user",
+          "permission": "view_metrics",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "ab112629-9052-49af-acb1-56f8ddd42f68",
+          "role": "viewer",
+          "permission": "read",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "29465ea0-5e91-46bc-b4d5-2efe89bde25d",
+          "role": "viewer",
+          "permission": "view_metrics",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "165ae5d0-9058-44f3-b7d2-8d5039fd7bf5",
+          "role": "maintenance",
+          "permission": "read",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "e59da773-27e8-447a-aea1-f5dcdf9d4e0d",
+          "role": "maintenance",
+          "permission": "write",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "98ad3c05-806a-4fe6-899f-d52c5bd22171",
+          "role": "maintenance",
+          "permission": "manage_system",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        },
+        {
+          "id": "158381d5-4914-4c66-98d5-7042beb14fb0",
+          "role": "maintenance",
+          "permission": "view_logs",
+          "resource": null,
+          "granted_by": null,
+          "granted_at": "2025-07-30 19:08:48",
+          "expires_at": null,
+          "is_active": 1
+        }
+      ],
+      "rbac_access_log": []
+    },
+    "schema": {
+      "mfa_users": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "username",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "email",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "password_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "role",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": "'user'",
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "mfa_enabled",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": "FALSE",
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "mfa_secret",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "backup_codes",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "email_verified",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": "FALSE",
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "phone_number",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "phone_verified",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": "FALSE",
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": "CURRENT_TIMESTAMP",
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "last_login",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "failed_login_attempts",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": "0",
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "locked_until",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": "TRUE",
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "mfa_methods",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": "'[]'",
+          "pk": 0
+        }
+      ],
+      "mfa_sessions": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "session_token",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "mfa_verified",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": "FALSE",
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": "CURRENT_TIMESTAMP",
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "expires_at",
+          "type": "TIMESTAMP",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "ip_address",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "user_agent",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "mfa_attempts": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "method",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "success",
+          "type": "BOOLEAN",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "ip_address",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "timestamp",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": "CURRENT_TIMESTAMP",
+          "pk": 0
+        }
+      ],
+      "rbac_permissions": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "role",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "permission",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "resource",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "granted_by",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "granted_at",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": "CURRENT_TIMESTAMP",
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "expires_at",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": "TRUE",
+          "pk": 0
+        }
+      ],
+      "rbac_access_log": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "role",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "permission",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "resource",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "action",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "allowed",
+          "type": "BOOLEAN",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "ip_address",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "timestamp",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": "CURRENT_TIMESTAMP",
+          "pk": 0
+        }
+      ]
+    }
+  },
+  {
+    "database": "archived/sqlite/unified_heimnetz.db",
+    "tables": {
+      "users": [
+        {
+          "id": 1,
+          "username": "admin",
+          "password_hash": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+          "role": "admin",
+          "is_active": 1,
+          "created_at": "2025-07-29 14:58:11",
+          "last_login": null
+        }
+      ],
+      "sqlite_sequence": [
+        {
+          "name": "users",
+          "seq": 1
+        },
+        {
+          "name": "system_metrics",
+          "seq": 22
+        }
+      ],
+      "system_metrics": [
+        {
+          "id": 1,
+          "timestamp": "2025-07-29 14:58:13",
+          "cpu_usage": 34.0,
+          "memory_usage": 84.03,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 2,
+          "timestamp": "2025-07-29 14:58:44",
+          "cpu_usage": 20.0,
+          "memory_usage": 84.15,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 3,
+          "timestamp": "2025-07-29 14:59:16",
+          "cpu_usage": 59.0,
+          "memory_usage": 84.11,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 4,
+          "timestamp": "2025-07-29 14:59:47",
+          "cpu_usage": 48.0,
+          "memory_usage": 83.06,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 5,
+          "timestamp": "2025-07-29 15:00:19",
+          "cpu_usage": 10.0,
+          "memory_usage": 83.19,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 6,
+          "timestamp": "2025-07-29 15:00:50",
+          "cpu_usage": 56.0,
+          "memory_usage": 84.41,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 7,
+          "timestamp": "2025-07-29 15:01:22",
+          "cpu_usage": 36.0,
+          "memory_usage": 84.68,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 8,
+          "timestamp": "2025-07-29 15:01:53",
+          "cpu_usage": 59.0,
+          "memory_usage": 84.22,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 9,
+          "timestamp": "2025-07-29 15:02:25",
+          "cpu_usage": 33.0,
+          "memory_usage": 85.63,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 10,
+          "timestamp": "2025-07-29 15:02:56",
+          "cpu_usage": 31.0,
+          "memory_usage": 84.87,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 11,
+          "timestamp": "2025-07-29 15:03:28",
+          "cpu_usage": 51.0,
+          "memory_usage": 85.48,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 12,
+          "timestamp": "2025-07-29 15:03:59",
+          "cpu_usage": 38.0,
+          "memory_usage": 86.33,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 13,
+          "timestamp": "2025-07-29 15:04:31",
+          "cpu_usage": 29.0,
+          "memory_usage": 84.86,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 14,
+          "timestamp": "2025-07-29 15:05:03",
+          "cpu_usage": 71.0,
+          "memory_usage": 84.97,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 15,
+          "timestamp": "2025-07-29 15:05:34",
+          "cpu_usage": 49.0,
+          "memory_usage": 84.59,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 16,
+          "timestamp": "2025-07-29 15:06:06",
+          "cpu_usage": 29.0,
+          "memory_usage": 85.01,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 17,
+          "timestamp": "2025-07-29 15:06:37",
+          "cpu_usage": 34.0,
+          "memory_usage": 86.66,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 18,
+          "timestamp": "2025-07-29 15:07:09",
+          "cpu_usage": 26.0,
+          "memory_usage": 87.1,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 19,
+          "timestamp": "2025-07-29 15:07:40",
+          "cpu_usage": 37.0,
+          "memory_usage": 88.63,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 20,
+          "timestamp": "2025-07-29 15:08:11",
+          "cpu_usage": 33.0,
+          "memory_usage": 85.44,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 21,
+          "timestamp": "2025-07-29 15:08:43",
+          "cpu_usage": 30.0,
+          "memory_usage": 84.84,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        },
+        {
+          "id": 22,
+          "timestamp": "2025-07-29 15:09:15",
+          "cpu_usage": 57.0,
+          "memory_usage": 85.09,
+          "disk_usage": 0.0,
+          "active_connections": 0,
+          "requests_per_minute": 0
+        }
+      ],
+      "audit_log": []
+    },
+    "schema": {
+      "users": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "username",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "password_hash",
+          "type": "TEXT",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "role",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": "'user'",
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": "1",
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "created_at",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": "CURRENT_TIMESTAMP",
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "last_login",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "sqlite_sequence": [
+        {
+          "cid": 0,
+          "name": "name",
+          "type": "",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 1,
+          "name": "seq",
+          "type": "",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "system_metrics": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "timestamp",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": "CURRENT_TIMESTAMP",
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "cpu_usage",
+          "type": "REAL",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "memory_usage",
+          "type": "REAL",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "disk_usage",
+          "type": "REAL",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "active_connections",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "requests_per_minute",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "audit_log": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "timestamp",
+          "type": "TIMESTAMP",
+          "notnull": 0,
+          "dflt_value": "CURRENT_TIMESTAMP",
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "user_id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "action",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "result",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "ip_address",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "user_agent",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "details",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ]
+    }
+  },
+  {
+    "database": "database/noxsuite.db",
+    "tables": {
+      "users": [
+        {
+          "id": 1,
+          "username": "admin",
+          "email": "admin@noxsuite.local",
+          "password_hash": "$2b$12$HgY50iWYXO6K0QOTm6NVR.rvo657961Ru3HfH/AnWEWsW2Z4aCNYa",
+          "mfa_enabled": 0,
+          "mfa_secret": null,
+          "backup_codes": null,
+          "is_active": 1,
+          "is_verified": 1,
+          "created_at": "2025-07-31 13:50:08.259392",
+          "last_login": "2025-07-31 14:16:23.548932"
+        },
+        {
+          "id": 2,
+          "username": "testuser",
+          "email": "test@noxsuite.com",
+          "password_hash": "$2b$12$0gtvsjEVkW1yB3lDPrXI1enzYID65kHMUuuJfOfIqzbAxgmTYK8WG",
+          "mfa_enabled": 0,
+          "mfa_secret": null,
+          "backup_codes": null,
+          "is_active": 1,
+          "is_verified": 0,
+          "created_at": "2025-07-31 13:52:20.480303",
+          "last_login": null
+        },
+        {
+          "id": 3,
+          "username": "user",
+          "email": "user@noxsuite.local",
+          "password_hash": "$2b$12$8T8pZryanz8WDLZ7ty2k4evi08BntEBbm7.Sj.0.hoUm4S5uDuap.",
+          "mfa_enabled": 0,
+          "mfa_secret": null,
+          "backup_codes": null,
+          "is_active": 1,
+          "is_verified": 1,
+          "created_at": "2025-07-31 14:11:07.428291",
+          "last_login": "2025-07-31 14:39:02.376715"
+        },
+        {
+          "id": 4,
+          "username": "mfa_test",
+          "email": "mfa_test@noxsuite.local",
+          "password_hash": "$2b$12$VMQyNN2xJ9z8oPe9WF0cN.NNOygm3QHLoV8b1g9y9NJwtBjNId2JC",
+          "mfa_enabled": 1,
+          "mfa_secret": "ABCDEFGHIJKLMNOP",
+          "backup_codes": null,
+          "is_active": 1,
+          "is_verified": 1,
+          "created_at": "2025-07-31 14:11:07.664844",
+          "last_login": "2025-07-31 14:48:25.674494"
+        }
+      ],
+      "roles": [
+        {
+          "id": 1,
+          "name": "admin",
+          "description": "System Administrator",
+          "permissions": "[\"users:read\", \"users:write\", \"roles:read\", \"roles:write\", \"audit:read\"]",
+          "created_at": "2025-07-31 13:50:08.009893"
+        },
+        {
+          "id": 2,
+          "name": "user",
+          "description": "Standard User",
+          "permissions": "[\"profile:read\", \"profile:write\"]",
+          "created_at": "2025-07-31 13:50:08.009893"
+        }
+      ],
+      "user_roles": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "role_id": 1,
+          "assigned_at": "2025-07-31 13:50:08.270413",
+          "assigned_by": null
+        },
+        {
+          "id": 2,
+          "user_id": 3,
+          "role_id": 2,
+          "assigned_at": "2025-07-31 14:11:07.438354",
+          "assigned_by": null
+        },
+        {
+          "id": 3,
+          "user_id": 4,
+          "role_id": 2,
+          "assigned_at": "2025-07-31 14:11:07.671348",
+          "assigned_by": null
+        }
+      ],
+      "user_sessions": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "session_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxI",
+          "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxI",
+          "created_at": "2025-07-31 14:16:23.549939",
+          "expires_at": "2025-07-31 14:46:23.547927",
+          "is_active": 1,
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4"
+        },
+        {
+          "id": 2,
+          "user_id": 3,
+          "session_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzI",
+          "refresh_token": "b6d057c2d6caa749_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ",
+          "created_at": "2025-07-31 14:39:02.381245",
+          "expires_at": "2025-07-31 15:09:02.376715",
+          "is_active": 1,
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4"
+        },
+        {
+          "id": 3,
+          "user_id": 4,
+          "session_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0I",
+          "refresh_token": "ba446ee2257c0f45_eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ",
+          "created_at": "2025-07-31 14:48:25.678518",
+          "expires_at": "2025-07-31 15:18:25.673495",
+          "is_active": 1,
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4"
+        }
+      ],
+      "audit_logs": [
+        {
+          "id": 1,
+          "user_id": 2,
+          "action": "register_success",
+          "resource": "auth",
+          "details": "{'username': 'testuser'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 13:52:20.810883"
+        },
+        {
+          "id": 2,
+          "user_id": 1,
+          "action": "login_success",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 13:52:23.076909"
+        },
+        {
+          "id": 3,
+          "user_id": 1,
+          "action": "login_success",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:16:23.558464"
+        },
+        {
+          "id": 4,
+          "user_id": null,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'email': 'mfa@noxsuite.local', 'reason': 'user_not_found'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:31:26.704609"
+        },
+        {
+          "id": 5,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 14:33:50.076052"
+        },
+        {
+          "id": 6,
+          "user_id": 4,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:36:30.475225"
+        },
+        {
+          "id": 7,
+          "user_id": 4,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:38:00.092376"
+        },
+        {
+          "id": 8,
+          "user_id": 4,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:38:53.398670"
+        },
+        {
+          "id": 9,
+          "user_id": 4,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:38:55.639613"
+        },
+        {
+          "id": 10,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:38:57.886868"
+        },
+        {
+          "id": 11,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:39:00.133893"
+        },
+        {
+          "id": 12,
+          "user_id": 3,
+          "action": "login_success",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:39:02.387761"
+        },
+        {
+          "id": 13,
+          "user_id": 3,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:39:04.639747"
+        },
+        {
+          "id": 14,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:39:54.138877"
+        },
+        {
+          "id": 15,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:40:59.127099"
+        },
+        {
+          "id": 16,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:42:13.539056"
+        },
+        {
+          "id": 17,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:42:38.175482"
+        },
+        {
+          "id": 18,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:43:39.979874"
+        },
+        {
+          "id": 19,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:45:23.207632"
+        },
+        {
+          "id": 20,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:46:25.460081"
+        },
+        {
+          "id": 21,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:47:12.940112"
+        },
+        {
+          "id": 22,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:48:00.066745"
+        },
+        {
+          "id": 23,
+          "user_id": 4,
+          "action": "mfa_verification_success",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:48:25.685552"
+        },
+        {
+          "id": 24,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 14:48:38.769124"
+        },
+        {
+          "id": 25,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:56:23.099780"
+        },
+        {
+          "id": 26,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:57:19.747271"
+        },
+        {
+          "id": 27,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{'mfa_session_id': '4_39536f05c69de6424245ed54aa180acd'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 14:59:33.393265"
+        },
+        {
+          "id": 28,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{'mfa_session_id': '4_82de9401d9194d8bb69a08c822348b40'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 15:01:59.264001"
+        },
+        {
+          "id": 29,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{'mfa_session_id': '4_09d364174d8664b9cb7198f98c0003b0'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 15:03:17.498175"
+        },
+        {
+          "id": 30,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 15:03:53.307827"
+        },
+        {
+          "id": 31,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 15:05:31.068038"
+        },
+        {
+          "id": 32,
+          "user_id": null,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'email': 'mfa_user@noxsuite.local', 'reason': 'user_not_found'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.26100; de-DE) PowerShell/7.5.2",
+          "timestamp": "2025-07-31 15:07:37.950470"
+        },
+        {
+          "id": 33,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.26100; de-DE) PowerShell/7.5.2",
+          "timestamp": "2025-07-31 15:08:45.936403"
+        },
+        {
+          "id": 34,
+          "user_id": 4,
+          "action": "login_mfa_required",
+          "resource": "auth",
+          "details": "{}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "python-requests/2.32.4",
+          "timestamp": "2025-07-31 15:17:52.971466"
+        },
+        {
+          "id": 35,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:26:08.098166"
+        },
+        {
+          "id": 36,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:26:08.654511"
+        },
+        {
+          "id": 37,
+          "user_id": 3,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:26:08.882528"
+        },
+        {
+          "id": 38,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:26:09.118070"
+        },
+        {
+          "id": 39,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:26:45.523809"
+        },
+        {
+          "id": 40,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:26:46.092959"
+        },
+        {
+          "id": 41,
+          "user_id": 3,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:26:46.320288"
+        },
+        {
+          "id": 42,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:27:30.840100"
+        },
+        {
+          "id": 43,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:27:31.421978"
+        },
+        {
+          "id": 44,
+          "user_id": 3,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:27:31.648270"
+        },
+        {
+          "id": 45,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:27:31.883042"
+        },
+        {
+          "id": 46,
+          "user_id": null,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'email': \"admin' OR 1=1--@noxsuite.local\", 'reason': 'user_not_found'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Python/3.12 aiohttp/3.10.0",
+          "timestamp": "2025-07-31 15:27:31.895020"
+        },
+        {
+          "id": 47,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.26100; de-DE) PowerShell/7.5.2",
+          "timestamp": "2025-07-31 15:28:27.464504"
+        },
+        {
+          "id": 48,
+          "user_id": 1,
+          "action": "login_failed",
+          "resource": "auth",
+          "details": "{'reason': 'invalid_password'}",
+          "ip_address": "127.0.0.1",
+          "user_agent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.26100; de-DE) PowerShell/7.5.2",
+          "timestamp": "2025-07-31 15:29:15.863783"
+        }
+      ]
+    },
+    "schema": {
+      "users": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "username",
+          "type": "VARCHAR(50)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "email",
+          "type": "VARCHAR(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "password_hash",
+          "type": "VARCHAR(255)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "mfa_enabled",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "mfa_secret",
+          "type": "VARCHAR(32)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "backup_codes",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "is_verified",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "last_login",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "roles": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "VARCHAR(50)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "description",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "permissions",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "user_roles": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "role_id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "assigned_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "assigned_by",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "user_sessions": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "session_token",
+          "type": "VARCHAR(255)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "refresh_token",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "created_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "expires_at",
+          "type": "DATETIME",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "is_active",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "ip_address",
+          "type": "VARCHAR(45)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "user_agent",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ],
+      "audit_logs": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "user_id",
+          "type": "INTEGER",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "action",
+          "type": "VARCHAR(100)",
+          "notnull": 1,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "resource",
+          "type": "VARCHAR(100)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "details",
+          "type": "TEXT",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "ip_address",
+          "type": "VARCHAR(45)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "user_agent",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "timestamp",
+          "type": "DATETIME",
+          "notnull": 0,
+          "dflt_value": null,
+          "pk": 0
+        }
+      ]
+    }
+  }
+]

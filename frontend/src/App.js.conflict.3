@@ -1,0 +1,613 @@
+/**
+ * Main App Component - NoxSuite Frontend Application
+ * Features: ADHD-friendly design, real-time updates, accessibility compliance
+ * @author @hxwxdmhd
+ * @version 11.0.0
+ */
+
+import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate
+} from 'react-router-dom';
+import {
+  ThemeProvider,
+  createTheme,
+  CssBaseline,
+  Box,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Badge,
+  Tooltip,
+  useMediaQuery
+} from '@mui/material';
+import {
+  Menu as MenuIcon,
+  Dashboard as DashboardIcon,
+  Security as SecurityIcon,
+  Extension as ExtensionIcon,
+  Analytics as AnalyticsIcon,
+  Settings as SettingsIcon,
+  Notifications as NotificationsIcon,
+  Accessibility as AccessibilityIcon,
+  Contrast as ContrastIcon,
+  ReduceCapacity as ReduceCapacityIcon,
+  Psychology as PsychologyIcon,
+  Timeline as TimelineIcon,
+  Assessment as AssessmentIcon
+} from '@mui/icons-material';
+
+// Context Providers
+import { AccessibilityProvider } from './contexts/AccessibilityContext';
+import { SocketProvider } from './contexts/SocketContext';
+import { PerformanceProvider } from './contexts/PerformanceContext';
+
+// Components
+import Dashboard from './components/Dashboard';
+import Security from './components/Security';
+import PluginManager from './components/PluginManager';
+import AIInsights from './components/AI/AIInsights';
+import RealTimeAIMonitor from './components/AI/RealTimeAIMonitor';
+import AISystemStatus from './components/AI/AISystemStatus';
+// import Analytics from './components/Analytics';
+// import Settings from './components/Settings';
+
+// Hooks
+import { useAccessibility } from './contexts/AccessibilityContext';
+import { useSocket } from './contexts/SocketContext';
+
+// Main App Content Component (inside providers)
+const AppContent = () => {
+  const {
+    theme,
+    highContrast,
+    reducedMotion,
+    cognitiveLoad,
+    focusIndicators,
+    toggleHighContrast,
+    toggleReducedMotion,
+    toggleCognitiveLoad,
+    announceToScreenReader
+  } = useAccessibility();
+  
+  const {
+    isConnected,
+    getUnreadCount
+  } = useSocket();
+  
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState('dashboard');
+  
+  const isMobile = useMediaQuery('(max-width:768px)');
+  const drawerWidth = cognitiveLoad.simplified ? 280 : 240;
+
+  // Navigation items
+  const navItems = [
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: <DashboardIcon />,
+      path: '/dashboard',
+      component: Dashboard
+    },
+    {
+      id: 'security',
+      label: 'Security',
+      icon: <SecurityIcon />,
+      path: '/security',
+      component: Security
+    },
+    {
+      id: 'plugins',
+      label: 'Plugin Manager',
+      icon: <ExtensionIcon />,
+      path: '/plugins',
+      component: PluginManager
+    },
+    {
+      id: 'ai-insights',
+      label: 'AI Insights',
+      icon: <PsychologyIcon />,
+      path: '/ai-insights',
+      component: AIInsights
+    },
+    {
+      id: 'ai-monitor',
+      label: 'AI Monitor',
+      icon: <TimelineIcon />,
+      path: '/ai-monitor',
+      component: RealTimeAIMonitor
+    },
+    {
+      id: 'ai-status',
+      label: 'AI System Status',
+      icon: <AssessmentIcon />,
+      path: '/ai-status',
+      component: AISystemStatus
+    },
+    {
+      id: 'analytics',
+      label: 'Analytics',
+      icon: <AnalyticsIcon />,
+      path: '/analytics',
+      component: () => <Typography>Analytics coming soon...</Typography>
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      icon: <SettingsIcon />,
+      path: '/settings',
+      component: () => <Typography>Settings coming soon...</Typography>
+    }
+  ];
+
+  // Create custom Material-UI theme
+  const muiTheme = createTheme({
+    palette: {
+      mode: highContrast.enabled ? 'dark' : 'light',
+      primary: {
+        main: theme.primary,
+        contrastText: '#FFFFFF'
+      },
+      secondary: {
+        main: theme.secondary,
+        contrastText: '#FFFFFF'
+      },
+      background: {
+        default: theme.background,
+        paper: theme.cardBackground
+      },
+      text: {
+        primary: theme.text,
+        secondary: theme.textSecondary
+      },
+      divider: theme.divider,
+      error: {
+        main: '#FF4444'
+      },
+      warning: {
+        main: '#FFAA00'
+      },
+      info: {
+        main: '#45B7D1'
+      },
+      success: {
+        main: '#4CAF50'
+      }
+    },
+    typography: {
+      fontFamily: cognitiveLoad.simplified 
+        ? '"Open Sans", "Arial", sans-serif'
+        : '"Roboto", "Helvetica", "Arial", sans-serif',
+      fontSize: cognitiveLoad.simplified ? 16 : 14,
+      h1: {
+        fontSize: cognitiveLoad.simplified ? '3rem' : '2.5rem',
+        fontWeight: 600
+      },
+      h2: {
+        fontSize: cognitiveLoad.simplified ? '2.5rem' : '2rem',
+        fontWeight: 600
+      },
+      h3: {
+        fontSize: cognitiveLoad.simplified ? '2rem' : '1.75rem',
+        fontWeight: 600
+      },
+      h4: {
+        fontSize: cognitiveLoad.simplified ? '1.75rem' : '1.5rem',
+        fontWeight: 600
+      },
+      h5: {
+        fontSize: cognitiveLoad.simplified ? '1.5rem' : '1.25rem',
+        fontWeight: 600
+      },
+      h6: {
+        fontSize: cognitiveLoad.simplified ? '1.25rem' : '1.1rem',
+        fontWeight: 600
+      },
+      body1: {
+        fontSize: cognitiveLoad.simplified ? '1.1rem' : '1rem',
+        lineHeight: cognitiveLoad.simplified ? 1.7 : 1.5
+      },
+      body2: {
+        fontSize: cognitiveLoad.simplified ? '1rem' : '0.875rem',
+        lineHeight: cognitiveLoad.simplified ? 1.6 : 1.43
+      }
+    },
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+            borderRadius: cognitiveLoad.simplified ? 12 : 8,
+            padding: cognitiveLoad.simplified ? '12px 24px' : '8px 16px',
+            fontSize: cognitiveLoad.simplified ? '1.1rem' : '0.875rem',
+            fontWeight: 600,
+            '&:focus': focusIndicators.enabled ? {
+              outline: `3px solid ${theme.primary}`,
+              outlineOffset: '2px'
+            } : {}
+          }
+        }
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            borderRadius: cognitiveLoad.simplified ? 16 : 12,
+            boxShadow: highContrast.enabled 
+              ? 'none'
+              : '0 2px 8px rgba(0,0,0,0.1)',
+            border: highContrast.enabled 
+              ? `2px solid ${theme.primary}`
+              : 'none'
+          }
+        }
+      },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            '& .MuiOutlinedInput-root': {
+              borderRadius: cognitiveLoad.simplified ? 12 : 8,
+              '&:focus-within': focusIndicators.enabled ? {
+                outline: `2px solid ${theme.primary}`,
+                outlineOffset: '2px'
+              } : {}
+            }
+          }
+        }
+      },
+      MuiListItemButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: cognitiveLoad.simplified ? 12 : 8,
+            margin: '4px 8px',
+            '&:focus': focusIndicators.enabled ? {
+              outline: `2px solid ${theme.primary}`,
+              outlineOffset: '2px'
+            } : {},
+            '&.Mui-selected': {
+              backgroundColor: `${theme.primary}20`,
+              color: theme.primary,
+              '&:hover': {
+                backgroundColor: `${theme.primary}30`
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Handle drawer toggle
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
+    announceToScreenReader(drawerOpen ? 'Navigation menu closed' : 'Navigation menu opened');
+  };
+
+  // Handle navigation
+  const handleNavigation = (item) => {
+    setCurrentPage(item.id);
+    if (isMobile) {
+      setDrawerOpen(false);
+    }
+    announceToScreenReader(`Navigated to ${item.label}`);
+  };
+
+  // Get current component
+  const getCurrentComponent = () => {
+    const current = navItems.find(item => item.id === currentPage);
+    return current ? current.component : Dashboard;
+  };
+
+  // Drawer content
+  const DrawerContent = () => (
+    <Box
+      sx={{
+        width: drawerWidth,
+        height: '100%',
+        backgroundColor: theme.cardBackground,
+        borderRight: `1px solid ${theme.divider}`
+      }}
+    >
+      {/* Logo/Title */}
+      <Box
+        sx={{
+          p: 3,
+          borderBottom: `1px solid ${theme.divider}`,
+          textAlign: 'center'
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            color: theme.primary,
+            fontWeight: 700,
+            fontSize: cognitiveLoad.simplified ? '1.5rem' : '1.25rem'
+          }}
+        >
+          🛡️ NoxSuite
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{
+            color: theme.textSecondary,
+            display: 'block',
+            mt: 0.5
+          }}
+        >
+          v11.0 Ultimate Suite
+        </Typography>
+      </Box>
+
+      {/* Navigation Items */}
+      <List sx={{ p: 1 }}>
+        {navItems.map((item) => (
+          <ListItem key={item.id} disablePadding>
+            <ListItemButton
+              selected={currentPage === item.id}
+              onClick={() => handleNavigation(item)}
+              sx={{
+                minHeight: cognitiveLoad.simplified ? 56 : 48,
+                '&:focus': focusIndicators.enabled ? {
+                  outline: `2px solid ${theme.primary}`,
+                  outlineOffset: '2px'
+                } : {}
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  color: currentPage === item.id ? theme.primary : theme.textSecondary,
+                  minWidth: cognitiveLoad.simplified ? 48 : 40
+                }}
+              >
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    fontSize: cognitiveLoad.simplified ? '1.1rem' : '0.875rem',
+                    fontWeight: currentPage === item.id ? 600 : 400,
+                    color: currentPage === item.id ? theme.primary : theme.text
+                  }
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+
+      {/* Accessibility Quick Controls */}
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          p: 2,
+          borderTop: `1px solid ${theme.divider}`,
+          backgroundColor: theme.background
+        }}
+      >
+        <Typography
+          variant="caption"
+          sx={{
+            color: theme.textSecondary,
+            display: 'block',
+            mb: 1,
+            fontWeight: 600
+          }}
+        >
+          Accessibility
+        </Typography>
+        
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <Tooltip title="Toggle High Contrast">
+            <IconButton
+              size="small"
+              onClick={toggleHighContrast}
+              sx={{
+                color: highContrast.enabled ? theme.primary : theme.textSecondary,
+                '&:focus': focusIndicators.enabled ? {
+                  outline: `2px solid ${theme.primary}`,
+                  outlineOffset: '2px'
+                } : {}
+              }}
+              aria-label="Toggle high contrast mode"
+            >
+              <ContrastIcon />
+            </IconButton>
+          </Tooltip>
+          
+          <Tooltip title="Toggle Reduced Motion">
+            <IconButton
+              size="small"
+              onClick={toggleReducedMotion}
+              sx={{
+                color: reducedMotion.enabled ? theme.primary : theme.textSecondary,
+                '&:focus': focusIndicators.enabled ? {
+                  outline: `2px solid ${theme.primary}`,
+                  outlineOffset: '2px'
+                } : {}
+              }}
+              aria-label="Toggle reduced motion"
+            >
+              <ReduceCapacityIcon />
+            </IconButton>
+          </Tooltip>
+          
+          <Tooltip title="Toggle Simplified Interface">
+            <IconButton
+              size="small"
+              onClick={toggleCognitiveLoad}
+              sx={{
+                color: cognitiveLoad.simplified ? theme.primary : theme.textSecondary,
+                '&:focus': focusIndicators.enabled ? {
+                  outline: `2px solid ${theme.primary}`,
+                  outlineOffset: '2px'
+                } : {}
+              }}
+              aria-label="Toggle simplified interface"
+            >
+              <AccessibilityIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Box>
+    </Box>
+  );
+
+  const CurrentComponent = getCurrentComponent();
+
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <CssBaseline />
+      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+        {/* App Bar */}
+        <AppBar
+          position="fixed"
+          sx={{
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+            backgroundColor: theme.cardBackground,
+            color: theme.text,
+            borderBottom: `1px solid ${theme.divider}`,
+            boxShadow: highContrast.enabled ? 'none' : '0 2px 8px rgba(0,0,0,0.1)'
+          }}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="Open navigation menu"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{
+                mr: 2,
+                '&:focus': focusIndicators.enabled ? {
+                  outline: `2px solid ${theme.primary}`,
+                  outlineOffset: '2px'
+                } : {}
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{
+                flexGrow: 1,
+                fontSize: cognitiveLoad.simplified ? '1.5rem' : '1.25rem'
+              }}
+            >
+              {navItems.find(item => item.id === currentPage)?.label || 'Dashboard'}
+            </Typography>
+
+            {/* Connection Status */}
+            <Tooltip title={isConnected ? 'Connected to NoxSuite' : 'Disconnected from NoxSuite'}>
+              <Box
+                sx={{
+                  width: 12,
+                  height: 12,
+                  borderRadius: '50%',
+                  backgroundColor: isConnected ? '#4CAF50' : '#FF4444',
+                  mr: 2,
+                  animation: !reducedMotion.enabled && isConnected ? 'pulse 2s infinite' : 'none',
+                  '@keyframes pulse': {
+                    '0%': { opacity: 1 },
+                    '50%': { opacity: 0.5 },
+                    '100%': { opacity: 1 }
+                  }
+                }}
+                aria-label={isConnected ? 'Connected' : 'Disconnected'}
+                role="status"
+              />
+            </Tooltip>
+
+            {/* Notifications */}
+            <Badge badgeContent={getUnreadCount()} color="error">
+              <IconButton
+                color="inherit"
+                aria-label={`${getUnreadCount()} unread notifications`}
+                sx={{
+                  '&:focus': focusIndicators.enabled ? {
+                    outline: `2px solid ${theme.primary}`,
+                    outlineOffset: '2px'
+                  } : {}
+                }}
+              >
+                <NotificationsIcon />
+              </IconButton>
+            </Badge>
+          </Toolbar>
+        </AppBar>
+
+        {/* Navigation Drawer */}
+        <Drawer
+          variant={isMobile ? 'temporary' : 'permanent'}
+          open={isMobile ? drawerOpen : true}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true // Better open performance on mobile
+          }}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+              backgroundColor: theme.cardBackground,
+              borderRight: `1px solid ${theme.divider}`
+            }
+          }}
+        >
+          <Toolbar /> {/* Toolbar spacer */}
+          <DrawerContent />
+        </Drawer>
+
+        {/* Main Content */}
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            backgroundColor: theme.background,
+            minHeight: '100vh',
+            width: {
+              sm: `calc(100% - ${drawerWidth}px)`
+            }
+          }}
+        >
+          <Toolbar /> {/* Toolbar spacer */}
+          <CurrentComponent />
+        </Box>
+      </Box>
+    </ThemeProvider>
+  );
+};
+
+// Main App Component with Providers
+const App = () => {
+  return (
+    <AccessibilityProvider>
+      <PerformanceProvider>
+        <SocketProvider>
+          <Router>
+            <Routes>
+              <Route path="/*" element={<AppContent />} />
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Router>
+        </SocketProvider>
+      </PerformanceProvider>
+    </AccessibilityProvider>
+  );
+};
+
+export default App;

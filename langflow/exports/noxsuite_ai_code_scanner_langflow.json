@@ -1,0 +1,552 @@
+{
+  "data": {
+    "nodes": {
+      "code_monitor": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Code Monitor\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'development',\n                \"type\": \"str\"\n            },\n            \"watch_files\": {\n                \"display_name\": \"Watch Files\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"file_extensions\": {\n                \"display_name\": \"File Extensions\",\n                \"value\": ['.py', '.js', '.ts', '.yml', '.json'],\n                \"type\": \"str\"\n            },\n            \"scan_patterns\": {\n                \"display_name\": \"Scan Patterns\",\n                \"value\": ['security_vulnerabilities', 'code_quality', 'performance_issues'],\n                \"type\": \"str\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"code_monitor\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "development",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "watch_files": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "watch_files",
+                "show": true,
+                "advanced": false
+              },
+              "file_extensions": {
+                "type": "int",
+                "required": false,
+                "value": [
+                  ".py",
+                  ".js",
+                  ".ts",
+                  ".yml",
+                  ".json"
+                ],
+                "name": "file_extensions",
+                "show": true,
+                "advanced": false
+              },
+              "scan_patterns": {
+                "type": "int",
+                "required": false,
+                "value": [
+                  "security_vulnerabilities",
+                  "code_quality",
+                  "performance_issues"
+                ],
+                "name": "scan_patterns",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Code Monitor",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "development",
+              "watch_files": true,
+              "file_extensions": [
+                ".py",
+                ".js",
+                ".ts",
+                ".yml",
+                ".json"
+              ],
+              "scan_patterns": [
+                "security_vulnerabilities",
+                "code_quality",
+                "performance_issues"
+              ],
+              "langflow_id": "code_monitor",
+              "display_name": "Code Monitor"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "code_monitor"
+        },
+        "id": "code_monitor",
+        "position": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "ai_code_analyzer": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Ai Code Analyzer\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'parallel',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"security_scan\": \"check_vulnerabilities\", \"quality_check\": \"analyze_code_quality\", \"performance_audit\": \"detect_bottlenecks\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 3,\n                \"type\": \"str\"\n            },\n            \"tool_usage_aware\": {\n                \"display_name\": \"Tool Usage Aware\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"ai_powered\": {\n                \"display_name\": \"Ai Powered\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"task_timeout\": {\n                \"display_name\": \"Task Timeout\",\n                \"value\": 60,\n                \"type\": \"str\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"ai_code_analyzer\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "parallel",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"security_scan\": \"check_vulnerabilities\", \"quality_check\": \"analyze_code_quality\", \"performance_audit\": \"detect_bottlenecks\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 3,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "tool_usage_aware": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "tool_usage_aware",
+                "show": true,
+                "advanced": false
+              },
+              "ai_powered": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "ai_powered",
+                "show": true,
+                "advanced": false
+              },
+              "task_timeout": {
+                "type": "int",
+                "required": false,
+                "value": 60,
+                "name": "task_timeout",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Ai Code Analyzer",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "parallel",
+              "agent_tasks": "{\"security_scan\": \"check_vulnerabilities\", \"quality_check\": \"analyze_code_quality\", \"performance_audit\": \"detect_bottlenecks\"}",
+              "max_concurrent_agents": 3,
+              "tool_usage_aware": true,
+              "ai_powered": true,
+              "task_timeout": 60,
+              "langflow_id": "ai_code_analyzer",
+              "display_name": "Ai Code Analyzer"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "ai_code_analyzer"
+        },
+        "id": "ai_code_analyzer",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "docker_security_check": {
+        "data": {
+          "type": "NoxSuiteDockerManager",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteDockerManager(CustomComponent):\n    display_name: str = \"Docker Security Check\"\n    description: str = \"NoxSuite NoxSuiteDockerManager Component\"\n    \n    def build_config(self):\n        return {\n            \"action\": {\n                \"display_name\": \"Action\",\n                \"value\": 'security_scan',\n                \"type\": \"str\"\n            },\n            \"container_filter\": {\n                \"display_name\": \"Container Filter\",\n                \"value\": 'all',\n                \"type\": \"str\"\n            },\n            \"vulnerability_check\": {\n                \"display_name\": \"Vulnerability Check\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"compliance_scan\": {\n                \"display_name\": \"Compliance Scan\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"generate_report\": {\n                \"display_name\": \"Generate Report\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteDockerManager\",\n            \"component_id\": \"docker_security_check\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "action": {
+                "type": "str",
+                "required": false,
+                "value": "security_scan",
+                "name": "action",
+                "show": true,
+                "advanced": false
+              },
+              "container_filter": {
+                "type": "str",
+                "required": false,
+                "value": "all",
+                "name": "container_filter",
+                "show": true,
+                "advanced": false
+              },
+              "vulnerability_check": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "vulnerability_check",
+                "show": true,
+                "advanced": false
+              },
+              "compliance_scan": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "compliance_scan",
+                "show": true,
+                "advanced": false
+              },
+              "generate_report": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "generate_report",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteDockerManager",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Docker Security Check",
+            "documentation": "",
+            "custom_fields": {
+              "action": "security_scan",
+              "container_filter": "all",
+              "vulnerability_check": true,
+              "compliance_scan": true,
+              "generate_report": true,
+              "langflow_id": "docker_security_check",
+              "display_name": "Docker Security Check"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteDockerManager",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "docker_security_check"
+        },
+        "id": "docker_security_check",
+        "position": {
+          "x": 100,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "mcp_workflow_validator": {
+        "data": {
+          "type": "NoxSuiteMCPOrchestrator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMCPOrchestrator(CustomComponent):\n    display_name: str = \"Mcp Workflow Validator\"\n    description: str = \"NoxSuite NoxSuiteMCPOrchestrator Component\"\n    \n    def build_config(self):\n        return {\n            \"operation\": {\n                \"display_name\": \"Operation\",\n                \"value\": 'validate_all_workflows',\n                \"type\": \"str\"\n            },\n            \"mcp_endpoint\": {\n                \"display_name\": \"Mcp Endpoint\",\n                \"value\": 'http://localhost:7860/api/v1/mcp/project/d602c2ae-497e-49cf-9e7b-f503ef844007/sse',\n                \"type\": \"str\"\n            },\n            \"security_validation\": {\n                \"display_name\": \"Security Validation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_check\": {\n                \"display_name\": \"Performance Check\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"auto_fix_issues\": {\n                \"display_name\": \"Auto Fix Issues\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMCPOrchestrator\",\n            \"component_id\": \"mcp_workflow_validator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "operation": {
+                "type": "str",
+                "required": false,
+                "value": "validate_all_workflows",
+                "name": "operation",
+                "show": true,
+                "advanced": false
+              },
+              "mcp_endpoint": {
+                "type": "str",
+                "required": false,
+                "value": "http://localhost:7860/api/v1/mcp/project/d602c2ae-497e-49cf-9e7b-f503ef844007/sse",
+                "name": "mcp_endpoint",
+                "show": true,
+                "advanced": false
+              },
+              "security_validation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_validation",
+                "show": true,
+                "advanced": false
+              },
+              "performance_check": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_check",
+                "show": true,
+                "advanced": false
+              },
+              "auto_fix_issues": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "auto_fix_issues",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMCPOrchestrator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Mcp Workflow Validator",
+            "documentation": "",
+            "custom_fields": {
+              "operation": "validate_all_workflows",
+              "mcp_endpoint": "http://localhost:7860/api/v1/mcp/project/d602c2ae-497e-49cf-9e7b-f503ef844007/sse",
+              "security_validation": true,
+              "performance_check": true,
+              "auto_fix_issues": true,
+              "langflow_id": "mcp_workflow_validator",
+              "display_name": "Mcp Workflow Validator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMCPOrchestrator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "mcp_workflow_validator"
+        },
+        "id": "mcp_workflow_validator",
+        "position": {
+          "x": 400,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "ai_report_generator": {
+        "data": {
+          "type": "TextProcessor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass TextProcessor(CustomComponent):\n    display_name: str = \"Ai Report Generator\"\n    description: str = \"NoxSuite TextProcessor Component\"\n    \n    def build_config(self):\n        return {\n            \"processing_type\": {\n                \"display_name\": \"Processing Type\",\n                \"value\": 'ai_analysis',\n                \"type\": \"str\"\n            },\n            \"generate_recommendations\": {\n                \"display_name\": \"Generate Recommendations\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"severity_classification\": {\n                \"display_name\": \"Severity Classification\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"auto_prioritization\": {\n                \"display_name\": \"Auto Prioritization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"TextProcessor\",\n            \"component_id\": \"ai_report_generator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "processing_type": {
+                "type": "str",
+                "required": false,
+                "value": "ai_analysis",
+                "name": "processing_type",
+                "show": true,
+                "advanced": false
+              },
+              "generate_recommendations": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "generate_recommendations",
+                "show": true,
+                "advanced": false
+              },
+              "severity_classification": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "severity_classification",
+                "show": true,
+                "advanced": false
+              },
+              "auto_prioritization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "auto_prioritization",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite TextProcessor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Ai Report Generator",
+            "documentation": "",
+            "custom_fields": {
+              "processing_type": "ai_analysis",
+              "generate_recommendations": true,
+              "severity_classification": true,
+              "auto_prioritization": true,
+              "langflow_id": "ai_report_generator",
+              "display_name": "Ai Report Generator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.TextProcessor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "ai_report_generator"
+        },
+        "id": "ai_report_generator",
+        "position": {
+          "x": 700,
+          "y": 200
+        },
+        "type": "genericNode"
+      }
+    },
+    "edges": [
+      {
+        "source": "code_monitor",
+        "target": "ai_code_analyzer",
+        "sourceHandle": "file_changes",
+        "targetHandle": "analysis_trigger",
+        "id": "e1",
+        "type": "default"
+      },
+      {
+        "source": "ai_code_analyzer",
+        "target": "docker_security_check",
+        "sourceHandle": "security_task",
+        "targetHandle": "scan_trigger",
+        "id": "e2",
+        "type": "default"
+      },
+      {
+        "source": "ai_code_analyzer",
+        "target": "mcp_workflow_validator",
+        "sourceHandle": "validation_task",
+        "targetHandle": "validate_trigger",
+        "id": "e3",
+        "type": "default"
+      },
+      {
+        "source": "docker_security_check",
+        "target": "ai_report_generator",
+        "sourceHandle": "security_report",
+        "targetHandle": "analysis_input",
+        "id": "e4",
+        "type": "default"
+      },
+      {
+        "source": "mcp_workflow_validator",
+        "target": "ai_report_generator",
+        "sourceHandle": "validation_report",
+        "targetHandle": "analysis_input",
+        "id": "e5",
+        "type": "default"
+      }
+    ],
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "description": "AI-Powered Code Quality & Security Scanner with intelligent analysis and automated remediation",
+  "name": "NoxSuite_AI_Code_Scanner",
+  "id": "noxsuite_ai_code_scanner"
+}

@@ -1,0 +1,850 @@
+/**
+ * Security Component - Advanced Threat Detection and Analysis
+ * Features: Real-time threat monitoring, ADHD-friendly interface, accessibility compliance
+ * @author @hxwxdmhd
+ * @version 1.0.0
+ */
+
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import {
+  Box,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Alert,
+  Chip,
+  IconButton,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Switch,
+  FormControlLabel,
+  LinearProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Tooltip,
+  Badge,
+  CircularProgress,
+  Tabs,
+  Tab
+} from '@mui/material';
+import {
+  Security as SecurityIcon,
+  Shield as ShieldIcon,
+  Warning as WarningIcon,
+  Error as ErrorIcon,
+  CheckCircle as CheckCircleIcon,
+  Search as SearchIcon,
+  FilterList as FilterIcon,
+  Refresh as RefreshIcon,
+  GetApp as DownloadIcon,
+  Block as BlockIcon,
+  Visibility as ViewIcon,
+  ExpandMore as ExpandMoreIcon,
+  NetworkCheck as NetworkIcon,
+  VpnLock as VpnLockIcon,
+  BugReport as BugReportIcon,
+  Computer as ComputerIcon,
+  Public as PublicIcon,
+  Schedule as ScheduleIcon
+} from '@mui/icons-material';
+import {
+  Line,
+  Doughnut,
+  Bar,
+  Radar
+} from 'react-chartjs-2';
+
+import { useAccessibility } from '../contexts/AccessibilityContext';
+import { useSocket, useSecurityAlerts } from '../contexts/SocketContext';
+
+const Security = () => {
+  const {
+    theme,
+    reducedMotion,
+    highContrast,
+    focusIndicators,
+    cognitiveLoad,
+    announceToScreenReader
+  } = useAccessibility();
+  
+  const {
+    isConnected,
+    emit,
+    subscribe
+  } = useSocket();
+  
+  const securityAlerts = useSecurityAlerts();
+  
+  // Local state
+  const [activeTab, setActiveTab] = useState(0);
+  const [scanning, setScanning] = useState(false);
+  const [selectedAlert, setSelectedAlert] = useState(null);
+  const [filterSeverity, setFilterSeverity] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [threatAnalysis, setThreatAnalysis] = useState({});
+  const [securityMetrics, setSecurityMetrics] = useState({});
+  const [scanHistory, setScanHistory] = useState([]);
+  const [blockedIPs, setBlockedIPs] = useState([]);
+  const [autoBlock, setAutoBlock] = useState(true);
+  const [realTimeProtection, setRealTimeProtection] = useState(true);
+
+  // Tab configuration
+  const tabs = [
+    { label: 'Overview', icon: <SecurityIcon /> },
+    { label: 'Threats', icon: <WarningIcon /> },
+    { label: 'Firewall', icon: <ShieldIcon /> },
+    { label: 'Analysis', icon: <BugReportIcon /> },
+    { label: 'Settings', icon: <ScheduleIcon /> }
+  ];
+
+  // Subscribe to security events
+  useEffect(() => {
+    const unsubscribe = subscribe('security_metrics_update', (metrics) => {
+      setSecurityMetrics(metrics);
+    });
+    
+    const unsubscribeThreat = subscribe('threat_analysis_update', (analysis) => {
+      setThreatAnalysis(analysis);
+    });
+    
+    const unsubscribeScan = subscribe('scan_history_update', (history) => {
+      setScanHistory(history);
+    });
+    
+    const unsubscribeBlocked = subscribe('blocked_ips_update', (ips) => {
+      setBlockedIPs(ips);
+    });
+
+    return () => {
+      unsubscribe();
+      unsubscribeThreat();
+      unsubscribeScan();
+      unsubscribeBlocked();
+    };
+  }, [subscribe]);
+
+  // Filter and search alerts
+  const filteredAlerts = useMemo(() => {
+    let filtered = securityAlerts;
+    
+    if (filterSeverity !== 'all') {
+      filtered = filtered.filter(alert => alert.severity === filterSeverity);
+    }
+    
+    if (searchTerm) {
+      const search = searchTerm.toLowerCase();
+      filtered = filtered.filter(alert =>
+        alert.title.toLowerCase().includes(search) ||
+        alert.message.toLowerCase().includes(search) ||
+        alert.type.toLowerCase().includes(search)
+      );
+    }
+    
+    return filtered;
+  }, [securityAlerts, filterSeverity, searchTerm]);
+
+  // Paginated alerts
+  const paginatedAlerts = useMemo(() => {
+    const start = currentPage * pageSize;
+    return filteredAlerts.slice(start, start + pageSize);
+  }, [filteredAlerts, currentPage, pageSize]);
+
+  // Chart options
+  const chartOptions = useMemo(() => {
+    const textColor = highContrast ? '#FFFFFF' : theme.text;
+    const gridColor = highContrast ? '#444444' : '#E0E0E0';
+    
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: reducedMotion.enabled ? false : {
+        duration: 750,
+        easing: 'easeInOutQuart'
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor,
+            font: {
+              size: cognitiveLoad.simplified ? 14 : 12
+            }
+          }
+        },
+        tooltip: {
+          titleColor: textColor,
+          bodyColor: textColor,
+          backgroundColor: highContrast ? '#000000' : 'rgba(0,0,0,0.8)',
+          borderColor: theme.primary,
+          borderWidth: 1
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: textColor
+          },
+          grid: {
+            color: gridColor
+          }
+        },
+        y: {
+          ticks: {
+            color: textColor
+          },
+          grid: {
+            color: gridColor
+          }
+        }
+      }
+    };
+  }, [theme, highContrast, reducedMotion, cognitiveLoad]);
+
+  // Threat distribution data
+  const threatData = useMemo(() => {
+    const threatTypes = {};
+    securityAlerts.forEach(alert => {
+      threatTypes[alert.type] = (threatTypes[alert.type] || 0) + 1;
+    });
+
+    return {
+      labels: Object.keys(threatTypes),
+      datasets: [{
+        label: 'Threat Types',
+        data: Object.values(threatTypes),
+        backgroundColor: [
+          '#FF6B6B',
+          '#4ECDC4',
+          '#45B7D1',
+          '#96CEB4',
+          '#FECA57',
+          '#FF9FF3',
+          '#A8E6CF',
+          '#FFD93D'
+        ],
+        borderWidth: 2,
+        borderColor: highContrast ? '#FFFFFF' : '#333333'
+      }]
+    };
+  }, [securityAlerts, highContrast]);
+
+  // Security score radar data
+  const securityScoreData = useMemo(() => {
+    const scores = {
+      'Network Security': securityMetrics.network_score || 0,
+      'Malware Protection': securityMetrics.malware_score || 0,
+      'Firewall': securityMetrics.firewall_score || 0,
+      'Intrusion Detection': securityMetrics.ids_score || 0,
+      'Access Control': securityMetrics.access_score || 0,
+      'Data Protection': securityMetrics.data_score || 0
+    };
+
+    return {
+      labels: Object.keys(scores),
+      datasets: [{
+        label: 'Security Score',
+        data: Object.values(scores),
+        backgroundColor: 'rgba(69, 183, 209, 0.2)',
+        borderColor: '#45B7D1',
+        borderWidth: 2,
+        pointBackgroundColor: '#45B7D1',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2
+      }]
+    };
+  }, [securityMetrics]);
+
+  // Get severity color
+  const getSeverityColor = (severity) => {
+    switch (severity) {
+      case 'critical': return '#FF4444';
+      case 'high': return '#FF8800';
+      case 'medium': return '#FFAA00';
+      case 'low': return '#4CAF50';
+      default: return '#9E9E9E';
+    }
+  };
+
+  // Get severity icon
+  const getSeverityIcon = (severity) => {
+    switch (severity) {
+      case 'critical': return <ErrorIcon />;
+      case 'high': return <WarningIcon />;
+      case 'medium': return <WarningIcon />;
+      case 'low': return <CheckCircleIcon />;
+      default: return <SecurityIcon />;
+    }
+  };
+
+  // Start security scan
+  const handleStartScan = useCallback(async () => {
+    setScanning(true);
+    announceToScreenReader('Starting security scan');
+    
+    try {
+      emit('start_security_scan', { comprehensive: true });
+      
+      setTimeout(() => {
+        setScanning(false);
+        announceToScreenReader('Security scan completed');
+      }, 30000); // 30 second simulation
+      
+    } catch (error) {
+      console.error('Failed to start security scan:', error);
+      setScanning(false);
+      announceToScreenReader('Security scan failed');
+    }
+  }, [emit, announceToScreenReader]);
+
+  // Block IP address
+  const handleBlockIP = useCallback((ip) => {
+    emit('block_ip', { ip });
+    announceToScreenReader(`IP address ${ip} blocked`);
+  }, [emit, announceToScreenReader]);
+
+  // View alert details
+  const handleViewAlert = useCallback((alert) => {
+    setSelectedAlert(alert);
+  }, []);
+
+  // Close alert dialog
+  const handleCloseAlert = useCallback(() => {
+    setSelectedAlert(null);
+  }, []);
+
+  // Overview Tab Content
+  const OverviewTab = () => (
+    <Grid container spacing={3}>
+      {/* Security Score Cards */}
+      <Grid item xs={12}>
+        <Grid container spacing={2}>
+          {[
+            {
+              title: 'Overall Security Score',
+              value: `${securityMetrics.overall_score || 0}/100`,
+              icon: <ShieldIcon />,
+              color: (securityMetrics.overall_score || 0) > 80 ? '#4CAF50' : 
+                     (securityMetrics.overall_score || 0) > 60 ? '#FFAA00' : '#FF4444'
+            },
+            {
+              title: 'Active Threats',
+              value: securityAlerts.filter(alert => alert.severity === 'critical').length,
+              icon: <WarningIcon />,
+              color: securityAlerts.filter(alert => alert.severity === 'critical').length > 0 ? '#FF4444' : '#4CAF50'
+            },
+            {
+              title: 'Blocked IPs',
+              value: blockedIPs.length,
+              icon: <BlockIcon />,
+              color: '#45B7D1'
+            },
+            {
+              title: 'Last Scan',
+              value: scanHistory[0] ? new Date(scanHistory[0].timestamp).toLocaleDateString() : 'Never',
+              icon: <SearchIcon />,
+              color: '#96CEB4'
+            }
+          ].map((metric, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Card
+                sx={{
+                  backgroundColor: theme.cardBackground,
+                  border: highContrast ? `2px solid ${theme.primary}` : 'none',
+                  transition: reducedMotion.enabled ? 'none' : 'transform 0.2s',
+                  '&:hover': reducedMotion.enabled ? {} : {
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Box sx={{ color: metric.color }}>
+                      {metric.icon}
+                    </Box>
+                    <Box>
+                      <Typography
+                        variant="h4"
+                        sx={{
+                          fontWeight: 700,
+                          color: metric.color,
+                          fontSize: cognitiveLoad.simplified ? '1.8rem' : '2rem'
+                        }}
+                      >
+                        {metric.value}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: theme.textSecondary }}
+                      >
+                        {metric.title}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Grid>
+
+      {/* Charts */}
+      <Grid item xs={12} md={6}>
+        <Card
+          sx={{
+            height: '400px',
+            backgroundColor: theme.cardBackground,
+            border: highContrast ? `2px solid ${theme.primary}` : 'none'
+          }}
+        >
+          <CardContent>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Threat Distribution
+            </Typography>
+            <Box sx={{ height: '300px' }}>
+              {threatData.labels.length > 0 ? (
+                <Doughnut data={threatData} options={chartOptions} />
+              ) : (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    color: theme.textSecondary
+                  }}
+                >
+                  <Typography>No threats detected</Typography>
+                </Box>
+              )}
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      <Grid item xs={12} md={6}>
+        <Card
+          sx={{
+            height: '400px',
+            backgroundColor: theme.cardBackground,
+            border: highContrast ? `2px solid ${theme.primary}` : 'none'
+          }}
+        >
+          <CardContent>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Security Assessment
+            </Typography>
+            <Box sx={{ height: '300px' }}>
+              <Radar
+                data={securityScoreData}
+                options={{
+                  ...chartOptions,
+                  scales: {
+                    r: {
+                      beginAtZero: true,
+                      max: 100,
+                      ticks: {
+                        color: highContrast ? '#FFFFFF' : theme.text
+                      },
+                      grid: {
+                        color: highContrast ? '#444444' : '#E0E0E0'
+                      }
+                    }
+                  }
+                }}
+              />
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      {/* Quick Actions */}
+      <Grid item xs={12}>
+        <Card
+          sx={{
+            backgroundColor: theme.cardBackground,
+            border: highContrast ? `2px solid ${theme.primary}` : 'none'
+          }}
+        >
+          <CardContent>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Quick Actions
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Button
+                variant="contained"
+                startIcon={scanning ? <CircularProgress size={20} /> : <SearchIcon />}
+                onClick={handleStartScan}
+                disabled={scanning || !isConnected}
+                sx={{
+                  backgroundColor: theme.primary,
+                  '&:focus': focusIndicators.enabled ? {
+                    outline: `2px solid ${theme.primary}`,
+                    outlineOffset: '2px'
+                  } : {}
+                }}
+              >
+                {scanning ? 'Scanning...' : 'Start Security Scan'}
+              </Button>
+              
+              <Button
+                variant="outlined"
+                startIcon={<RefreshIcon />}
+                onClick={() => emit('refresh_security_data')}
+                disabled={!isConnected}
+                sx={{
+                  borderColor: theme.primary,
+                  color: theme.primary,
+                  '&:focus': focusIndicators.enabled ? {
+                    outline: `2px solid ${theme.primary}`,
+                    outlineOffset: '2px'
+                  } : {}
+                }}
+              >
+                Refresh Data
+              </Button>
+              
+              <Button
+                variant="outlined"
+                startIcon={<DownloadIcon />}
+                onClick={() => emit('export_security_report')}
+                disabled={!isConnected}
+                sx={{
+                  borderColor: theme.primary,
+                  color: theme.primary,
+                  '&:focus': focusIndicators.enabled ? {
+                    outline: `2px solid ${theme.primary}`,
+                    outlineOffset: '2px'
+                  } : {}
+                }}
+              >
+                Export Report
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+    </Grid>
+  );
+
+  // Threats Tab Content
+  const ThreatsTab = () => (
+    <Grid container spacing={3}>
+      {/* Filters */}
+      <Grid item xs={12}>
+        <Card
+          sx={{
+            backgroundColor: theme.cardBackground,
+            border: highContrast ? `2px solid ${theme.primary}` : 'none'
+          }}
+        >
+          <CardContent>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+              <TextField
+                label="Search threats"
+                variant="outlined"
+                size="small"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                  startAdornment: <SearchIcon sx={{ mr: 1, color: theme.textSecondary }} />
+                }}
+                sx={{ minWidth: 250 }}
+              />
+              
+              <FormControl size="small" sx={{ minWidth: 150 }}>
+                <InputLabel>Severity</InputLabel>
+                <Select
+                  value={filterSeverity}
+                  label="Severity"
+                  onChange={(e) => setFilterSeverity(e.target.value)}
+                >
+                  <MenuItem value="all">All</MenuItem>
+                  <MenuItem value="critical">Critical</MenuItem>
+                  <MenuItem value="high">High</MenuItem>
+                  <MenuItem value="medium">Medium</MenuItem>
+                  <MenuItem value="low">Low</MenuItem>
+                </Select>
+              </FormControl>
+              
+              <Typography variant="body2" sx={{ color: theme.textSecondary }}>
+                {filteredAlerts.length} threats found
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+
+      {/* Threats Table */}
+      <Grid item xs={12}>
+        <Card
+          sx={{
+            backgroundColor: theme.cardBackground,
+            border: highContrast ? `2px solid ${theme.primary}` : 'none'
+          }}
+        >
+          <CardContent sx={{ p: 0 }}>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Severity</TableCell>
+                    <TableCell>Type</TableCell>
+                    <TableCell>Title</TableCell>
+                    <TableCell>Time</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {paginatedAlerts.map((alert, index) => (
+                    <TableRow key={alert.id || index}>
+                      <TableCell>
+                        <Chip
+                          icon={getSeverityIcon(alert.severity)}
+                          label={alert.severity}
+                          size="small"
+                          sx={{
+                            backgroundColor: getSeverityColor(alert.severity),
+                            color: '#FFFFFF'
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>{alert.type}</TableCell>
+                      <TableCell>{alert.title}</TableCell>
+                      <TableCell>
+                        {new Date(alert.timestamp).toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleViewAlert(alert)}
+                          aria-label={`View details for ${alert.title}`}
+                        >
+                          <ViewIcon />
+                        </IconButton>
+                        {alert.source_ip && (
+                          <IconButton
+                            size="small"
+                            onClick={() => handleBlockIP(alert.source_ip)}
+                            aria-label={`Block IP ${alert.source_ip}`}
+                          >
+                            <BlockIcon />
+                          </IconButton>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            
+            <TablePagination
+              component="div"
+              count={filteredAlerts.length}
+              page={currentPage}
+              onPageChange={(e, page) => setCurrentPage(page)}
+              rowsPerPage={pageSize}
+              onRowsPerPageChange={(e) => {
+                setPageSize(parseInt(e.target.value, 10));
+                setCurrentPage(0);
+              }}
+            />
+          </CardContent>
+        </Card>
+      </Grid>
+    </Grid>
+  );
+
+  return (
+    <Box
+      sx={{
+        p: { xs: 1, sm: 2, md: 3 },
+        minHeight: '100vh',
+        backgroundColor: theme.background,
+        color: theme.text
+      }}
+      role="main"
+      aria-label="Security Center"
+    >
+      {/* Header */}
+      <Box sx={{ mb: 3 }}>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            fontWeight: 600,
+            color: theme.primary,
+            fontSize: cognitiveLoad.simplified ? '2rem' : '2.5rem',
+            mb: 1
+          }}
+        >
+          🛡️ Security Center
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            color: theme.textSecondary,
+            fontSize: cognitiveLoad.simplified ? '1rem' : '1.1rem'
+          }}
+        >
+          Advanced Threat Detection & Protection
+        </Typography>
+      </Box>
+
+      {/* Connection Status */}
+      {!isConnected && (
+        <Alert severity="warning" sx={{ mb: 3 }}>
+          Security monitoring offline. Limited functionality available.
+        </Alert>
+      )}
+
+      {/* Tabs */}
+      <Paper
+        sx={{
+          backgroundColor: theme.cardBackground,
+          border: highContrast ? `2px solid ${theme.primary}` : 'none'
+        }}
+      >
+        <Tabs
+          value={activeTab}
+          onChange={(e, newValue) => setActiveTab(newValue)}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{
+            borderBottom: `1px solid ${theme.divider}`,
+            '& .MuiTab-root': {
+              color: theme.textSecondary,
+              '&.Mui-selected': {
+                color: theme.primary
+              },
+              '&:focus': focusIndicators.enabled ? {
+                outline: `2px solid ${theme.primary}`,
+                outlineOffset: '2px'
+              } : {}
+            }
+          }}
+        >
+          {tabs.map((tab, index) => (
+            <Tab
+              key={index}
+              label={tab.label}
+              icon={tab.icon}
+              iconPosition="start"
+            />
+          ))}
+        </Tabs>
+
+        <Box sx={{ p: 3 }}>
+          {activeTab === 0 && <OverviewTab />}
+          {activeTab === 1 && <ThreatsTab />}
+          {activeTab === 2 && <Typography>Firewall settings coming soon...</Typography>}
+          {activeTab === 3 && <Typography>Threat analysis coming soon...</Typography>}
+          {activeTab === 4 && <Typography>Security settings coming soon...</Typography>}
+        </Box>
+      </Paper>
+
+      {/* Alert Details Dialog */}
+      <Dialog
+        open={!!selectedAlert}
+        onClose={handleCloseAlert}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            backgroundColor: theme.cardBackground,
+            border: highContrast ? `2px solid ${theme.primary}` : 'none'
+          }
+        }}
+      >
+        {selectedAlert && (
+          <>
+            <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ color: getSeverityColor(selectedAlert.severity) }}>
+                {getSeverityIcon(selectedAlert.severity)}
+              </Box>
+              <Typography variant="h6">
+                {selectedAlert.title}
+              </Typography>
+            </DialogTitle>
+            <DialogContent>
+              <Box sx={{ mb: 2 }}>
+                <Chip
+                  label={selectedAlert.severity}
+                  sx={{
+                    backgroundColor: getSeverityColor(selectedAlert.severity),
+                    color: '#FFFFFF',
+                    mr: 1
+                  }}
+                />
+                <Chip
+                  label={selectedAlert.type}
+                  variant="outlined"
+                />
+              </Box>
+              
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                {selectedAlert.message}
+              </Typography>
+              
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  Details:
+                </Typography>
+                <Typography variant="body2" sx={{ color: theme.textSecondary }}>
+                  Time: {new Date(selectedAlert.timestamp).toLocaleString()}
+                </Typography>
+                {selectedAlert.source_ip && (
+                  <Typography variant="body2" sx={{ color: theme.textSecondary }}>
+                    Source IP: {selectedAlert.source_ip}
+                  </Typography>
+                )}
+                {selectedAlert.user_agent && (
+                  <Typography variant="body2" sx={{ color: theme.textSecondary }}>
+                    User Agent: {selectedAlert.user_agent}
+                  </Typography>
+                )}
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              {selectedAlert.source_ip && (
+                <Button
+                  onClick={() => {
+                    handleBlockIP(selectedAlert.source_ip);
+                    handleCloseAlert();
+                  }}
+                  color="error"
+                  variant="contained"
+                >
+                  Block IP
+                </Button>
+              )}
+              <Button onClick={handleCloseAlert}>
+                Close
+              </Button>
+            </DialogActions>
+          </>
+        )}
+      </Dialog>
+    </Box>
+  );
+};
+
+export default Security;

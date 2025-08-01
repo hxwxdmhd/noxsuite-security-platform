@@ -1,0 +1,789 @@
+{
+  "data": {
+    "nodes": {
+      "git_operations_manager": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Git Operations Manager\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'git_operations_monitoring',\n                \"type\": \"str\"\n            },\n            \"repository_monitoring\": {\n                \"display_name\": \"Repository Monitoring\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"branch_protection\": {\n                \"display_name\": \"Branch Protection\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"code_quality_gates\": {\n                \"display_name\": \"Code Quality Gates\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"commit_analysis\": {\n                \"display_name\": \"Commit Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"pull_request_automation\": {\n                \"display_name\": \"Pull Request Automation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"merge_conflict_resolution\": {\n                \"display_name\": \"Merge Conflict Resolution\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"code_review_automation\": {\n                \"display_name\": \"Code Review Automation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"git_operations_manager\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "git_operations_monitoring",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "repository_monitoring": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "repository_monitoring",
+                "show": true,
+                "advanced": false
+              },
+              "branch_protection": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "branch_protection",
+                "show": true,
+                "advanced": false
+              },
+              "code_quality_gates": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "code_quality_gates",
+                "show": true,
+                "advanced": false
+              },
+              "commit_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "commit_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "pull_request_automation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "pull_request_automation",
+                "show": true,
+                "advanced": false
+              },
+              "merge_conflict_resolution": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "merge_conflict_resolution",
+                "show": true,
+                "advanced": false
+              },
+              "code_review_automation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "code_review_automation",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Git Operations Manager",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "git_operations_monitoring",
+              "repository_monitoring": true,
+              "branch_protection": true,
+              "code_quality_gates": true,
+              "commit_analysis": true,
+              "pull_request_automation": true,
+              "merge_conflict_resolution": true,
+              "code_review_automation": true,
+              "langflow_id": "git_operations_manager",
+              "display_name": "Git Operations Manager"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "git_operations_manager"
+        },
+        "id": "git_operations_manager",
+        "position": {
+          "x": 100,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "cicd_orchestrator": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Cicd Orchestrator\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'cicd_pipeline_automation',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"build_automation\": \"manage_build_processes\", \"test_execution\": \"run_automated_tests\", \"deployment_coordination\": \"orchestrate_deployments\", \"quality_assurance\": \"enforce_quality_standards\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 10,\n                \"type\": \"str\"\n            },\n            \"pipeline_optimization\": {\n                \"display_name\": \"Pipeline Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"parallel_execution\": {\n                \"display_name\": \"Parallel Execution\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"rollback_automation\": {\n                \"display_name\": \"Rollback Automation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"task_timeout\": {\n                \"display_name\": \"Task Timeout\",\n                \"value\": 30,\n                \"type\": \"str\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"cicd_orchestrator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "cicd_pipeline_automation",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"build_automation\": \"manage_build_processes\", \"test_execution\": \"run_automated_tests\", \"deployment_coordination\": \"orchestrate_deployments\", \"quality_assurance\": \"enforce_quality_standards\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 10,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "pipeline_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "pipeline_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "parallel_execution": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "parallel_execution",
+                "show": true,
+                "advanced": false
+              },
+              "rollback_automation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "rollback_automation",
+                "show": true,
+                "advanced": false
+              },
+              "task_timeout": {
+                "type": "int",
+                "required": false,
+                "value": 30,
+                "name": "task_timeout",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Cicd Orchestrator",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "cicd_pipeline_automation",
+              "agent_tasks": "{\"build_automation\": \"manage_build_processes\", \"test_execution\": \"run_automated_tests\", \"deployment_coordination\": \"orchestrate_deployments\", \"quality_assurance\": \"enforce_quality_standards\"}",
+              "max_concurrent_agents": 10,
+              "pipeline_optimization": true,
+              "parallel_execution": true,
+              "rollback_automation": true,
+              "task_timeout": 30,
+              "langflow_id": "cicd_orchestrator",
+              "display_name": "Cicd Orchestrator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "cicd_orchestrator"
+        },
+        "id": "cicd_orchestrator",
+        "position": {
+          "x": 400,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "infrastructure_manager": {
+        "data": {
+          "type": "NoxSuiteDockerManager",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteDockerManager(CustomComponent):\n    display_name: str = \"Infrastructure Manager\"\n    description: str = \"NoxSuite NoxSuiteDockerManager Component\"\n    \n    def build_config(self):\n        return {\n            \"action\": {\n                \"display_name\": \"Action\",\n                \"value\": 'infrastructure_as_code',\n                \"type\": \"str\"\n            },\n            \"terraform_integration\": {\n                \"display_name\": \"Terraform Integration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"kubernetes_orchestration\": {\n                \"display_name\": \"Kubernetes Orchestration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"container_registry_management\": {\n                \"display_name\": \"Container Registry Management\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"environment_provisioning\": {\n                \"display_name\": \"Environment Provisioning\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"resource_optimization\": {\n                \"display_name\": \"Resource Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"cost_optimization\": {\n                \"display_name\": \"Cost Optimization\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"disaster_recovery\": {\n                \"display_name\": \"Disaster Recovery\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteDockerManager\",\n            \"component_id\": \"infrastructure_manager\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "action": {
+                "type": "str",
+                "required": false,
+                "value": "infrastructure_as_code",
+                "name": "action",
+                "show": true,
+                "advanced": false
+              },
+              "terraform_integration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "terraform_integration",
+                "show": true,
+                "advanced": false
+              },
+              "kubernetes_orchestration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "kubernetes_orchestration",
+                "show": true,
+                "advanced": false
+              },
+              "container_registry_management": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "container_registry_management",
+                "show": true,
+                "advanced": false
+              },
+              "environment_provisioning": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "environment_provisioning",
+                "show": true,
+                "advanced": false
+              },
+              "resource_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "resource_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "cost_optimization": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "cost_optimization",
+                "show": true,
+                "advanced": false
+              },
+              "disaster_recovery": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "disaster_recovery",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteDockerManager",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Infrastructure Manager",
+            "documentation": "",
+            "custom_fields": {
+              "action": "infrastructure_as_code",
+              "terraform_integration": true,
+              "kubernetes_orchestration": true,
+              "container_registry_management": true,
+              "environment_provisioning": true,
+              "resource_optimization": true,
+              "cost_optimization": true,
+              "disaster_recovery": true,
+              "langflow_id": "infrastructure_manager",
+              "display_name": "Infrastructure Manager"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteDockerManager",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "infrastructure_manager"
+        },
+        "id": "infrastructure_manager",
+        "position": {
+          "x": 100,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "deployment_orchestrator": {
+        "data": {
+          "type": "NoxSuiteMCPOrchestrator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMCPOrchestrator(CustomComponent):\n    display_name: str = \"Deployment Orchestrator\"\n    description: str = \"NoxSuite NoxSuiteMCPOrchestrator Component\"\n    \n    def build_config(self):\n        return {\n            \"operation\": {\n                \"display_name\": \"Operation\",\n                \"value\": 'deployment_workflow_orchestration',\n                \"type\": \"str\"\n            },\n            \"blue_green_deployment\": {\n                \"display_name\": \"Blue Green Deployment\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"canary_releases\": {\n                \"display_name\": \"Canary Releases\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"feature_flags\": {\n                \"display_name\": \"Feature Flags\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"rollback_automation\": {\n                \"display_name\": \"Rollback Automation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"environment_promotion\": {\n                \"display_name\": \"Environment Promotion\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"compliance_validation\": {\n                \"display_name\": \"Compliance Validation\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_monitoring\": {\n                \"display_name\": \"Performance Monitoring\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMCPOrchestrator\",\n            \"component_id\": \"deployment_orchestrator\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "operation": {
+                "type": "str",
+                "required": false,
+                "value": "deployment_workflow_orchestration",
+                "name": "operation",
+                "show": true,
+                "advanced": false
+              },
+              "blue_green_deployment": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "blue_green_deployment",
+                "show": true,
+                "advanced": false
+              },
+              "canary_releases": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "canary_releases",
+                "show": true,
+                "advanced": false
+              },
+              "feature_flags": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "feature_flags",
+                "show": true,
+                "advanced": false
+              },
+              "rollback_automation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "rollback_automation",
+                "show": true,
+                "advanced": false
+              },
+              "environment_promotion": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "environment_promotion",
+                "show": true,
+                "advanced": false
+              },
+              "compliance_validation": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "compliance_validation",
+                "show": true,
+                "advanced": false
+              },
+              "performance_monitoring": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_monitoring",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMCPOrchestrator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Deployment Orchestrator",
+            "documentation": "",
+            "custom_fields": {
+              "operation": "deployment_workflow_orchestration",
+              "blue_green_deployment": true,
+              "canary_releases": true,
+              "feature_flags": true,
+              "rollback_automation": true,
+              "environment_promotion": true,
+              "compliance_validation": true,
+              "performance_monitoring": true,
+              "langflow_id": "deployment_orchestrator",
+              "display_name": "Deployment Orchestrator"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMCPOrchestrator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "deployment_orchestrator"
+        },
+        "id": "deployment_orchestrator",
+        "position": {
+          "x": 400,
+          "y": 300
+        },
+        "type": "genericNode"
+      },
+      "quality_assurance_ai": {
+        "data": {
+          "type": "NoxSuiteMultiAgentCoordinator",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteMultiAgentCoordinator(CustomComponent):\n    display_name: str = \"Quality Assurance Ai\"\n    description: str = \"NoxSuite NoxSuiteMultiAgentCoordinator Component\"\n    \n    def build_config(self):\n        return {\n            \"coordination_mode\": {\n                \"display_name\": \"Coordination Mode\",\n                \"value\": 'quality_assurance_automation',\n                \"type\": \"str\"\n            },\n            \"agent_tasks\": {\n                \"display_name\": \"Agent Tasks\",\n                \"value\": '{\"code_analysis\": \"static_code_analysis\", \"security_scanning\": \"vulnerability_assessment\", \"performance_testing\": \"load_testing\", \"compliance_checking\": \"regulatory_compliance\"}',\n                \"type\": \"str\"\n            },\n            \"max_concurrent_agents\": {\n                \"display_name\": \"Max Concurrent Agents\",\n                \"value\": 6,\n                \"type\": \"str\"\n            },\n            \"automated_testing\": {\n                \"display_name\": \"Automated Testing\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"quality_gates\": {\n                \"display_name\": \"Quality Gates\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"security_integration\": {\n                \"display_name\": \"Security Integration\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"performance_analysis\": {\n                \"display_name\": \"Performance Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteMultiAgentCoordinator\",\n            \"component_id\": \"quality_assurance_ai\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "coordination_mode": {
+                "type": "str",
+                "required": false,
+                "value": "quality_assurance_automation",
+                "name": "coordination_mode",
+                "show": true,
+                "advanced": false
+              },
+              "agent_tasks": {
+                "type": "str",
+                "required": false,
+                "value": "{\"code_analysis\": \"static_code_analysis\", \"security_scanning\": \"vulnerability_assessment\", \"performance_testing\": \"load_testing\", \"compliance_checking\": \"regulatory_compliance\"}",
+                "name": "agent_tasks",
+                "show": true,
+                "advanced": false
+              },
+              "max_concurrent_agents": {
+                "type": "int",
+                "required": false,
+                "value": 6,
+                "name": "max_concurrent_agents",
+                "show": true,
+                "advanced": false
+              },
+              "automated_testing": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "automated_testing",
+                "show": true,
+                "advanced": false
+              },
+              "quality_gates": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "quality_gates",
+                "show": true,
+                "advanced": false
+              },
+              "security_integration": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "security_integration",
+                "show": true,
+                "advanced": false
+              },
+              "performance_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "performance_analysis",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteMultiAgentCoordinator",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Quality Assurance Ai",
+            "documentation": "",
+            "custom_fields": {
+              "coordination_mode": "quality_assurance_automation",
+              "agent_tasks": "{\"code_analysis\": \"static_code_analysis\", \"security_scanning\": \"vulnerability_assessment\", \"performance_testing\": \"load_testing\", \"compliance_checking\": \"regulatory_compliance\"}",
+              "max_concurrent_agents": 6,
+              "automated_testing": true,
+              "quality_gates": true,
+              "security_integration": true,
+              "performance_analysis": true,
+              "langflow_id": "quality_assurance_ai",
+              "display_name": "Quality Assurance Ai"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteMultiAgentCoordinator",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "quality_assurance_ai"
+        },
+        "id": "quality_assurance_ai",
+        "position": {
+          "x": 700,
+          "y": 100
+        },
+        "type": "genericNode"
+      },
+      "devops_intelligence": {
+        "data": {
+          "type": "NoxSuiteSystemMonitor",
+          "node": {
+            "template": {
+              "code": {
+                "type": "code",
+                "required": true,
+                "placeholder": "",
+                "list": false,
+                "show": true,
+                "multiline": true,
+                "value": "\nfrom langflow import CustomComponent\nfrom typing import Dict, Any\n\nclass NoxSuiteSystemMonitor(CustomComponent):\n    display_name: str = \"Devops Intelligence\"\n    description: str = \"NoxSuite NoxSuiteSystemMonitor Component\"\n    \n    def build_config(self):\n        return {\n            \"monitor_type\": {\n                \"display_name\": \"Monitor Type\",\n                \"value\": 'devops_analytics',\n                \"type\": \"str\"\n            },\n            \"deployment_frequency_tracking\": {\n                \"display_name\": \"Deployment Frequency Tracking\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"lead_time_measurement\": {\n                \"display_name\": \"Lead Time Measurement\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"mttr_analysis\": {\n                \"display_name\": \"Mttr Analysis\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"change_failure_rate\": {\n                \"display_name\": \"Change Failure Rate\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"team_productivity_metrics\": {\n                \"display_name\": \"Team Productivity Metrics\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n            \"pipeline_optimization_insights\": {\n                \"display_name\": \"Pipeline Optimization Insights\",\n                \"value\": True,\n                \"type\": \"bool\"\n            },\n        }\n    \n    def build(self, **kwargs) -> Dict[str, Any]:\n        # NoxSuite component logic\n        config = self.build_config()\n        \n        # Process inputs and execute component logic\n        result = {\n            \"component_type\": \"NoxSuiteSystemMonitor\",\n            \"component_id\": \"devops_intelligence\",\n            \"config\": config,\n            \"status\": \"executed\",\n            \"output\": \"Component executed successfully\"\n        }\n        \n        return result\n",
+                "fileTypes": [
+                  ".py"
+                ],
+                "file_path": "",
+                "password": false,
+                "name": "code",
+                "advanced": false,
+                "dynamic": true,
+                "info": "",
+                "load_from_db": false,
+                "title_case": false
+              },
+              "monitor_type": {
+                "type": "str",
+                "required": false,
+                "value": "devops_analytics",
+                "name": "monitor_type",
+                "show": true,
+                "advanced": false
+              },
+              "deployment_frequency_tracking": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "deployment_frequency_tracking",
+                "show": true,
+                "advanced": false
+              },
+              "lead_time_measurement": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "lead_time_measurement",
+                "show": true,
+                "advanced": false
+              },
+              "mttr_analysis": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "mttr_analysis",
+                "show": true,
+                "advanced": false
+              },
+              "change_failure_rate": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "change_failure_rate",
+                "show": true,
+                "advanced": false
+              },
+              "team_productivity_metrics": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "team_productivity_metrics",
+                "show": true,
+                "advanced": false
+              },
+              "pipeline_optimization_insights": {
+                "type": "bool",
+                "required": false,
+                "value": true,
+                "name": "pipeline_optimization_insights",
+                "show": true,
+                "advanced": false
+              }
+            },
+            "description": "NoxSuite NoxSuiteSystemMonitor",
+            "base_classes": [
+              "CustomComponent"
+            ],
+            "display_name": "Devops Intelligence",
+            "documentation": "",
+            "custom_fields": {
+              "monitor_type": "devops_analytics",
+              "deployment_frequency_tracking": true,
+              "lead_time_measurement": true,
+              "mttr_analysis": true,
+              "change_failure_rate": true,
+              "team_productivity_metrics": true,
+              "pipeline_optimization_insights": true,
+              "langflow_id": "devops_intelligence",
+              "display_name": "Devops Intelligence"
+            },
+            "output_types": [
+              "Data"
+            ],
+            "full_path": "noxsuite.NoxSuiteSystemMonitor",
+            "field_formatters": {},
+            "beta": false
+          },
+          "id": "devops_intelligence"
+        },
+        "id": "devops_intelligence",
+        "position": {
+          "x": 700,
+          "y": 300
+        },
+        "type": "genericNode"
+      }
+    },
+    "edges": [
+      {
+        "source": "git_operations_manager",
+        "target": "cicd_orchestrator",
+        "sourceHandle": "code_changes",
+        "targetHandle": "pipeline_trigger",
+        "id": "e1",
+        "type": "default"
+      },
+      {
+        "source": "cicd_orchestrator",
+        "target": "infrastructure_manager",
+        "sourceHandle": "infrastructure_requirements",
+        "targetHandle": "provisioning_trigger",
+        "id": "e2",
+        "type": "default"
+      },
+      {
+        "source": "cicd_orchestrator",
+        "target": "deployment_orchestrator",
+        "sourceHandle": "deployment_plan",
+        "targetHandle": "deployment_trigger",
+        "id": "e3",
+        "type": "default"
+      },
+      {
+        "source": "git_operations_manager",
+        "target": "quality_assurance_ai",
+        "sourceHandle": "code_quality_data",
+        "targetHandle": "qa_input",
+        "id": "e4",
+        "type": "default"
+      },
+      {
+        "source": "infrastructure_manager",
+        "target": "devops_intelligence",
+        "sourceHandle": "infrastructure_metrics",
+        "targetHandle": "analytics_input",
+        "id": "e5",
+        "type": "default"
+      },
+      {
+        "source": "deployment_orchestrator",
+        "target": "devops_intelligence",
+        "sourceHandle": "deployment_metrics",
+        "targetHandle": "analytics_input",
+        "id": "e6",
+        "type": "default"
+      },
+      {
+        "source": "quality_assurance_ai",
+        "target": "devops_intelligence",
+        "sourceHandle": "quality_metrics",
+        "targetHandle": "analytics_input",
+        "id": "e7",
+        "type": "default"
+      }
+    ],
+    "viewport": {
+      "x": 0,
+      "y": 0,
+      "zoom": 1
+    }
+  },
+  "description": "Advanced DevOps CI/CD Pipeline with GitOps & Infrastructure as Code automation and intelligent quality assurance",
+  "name": "NoxSuite_DevOps_Automation_Engine",
+  "id": "noxsuite_devops_automation_engine"
+}

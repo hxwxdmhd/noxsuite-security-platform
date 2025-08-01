@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 30s
+scrape_configs:
+- job_name: noxguard-api
+  metrics_path: /health
+  static_configs:
+  - targets:
+    - noxguard-api-prod:8080

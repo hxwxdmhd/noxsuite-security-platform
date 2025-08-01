@@ -1,0 +1,81 @@
+{
+  "timestamp": "2025-07-31T18:27:08.154239",
+  "database_repairs": [
+    {
+      "action": "check_connection",
+      "success": true,
+      "message": "Database connection successful (SQLite 3.49.1)"
+    },
+    {
+      "action": "check_users_table",
+      "success": false,
+      "message": "Missing columns in users table: first_name, last_name"
+    },
+    {
+      "action": "check_users_table",
+      "success": true,
+      "message": "Found 3 users in database",
+      "user_count": 3
+    },
+    {
+      "action": "fix_admin_password",
+      "success": true,
+      "message": "Admin password updated successfully"
+    },
+    {
+      "action": "fix_user_passwords",
+      "success": true,
+      "message": "Updated passwords for 2 regular users",
+      "fixed_count": 2
+    }
+  ],
+  "api_server_status": {
+    "status": "running",
+    "health_endpoint": "OK",
+    "response": {
+      "status": "healthy",
+      "uptime": 6246.211974143982,
+      "environment": "development",
+      "service": "noxsuite-api",
+      "version": "2.0.0",
+      "database": "connected"
+    }
+  },
+  "authentication_tests": {
+    "admin_login": {
+      "success": false,
+      "message": "Admin login failed",
+      "status_code": 401,
+      "response": "{\"detail\":\"Invalid credentials\"}"
+    },
+    "regular user_login": {
+      "success": false,
+      "message": "Regular user login failed",
+      "status_code": 401,
+      "response": "{\"detail\":\"Invalid credentials\"}"
+    }
+  },
+  "repair_actions": [
+    {
+      "type": "password_reset",
+      "user": "admin",
+      "new_password": "admin123"
+    },
+    {
+      "type": "password_reset",
+      "user": "mfa_test",
+      "new_password": "user123"
+    },
+    {
+      "type": "password_reset",
+      "user": "user",
+      "new_password": "user123"
+    }
+  ],
+  "summary": {
+    "success_rate": "4/5 (80.0%)",
+    "api_server": "running",
+    "authentication": "not working",
+    "repair_actions": 3
+  }
+}

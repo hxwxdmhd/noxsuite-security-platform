@@ -1,0 +1,12 @@
+{
+  "timestamp": 1753886823.695012,
+  "langflow_url": "http://localhost:7860",
+  "project_id": "d602c2ae-497e-49cf-9e7b-f503ef844007",
+  "langflow_health": false,
+  "mcp_connection": false,
+  "status": "completed",
+  "files_created": [
+    ".vscode/mcp_settings.json",
+    "restart_langflow.bat"
+  ]
+}

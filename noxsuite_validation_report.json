@@ -1,0 +1,241 @@
+{
+  "validation_summary": {
+    "timestamp": "2025-07-29T17:06:09.304507",
+    "total_time_seconds": 66.37,
+    "system_status": "EXCELLENT",
+    "health_score": 95.8,
+    "status_emoji": "\ud83d\udfe2"
+  },
+  "service_tests": {
+    "total_tests": 19,
+    "passed": 19,
+    "failed": 0,
+    "warnings": 0,
+    "details": {
+      "main_server_health": {
+        "status": "PASS",
+        "response_time": 2.073514,
+        "response_code": 200,
+        "data": {
+          "status": "healthy",
+          "timestamp": 1753801505.0080607
+        }
+      },
+      "langflow_health": {
+        "status": "PASS",
+        "response_time": 2.027992,
+        "response_code": 200,
+        "data": {
+          "status": "healthy",
+          "service": "NoxSuite Langflow Service",
+          "timestamp": "2025-07-29T17:05:07.039625",
+          "port": 7860,
+          "mcp_ready": true
+        }
+      },
+      "mcp_server_health": {
+        "status": "PASS",
+        "response_time": 2.041552,
+        "response_code": 200,
+        "data": {
+          "status": "healthy",
+          "service": "NoxSuite MCP Server",
+          "version": "1.0.0",
+          "timestamp": "2025-07-29T17:05:09.083026",
+          "capabilities": [
+            "context_management",
+            "langflow_integration",
+            "model_routing"
+          ]
+        }
+      },
+      "aethercore_health": {
+        "status": "PASS",
+        "response_time": 2.02715,
+        "response_code": 200,
+        "data": {
+          "status": "healthy",
+          "service": "NoxSuite AetherCore MSP Server",
+          "version": "1.0.0",
+          "timestamp": "2025-07-29T17:05:11.111329",
+          "uptime": "operational",
+          "integration": {
+            "mcp_server": "connected",
+            "langflow": "integrated",
+            "main_server": "linked"
+          }
+        }
+      },
+      "main_server_endpoint__health": {
+        "status": "PASS",
+        "response_time": 2.029814,
+        "response_code": 200
+      },
+      "main_server_endpoint__status": {
+        "status": "PASS",
+        "response_time": 2.042887,
+        "response_code": 404
+      },
+      "main_server_endpoint__": {
+        "status": "PASS",
+        "response_time": 2.041138,
+        "response_code": 200
+      },
+      "langflow_endpoint__health": {
+        "status": "PASS",
+        "response_time": 2.04396,
+        "response_code": 200
+      },
+      "langflow_endpoint__api_flows": {
+        "status": "PASS",
+        "response_time": 2.042978,
+        "response_code": 200
+      },
+      "langflow_endpoint__": {
+        "status": "PASS",
+        "response_time": 2.056035,
+        "response_code": 200
+      },
+      "mcp_server_endpoint__health": {
+        "status": "PASS",
+        "response_time": 2.036422,
+        "response_code": 200
+      },
+      "mcp_server_endpoint__protocol": {
+        "status": "PASS",
+        "response_time": 2.038923,
+        "response_code": 404
+      },
+      "mcp_server_endpoint__contexts": {
+        "status": "PASS",
+        "response_time": 2.050365,
+        "response_code": 404
+      },
+      "mcp_server_endpoint__": {
+        "status": "PASS",
+        "response_time": 2.036586,
+        "response_code": 200
+      },
+      "aethercore_endpoint__health": {
+        "status": "PASS",
+        "response_time": 2.046462,
+        "response_code": 200
+      },
+      "aethercore_endpoint__models": {
+        "status": "PASS",
+        "response_time": 2.040549,
+        "response_code": 200
+      },
+      "aethercore_endpoint__metrics": {
+        "status": "PASS",
+        "response_time": 2.047646,
+        "response_code": 200
+      },
+      "aethercore_endpoint__heartbeat": {
+        "status": "PASS",
+        "response_time": 2.049095,
+        "response_code": 200
+      },
+      "aethercore_endpoint__": {
+        "status": "PASS",
+        "response_time": 2.037769,
+        "response_code": 200
+      }
+    }
+  },
+  "integration_tests": {
+    "total_integrations": 5,
+    "passed": 4,
+    "failed": 1,
+    "details": {
+      "mcp_langflow": {
+        "status": "PASS",
+        "description": "MCP and Langflow services are both healthy and ready for integration"
+      },
+      "aethercore_mcp": {
+        "status": "PASS",
+        "description": "AetherCore MSP and MCP services are integrated"
+      },
+      "langflow_readiness": {
+        "status": "PASS",
+        "ready_for_integration": true,
+        "issues": [
+          "\u2705 Health status confirmed"
+        ],
+        "health_status": 200,
+        "flows_status": 200
+      },
+      "mcp_compliance": {
+        "status": "FAIL",
+        "compliant": false,
+        "issues": [
+          "\u274c Protocol endpoint failed: 404"
+        ],
+        "protocol_status": 404,
+        "contexts_status": 404
+      },
+      "docker_services": {
+        "status": "PASS",
+        "docker_available": true,
+        "services_running": 1,
+        "details": "Docker is available and responsive"
+      }
+    }
+  },
+  "performance_metrics": {
+    "main_server": {
+      "response_time_ms": 2051.66,
+      "status_code": 200,
+      "service_available": true
+    },
+    "langflow": {
+      "response_time_ms": 2044.24,
+      "status_code": 200,
+      "service_available": true
+    },
+    "mcp_server": {
+      "response_time_ms": 2042.68,
+      "status_code": 200,
+      "service_available": true
+    },
+    "aethercore": {
+      "response_time_ms": 2028.82,
+      "status_code": 200,
+      "service_available": true
+    }
+  },
+  "service_availability": {
+    "main_server": {
+      "available": true,
+      "url": "http://localhost:5000",
+      "name": "Main Unified Server"
+    },
+    "langflow": {
+      "available": true,
+      "url": "http://localhost:7860",
+      "name": "Langflow Service"
+    },
+    "mcp_server": {
+      "available": true,
+      "url": "http://localhost:8000",
+      "name": "MCP Server"
+    },
+    "aethercore": {
+      "available": true,
+      "url": "http://localhost:8001",
+      "name": "AetherCore MSP Server"
+    }
+  },
+  "recommendations": [
+    "\u26a1 Optimize Main Unified Server - slow response time",
+    "\u26a1 Optimize Langflow Service - slow response time",
+    "\u26a1 Optimize MCP Server - slow response time",
+    "\u26a1 Optimize AetherCore MSP Server - slow response time",
+    "\ud83d\udccb Verify MCP protocol implementation"
+  ],
+  "langflow_integration_status": {
+    "ready": true,
+    "mcp_compatible": false,
+    "integration_possible": false
+  }
+}

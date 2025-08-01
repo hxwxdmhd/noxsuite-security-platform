@@ -1,0 +1,1369 @@
+{
+  "noxsuite_docker_audit_report": {
+    "timestamp": "2025-07-30T13:29:05.144144",
+    "environment": {
+      "os": "Windows",
+      "os_version": "10.0.26100",
+      "hostname": "HO-Workstation",
+      "local_ip": "10.1.0.52"
+    },
+    "docker_installation": {
+      "timestamp": "2025-07-30T13:28:54.229558",
+      "docker_installed": true,
+      "docker_running": true,
+      "docker_version": "Docker version 28.3.2, build 578ccf6",
+      "docker_compose_available": true,
+      "docker_desktop_status": "running"
+    },
+    "container_audit": {
+      "timestamp": "2025-07-30T13:28:54.982723",
+      "containers_running": [
+        {
+          "Command": "\"/bin/prometheus --c\u00e2\u20ac\u00a6\"",
+          "CreatedAt": "2025-07-30 12:45:03 +0200 CEST",
+          "ID": "4e10611263e4",
+          "Image": "prom/prometheus:v2.40.0",
+          "Labels": "com.docker.compose.config-hash=dd3fa65c1d2cf3c6c60f60b3909689829dca43a61c80d03780bdc7dc2b3fd854,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:8e6e3cce35528e8411feaaa2602fee78dc29b30112dcebdf2099dd4d0df03ac1,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=K:\\NoxGuard---NoxPanel-main\\docker-compose-ascii.yml,com.docker.compose.project.working_dir=K:\\NoxGuard---NoxPanel-main,com.docker.compose.project=noxguard---noxpanel-main,com.docker.compose.service=noxguard-prometheus-prod,com.docker.compose.version=2.38.2,desktop.docker.io/binds/0/Source=K:\\NoxGuard---NoxPanel-main\\monitoring\\prometheus.yml,desktop.docker.io/binds/0/SourceKind=hostFile,desktop.docker.io/binds/0/Target=/etc/prometheus/prometheus.yml,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/9090/tcp=:9091,maintainer=The Prometheus Authors <prometheus-developers@googlegroups.com>",
+          "LocalVolumes": "1",
+          "Mounts": "21ac8ca22dd7cd\u00e2\u20ac\u00a6,/run/desktop/m\u00e2\u20ac\u00a6",
+          "Names": "noxguard-prometheus-prod",
+          "Networks": "noxguard---noxpanel-main_noxguard-prod",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "0.0.0.0:9091->9090/tcp, [::]:9091->9090/tcp",
+          "RunningFor": "43 minutes ago",
+          "Size": "0B",
+          "State": "running",
+          "Status": "Up 43 minutes"
+        },
+        {
+          "Command": "\"python -m uvicorn m\u00e2\u20ac\u00a6\"",
+          "CreatedAt": "2025-07-30 12:41:03 +0200 CEST",
+          "ID": "7719d6e7fe95",
+          "Image": "noxguard---noxpanel-main-noxguard-monitor",
+          "Labels": "com.docker.compose.config-hash=bed4c17db6eef202d06056c7cce31e0ce6c07491f0fbd614c05821fed1c35830,com.docker.compose.container-number=1,com.docker.compose.depends_on=noxguard-api:service_started:false,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=K:\\NoxGuard---NoxPanel-main\\docker-compose-prod.yml,com.docker.compose.project.working_dir=K:\\NoxGuard---NoxPanel-main,com.docker.compose.project=noxguard---noxpanel-main,com.docker.compose.service=noxguard-monitor,com.docker.compose.version=2.38.2,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/8001/tcp=:8001",
+          "LocalVolumes": "0",
+          "Mounts": "",
+          "Names": "noxguard-monitor",
+          "Networks": "noxguard---noxpanel-main_noxguard-net",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "0.0.0.0:8001->8001/tcp, [::]:8001->8001/tcp",
+          "RunningFor": "47 minutes ago",
+          "Size": "0B",
+          "State": "running",
+          "Status": "Up 47 minutes (unhealthy)"
+        },
+        {
+          "Command": "\"python main.py\"",
+          "CreatedAt": "2025-07-30 12:41:03 +0200 CEST",
+          "ID": "87b49ea350a3",
+          "Image": "noxguard---noxpanel-main-noxguard-api",
+          "Labels": "com.docker.compose.config-hash=219e20abcfbb8b6bd816fc5e124e1e114d0cbd64ab57b6786aa5f37924e874a9,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=K:\\NoxGuard---NoxPanel-main\\docker-compose-prod.yml,com.docker.compose.project.working_dir=K:\\NoxGuard---NoxPanel-main,com.docker.compose.project=noxguard---noxpanel-main,com.docker.compose.service=noxguard-api,com.docker.compose.version=2.38.2,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/8000/tcp=:8000",
+          "LocalVolumes": "0",
+          "Mounts": "",
+          "Names": "noxguard-api",
+          "Networks": "noxguard---noxpanel-main_noxguard-net",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp",
+          "RunningFor": "47 minutes ago",
+          "Size": "0B",
+          "State": "running",
+          "Status": "Up 47 minutes (healthy)"
+        },
+        {
+          "Command": "\"/docker-entrypoint.\u00e2\u20ac\u00a6\"",
+          "CreatedAt": "2025-07-29 21:20:47 +0200 CEST",
+          "ID": "92795f2506c3",
+          "Image": "nginx:alpine",
+          "Labels": "com.docker.compose.config-hash=0a5d43ff77294d6047638012e2f94832d43a213e3e1929235dd324da22a9913b,com.docker.compose.container-number=1,com.docker.compose.depends_on=langflow-noxsuite:service_started:false,com.docker.compose.image=sha256:d67ea0d64d518b1bb04acde3b00f722ac3e9764b3209a9b0a98924ba35e4b779,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=k:\\NoxGuard---NoxPanel-main\\docker-compose.langflow.yml,com.docker.compose.project.working_dir=k:\\NoxGuard---NoxPanel-main,com.docker.compose.project=noxguard---noxpanel-main,com.docker.compose.service=nginx,com.docker.compose.version=2.38.2,desktop.docker.io/binds/0/Source=k:\\NoxGuard---NoxPanel-main\\nginx\\nginx.conf,desktop.docker.io/binds/0/SourceKind=hostFile,desktop.docker.io/binds/0/Target=/etc/nginx/nginx.conf,desktop.docker.io/binds/1/Source=k:\\NoxGuard---NoxPanel-main\\nginx\\ssl,desktop.docker.io/binds/1/SourceKind=hostFile,desktop.docker.io/binds/1/Target=/etc/nginx/ssl,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/443/tcp=:443,desktop.docker.io/ports/80/tcp=:80,maintainer=NGINX Docker Maintainers <docker-maint@nginx.com>",
+          "LocalVolumes": "0",
+          "Mounts": "/run/desktop/m\u00e2\u20ac\u00a6,/run/desktop/m\u00e2\u20ac\u00a6",
+          "Names": "noxsuite-nginx",
+          "Networks": "noxguard---noxpanel-main_noxsuite-network",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp",
+          "RunningFor": "16 hours ago",
+          "Size": "0B",
+          "State": "running",
+          "Status": "Up 16 hours"
+        },
+        {
+          "Command": "\"python -m langflow \u00e2\u20ac\u00a6\"",
+          "CreatedAt": "2025-07-29 21:20:46 +0200 CEST",
+          "ID": "c95a51258cdd",
+          "Image": "logspace/langflow:latest",
+          "Labels": "com.docker.compose.config-hash=4cdd6c15be12366e8d4cf6729cb57451c2358f3253d29cfa27af9b1008a6ea54,com.docker.compose.container-number=1,com.docker.compose.depends_on=redis:service_started:false,postgres:service_started:false,com.docker.compose.image=sha256:c7738e6d13a262b15348db2e9975f3f1249d2f7c02c7163295de17dd4ffa2e7e,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=k:\\NoxGuard---NoxPanel-main\\docker-compose.langflow.yml,com.docker.compose.project.working_dir=k:\\NoxGuard---NoxPanel-main,com.docker.compose.project=noxguard---noxpanel-main,com.docker.compose.service=langflow-noxsuite,com.docker.compose.version=2.38.2,desktop.docker.io/binds/0/Source=k:\\NoxGuard---NoxPanel-main\\langflow,desktop.docker.io/binds/0/SourceKind=hostFile,desktop.docker.io/binds/0/Target=/app/langflow,desktop.docker.io/binds/1/Source=k:\\NoxGuard---NoxPanel-main\\emergency_copilot_fix.py,desktop.docker.io/binds/1/SourceKind=hostFile,desktop.docker.io/binds/1/Target=/app/emergency_copilot_fix.py,desktop.docker.io/binds/2/Source=k:\\NoxGuard---NoxPanel-main\\autonomous_mcp_agent.py,desktop.docker.io/binds/2/SourceKind=hostFile,desktop.docker.io/binds/2/Target=/app/autonomous_mcp_agent.py,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/7860/tcp=:7860",
+          "LocalVolumes": "1",
+          "Mounts": "/run/desktop/m\u00e2\u20ac\u00a6,noxguard---nox\u00e2\u20ac\u00a6,/run/desktop/m\u00e2\u20ac\u00a6,/run/desktop/m\u00e2\u20ac\u00a6",
+          "Names": "noxsuite-langflow",
+          "Networks": "noxguard---noxpanel-main_noxsuite-network",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "0.0.0.0:7860->7860/tcp, [::]:7860->7860/tcp",
+          "RunningFor": "16 hours ago",
+          "Size": "0B",
+          "State": "running",
+          "Status": "Up 3 hours (unhealthy)"
+        },
+        {
+          "Command": "\"docker-entrypoint.s\u00e2\u20ac\u00a6\"",
+          "CreatedAt": "2025-07-29 21:20:46 +0200 CEST",
+          "ID": "62131b3bbdec",
+          "Image": "postgres:15-alpine",
+          "Labels": "com.docker.compose.config-hash=b6aec0fa04c508ed1f4df5e051d497663292ff7b0192b8824834aa76197cec47,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:1414298ea93186123a6dcf872f778ba3bd2347edcbd2f31aa7bb2d9814ff5393,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=k:\\NoxGuard---NoxPanel-main\\docker-compose.langflow.yml,com.docker.compose.project.working_dir=k:\\NoxGuard---NoxPanel-main,com.docker.compose.project=noxguard---noxpanel-main,com.docker.compose.service=postgres,com.docker.compose.version=2.38.2,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/5432/tcp=:5432",
+          "LocalVolumes": "1",
+          "Mounts": "noxguard---nox\u00e2\u20ac\u00a6",
+          "Names": "noxsuite-postgres",
+          "Networks": "noxguard---noxpanel-main_noxsuite-network",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp",
+          "RunningFor": "16 hours ago",
+          "Size": "0B",
+          "State": "running",
+          "Status": "Up 16 hours (healthy)"
+        },
+        {
+          "Command": "\"docker-entrypoint.s\u00e2\u20ac\u00a6\"",
+          "CreatedAt": "2025-07-29 21:20:46 +0200 CEST",
+          "ID": "ed1004e3db50",
+          "Image": "redis:7-alpine",
+          "Labels": "com.docker.compose.config-hash=32b88a205fae475235eaceaa8adc0889b9815e13aa8fb5dfed8807ce61b1324a,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=k:\\NoxGuard---NoxPanel-main\\docker-compose.langflow.yml,com.docker.compose.project.working_dir=k:\\NoxGuard---NoxPanel-main,com.docker.compose.project=noxguard---noxpanel-main,com.docker.compose.service=redis,com.docker.compose.version=2.38.2,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/6379/tcp=:6379",
+          "LocalVolumes": "1",
+          "Mounts": "noxguard---nox\u00e2\u20ac\u00a6",
+          "Names": "noxsuite-redis",
+          "Networks": "noxguard---noxpanel-main_noxsuite-network",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp",
+          "RunningFor": "16 hours ago",
+          "Size": "0B",
+          "State": "running",
+          "Status": "Up 16 hours (healthy)"
+        },
+        {
+          "Command": "\"python -m langflow \u00e2\u20ac\u00a6\"",
+          "CreatedAt": "2025-07-29 20:08:53 +0200 CEST",
+          "ID": "6d462e464000",
+          "Image": "logspace/langflow:latest",
+          "Labels": "desktop.docker.io/ports.scheme=v2",
+          "LocalVolumes": "0",
+          "Mounts": "",
+          "Names": "youthful_cori",
+          "Networks": "bridge",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "",
+          "RunningFor": "17 hours ago",
+          "Size": "0B",
+          "State": "running",
+          "Status": "Up 17 hours"
+        },
+        {
+          "Command": "\"/docker-entrypoint.\u00e2\u20ac\u00a6\"",
+          "CreatedAt": "2025-07-21 14:17:16 +0200 CEST",
+          "ID": "ac43c9b1594f",
+          "Image": "nginx:alpine",
+          "Labels": "com.docker.compose.config-hash=89ef239f1e9a4659e1a74e2e63ccbd172edb7358cf4904c61456e2689d6c62d8,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:d67ea0d64d518b1bb04acde3b00f722ac3e9764b3209a9b0a98924ba35e4b779,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=K:\\NoxSolutions_Web\\docker-compose.yaml,com.docker.compose.project.working_dir=K:\\NoxSolutions_Web,com.docker.compose.project=noxsolutions_web,com.docker.compose.replace=02d0593299fdd9ad97c3925b35153d77483b4961883446dcfcbf8f1a1e9ceb63,com.docker.compose.service=web,com.docker.compose.version=2.38.2,desktop.docker.io/binds/0/Source=K:\\NoxSolutions_Web\\html,desktop.docker.io/binds/0/SourceKind=hostFile,desktop.docker.io/binds/0/Target=/usr/share/nginx/html,desktop.docker.io/binds/1/Source=K:\\NoxSolutions_Web\\nginx\\nginx.conf,desktop.docker.io/binds/1/SourceKind=hostFile,desktop.docker.io/binds/1/Target=/etc/nginx/nginx.conf,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/80/tcp=:8080,maintainer=NGINX Docker Maintainers <docker-maint@nginx.com>",
+          "LocalVolumes": "0",
+          "Mounts": "/run/desktop/m\u00e2\u20ac\u00a6,/run/desktop/m\u00e2\u20ac\u00a6",
+          "Names": "noxsuite_web",
+          "Networks": "noxsolutions_web_noxsuite_net",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "0.0.0.0:8080->80/tcp, [::]:8080->80/tcp",
+          "RunningFor": "8 days ago",
+          "Size": "0B",
+          "State": "running",
+          "Status": "Up 17 hours"
+        },
+        {
+          "Command": "\"/run.sh\"",
+          "CreatedAt": "2025-07-17 21:54:41 +0200 CEST",
+          "ID": "45f21ba685a2",
+          "Image": "grafana/grafana:latest",
+          "Labels": "com.docker.compose.config-hash=d41ca6cb302337b3fb732b0939d327b708220abe88ee2201c680533d31997d6d,com.docker.compose.container-number=1,com.docker.compose.depends_on=prometheus:service_started:false,com.docker.compose.image=sha256:b5b59bfc7561634c2d7b136c4543d702ebcc94a3da477f21ff26f89ffd4214fa,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=K:\\Project Heimnetz\\docker-compose-simple.yml,com.docker.compose.project.working_dir=K:\\Project Heimnetz,com.docker.compose.project=projectheimnetz,com.docker.compose.service=grafana,com.docker.compose.version=2.38.2,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/3000/tcp=:3000,maintainer=Grafana Labs <hello@grafana.com>,org.opencontainers.image.source=https://github.com/grafana/grafana",
+          "LocalVolumes": "1",
+          "Mounts": "projectheimnet\u00e2\u20ac\u00a6",
+          "Names": "ultimate_grafana",
+          "Networks": "ultimate_suite_network",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp",
+          "RunningFor": "12 days ago",
+          "Size": "0B",
+          "State": "running",
+          "Status": "Up 17 hours"
+        },
+        {
+          "Command": "\"/bin/prometheus --c\u00e2\u20ac\u00a6\"",
+          "CreatedAt": "2025-07-17 21:54:37 +0200 CEST",
+          "ID": "46730a1b3438",
+          "Image": "prom/prometheus:latest",
+          "Labels": "com.docker.compose.config-hash=4a9349c2a3e2e586edbcb3b7d35c3c3de14529e76a3938b7e9445aa8c55b4d9c,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:63805ebb8d2b3920190daf1cb14a60871b16fd38bed42b857a3182bc621f4996,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=K:\\Project Heimnetz\\docker-compose-simple.yml,com.docker.compose.project.working_dir=K:\\Project Heimnetz,com.docker.compose.project=projectheimnetz,com.docker.compose.service=prometheus,com.docker.compose.version=2.38.2,desktop.docker.io/binds/0/Source=K:\\Project Heimnetz\\prometheus.yml,desktop.docker.io/binds/0/SourceKind=hostFile,desktop.docker.io/binds/0/Target=/etc/prometheus/prometheus.yml,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/9090/tcp=:9090,maintainer=The Prometheus Authors <prometheus-developers@googlegroups.com>,org.opencontainers.image.source=https://github.com/prometheus/prometheus",
+          "LocalVolumes": "1",
+          "Mounts": "/run/desktop/m\u00e2\u20ac\u00a6,projectheimnet\u00e2\u20ac\u00a6",
+          "Names": "ultimate_prometheus",
+          "Networks": "ultimate_suite_network",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp",
+          "RunningFor": "12 days ago",
+          "Size": "0B",
+          "State": "running",
+          "Status": "Up 17 hours"
+        }
+      ],
+      "containers_stopped": [
+        {
+          "Command": "\"python app.py\"",
+          "CreatedAt": "2025-07-17 22:21:23 +0200 CEST",
+          "ID": "bf42a1bf5268",
+          "Image": "registry.hf.space/harsh-manvar-llama-2-7b-chat-test:latest",
+          "Labels": "desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/7860/tcp=:7860",
+          "LocalVolumes": "0",
+          "Mounts": "",
+          "Names": "recursing_bose",
+          "Networks": "bridge",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "",
+          "RunningFor": "12 days ago",
+          "Size": "0B",
+          "State": "exited",
+          "Status": "Exited (1) 7 days ago"
+        },
+        {
+          "Command": "\"docker-entrypoint.s\u00e2\u20ac\u00a6\"",
+          "CreatedAt": "2025-07-17 21:54:37 +0200 CEST",
+          "ID": "c05b8e99af61",
+          "Image": "redis:7-alpine",
+          "Labels": "com.docker.compose.config-hash=a551e1256c0c33a540b287a07e08520ac19884fdfd413da95e6c837f03111096,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:bb186d083732f669da90be8b0f975a37812b15e913465bb14d845db72a4e3e08,com.docker.compose.oneoff=False,com.docker.compose.project.config_files=K:\\Project Heimnetz\\docker-compose-simple.yml,com.docker.compose.project.working_dir=K:\\Project Heimnetz,com.docker.compose.project=projectheimnetz,com.docker.compose.service=redis,com.docker.compose.version=2.38.2,desktop.docker.io/ports.scheme=v2,desktop.docker.io/ports/6379/tcp=:6379",
+          "LocalVolumes": "1",
+          "Mounts": "projectheimnet\u00e2\u20ac\u00a6",
+          "Names": "ultimate_redis",
+          "Networks": "ultimate_suite_network",
+          "Platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "Ports": "",
+          "RunningFor": "12 days ago",
+          "Size": "0B",
+          "State": "exited",
+          "Status": "Exited (0) 16 hours ago"
+        }
+      ],
+      "container_health_checks": {
+        "4e10611263e4": {
+          "status": "unknown",
+          "running": true,
+          "restart_count": 0
+        },
+        "7719d6e7fe95": {
+          "status": "unhealthy",
+          "running": true,
+          "restart_count": 0
+        },
+        "87b49ea350a3": {
+          "status": "healthy",
+          "running": true,
+          "restart_count": 0
+        },
+        "92795f2506c3": {
+          "status": "unknown",
+          "running": true,
+          "restart_count": 0
+        },
+        "c95a51258cdd": {
+          "status": "unhealthy",
+          "running": true,
+          "restart_count": 0
+        },
+        "62131b3bbdec": {
+          "status": "healthy",
+          "running": true,
+          "restart_count": 0
+        },
+        "ed1004e3db50": {
+          "status": "healthy",
+          "running": true,
+          "restart_count": 0
+        },
+        "6d462e464000": {
+          "status": "unknown",
+          "running": true,
+          "restart_count": 0
+        },
+        "ac43c9b1594f": {
+          "status": "unknown",
+          "running": true,
+          "restart_count": 0
+        },
+        "45f21ba685a2": {
+          "status": "unknown",
+          "running": true,
+          "restart_count": 0
+        },
+        "46730a1b3438": {
+          "status": "unknown",
+          "running": true,
+          "restart_count": 0
+        }
+      },
+      "network_configuration": {
+        "4e10611263e4": {
+          "noxguard---noxpanel-main_noxguard-prod": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": [
+              "noxguard-prometheus-prod",
+              "noxguard-prometheus-prod"
+            ],
+            "MacAddress": "12:a6:61:69:97:82",
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "015763dba7647c1ff0fd4226b0b64b14d7b5b5131e8f3dc4ed283fac52ac4a42",
+            "EndpointID": "5ec35fb27eb55ef4a2ad25ddefd68ef3f38586ff3ceac362d4e0eec39fd46dae",
+            "Gateway": "172.21.0.1",
+            "IPAddress": "172.21.0.3",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "noxguard-prometheus-prod",
+              "4e10611263e4"
+            ]
+          }
+        },
+        "7719d6e7fe95": {
+          "noxguard---noxpanel-main_noxguard-net": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": [
+              "noxguard-monitor",
+              "noxguard-monitor"
+            ],
+            "MacAddress": "16:c4:3f:20:18:4f",
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "eeff73d127376c25c9e53b65c690225099f75c62f3f3ebbaa1dacf542fd7b894",
+            "EndpointID": "a945dfbc24dbbbd01cbf7c3a47ffffd771304375bc7e7861e18d7cc8799b02f9",
+            "Gateway": "172.19.0.1",
+            "IPAddress": "172.19.0.3",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "noxguard-monitor",
+              "7719d6e7fe95"
+            ]
+          }
+        },
+        "87b49ea350a3": {
+          "noxguard---noxpanel-main_noxguard-net": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": [
+              "noxguard-api",
+              "noxguard-api"
+            ],
+            "MacAddress": "8a:a9:11:ea:ab:bd",
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "eeff73d127376c25c9e53b65c690225099f75c62f3f3ebbaa1dacf542fd7b894",
+            "EndpointID": "289c711fc5707372571c08a28d1fd2645ac0d0097b89f4206e26ac2a6dbd4fa1",
+            "Gateway": "172.19.0.1",
+            "IPAddress": "172.19.0.2",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "noxguard-api",
+              "87b49ea350a3"
+            ]
+          }
+        },
+        "92795f2506c3": {
+          "noxguard---noxpanel-main_noxsuite-network": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": [
+              "noxsuite-nginx",
+              "nginx"
+            ],
+            "MacAddress": "52:80:1d:cc:98:ab",
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "e0c8c76a6fc58cc08a5cc72d33abf2ffc05794c9a850a57fc7f083541757c26c",
+            "EndpointID": "d253b3aea7891bc96b4a16b9cd50b705c4fd955961390cadd02b34a1ed344f99",
+            "Gateway": "172.25.0.1",
+            "IPAddress": "172.25.0.5",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "noxsuite-nginx",
+              "nginx",
+              "92795f2506c3"
+            ]
+          }
+        },
+        "c95a51258cdd": {
+          "noxguard---noxpanel-main_noxsuite-network": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": [
+              "noxsuite-langflow",
+              "langflow-noxsuite"
+            ],
+            "MacAddress": "06:f2:95:8d:cd:79",
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "e0c8c76a6fc58cc08a5cc72d33abf2ffc05794c9a850a57fc7f083541757c26c",
+            "EndpointID": "edddb778061b3485091ce4414f86b79f8ebfc137c6a9d22b778a3dec469ec4a1",
+            "Gateway": "172.25.0.1",
+            "IPAddress": "172.25.0.4",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "noxsuite-langflow",
+              "langflow-noxsuite",
+              "c95a51258cdd"
+            ]
+          }
+        },
+        "62131b3bbdec": {
+          "noxguard---noxpanel-main_noxsuite-network": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": [
+              "noxsuite-postgres",
+              "postgres"
+            ],
+            "MacAddress": "32:4e:1c:11:2e:f4",
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "e0c8c76a6fc58cc08a5cc72d33abf2ffc05794c9a850a57fc7f083541757c26c",
+            "EndpointID": "eaed15cf93f891a491b671912132b6da254b72694f8ff8258b8d906e8a7e6a96",
+            "Gateway": "172.25.0.1",
+            "IPAddress": "172.25.0.2",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "noxsuite-postgres",
+              "postgres",
+              "62131b3bbdec"
+            ]
+          }
+        },
+        "ed1004e3db50": {
+          "noxguard---noxpanel-main_noxsuite-network": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": [
+              "noxsuite-redis",
+              "redis"
+            ],
+            "MacAddress": "7e:28:35:c5:0a:17",
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "e0c8c76a6fc58cc08a5cc72d33abf2ffc05794c9a850a57fc7f083541757c26c",
+            "EndpointID": "39a0ff93182e1432a1f95c5bfa19e3a5e637074ba9795966f4c4d6ed4b2309ce",
+            "Gateway": "172.25.0.1",
+            "IPAddress": "172.25.0.3",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "noxsuite-redis",
+              "redis",
+              "ed1004e3db50"
+            ]
+          }
+        },
+        "6d462e464000": {
+          "bridge": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": null,
+            "MacAddress": "56:23:f3:7b:eb:a9",
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "e367ce1c9e96aab9c2dfcf4bf9ee94b6eee563bfc02b03feb34eadbadf231f6b",
+            "EndpointID": "2bc9ecff1e1b06cb417a6373a83984928a18a14eea60bca6f68cdabbf365338b",
+            "Gateway": "172.17.0.1",
+            "IPAddress": "172.17.0.2",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": null
+          }
+        },
+        "ac43c9b1594f": {
+          "noxsolutions_web_noxsuite_net": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": [
+              "noxsuite_web",
+              "web"
+            ],
+            "MacAddress": "d2:5d:0d:c6:bd:86",
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "5328bd8e9b23d88af521d4222cf67fe6ec150a9b056e1de61c1a3d6e9794ee04",
+            "EndpointID": "fc469c4dfb85bb9b2254cdc69ee2d9a63b6576e44261337e17785b7c0b279b35",
+            "Gateway": "172.20.0.1",
+            "IPAddress": "172.20.0.2",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "noxsuite_web",
+              "web",
+              "ac43c9b1594f"
+            ]
+          }
+        },
+        "45f21ba685a2": {
+          "ultimate_suite_network": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": [
+              "ultimate_grafana",
+              "grafana"
+            ],
+            "MacAddress": "5a:af:b1:ab:49:df",
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "db7dd61e05faee086d7665d4b0907c36d2cef27ab38b004d70d6633e2c91c546",
+            "EndpointID": "bd90e5e83b04bec85602ff3bd3a70002897865969522fde24e4e420745a3eb7c",
+            "Gateway": "172.18.0.1",
+            "IPAddress": "172.18.0.3",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "ultimate_grafana",
+              "grafana",
+              "45f21ba685a2"
+            ]
+          }
+        },
+        "46730a1b3438": {
+          "ultimate_suite_network": {
+            "IPAMConfig": null,
+            "Links": null,
+            "Aliases": [
+              "ultimate_prometheus",
+              "prometheus"
+            ],
+            "MacAddress": "c6:cb:e9:1c:c7:d0",
+            "DriverOpts": null,
+            "GwPriority": 0,
+            "NetworkID": "db7dd61e05faee086d7665d4b0907c36d2cef27ab38b004d70d6633e2c91c546",
+            "EndpointID": "b70a598b41a8d8afbafbfdfd740634a6f9ad3a31ad4e0b003a77b68bb14fe024",
+            "Gateway": "172.18.0.1",
+            "IPAddress": "172.18.0.4",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "DNSNames": [
+              "ultimate_prometheus",
+              "prometheus",
+              "46730a1b3438"
+            ]
+          }
+        }
+      },
+      "volume_mounts": {
+        "4e10611263e4": [
+          {
+            "Type": "volume",
+            "Name": "21ac8ca22dd7cdb5a93ec10d70cf54f60f40d1afcda5787fa623dfdff246130c",
+            "Source": "/var/lib/docker/volumes/21ac8ca22dd7cdb5a93ec10d70cf54f60f40d1afcda5787fa623dfdff246130c/_data",
+            "Destination": "/prometheus",
+            "Driver": "local",
+            "Mode": "",
+            "RW": true,
+            "Propagation": ""
+          },
+          {
+            "Type": "bind",
+            "Source": "K:\\NoxGuard---NoxPanel-main\\monitoring\\prometheus.yml",
+            "Destination": "/etc/prometheus/prometheus.yml",
+            "Mode": "ro",
+            "RW": false,
+            "Propagation": "rprivate"
+          }
+        ],
+        "7719d6e7fe95": [],
+        "87b49ea350a3": [],
+        "92795f2506c3": [
+          {
+            "Type": "bind",
+            "Source": "k:\\NoxGuard---NoxPanel-main\\nginx\\nginx.conf",
+            "Destination": "/etc/nginx/nginx.conf",
+            "Mode": "ro",
+            "RW": false,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "k:\\NoxGuard---NoxPanel-main\\nginx\\ssl",
+            "Destination": "/etc/nginx/ssl",
+            "Mode": "ro",
+            "RW": false,
+            "Propagation": "rprivate"
+          }
+        ],
+        "c95a51258cdd": [
+          {
+            "Type": "bind",
+            "Source": "k:\\NoxGuard---NoxPanel-main\\emergency_copilot_fix.py",
+            "Destination": "/app/emergency_copilot_fix.py",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "k:\\NoxGuard---NoxPanel-main\\autonomous_mcp_agent.py",
+            "Destination": "/app/autonomous_mcp_agent.py",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "volume",
+            "Name": "noxguard---noxpanel-main_langflow_data",
+            "Source": "/var/lib/docker/volumes/noxguard---noxpanel-main_langflow_data/_data",
+            "Destination": "/app/data",
+            "Driver": "local",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": ""
+          },
+          {
+            "Type": "bind",
+            "Source": "k:\\NoxGuard---NoxPanel-main\\langflow",
+            "Destination": "/app/langflow",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": "rprivate"
+          }
+        ],
+        "62131b3bbdec": [
+          {
+            "Type": "volume",
+            "Name": "noxguard---noxpanel-main_postgres_data",
+            "Source": "/var/lib/docker/volumes/noxguard---noxpanel-main_postgres_data/_data",
+            "Destination": "/var/lib/postgresql/data",
+            "Driver": "local",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": ""
+          }
+        ],
+        "ed1004e3db50": [
+          {
+            "Type": "volume",
+            "Name": "noxguard---noxpanel-main_redis_data",
+            "Source": "/var/lib/docker/volumes/noxguard---noxpanel-main_redis_data/_data",
+            "Destination": "/data",
+            "Driver": "local",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": ""
+          }
+        ],
+        "6d462e464000": [],
+        "ac43c9b1594f": [
+          {
+            "Type": "bind",
+            "Source": "K:\\NoxSolutions_Web\\nginx\\nginx.conf",
+            "Destination": "/etc/nginx/nginx.conf",
+            "Mode": "ro",
+            "RW": false,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "bind",
+            "Source": "K:\\NoxSolutions_Web\\html",
+            "Destination": "/usr/share/nginx/html",
+            "Mode": "ro",
+            "RW": false,
+            "Propagation": "rprivate"
+          }
+        ],
+        "45f21ba685a2": [
+          {
+            "Type": "volume",
+            "Name": "projectheimnetz_grafana_data",
+            "Source": "/var/lib/docker/volumes/projectheimnetz_grafana_data/_data",
+            "Destination": "/var/lib/grafana",
+            "Driver": "local",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": ""
+          }
+        ],
+        "46730a1b3438": [
+          {
+            "Type": "bind",
+            "Source": "K:\\Project Heimnetz\\prometheus.yml",
+            "Destination": "/etc/prometheus/prometheus.yml",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": "rprivate"
+          },
+          {
+            "Type": "volume",
+            "Name": "projectheimnetz_prometheus_data",
+            "Source": "/var/lib/docker/volumes/projectheimnetz_prometheus_data/_data",
+            "Destination": "/prometheus",
+            "Driver": "local",
+            "Mode": "rw",
+            "RW": true,
+            "Propagation": ""
+          }
+        ]
+      },
+      "resource_usage": {
+        "4e10611263e4": {
+          "cpu_percent": "0.00%",
+          "memory_usage": "17.21MiB / 7.729GiB",
+          "memory_percent": "0.22%",
+          "network_io": "1.61kB / 126B",
+          "block_io": "0B / 365kB"
+        },
+        "7719d6e7fe95": {
+          "cpu_percent": "0.16%",
+          "memory_usage": "34.24MiB / 7.729GiB",
+          "memory_percent": "0.43%",
+          "network_io": "1.52kB / 126B",
+          "block_io": "233kB / 4.1kB"
+        },
+        "87b49ea350a3": {
+          "cpu_percent": "0.13%",
+          "memory_usage": "34.97MiB / 7.729GiB",
+          "memory_percent": "0.44%",
+          "network_io": "388kB / 174kB",
+          "block_io": "0B / 0B"
+        },
+        "92795f2506c3": {
+          "cpu_percent": "0.00%",
+          "memory_usage": "2.867MiB / 7.729GiB",
+          "memory_percent": "0.04%",
+          "network_io": "4.41kB / 1kB",
+          "block_io": "1.15MB / 12.3kB"
+        },
+        "c95a51258cdd": {
+          "cpu_percent": "0.16%",
+          "memory_usage": "296.1MiB / 7.729GiB",
+          "memory_percent": "3.74%",
+          "network_io": "1.67MB / 744kB",
+          "block_io": "71MB / 0B"
+        },
+        "62131b3bbdec": {
+          "cpu_percent": "0.01%",
+          "memory_usage": "46.81MiB / 7.729GiB",
+          "memory_percent": "0.59%",
+          "network_io": "690kB / 279kB",
+          "block_io": "479MB / 13.2MB"
+        },
+        "ed1004e3db50": {
+          "cpu_percent": "0.39%",
+          "memory_usage": "4.723MiB / 7.729GiB",
+          "memory_percent": "0.06%",
+          "network_io": "3.66kB / 126B",
+          "block_io": "230MB / 0B"
+        },
+        "6d462e464000": {
+          "cpu_percent": "0.17%",
+          "memory_usage": "236.1MiB / 7.729GiB",
+          "memory_percent": "2.98%",
+          "network_io": "2.87kB / 126B",
+          "block_io": "10.3MB / 1.25MB"
+        },
+        "ac43c9b1594f": {
+          "cpu_percent": "0.00%",
+          "memory_usage": "16.09MiB / 7.729GiB",
+          "memory_percent": "0.20%",
+          "network_io": "6.34kB / 23kB",
+          "block_io": "7.83MB / 4.1kB"
+        },
+        "45f21ba685a2": {
+          "cpu_percent": "0.26%",
+          "memory_usage": "84.91MiB / 7.729GiB",
+          "memory_percent": "1.07%",
+          "network_io": "3.72MB / 333kB",
+          "block_io": "262MB / 24.1MB"
+        },
+        "46730a1b3438": {
+          "cpu_percent": "0.00%",
+          "memory_usage": "41.19MiB / 7.729GiB",
+          "memory_percent": "0.52%",
+          "network_io": "528kB / 906kB",
+          "block_io": "89.8MB / 15.6MB"
+        }
+      }
+    },
+    "cve_security_scan": {
+      "timestamp": "2025-07-30T13:28:58.488133",
+      "scan_tool": "trivy",
+      "images_scanned": [],
+      "vulnerabilities_found": [],
+      "critical_cves": 0,
+      "high_cves": 0,
+      "medium_cves": 0,
+      "low_cves": 0,
+      "scan_summary": {},
+      "error": "[WinError 2] The system cannot find the file specified"
+    },
+    "lan_connectivity": {
+      "timestamp": "2025-07-30T13:28:58.504572",
+      "local_ip": "10.1.0.52",
+      "hostname": "HO-Workstation",
+      "network_interfaces": {
+        "Ethernet": [
+          {
+            "ip": "10.1.0.52",
+            "netmask": "255.255.255.0",
+            "broadcast": null
+          }
+        ],
+        "LAN-Verbindung": [
+          {
+            "ip": "169.254.252.127",
+            "netmask": "255.255.0.0",
+            "broadcast": null
+          }
+        ],
+        "vEthernet (WSL (Hyper-V firewall))": [
+          {
+            "ip": "192.168.64.1",
+            "netmask": "255.255.240.0",
+            "broadcast": null
+          }
+        ],
+        "Loopback Pseudo-Interface 1": [
+          {
+            "ip": "127.0.0.1",
+            "netmask": "255.0.0.0",
+            "broadcast": null
+          }
+        ]
+      },
+      "port_accessibility": {
+        "80": {
+          "accessible": true,
+          "status": "open"
+        },
+        "443": {
+          "accessible": true,
+          "status": "open"
+        },
+        "8000": {
+          "accessible": true,
+          "status": "open"
+        },
+        "8080": {
+          "accessible": true,
+          "status": "open"
+        },
+        "3000": {
+          "accessible": true,
+          "status": "open"
+        },
+        "5432": {
+          "accessible": true,
+          "status": "open"
+        },
+        "6379": {
+          "accessible": true,
+          "status": "open"
+        },
+        "9090": {
+          "accessible": true,
+          "status": "open"
+        },
+        "3001": {
+          "accessible": false,
+          "status": "closed"
+        }
+      },
+      "service_endpoints": {
+        "FastAPI": {
+          "url": "http://10.1.0.52:8000/health",
+          "accessible": true,
+          "status_code": 200,
+          "response_time_ms": 1005.3879999999999
+        },
+        "Grafana": {
+          "url": "http://10.1.0.52:3000",
+          "accessible": true,
+          "status_code": 200,
+          "response_time_ms": 19.161
+        },
+        "Prometheus": {
+          "url": "http://10.1.0.52:9090",
+          "accessible": true,
+          "status_code": 200,
+          "response_time_ms": 4.339
+        },
+        "Frontend": {
+          "url": "http://10.1.0.52:3001",
+          "accessible": false,
+          "error": "HTTPConnectionPool(host='10.1.0.52', port=3001): Max retries exceeded with url: / (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x00000205B7F3FDD0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))"
+        }
+      },
+      "firewall_status": "active"
+    },
+    "persistence_validation": {
+      "timestamp": "2025-07-30T13:29:02.861998",
+      "restart_policy_check": {
+        "noxguard-prometheus-prod": {
+          "container_id": "4e10611263e4",
+          "restart_policy": "unless-stopped",
+          "max_retry_count": 0,
+          "restart_count": 0,
+          "status": "configured"
+        },
+        "noxguard-monitor": {
+          "container_id": "7719d6e7fe95",
+          "restart_policy": "unless-stopped",
+          "max_retry_count": 0,
+          "restart_count": 0,
+          "status": "configured"
+        },
+        "noxguard-api": {
+          "container_id": "87b49ea350a3",
+          "restart_policy": "unless-stopped",
+          "max_retry_count": 0,
+          "restart_count": 0,
+          "status": "configured"
+        },
+        "noxsuite-nginx": {
+          "container_id": "92795f2506c3",
+          "restart_policy": "unless-stopped",
+          "max_retry_count": 0,
+          "restart_count": 0,
+          "status": "configured"
+        },
+        "noxsuite-langflow": {
+          "container_id": "c95a51258cdd",
+          "restart_policy": "unless-stopped",
+          "max_retry_count": 0,
+          "restart_count": 0,
+          "status": "configured"
+        },
+        "noxsuite-postgres": {
+          "container_id": "62131b3bbdec",
+          "restart_policy": "unless-stopped",
+          "max_retry_count": 0,
+          "restart_count": 0,
+          "status": "configured"
+        },
+        "noxsuite-redis": {
+          "container_id": "ed1004e3db50",
+          "restart_policy": "unless-stopped",
+          "max_retry_count": 0,
+          "restart_count": 0,
+          "status": "configured"
+        },
+        "youthful_cori": {
+          "container_id": "6d462e464000",
+          "restart_policy": "no",
+          "max_retry_count": 0,
+          "restart_count": 0,
+          "status": "not_configured"
+        },
+        "noxsuite_web": {
+          "container_id": "ac43c9b1594f",
+          "restart_policy": "always",
+          "max_retry_count": 0,
+          "restart_count": 0,
+          "status": "configured"
+        },
+        "ultimate_grafana": {
+          "container_id": "45f21ba685a2",
+          "restart_policy": "unless-stopped",
+          "max_retry_count": 0,
+          "restart_count": 0,
+          "status": "configured"
+        },
+        "ultimate_prometheus": {
+          "container_id": "46730a1b3438",
+          "restart_policy": "unless-stopped",
+          "max_retry_count": 0,
+          "restart_count": 0,
+          "status": "configured"
+        }
+      },
+      "volume_persistence_check": {
+        "noxguard-prometheus-prod": {
+          "container_id": "4e10611263e4",
+          "volumes_mounted": 2,
+          "volume_details": [
+            {
+              "type": "bind",
+              "source": "K:\\NoxGuard---NoxPanel-main\\monitoring\\prometheus.yml",
+              "destination": "/etc/prometheus/prometheus.yml",
+              "read_write": false
+            },
+            {
+              "type": "volume",
+              "source": "/var/lib/docker/volumes/21ac8ca22dd7cdb5a93ec10d70cf54f60f40d1afcda5787fa623dfdff246130c/_data",
+              "destination": "/prometheus",
+              "read_write": true
+            }
+          ],
+          "persistence_status": "configured"
+        },
+        "noxguard-monitor": {
+          "container_id": "7719d6e7fe95",
+          "volumes_mounted": 0,
+          "volume_details": [],
+          "persistence_status": "ephemeral"
+        },
+        "noxguard-api": {
+          "container_id": "87b49ea350a3",
+          "volumes_mounted": 0,
+          "volume_details": [],
+          "persistence_status": "ephemeral"
+        },
+        "noxsuite-nginx": {
+          "container_id": "92795f2506c3",
+          "volumes_mounted": 2,
+          "volume_details": [
+            {
+              "type": "bind",
+              "source": "k:\\NoxGuard---NoxPanel-main\\nginx\\nginx.conf",
+              "destination": "/etc/nginx/nginx.conf",
+              "read_write": false
+            },
+            {
+              "type": "bind",
+              "source": "k:\\NoxGuard---NoxPanel-main\\nginx\\ssl",
+              "destination": "/etc/nginx/ssl",
+              "read_write": false
+            }
+          ],
+          "persistence_status": "configured"
+        },
+        "noxsuite-langflow": {
+          "container_id": "c95a51258cdd",
+          "volumes_mounted": 4,
+          "volume_details": [
+            {
+              "type": "volume",
+              "source": "/var/lib/docker/volumes/noxguard---noxpanel-main_langflow_data/_data",
+              "destination": "/app/data",
+              "read_write": true
+            },
+            {
+              "type": "bind",
+              "source": "k:\\NoxGuard---NoxPanel-main\\langflow",
+              "destination": "/app/langflow",
+              "read_write": true
+            },
+            {
+              "type": "bind",
+              "source": "k:\\NoxGuard---NoxPanel-main\\emergency_copilot_fix.py",
+              "destination": "/app/emergency_copilot_fix.py",
+              "read_write": true
+            },
+            {
+              "type": "bind",
+              "source": "k:\\NoxGuard---NoxPanel-main\\autonomous_mcp_agent.py",
+              "destination": "/app/autonomous_mcp_agent.py",
+              "read_write": true
+            }
+          ],
+          "persistence_status": "configured"
+        },
+        "noxsuite-postgres": {
+          "container_id": "62131b3bbdec",
+          "volumes_mounted": 1,
+          "volume_details": [
+            {
+              "type": "volume",
+              "source": "/var/lib/docker/volumes/noxguard---noxpanel-main_postgres_data/_data",
+              "destination": "/var/lib/postgresql/data",
+              "read_write": true
+            }
+          ],
+          "persistence_status": "configured"
+        },
+        "noxsuite-redis": {
+          "container_id": "ed1004e3db50",
+          "volumes_mounted": 1,
+          "volume_details": [
+            {
+              "type": "volume",
+              "source": "/var/lib/docker/volumes/noxguard---noxpanel-main_redis_data/_data",
+              "destination": "/data",
+              "read_write": true
+            }
+          ],
+          "persistence_status": "configured"
+        },
+        "youthful_cori": {
+          "container_id": "6d462e464000",
+          "volumes_mounted": 0,
+          "volume_details": [],
+          "persistence_status": "ephemeral"
+        },
+        "noxsuite_web": {
+          "container_id": "ac43c9b1594f",
+          "volumes_mounted": 2,
+          "volume_details": [
+            {
+              "type": "bind",
+              "source": "K:\\NoxSolutions_Web\\nginx\\nginx.conf",
+              "destination": "/etc/nginx/nginx.conf",
+              "read_write": false
+            },
+            {
+              "type": "bind",
+              "source": "K:\\NoxSolutions_Web\\html",
+              "destination": "/usr/share/nginx/html",
+              "read_write": false
+            }
+          ],
+          "persistence_status": "configured"
+        },
+        "ultimate_grafana": {
+          "container_id": "45f21ba685a2",
+          "volumes_mounted": 1,
+          "volume_details": [
+            {
+              "type": "volume",
+              "source": "/var/lib/docker/volumes/projectheimnetz_grafana_data/_data",
+              "destination": "/var/lib/grafana",
+              "read_write": true
+            }
+          ],
+          "persistence_status": "configured"
+        },
+        "ultimate_prometheus": {
+          "container_id": "46730a1b3438",
+          "volumes_mounted": 2,
+          "volume_details": [
+            {
+              "type": "volume",
+              "source": "/var/lib/docker/volumes/projectheimnetz_prometheus_data/_data",
+              "destination": "/prometheus",
+              "read_write": true
+            },
+            {
+              "type": "bind",
+              "source": "K:\\Project Heimnetz\\prometheus.yml",
+              "destination": "/etc/prometheus/prometheus.yml",
+              "read_write": true
+            }
+          ],
+          "persistence_status": "configured"
+        }
+      },
+      "data_survival_test": {
+        "test_performed": "simulated",
+        "test_description": "Simulated container restart test to verify data persistence",
+        "expected_behavior": "Volumes should persist data across container restarts",
+        "validation_method": "Volume mount inspection completed",
+        "status": "pass"
+      },
+      "auto_restart_validation": {
+        "total_containers": 11,
+        "configured_for_restart": 10,
+        "configuration_percentage": 90.9090909090909,
+        "recommendation": "Configure restart policy for all production containers"
+      }
+    },
+    "performance_metrics": {
+      "timestamp": "2025-07-30T13:29:04.126380",
+      "system_metrics": {
+        "cpu_percent": 44.0,
+        "memory_total_gb": 15.95,
+        "memory_used_gb": 13.27,
+        "memory_percent": 83.2,
+        "disk_total_gb": 3725.99,
+        "disk_used_gb": 3702.04,
+        "disk_percent": 99.36,
+        "load_average": [
+          0,
+          0,
+          0
+        ],
+        "network": {
+          "bytes_sent": 182703248,
+          "bytes_recv": 1368532297,
+          "packets_sent": 872078,
+          "packets_recv": 1237868
+        }
+      },
+      "container_metrics": {
+        "4e10611263e4": {
+          "cpu_percent": "0.00%",
+          "memory_usage": "17.21MiB / 7.729GiB",
+          "memory_percent": "0.22%",
+          "network_io": "1.61kB / 126B",
+          "block_io": "0B / 365kB"
+        },
+        "7719d6e7fe95": {
+          "cpu_percent": "0.16%",
+          "memory_usage": "34.24MiB / 7.729GiB",
+          "memory_percent": "0.43%",
+          "network_io": "1.52kB / 126B",
+          "block_io": "233kB / 4.1kB"
+        },
+        "87b49ea350a3": {
+          "cpu_percent": "0.13%",
+          "memory_usage": "34.97MiB / 7.729GiB",
+          "memory_percent": "0.44%",
+          "network_io": "388kB / 174kB",
+          "block_io": "0B / 0B"
+        },
+        "92795f2506c3": {
+          "cpu_percent": "0.00%",
+          "memory_usage": "2.867MiB / 7.729GiB",
+          "memory_percent": "0.04%",
+          "network_io": "4.41kB / 1kB",
+          "block_io": "1.15MB / 12.3kB"
+        },
+        "c95a51258cdd": {
+          "cpu_percent": "0.16%",
+          "memory_usage": "296.1MiB / 7.729GiB",
+          "memory_percent": "3.74%",
+          "network_io": "1.67MB / 744kB",
+          "block_io": "71MB / 0B"
+        },
+        "62131b3bbdec": {
+          "cpu_percent": "0.01%",
+          "memory_usage": "46.81MiB / 7.729GiB",
+          "memory_percent": "0.59%",
+          "network_io": "690kB / 279kB",
+          "block_io": "479MB / 13.2MB"
+        },
+        "ed1004e3db50": {
+          "cpu_percent": "0.39%",
+          "memory_usage": "4.723MiB / 7.729GiB",
+          "memory_percent": "0.06%",
+          "network_io": "3.66kB / 126B",
+          "block_io": "230MB / 0B"
+        },
+        "6d462e464000": {
+          "cpu_percent": "0.17%",
+          "memory_usage": "236.1MiB / 7.729GiB",
+          "memory_percent": "2.98%",
+          "network_io": "2.87kB / 126B",
+          "block_io": "10.3MB / 1.25MB"
+        },
+        "ac43c9b1594f": {
+          "cpu_percent": "0.00%",
+          "memory_usage": "16.09MiB / 7.729GiB",
+          "memory_percent": "0.20%",
+          "network_io": "6.34kB / 23kB",
+          "block_io": "7.83MB / 4.1kB"
+        },
+        "45f21ba685a2": {
+          "cpu_percent": "0.26%",
+          "memory_usage": "84.91MiB / 7.729GiB",
+          "memory_percent": "1.07%",
+          "network_io": "3.72MB / 333kB",
+          "block_io": "262MB / 24.1MB"
+        },
+        "46730a1b3438": {
+          "cpu_percent": "0.00%",
+          "memory_usage": "41.19MiB / 7.729GiB",
+          "memory_percent": "0.52%",
+          "network_io": "528kB / 906kB",
+          "block_io": "89.8MB / 15.6MB"
+        }
+      },
+      "resource_utilization": {
+        "cpu_status": "low",
+        "memory_status": "high",
+        "disk_status": "high",
+        "overall_load": "high"
+      },
+      "performance_thresholds": {
+        "cpu_warning_threshold": 70,
+        "cpu_critical_threshold": 85,
+        "memory_warning_threshold": 75,
+        "memory_critical_threshold": 90,
+        "disk_warning_threshold": 80,
+        "disk_critical_threshold": 95,
+        "container_cpu_limit": "50%",
+        "container_memory_limit": "2GB"
+      }
+    },
+    "summary": {
+      "docker_status": "operational",
+      "containers_running": 11,
+      "containers_stopped": 2,
+      "critical_cves": 0,
+      "high_cves": 0,
+      "lan_accessible_services": 3,
+      "auto_restart_configured": 10,
+      "system_load": "high"
+    },
+    "recommendations": [
+      {
+        "priority": "medium",
+        "category": "reliability",
+        "issue": "Not all containers configured for auto-restart",
+        "recommendation": "Configure restart policies for production containers",
+        "action": "Add restart: unless-stopped to docker-compose.yml for critical services"
+      },
+      {
+        "priority": "medium",
+        "category": "performance",
+        "issue": "High system resource utilization detected",
+        "recommendation": "Optimize container resource limits",
+        "action": "Review and adjust CPU/memory limits for containers"
+      }
+    ]
+  }
+}

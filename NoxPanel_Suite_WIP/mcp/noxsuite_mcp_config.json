@@ -1,0 +1,324 @@
+{
+  "mcpServers": {
+    "noxsuite-autonomous": {
+      "type": "stdio",
+      "command": "python",
+      "args": [
+        "Scripts & Tools/mcp_autonomous_orchestrator.py",
+        "--server-mode"
+      ],
+      "env": {
+        "WORKSPACE_ROOT": ".",
+        "MCP_LOG_LEVEL": "INFO",
+        "ENABLE_AUTO_HEALING": "true",
+        "KNOWLEDGE_BASE_PATH": "mcp/knowledgebase/knowledge.json"
+      },
+      "description": "NoxSuite Autonomous Development Orchestrator",
+      "capabilities": [
+        "workspace_audit",
+        "self_healing",
+        "code_annotation",
+        "knowledge_extraction",
+        "cicd_monitoring"
+      ]
+    },
+    "noxsuite-knowledge": {
+      "type": "stdio", 
+      "command": "python",
+      "args": [
+        "Scripts & Tools/semantic_knowledge_parser.py",
+        "--server-mode"
+      ],
+      "env": {
+        "KNOWLEDGE_BASE_PATH": "mcp/knowledgebase",
+        "CONVERSATIONS_PATH": "mcp/imports/conversations.json"
+      },
+      "description": "Semantic Knowledge Base Parser and Manager",
+      "capabilities": [
+        "knowledge_extraction",
+        "conversation_parsing",
+        "semantic_search",
+        "reasoning_chain_analysis"
+      ]
+    },
+    "noxsuite-annotator": {
+      "type": "stdio",
+      "command": "python", 
+      "args": [
+        "Scripts & Tools/intelligent_code_annotator.py",
+        "--server-mode"
+      ],
+      "env": {
+        "ANNOTATION_MODE": "enhanced",
+        "RLVR_PATTERNS": "enabled",
+        "KB_INTEGRATION": "true"
+      },
+      "description": "Intelligent Code Annotator with RLVR Integration",
+      "capabilities": [
+        "code_annotation",
+        "rlvr_injection",
+        "docstring_generation",
+        "kb_reference_linking"
+      ]
+    },
+    "noxsuite-installer": {
+      "type": "stdio",
+      "command": "python",
+      "args": [
+        "Scripts & Tools/noxsuite_smart_installer.py",
+        "--server-mode"
+      ],
+      "env": {
+        "INSTALLER_MODE": "autonomous",
+        "ADHD_FRIENDLY": "true",
+        "AUTO_FIX": "enabled"
+      },
+      "description": "Self-Healing Smart Installer with ADHD-Friendly UX",
+      "capabilities": [
+        "environment_analysis",
+        "dependency_resolution",
+        "auto_installation",
+        "error_recovery"
+      ]
+    },
+    "noxsuite-cicd": {
+      "type": "stdio",
+      "command": "python",
+      "args": [
+        "Scripts & Tools/mcp_cicd_monitor.py",
+        "--server-mode"
+      ],
+      "env": {
+        "MONITORING_ENABLED": "true",
+        "DRIFT_THRESHOLD": "0.3",
+        "AUTO_FIX_PIPELINE": "true"
+      },
+      "description": "Continuous Integration & Deployment Monitor",
+      "capabilities": [
+        "cicd_monitoring",
+        "drift_detection",
+        "auto_fixing",
+        "pipeline_orchestration"
+      ]
+    }
+  },
+  "tools": {
+    "audit_workspace": {
+      "server": "noxsuite-autonomous",
+      "description": "Comprehensive workspace audit with self-healing capabilities",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "scan_depth": {
+            "type": "string",
+            "enum": ["quick", "standard", "deep"],
+            "default": "standard"
+          },
+          "auto_heal": {
+            "type": "boolean",
+            "default": true
+          },
+          "include_archived": {
+            "type": "boolean", 
+            "default": false
+          }
+        }
+      }
+    },
+    "extract_knowledge": {
+      "server": "noxsuite-knowledge",
+      "description": "Extract semantic knowledge from conversations and code",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "enum": ["conversations", "code", "documentation"],
+            "default": "conversations"
+          },
+          "confidence_threshold": {
+            "type": "number",
+            "minimum": 0.0,
+            "maximum": 1.0,
+            "default": 0.5
+          }
+        }
+      }
+    },
+    "annotate_code": {
+      "server": "noxsuite-annotator", 
+      "description": "Enhance code with RLVR patterns and knowledge references",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_pattern": {
+            "type": "string",
+            "default": "**/*.py"
+          },
+          "annotation_style": {
+            "type": "string",
+            "enum": ["standard", "enhanced", "enterprise"],
+            "default": "enhanced"
+          },
+          "include_kb_refs": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      }
+    },
+    "install_dependencies": {
+      "server": "noxsuite-installer",
+      "description": "Smart dependency installation with error recovery",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["guided", "fast", "dry-run", "safe", "recovery"],
+            "default": "fast"
+          },
+          "package_list": {
+            "type": "array",
+            "items": {"type": "string"}
+          }
+        }
+      }
+    },
+    "monitor_cicd": {
+      "server": "noxsuite-cicd",
+      "description": "Start or configure CI/CD monitoring",
+      "parameters": {
+        "type": "object", 
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["start", "stop", "status", "configure"],
+            "default": "status"
+          },
+          "pipeline_config": {
+            "type": "object",
+            "properties": {
+              "enable_auto_fix": {"type": "boolean", "default": true},
+              "drift_threshold": {"type": "number", "default": 0.3},
+              "notification_webhook": {"type": "string"}
+            }
+          }
+        }
+      }
+    }
+  },
+  "resources": {
+    "knowledge_base": {
+      "uri": "file://mcp/knowledgebase/knowledge.json",
+      "name": "NoxSuite Knowledge Base",
+      "description": "Semantic knowledge extracted from conversations and code analysis",
+      "mimeType": "application/json"
+    },
+    "audit_reports": {
+      "uri": "file://CHANGE_AUDIT.md",
+      "name": "Latest Audit Report", 
+      "description": "Comprehensive workspace audit results with findings and fixes",
+      "mimeType": "text/markdown"
+    },
+    "cicd_logs": {
+      "uri": "file://mcp_cicd_monitor.log",
+      "name": "CI/CD Monitor Logs",
+      "description": "Continuous integration and deployment monitoring logs",
+      "mimeType": "text/plain"
+    },
+    "workspace_config": {
+      "uri": "file://noxpanel-modular-workspace.code-workspace",
+      "name": "VS Code Workspace Configuration",
+      "description": "Optimized workspace configuration for NoxSuite development",
+      "mimeType": "application/json"
+    }
+  },
+  "prompts": {
+    "workspace_health_check": {
+      "name": "Workspace Health Check",
+      "description": "Comprehensive health assessment of the NoxSuite workspace",
+      "arguments": [
+        {
+          "name": "scan_depth",
+          "description": "Depth of analysis: quick, standard, or deep",
+          "required": false
+        }
+      ]
+    },
+    "code_enhancement_review": {
+      "name": "Code Enhancement Review",
+      "description": "Review and enhance code with RLVR patterns and knowledge integration",
+      "arguments": [
+        {
+          "name": "target_files",
+          "description": "Specific files or patterns to enhance",
+          "required": false
+        }
+      ]
+    },
+    "deployment_optimization": {
+      "name": "Deployment Optimization", 
+      "description": "Optimize deployment pipeline and infrastructure configuration",
+      "arguments": [
+        {
+          "name": "environment",
+          "description": "Target environment: development, staging, production",
+          "required": true
+        }
+      ]
+    },
+    "knowledge_synthesis": {
+      "name": "Knowledge Synthesis",
+      "description": "Synthesize insights from knowledge base and generate actionable recommendations",
+      "arguments": [
+        {
+          "name": "focus_area",
+          "description": "Area of focus: architecture, performance, security, or general",
+          "required": false
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "name": "NoxSuite MCP Autonomous Development Suite",
+    "version": "1.0.0",
+    "description": "Comprehensive autonomous development orchestration with AI-powered workspace management",
+    "author": "NoxSuite Development Team",
+    "license": "MIT",
+    "repository": "https://github.com/hxwxdmhd/NoxPanel_Suite_WIP",
+    "documentation": "Documentation/MCP_AUTONOMOUS_DEVELOPMENT_COMPLETE.md",
+    "capabilities": [
+      "workspace_audit",
+      "self_healing", 
+      "knowledge_management",
+      "code_enhancement",
+      "cicd_automation",
+      "predictive_analysis",
+      "adhd_friendly_ux"
+    ],
+    "requirements": {
+      "python": ">=3.8",
+      "dependencies": [
+        "asyncio",
+        "pathlib", 
+        "dataclasses",
+        "json",
+        "subprocess",
+        "logging"
+      ],
+      "optional_dependencies": [
+        "colorama",
+        "psutil",
+        "requests"
+      ]
+    },
+    "configuration": {
+      "workspace_root": ".",
+      "knowledge_base_path": "mcp/knowledgebase",
+      "log_level": "INFO",
+      "auto_healing": true,
+      "monitoring_interval": 30
+    }
+  }
+}

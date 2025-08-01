@@ -1,0 +1,11 @@
+{
+  "name": "noxguard-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo 'Build complete'"
+  },
+  "dependencies": {
+    "express": "^4.18.0"
+  }
+}
