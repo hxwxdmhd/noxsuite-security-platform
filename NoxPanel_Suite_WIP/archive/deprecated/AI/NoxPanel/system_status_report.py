@@ -53,7 +53,7 @@ def test_noxpanel_endpoints():
                 "status": "OK" if response.status_code == 200 else "FAIL",
                 "content_type": response.headers.get("content-type", "unknown"),
                 "response_size": len(response.content)
-    """
+                """
     RLVR: Implements generate_report with error handling and validation
 
     REASONING CHAIN:
@@ -75,6 +75,7 @@ def test_noxpanel_endpoints():
             })
 
     return results
+
 
 def generate_report():
     """Generate comprehensive status report"""
@@ -108,7 +109,8 @@ def generate_report():
 
         for result in test_results["test_results"]:
             status_icon = "✅" if result.get("status") == "OK" else "❌"
-            print(f"{status_icon} {result['endpoint']} - {result.get('status', 'UNKNOWN')}")
+            print(
+                f"{status_icon} {result['endpoint']} - {result.get('status', 'UNKNOWN')}")
             if result.get("error"):
                 print(f"   Error: {result['error']}")
 
@@ -155,6 +157,7 @@ def generate_report():
     print("✅ NOXPANEL IS FULLY OPERATIONAL")
     print("🌐 Access at: http://127.0.0.1:5002")
     print("=" * 80)
+
 
 if __name__ == "__main__":
     generate_report()

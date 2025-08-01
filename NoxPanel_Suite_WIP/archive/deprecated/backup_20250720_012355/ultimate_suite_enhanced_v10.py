@@ -363,7 +363,8 @@ class UltimateSuiteEnhancedIntegration:
                     results["plugin_status"] = plugin_status
 
                 # Generate comprehensive summary
-                comprehensive_summary = self._generate_comprehensive_summary(results)
+                comprehensive_summary = self._generate_comprehensive_summary(
+                    results)
 
                 return jsonify({
                     "success": True,

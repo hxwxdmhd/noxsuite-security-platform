@@ -21,6 +21,7 @@ from typing import Dict, List, Optional, Tuple
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class GitTemplateIntegrator:
     """Advanced Git template integration with real-time crawling"""
 

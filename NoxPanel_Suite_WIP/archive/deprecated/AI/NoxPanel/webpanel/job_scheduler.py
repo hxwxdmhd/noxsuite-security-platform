@@ -20,7 +20,8 @@ scheduler_bp = Blueprint('scheduler', __name__, url_prefix='/scheduler')
 logger = logging.getLogger(__name__)
 
 # Database and scheduler setup
-DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'db', 'noxpanel.db')
+DB_PATH = os.path.join(os.path.dirname(__file__), '..',
+                       'data', 'db', 'noxpanel.db')
 SCRIPTS_PATH = os.path.join(os.path.dirname(__file__), '..', 'scripts')
 
 # Job store configuration
@@ -44,6 +45,7 @@ scheduler = BackgroundScheduler(
     job_defaults=job_defaults,
     timezone=pytz.timezone('UTC')
 )
+
 
 def require_login(f):
     """
@@ -91,6 +93,7 @@ def require_login(f):
             return jsonify({'status': 'error', 'message': 'Login required'})
         return f(*args, **kwargs)
     return decorated_function
+
 
 def init_scheduler_db():
     """Initialize the scheduler database tables"""
@@ -184,6 +187,7 @@ def init_scheduler_db():
         logger.error(f"Error initializing scheduler database: {e}")
         raise
 
+
 def start_scheduler():
     """Start the APScheduler"""
     try:
@@ -209,6 +213,7 @@ def start_scheduler():
     except Exception as e:
         logger.error(f"Error starting scheduler: {e}")
 
+
 def stop_scheduler():
     """Stop the APScheduler"""
     try:
@@ -217,6 +222,7 @@ def stop_scheduler():
             logger.info("Job scheduler stopped successfully")
     except Exception as e:
         logger.error(f"Error stopping scheduler: {e}")
+
 
 def load_jobs_from_db():
     """Load jobs from database and schedule them"""
@@ -257,13 +263,15 @@ def load_jobs_from_db():
                 # Update next run time
                 job_instance = scheduler.get_job(job['job_id'])
                 if job_instance:
-                    update_job_next_run(job['job_id'], job_instance.next_run_time)
+                    update_job_next_run(
+                        job['job_id'], job_instance.next_run_time)
 
             except Exception as e:
                 logger.error(f"Error loading job {job['job_id']}: {e}")
 
     except Exception as e:
         logger.error(f"Error loading jobs from database: {e}")
+
 
 def execute_script_job(job_id):
     """Execute a scheduled script job"""
@@ -287,7 +295,8 @@ def execute_script_job(job_id):
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
-        cursor.execute('SELECT * FROM job_metadata WHERE job_id = ?', (job_id,))
+        cursor.execute(
+            'SELECT * FROM job_metadata WHERE job_id = ?', (job_id,))
         job_meta = cursor.fetchone()
 
         if not job_meta:

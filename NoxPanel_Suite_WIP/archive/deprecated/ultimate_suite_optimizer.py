@@ -128,8 +128,8 @@ class UltimateSuiteOptimizer:
 
     COMPLIANCE: STANDARD
     """
-        self.base_path = "k:\\Project Heimnetz"
-        self.optimization_results = {}
+    self.base_path = "k:\\Project Heimnetz"
+    self.optimization_results = {}
 
     async def audit_environment(self) -> Dict[str, Any]:
         """Comprehensive environment audit"""
@@ -157,7 +157,7 @@ class UltimateSuiteOptimizer:
         """Get list of installed Python packages"""
         try:
             result = subprocess.run([sys.executable, "-m", "pip", "list"],
-                                  capture_output=True, text=True)
+                                    capture_output=True, text=True)
             packages = []
             for line in result.stdout.split('\n')[2:]:  # Skip header
                 if line.strip():
@@ -180,7 +180,8 @@ class UltimateSuiteOptimizer:
         missing = {}
 
         for category, packages in required_packages.items():
-            missing[category] = [pkg for pkg in packages if pkg not in installed]
+            missing[category] = [
+                pkg for pkg in packages if pkg not in installed]
 
         return missing
 
@@ -467,6 +468,8 @@ Target Scaling: Auto-scaling with load balancing
         return report
 
 # Generate optimization assets
+
+
 async def main():
     optimizer = UltimateSuiteOptimizer()
 

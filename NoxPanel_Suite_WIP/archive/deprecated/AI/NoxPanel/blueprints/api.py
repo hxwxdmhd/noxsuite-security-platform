@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 # Create API blueprint
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
+
 class ScriptManager:
     """Enhanced script management with execution tracking"""
 
@@ -65,6 +66,7 @@ class ScriptManager:
 
     COMPLIANCE: STANDARD
     """
+
     def get_available_scripts(self) -> List[Dict]:
         """Get list of available scripts with metadata"""
         scripts = []

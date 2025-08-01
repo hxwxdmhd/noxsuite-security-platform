@@ -1,3 +1,16 @@
+from flask import Flask, Response, jsonify, request
+import pymysql
+from functools import lru_cache, wraps
+from datetime import datetime, timedelta
+from collections import defaultdict, deque
+import time
+import re
+import os
+import json
+import hmac
+import hashlib
+import gc
+import base64
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -8,20 +21,6 @@ Ultra-Secure Server for Gates 3-4 Testing
 Complete security hardening for Gate 4 passing requirements
 """
 
-import base64
-import gc
-import hashlib
-import hmac
-import json
-import os
-import re
-import time
-from collections import defaultdict, deque
-from datetime import datetime, timedelta
-from functools import lru_cache, wraps
-
-import pymysql
-from flask import Flask, Response, jsonify, request
 
 app = Flask(__name__)
 app.config['DEBUG'] = False
@@ -52,6 +51,8 @@ RATE_LIMIT_WINDOW = 60  # seconds
 RATE_LIMIT_MAX_REQUESTS = 100
 
 # Enhanced Authentication storage with multiple strong tokens
+
+
 def generate_strong_token(seed):
     """
     REASONING CHAIN:
@@ -59,12 +60,13 @@ def generate_strong_token(seed):
     2. Analysis: Implementation requires specific logic for generate_strong_token operation
     3. Solution: Implement generate_strong_token with enterprise-grade patterns and error handling
     4. Validation: Test generate_strong_token with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Generate cryptographically strong tokens"""
     salt = b"heimnetz_secure_2025"
     return hashlib.pbkdf2_hmac('sha256', seed.encode(), salt, 100000).hex()
+
 
 # Multiple strong tokens with different permissions
 admin_token = generate_strong_token("admin_secret_key_2025")
@@ -92,6 +94,7 @@ VALID_TOKENS = {
     }
 }
 
+
 def add_security_headers(response):
     """
     REASONING CHAIN:
@@ -99,18 +102,19 @@ def add_security_headers(response):
     2. Analysis: Implementation requires specific logic for add_security_headers operation
     3. Solution: Implement add_security_headers with enterprise-grade patterns and error handling
     4. Validation: Test add_security_headers with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Add comprehensive security headers"""
     for header, value in SECURITY_HEADERS.items():
         response.headers[header] = value
-    
+
     # Add rate limiting headers
     response.headers['X-RateLimit-Limit'] = str(RATE_LIMIT_MAX_REQUESTS)
     response.headers['X-RateLimit-Window'] = str(RATE_LIMIT_WINDOW)
-    
+
     return response
+
 
 def rate_limit(max_requests=RATE_LIMIT_MAX_REQUESTS, window=RATE_LIMIT_WINDOW):
     """
@@ -119,43 +123,43 @@ def rate_limit(max_requests=RATE_LIMIT_MAX_REQUESTS, window=RATE_LIMIT_WINDOW):
     2. Analysis: Implementation requires specific logic for rate_limit operation
     3. Solution: Implement rate_limit with enterprise-grade patterns and error handling
     4. Validation: Test rate_limit with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Rate limiting decorator"""
     def decorator(f):
     """
     Enhanced decorator with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Function decorator needs clear operational definition
     2. Analysis: Implementation requires specific logic for decorator operation
     3. Solution: Implement decorator with enterprise-grade patterns and error handling
     4. Validation: Test decorator with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         @wraps(f)
         def decorated_function(*args, **kwargs):
     """
     Enhanced decorated_function with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Function decorated_function needs clear operational definition
     2. Analysis: Implementation requires specific logic for decorated_function operation
     3. Solution: Implement decorated_function with enterprise-grade patterns and error handling
     4. Validation: Test decorated_function with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
             client_ip = request.environ.get('REMOTE_ADDR', 'unknown')
             current_time = time.time()
-            
+
             # Clean old requests
             client_requests = rate_limit_storage[client_ip]
             while client_requests and client_requests[0] < current_time - window:
                 client_requests.popleft()
-            
+
             # Check rate limit
             if len(client_requests) >= max_requests:
                 response = jsonify({
@@ -166,10 +170,10 @@ def rate_limit(max_requests=RATE_LIMIT_MAX_REQUESTS, window=RATE_LIMIT_WINDOW):
                 })
                 response.status_code = 429
                 return response
-            
+
             # Add current request
             client_requests.append(current_time)
-            
+
             return f(*args, **kwargs)
         return decorated_function
     return decorator

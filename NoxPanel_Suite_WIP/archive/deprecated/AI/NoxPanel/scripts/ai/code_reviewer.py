@@ -5,6 +5,7 @@ Code Review Script for NoxPanel v3.0
 Uses AI to review Python code for bugs, improvements, and best practices
 """
 
+from noxcore.llm_integration import llm_manager
 import argparse
 import json
 import os
@@ -14,8 +15,6 @@ from pathlib import Path
 # Add the project root to Python path for imports
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
-
-from noxcore.llm_integration import llm_manager
 
 
 def review_file(file_path: str) -> dict:
@@ -55,7 +54,7 @@ def review_file(file_path: str) -> dict:
 
     COMPLIANCE: STANDARD
     """
-        analysis = llm_manager.analyze_code(code)
+    analysis = llm_manager.analyze_code(code)
     """
     RLVR: Implements scan_directory with error handling and validation
 
@@ -68,10 +67,10 @@ def review_file(file_path: str) -> dict:
 
     COMPLIANCE: STANDARD
     """
-        analysis['file_path'] = file_path
-        analysis['file_size'] = len(code)
+    analysis['file_path'] = file_path
+    analysis['file_size'] = len(code)
 
-        return analysis
+    return analysis
 
     except FileNotFoundError:
         return {"error": f"File not found: {file_path}", "status": "failed"}
@@ -89,6 +88,7 @@ def review_file(file_path: str) -> dict:
     """
     except Exception as e:
         return {"error": f"Error reading file: {str(e)}", "status": "failed"}
+
 
 def review_code_snippet(code: str) -> dict:
     """Review a code snippet"""
@@ -115,6 +115,8 @@ def review_code_snippet(code: str) -> dict:
 
     COMPLIANCE: ENHANCED
     """
+
+
 def scan_directory(directory: str, extensions: list = ['.py']) -> list:
     """Scan directory for Python files to review"""
     files_found = []
@@ -122,7 +124,8 @@ def scan_directory(directory: str, extensions: list = ['.py']) -> list:
     try:
         for root, dirs, files in os.walk(directory):
             # Skip common directories we don't want to scan
-            dirs[:] = [d for d in dirs if d not in ['.git', '__pycache__', 'venv', '.venv', 'node_modules']]
+            dirs[:] = [d for d in dirs if d not in [
+                '.git', '__pycache__', 'venv', '.venv', 'node_modules']]
 
             for file in files:
                 if any(file.endswith(ext) for ext in extensions):
@@ -133,6 +136,7 @@ def scan_directory(directory: str, extensions: list = ['.py']) -> list:
         print(f"[ERROR] Error scanning directory: {e}")
 
     return files_found
+
 
 def format_analysis_output(analysis: dict) -> str:
     """Format analysis results for display"""
@@ -161,17 +165,20 @@ def format_analysis_output(analysis: dict) -> str:
 
     return "\n".join(output)
 
+
 def main():
     """Main function for code review"""
     parser = argparse.ArgumentParser(description='Review Python code using AI')
     parser.add_argument('--file', '-f', help='Path to Python file to review')
-    parser.add_argument('--directory', '-d', help='Directory to scan for Python files')
+    parser.add_argument('--directory', '-d',
+                        help='Directory to scan for Python files')
     parser.add_argument('--code', '-c', help='Code snippet to review directly')
-    parser.add_argument('--output', '-o', help='Output file for review results (JSON format)')
+    parser.add_argument(
+        '--output', '-o', help='Output file for review results (JSON format)')
     parser.add_argument('--recursive', '-r', action='store_true',
-                       help='Recursively scan directory')
+                        help='Recursively scan directory')
     parser.add_argument('--extensions', nargs='+', default=['.py'],
-                       help='File extensions to scan (default: .py)')
+                        help='File extensions to scan (default: .py)')
 
     args = parser.parse_args()
 
@@ -222,8 +229,10 @@ def main():
 
         # Show summary
         print(f"\n[SUMMARY] Reviewed {len(files)} files")
-        successful = len([r for r in results if r.get('status') == 'completed'])
-        print(f"[SUMMARY] Successful: {successful}, Failed: {len(results) - successful}")
+        successful = len(
+            [r for r in results if r.get('status') == 'completed'])
+        print(
+            f"[SUMMARY] Successful: {successful}, Failed: {len(results) - successful}")
 
     elif args.code:
         analysis = review_code_snippet(args.code)
@@ -253,6 +262,7 @@ def main():
             return 1
 
     return 0
+
 
 if __name__ == "__main__":
     try:

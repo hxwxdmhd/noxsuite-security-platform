@@ -81,9 +81,12 @@ class CriticalImplementationEngine:
             if route_file.exists():
                 with open(route_file) as f:
                     route_data = json.load(f)
-                    summary['route_success_rate'] = route_data.get('success_rate', '7.1%')
-                    summary['working_routes'] = route_data.get('functional_routes', 12)
-                    summary['broken_routes'] = route_data.get('error_routes', 157)
+                    summary['route_success_rate'] = route_data.get(
+                        'success_rate', '7.1%')
+                    summary['working_routes'] = route_data.get(
+                        'functional_routes', 12)
+                    summary['broken_routes'] = route_data.get(
+                        'error_routes', 157)
         except Exception as e:
             print(f"⚠️ Could not load route data: {e}")
 

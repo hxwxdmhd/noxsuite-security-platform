@@ -1,6 +1,19 @@
 """
 #!/usr/bin/env python3
 """
+import docker
+import redis
+import psycopg2
+import psutil
+import aiohttp
+from typing import Any, Callable, Dict, List, Optional
+from enum import Enum
+from datetime import datetime, timedelta
+from dataclasses import asdict, dataclass
+import time
+import logging
+import json
+import asyncio
 auto_healing_monitor.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,30 +24,16 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 Infrastructure Auto-Healing and Deep Health Monitoring
 Enterprise-grade container resilience and dependency validation
 """
 
-import asyncio
-import json
-import logging
-import time
-from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta
-from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
-
-import aiohttp
-import psutil
-import psycopg2
-import redis
-
-import docker
 
 logger = logging.getLogger(__name__)
+
 
 class HealthStatus(Enum):
     # REASONING: HealthStatus follows RLVR methodology for systematic validation
@@ -42,6 +41,7 @@ class HealthStatus(Enum):
     DEGRADED = "degraded"
     UNHEALTHY = "unhealthy"
     CRITICAL = "critical"
+
 
 class ServiceType(Enum):
     # REASONING: ServiceType follows RLVR methodology for systematic validation
@@ -52,6 +52,7 @@ class ServiceType(Enum):
     REVERSE_PROXY = "reverse_proxy"
     MONITORING = "monitoring"
     EXTERNAL_API = "external_api"
+
 
 @dataclass
 class HealthCheck:
@@ -66,9 +67,10 @@ class HealthCheck:
     critical: bool = True
 
     def __post_init__(self):
-    # REASONING: __post_init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __post_init__ implements core logic with Chain-of-Thought validation
         if self.dependencies is None:
             self.dependencies = []
+
 
 @dataclass
 class HealthResult:
@@ -81,7 +83,7 @@ class HealthResult:
     error_message: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
-    # REASONING: to_dict implements core logic with Chain-of-Thought validation
+        # REASONING: to_dict implements core logic with Chain-of-Thought validation
         data = asdict(self)
         # REASONING: Variable assignment with validation criteria
         data['status'] = self.status.value
@@ -90,12 +92,13 @@ class HealthResult:
         # REASONING: Variable assignment with validation criteria
         return data
 
+
 class InfrastructureMonitor:
     # REASONING: InfrastructureMonitor follows RLVR methodology for systematic validation
     """Enterprise infrastructure monitoring with auto-healing capabilities"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.docker_client = docker.from_env()
         self.health_checks: Dict[str, HealthCheck] = {}
         self.healing_actions: Dict[str, Callable] = {}
@@ -113,7 +116,7 @@ class InfrastructureMonitor:
         self._register_healing_actions()
 
     def _register_default_health_checks(self) -> None:
-    # REASONING: _register_default_health_checks implements core logic with Chain-of-Thought validation
+        # REASONING: _register_default_health_checks implements core logic with Chain-of-Thought validation
         """Register comprehensive health checks for all services"""
 
         # NoxPanel Web Application
@@ -172,19 +175,19 @@ class InfrastructureMonitor:
         ))
 
     def register_health_check(self, health_check: HealthCheck) -> None:
-    # REASONING: register_health_check implements core logic with Chain-of-Thought validation
+        # REASONING: register_health_check implements core logic with Chain-of-Thought validation
         """Register a new health check"""
         self.health_checks[health_check.name] = health_check
         logger.info(f"🔍 Registered health check: {health_check.name}")
 
     def register_healing_action(self, service_name: str, action: Callable) -> None:
-    # REASONING: register_healing_action implements core logic with Chain-of-Thought validation
+        # REASONING: register_healing_action implements core logic with Chain-of-Thought validation
         """Register auto-healing action for a service"""
         self.healing_actions[service_name] = action
         logger.info(f"🔧 Registered healing action for: {service_name}")
 
     def _register_healing_actions(self) -> None:
-    # REASONING: _register_healing_actions implements core logic with Chain-of-Thought validation
+        # REASONING: _register_healing_actions implements core logic with Chain-of-Thought validation
         """Register default auto-healing actions"""
 
         self.register_healing_action("noxpanel_app", self._heal_web_app)
@@ -220,7 +223,7 @@ class InfrastructureMonitor:
 
             # Add dependency validation
             if result.status == HealthStatus.HEALTHY and check.dependencies:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 dependency_status = await self._validate_dependencies(check.dependencies)
                 if dependency_status != HealthStatus.HEALTHY:
                     result.status = HealthStatus.DEGRADED
@@ -236,7 +239,7 @@ class InfrastructureMonitor:
             # Check response time threshold
             if response_time > self.alert_thresholds['response_time_ms']:
                 if result.status == HealthStatus.HEALTHY:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     result.status = HealthStatus.DEGRADED
                     # REASONING: Variable assignment with validation criteria
                 result.details['slow_response'] = True
@@ -263,14 +266,14 @@ class InfrastructureMonitor:
             # Check HTTP endpoint
             async with aiohttp.ClientSession() as session:
                 async with session.get(check.endpoint, timeout=check.timeout) as response:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     details['http_status'] = response.status
                     # REASONING: Variable assignment with validation criteria
                     details['headers'] = dict(response.headers)
                     # REASONING: Variable assignment with validation criteria
 
                     if response.status == 200:
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         response_data = await response.json()
                         # REASONING: Variable assignment with validation criteria
                         details['app_status'] = response_data
@@ -455,7 +458,8 @@ class InfrastructureMonitor:
             hits = info['keyspace_hits']
             misses = info['keyspace_misses']
             total_requests = hits + misses
-            hit_ratio = (hits / total_requests * 100) if total_requests > 0 else 100
+            hit_ratio = (hits / total_requests *
+                         100) if total_requests > 0 else 100
             details['hit_ratio_percent'] = round(hit_ratio, 2)
 
             # Check key count in different databases
@@ -516,12 +520,12 @@ class InfrastructureMonitor:
             # Check Traefik API endpoint
             async with aiohttp.ClientSession() as session:
                 async with session.get(check.endpoint, timeout=check.timeout) as response:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     details['http_status'] = response.status
                     # REASONING: Variable assignment with validation criteria
 
                     if response.status == 200:
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         status = HealthStatus.HEALTHY
                     else:
                         status = HealthStatus.UNHEALTHY
@@ -553,31 +557,35 @@ class InfrastructureMonitor:
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(check.endpoint, timeout=check.timeout) as response:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     details['http_status'] = response.status
                     # REASONING: Variable assignment with validation criteria
 
                     if response.status == 200:
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         status = HealthStatus.HEALTHY
 
                         # Additional checks for Prometheus
                         if "prometheus" in check.name:
                             # Check if targets are up
-                            targets_url = check.endpoint.replace("/-/healthy", "/api/v1/targets")
+                            targets_url = check.endpoint.replace(
+                                "/-/healthy", "/api/v1/targets")
                             async with session.get(targets_url) as targets_response:
                                 if targets_response.status == 200:
-                                # REASONING: Variable assignment with validation criteria
+                                    # REASONING: Variable assignment with validation criteria
                                     targets_data = await targets_response.json()
                                     # REASONING: Variable assignment with validation criteria
-                                    active_targets = targets_data.get('data', {}).get('activeTargets', [])
+                                    active_targets = targets_data.get(
+                                        'data', {}).get('activeTargets', [])
                                     # REASONING: Variable assignment with validation criteria
-                                    up_targets = sum(1 for target in active_targets if target.get('health') == 'up')
+                                    up_targets = sum(
+                                        1 for target in active_targets if target.get('health') == 'up')
                                     total_targets = len(active_targets)
 
                                     details['targets_up'] = up_targets
                                     details['targets_total'] = total_targets
-                                    details['targets_health_ratio'] = up_targets / total_targets if total_targets > 0 else 0
+                                    details['targets_health_ratio'] = up_targets / \
+                                        total_targets if total_targets > 0 else 0
                     else:
                         status = HealthStatus.UNHEALTHY
 
@@ -608,20 +616,20 @@ class InfrastructureMonitor:
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(check.endpoint, timeout=check.timeout) as response:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     details['http_status'] = response.status
                     # REASONING: Variable assignment with validation criteria
                     details['headers'] = dict(response.headers)
                     # REASONING: Variable assignment with validation criteria
 
                     if response.status == 200:
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         status = HealthStatus.HEALTHY
                     elif 200 <= response.status < 300:
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         status = HealthStatus.HEALTHY
                     elif 300 <= response.status < 400:
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         status = HealthStatus.DEGRADED
                     else:
                         status = HealthStatus.UNHEALTHY
@@ -654,7 +662,8 @@ class InfrastructureMonitor:
             container = self.docker_client.containers.get(container_name)
 
             details['container_status'] = container.status
-            details['container_health'] = container.attrs.get('State', {}).get('Health', {}).get('Status', 'unknown')
+            details['container_health'] = container.attrs.get(
+                'State', {}).get('Health', {}).get('Status', 'unknown')
 
             # Get container stats
             stats = container.stats(stream=False)
@@ -663,18 +672,22 @@ class InfrastructureMonitor:
             cpu_stats = stats['cpu_stats']
             precpu_stats = stats['precpu_stats']
 
-            cpu_delta = cpu_stats['cpu_usage']['total_usage'] - precpu_stats['cpu_usage']['total_usage']
-            system_delta = cpu_stats['system_cpu_usage'] - precpu_stats['system_cpu_usage']
+            cpu_delta = cpu_stats['cpu_usage']['total_usage'] - \
+                precpu_stats['cpu_usage']['total_usage']
+            system_delta = cpu_stats['system_cpu_usage'] - \
+                precpu_stats['system_cpu_usage']
             number_cpus = cpu_stats['online_cpus']
 
-            cpu_usage = (cpu_delta / system_delta) * number_cpus * 100.0 if system_delta > 0 else 0
+            cpu_usage = (cpu_delta / system_delta) * \
+                number_cpus * 100.0 if system_delta > 0 else 0
             details['cpu_usage_percent'] = round(cpu_usage, 2)
 
             # Memory usage
             memory_stats = stats['memory_stats']
             memory_usage = memory_stats.get('usage', 0)
             memory_limit = memory_stats.get('limit', 0)
-            memory_percent = (memory_usage / memory_limit) * 100 if memory_limit > 0 else 0
+            memory_percent = (memory_usage / memory_limit) * \
+                100 if memory_limit > 0 else 0
 
             details['memory_usage_bytes'] = memory_usage
             details['memory_limit_bytes'] = memory_limit
@@ -682,8 +695,10 @@ class InfrastructureMonitor:
 
             # Network I/O
             network_stats = stats.get('networks', {})
-            total_rx_bytes = sum(net['rx_bytes'] for net in network_stats.values())
-            total_tx_bytes = sum(net['tx_bytes'] for net in network_stats.values())
+            total_rx_bytes = sum(net['rx_bytes']
+                                 for net in network_stats.values())
+            total_tx_bytes = sum(net['tx_bytes']
+                                 for net in network_stats.values())
 
             details['network_rx_bytes'] = total_rx_bytes
             details['network_tx_bytes'] = total_tx_bytes
@@ -696,7 +711,7 @@ class InfrastructureMonitor:
         return details
 
     def _check_system_resources(self) -> Dict[str, Any]:
-    # REASONING: _check_system_resources implements core logic with Chain-of-Thought validation
+        # REASONING: _check_system_resources implements core logic with Chain-of-Thought validation
         """Check system-level resource usage"""
         details = {}
 
@@ -708,7 +723,8 @@ class InfrastructureMonitor:
             # Memory usage
             memory = psutil.virtual_memory()
             details['system_memory_percent'] = memory.percent
-            details['system_memory_available_gb'] = round(memory.available / (1024**3), 2)
+            details['system_memory_available_gb'] = round(
+                memory.available / (1024**3), 2)
 
             # Disk usage
             disk = psutil.disk_usage('/')
@@ -719,7 +735,8 @@ class InfrastructureMonitor:
             # Load average (Unix systems)
             try:
                 load_avg = psutil.getloadavg()
-                details['system_load_avg'] = [round(avg, 2) for avg in load_avg]
+                details['system_load_avg'] = [
+                    round(avg, 2) for avg in load_avg]
             except AttributeError:
                 # Windows doesn't have load average
                 pass
@@ -740,7 +757,7 @@ class InfrastructureMonitor:
                 if result.status in [HealthStatus.UNHEALTHY, HealthStatus.CRITICAL]:
                     return HealthStatus.UNHEALTHY
                 elif result.status == HealthStatus.DEGRADED:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     return HealthStatus.DEGRADED
 
         return HealthStatus.HEALTHY
@@ -766,21 +783,24 @@ class InfrastructureMonitor:
 
                 # Log critical issues
                 if result.status == HealthStatus.CRITICAL:
-                # REASONING: Variable assignment with validation criteria
-                    logger.critical(f"🚨 CRITICAL: {name} health check failed: {result.error_message}")
+                    # REASONING: Variable assignment with validation criteria
+                    logger.critical(
+                        f"🚨 CRITICAL: {name} health check failed: {result.error_message}")
                 elif result.status == HealthStatus.UNHEALTHY:
-                # REASONING: Variable assignment with validation criteria
-                    logger.error(f"❌ UNHEALTHY: {name} health check failed: {result.error_message}")
+                    # REASONING: Variable assignment with validation criteria
+                    logger.error(
+                        f"❌ UNHEALTHY: {name} health check failed: {result.error_message}")
                 elif result.status == HealthStatus.DEGRADED:
-                # REASONING: Variable assignment with validation criteria
-                    logger.warning(f"⚠️ DEGRADED: {name} health check shows issues")
+                    # REASONING: Variable assignment with validation criteria
+                    logger.warning(
+                        f"⚠️ DEGRADED: {name} health check shows issues")
                 else:
                     logger.info(f"✅ HEALTHY: {name} health check passed")
 
             except Exception as e:
                 logger.error(f"❌ Health check task failed for {name}: {e}")
                 results[name] = HealthResult(
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     check_name=name,
                     status=HealthStatus.CRITICAL,
                     response_time=0,
@@ -800,7 +820,8 @@ class InfrastructureMonitor:
         for service_name, result in health_results.items():
             if result.status in [HealthStatus.UNHEALTHY, HealthStatus.CRITICAL]:
                 if service_name in self.healing_actions:
-                    logger.info(f"🔧 Attempting to heal service: {service_name}")
+                    logger.info(
+                        f"🔧 Attempting to heal service: {service_name}")
 
                     try:
                         success = await self.healing_actions[service_name]()
@@ -808,16 +829,20 @@ class InfrastructureMonitor:
                         # REASONING: Variable assignment with validation criteria
 
                         if success:
-                            logger.info(f"✅ Successfully healed service: {service_name}")
+                            logger.info(
+                                f"✅ Successfully healed service: {service_name}")
                         else:
-                            logger.error(f"❌ Failed to heal service: {service_name}")
+                            logger.error(
+                                f"❌ Failed to heal service: {service_name}")
 
                     except Exception as e:
-                        logger.error(f"❌ Healing action failed for {service_name}: {e}")
+                        logger.error(
+                            f"❌ Healing action failed for {service_name}: {e}")
                         healing_results[service_name] = False
                         # REASONING: Variable assignment with validation criteria
                 else:
-                    logger.warning(f"⚠️ No healing action registered for service: {service_name}")
+                    logger.warning(
+                        f"⚠️ No healing action registered for service: {service_name}")
 
         return healing_results
 
@@ -840,11 +865,13 @@ class InfrastructureMonitor:
                 return True
             else:
                 # If restart didn't work, try recreate
-                logger.warning("🔄 Restart failed, attempting to recreate container")
+                logger.warning(
+                    "🔄 Restart failed, attempting to recreate container")
                 container.remove(force=True)
 
                 # In production, this would use docker-compose or orchestrator
-                logger.info("🔧 Container removed, orchestrator should recreate")
+                logger.info(
+                    "🔧 Container removed, orchestrator should recreate")
                 return True
 
         except Exception as e:
@@ -859,10 +886,11 @@ class InfrastructureMonitor:
             # Check if container is running but database is unresponsive
             if container.status == "running":
                 # Try to restart the service within the container
-                exec_result = container.exec_run("pg_ctl reload -D /var/lib/postgresql/data")
+                exec_result = container.exec_run(
+                    "pg_ctl reload -D /var/lib/postgresql/data")
                 # REASONING: Variable assignment with validation criteria
                 if exec_result.exit_code == 0:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     logger.info("🔄 Reloaded PostgreSQL configuration")
                     return True
 
@@ -953,7 +981,8 @@ class InfrastructureMonitor:
     async def start_monitoring(self, interval: int = 60) -> None:
         """Start continuous infrastructure monitoring"""
         self.monitoring_active = True
-        logger.info(f"🔍 Started infrastructure monitoring (interval: {interval}s)")
+        logger.info(
+            f"🔍 Started infrastructure monitoring (interval: {interval}s)")
 
         while self.monitoring_active:
             try:
@@ -966,11 +995,13 @@ class InfrastructureMonitor:
                 # REASONING: Variable assignment with validation criteria
 
                 # Generate monitoring report
-                report = self._generate_monitoring_report(health_results, healing_results)
+                report = self._generate_monitoring_report(
+                    health_results, healing_results)
                 # REASONING: Variable assignment with validation criteria
 
                 # In production, send to monitoring system
-                logger.info(f"📊 Monitoring report: {json.dumps(report, indent=2)}")
+                logger.info(
+                    f"📊 Monitoring report: {json.dumps(report, indent=2)}")
 
                 # Wait for next check
                 await asyncio.sleep(interval)
@@ -980,13 +1011,13 @@ class InfrastructureMonitor:
                 await asyncio.sleep(interval)
 
     def stop_monitoring(self) -> None:
-    # REASONING: stop_monitoring implements core logic with Chain-of-Thought validation
+        # REASONING: stop_monitoring implements core logic with Chain-of-Thought validation
         """Stop continuous monitoring"""
         self.monitoring_active = False
         logger.info("🛑 Stopped infrastructure monitoring")
 
     def _generate_monitoring_report(self, health_results: Dict[str, HealthResult], healing_results: Dict[str, bool]) -> Dict[str, Any]:
-    # REASONING: _generate_monitoring_report implements core logic with Chain-of-Thought validation
+        # REASONING: _generate_monitoring_report implements core logic with Chain-of-Thought validation
         """Generate comprehensive monitoring report"""
 
         # Count statuses
@@ -999,7 +1030,8 @@ class InfrastructureMonitor:
         total_checks = len(health_results)
         # REASONING: Variable assignment with validation criteria
         healthy_checks = status_counts[HealthStatus.HEALTHY.value]
-        overall_health_percent = (healthy_checks / total_checks) * 100 if total_checks > 0 else 0
+        overall_health_percent = (
+            healthy_checks / total_checks) * 100 if total_checks > 0 else 0
 
         # Determine overall status
         if status_counts[HealthStatus.CRITICAL.value] > 0:
@@ -1023,13 +1055,13 @@ class InfrastructureMonitor:
         }
 
     def _generate_alerts(self, health_results: Dict[str, HealthResult]) -> List[Dict[str, Any]]:
-    # REASONING: _generate_alerts implements core logic with Chain-of-Thought validation
+        # REASONING: _generate_alerts implements core logic with Chain-of-Thought validation
         """Generate alerts for critical issues"""
         alerts = []
 
         for name, result in health_results.items():
             if result.status == HealthStatus.CRITICAL:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 alerts.append({
                     'severity': 'CRITICAL',
                     'service': name,
@@ -1038,7 +1070,7 @@ class InfrastructureMonitor:
                     'timestamp': result.timestamp.isoformat()
                 })
             elif result.status == HealthStatus.UNHEALTHY:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 alerts.append({
                     'severity': 'HIGH',
                     'service': name,
@@ -1078,8 +1110,10 @@ class InfrastructureMonitor:
 
         return alerts
 
+
 # Global infrastructure monitor instance
 infrastructure_monitor = InfrastructureMonitor()
+
 
 def get_infrastructure_monitor() -> InfrastructureMonitor:
     # REASONING: get_infrastructure_monitor implements core logic with Chain-of-Thought validation

@@ -17,6 +17,7 @@ import pymysql
 
 logger = logging.getLogger(__name__)
 
+
 class DatabaseConnectionPool:
     """
     REASONING CHAIN:
@@ -24,30 +25,30 @@ class DatabaseConnectionPool:
     2. Analysis: Class requires specific implementation patterns for DatabaseConnectionPool functionality
     3. Solution: Implement DatabaseConnectionPool with SOLID principles and enterprise patterns
     4. Validation: Test DatabaseConnectionPool with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """SQLite connection pool for improved performance"""
-    
+
     def __init__(self, db_path: str, pool_size: int = 10, timeout: float = 30.0):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        self.db_path = db_path
-        self.pool_size = pool_size
+      self.db_path = db_path
+       self.pool_size = pool_size
         self.timeout = timeout
         self._pool = []
         self._lock = threading.Lock()
         self._create_pool()
-    
+
     def _create_pool(self):
     """
     REASONING CHAIN:
@@ -55,11 +56,11 @@ class DatabaseConnectionPool:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _create_pool with enterprise-grade patterns and error handling
     4. Validation: Test _create_pool with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Initialize connection pool"""
-        for _ in range(self.pool_size):
+      """Initialize connection pool"""
+       for _ in range(self.pool_size):
             conn = pymysql.connect(
                 self.db_path,
                 check_same_thread=False,
@@ -71,7 +72,7 @@ class DatabaseConnectionPool:
             conn.execute("PRAGMA cache_size=10000")
             conn.execute("PRAGMA temp_store=MEMORY")
             self._pool.append(conn)
-    
+
     def get_connection(self) -> sqlite3.Connection:
     """
     REASONING CHAIN:
@@ -79,11 +80,11 @@ class DatabaseConnectionPool:
     2. Analysis: Getter method requires consistent data access and error handling
     3. Solution: Implement get_connection with enterprise-grade patterns and error handling
     4. Validation: Test get_connection with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Get connection from pool"""
-        with self._lock:
+      """Get connection from pool"""
+       with self._lock:
             if self._pool:
                 return self._pool.pop()
             else:
@@ -96,7 +97,7 @@ class DatabaseConnectionPool:
                 )
                 conn.execute("PRAGMA journal_mode=WAL")
                 return conn
-    
+
     def return_connection(self, conn: sqlite3.Connection):
     """
     REASONING CHAIN:
@@ -104,11 +105,11 @@ class DatabaseConnectionPool:
     2. Analysis: Implementation requires specific logic for return_connection operation
     3. Solution: Implement return_connection with enterprise-grade patterns and error handling
     4. Validation: Test return_connection with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Return connection to pool"""
-        try:
+      """Return connection to pool"""
+       try:
             # Test connection health
             conn.execute("SELECT 1").fetchone()
             with self._lock:
@@ -122,7 +123,7 @@ class DatabaseConnectionPool:
                 conn.close()
             except Exception:
                 pass
-    
+
     def close_all(self):
     """
     REASONING CHAIN:
@@ -133,14 +134,15 @@ class DatabaseConnectionPool:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Close all connections in pool"""
-        with self._lock:
+      """Close all connections in pool"""
+       with self._lock:
             for conn in self._pool:
                 try:
                     conn.close()
                 except Exception:
                     pass
             self._pool.clear()
+
 
 class NoxDatabase:
     """
@@ -149,14 +151,14 @@ class NoxDatabase:
     2. Analysis: Class requires specific implementation patterns for NoxDatabase functionality
     3. Solution: Implement NoxDatabase with SOLID principles and enterprise patterns
     4. Validation: Test NoxDatabase with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Enhanced database manager for NoxGuard---NoxPanel system"""
-    
+
     # Database schema version for migrations
     SCHEMA_VERSION = 1
-    
+
     def __init__(self, db_path: str = "data/db/noxpanel.db", pool_size: int = 10):
     """
     REASONING CHAIN:
@@ -167,18 +169,18 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Initialize database with connection pooling"""
-        self.db_path = Path(db_path)
+      """Initialize database with connection pooling"""
+       self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Initialize connection pool
         self.pool = DatabaseConnectionPool(str(self.db_path), pool_size)
-        
+
         # Initialize database schema
         self.init_database()
-        
+
         logger.info(f"Database initialized: {self.db_path}")
-    
+
     @contextmanager
     def get_connection(self):
     """
@@ -190,14 +192,14 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Context manager for database connections"""
-        conn = self.pool.get_connection()
+      """Context manager for database connections"""
+       conn = self.pool.get_connection()
         try:
             conn.row_factory = sqlite3.Row
             yield conn
         finally:
             self.pool.return_connection(conn)
-    
+
     def init_database(self):
     """
     REASONING CHAIN:
@@ -208,8 +210,8 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Initialize complete database schema"""
-        try:
+      """Initialize complete database schema"""
+       try:
             with self.get_connection() as conn:
                 # Create all tables
                 self._create_core_tables(conn)
@@ -217,19 +219,19 @@ class NoxDatabase:
                 self._create_ai_tables(conn)
                 self._create_session_tables(conn)
                 self._create_indexes(conn)
-                
+
                 # Initialize metadata
                 self._init_metadata(conn)
-                
+
                 # Create default admin user
                 self._create_default_user(conn)
-                
+
                 logger.info("Database schema initialized successfully")
-                
+
         except Exception as e:
             logger.error(f"Database initialization failed: {e}")
             raise
-    
+
     def _create_core_tables(self, conn: sqlite3.Connection):
     """
     REASONING CHAIN:
@@ -240,8 +242,8 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Create core system tables"""
-        conn.executescript("""
+      """Create core system tables"""
+       conn.executescript("""
             -- Users table
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -300,7 +302,7 @@ class NoxDatabase:
                 FOREIGN KEY (user_id) REFERENCES users (id)
             );
         """)
-    
+
     def _create_knowledge_tables(self, conn: sqlite3.Connection):
     """
     REASONING CHAIN:
@@ -311,8 +313,8 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Create knowledge management tables"""
-        conn.executescript("""
+      """Create knowledge management tables"""
+       conn.executescript("""
             -- Knowledge items table
             CREATE TABLE IF NOT EXISTS knowledge_items (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -370,7 +372,7 @@ class NoxDatabase:
                 FOREIGN KEY (target_item_id) REFERENCES knowledge_items (id) ON DELETE CASCADE
             );
         """)
-    
+
     def _create_ai_tables(self, conn: sqlite3.Connection):
     """
     REASONING CHAIN:
@@ -381,8 +383,8 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Create AI conversation and interaction tables"""
-        conn.executescript("""
+      """Create AI conversation and interaction tables"""
+       conn.executescript("""
             -- AI conversations table
             CREATE TABLE IF NOT EXISTS conversations (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -440,7 +442,7 @@ class NoxDatabase:
                 FOREIGN KEY (user_id) REFERENCES users (id)
             );
         """)
-    
+
     def _create_session_tables(self, conn: sqlite3.Connection):
     """
     REASONING CHAIN:
@@ -451,8 +453,8 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Create session management tables"""
-        conn.executescript("""
+      """Create session management tables"""
+       conn.executescript("""
             -- User sessions table
             CREATE TABLE IF NOT EXISTS sessions (
                 id TEXT PRIMARY KEY,
@@ -494,7 +496,7 @@ class NoxDatabase:
                 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
             );
         """)
-    
+
     def _create_indexes(self, conn: sqlite3.Connection):
     """
     REASONING CHAIN:
@@ -505,8 +507,8 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Create database indexes for performance"""
-        conn.executescript("""
+      """Create database indexes for performance"""
+       conn.executescript("""
             -- User indexes
             CREATE INDEX IF NOT EXISTS idx_users_username ON users (username);
             CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
@@ -556,7 +558,7 @@ class NoxDatabase:
             CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_logs (timestamp);
             CREATE INDEX IF NOT EXISTS idx_audit_resource ON audit_logs (resource_type, resource_id);
         """)
-    
+
     def _init_metadata(self, conn: sqlite3.Connection):
     """
     REASONING CHAIN:
@@ -567,8 +569,8 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Initialize database metadata"""
-        conn.execute("""
+      """Initialize database metadata"""
+       conn.execute("""
             INSERT OR REPLACE INTO settings (key, value, category, description)
             VALUES (?, ?, ?, ?)
         """, (
@@ -577,7 +579,7 @@ class NoxDatabase:
             'system',
             'Database schema version for migrations'
         ))
-        
+
         conn.execute("""
             INSERT OR REPLACE INTO settings (key, value, category, description)
             VALUES (?, ?, ?, ?)
@@ -587,7 +589,7 @@ class NoxDatabase:
             'system',
             'Database initialization timestamp'
         ))
-    
+
     def _create_default_user(self, conn: sqlite3.Connection):
     """
     REASONING CHAIN:
@@ -598,16 +600,18 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Create default admin user if none exists"""
-        cursor = conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM users WHERE username = ?", ("admin",))
-        
+      """Create default admin user if none exists"""
+       cursor = conn.cursor()
+        cursor.execute(
+            "SELECT COUNT(*) FROM users WHERE username = ?", ("admin",))
+
         if cursor.fetchone()[0] == 0:
             # Simple password hashing (in production, use proper hashing like bcrypt)
             import hashlib
             admin_password = os.getenv("ADMIN_PASS", "admin123!")
-            hashed_password = hashlib.sha256(admin_password.encode()).hexdigest()
-            
+            hashed_password = hashlib.sha256(
+                admin_password.encode()).hexdigest()
+
             cursor.execute("""
                 INSERT INTO users (username, password_hash, email, role, settings, preferences)
                 VALUES (?, ?, ?, ?, ?, ?)
@@ -619,9 +623,9 @@ class NoxDatabase:
                 json.dumps({"theme": "dark", "notifications": True}),
                 json.dumps({"dashboard_layout": "default", "auto_refresh": 30})
             ))
-            
+
             logger.info("Default admin user created")
-    
+
     def close(self):
     """
     REASONING CHAIN:
@@ -632,9 +636,9 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Close database connection pool"""
-        self.pool.close_all()
-    
+      """Close database connection pool"""
+       self.pool.close_all()
+
     def __enter__(self):
     """
     Enhanced __enter__ with AI-driven reasoning patterns
@@ -647,8 +651,8 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        return self
-    
+      return self
+
     def __exit__(self, exc_type, exc_val, exc_tb):
     """
     Enhanced __exit__ with AI-driven reasoning patterns
@@ -661,7 +665,8 @@ class NoxDatabase:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        self.close()
+      self.close()
+
 
 # Export the main class
 __all__ = ['NoxDatabase', 'DatabaseConnectionPool']

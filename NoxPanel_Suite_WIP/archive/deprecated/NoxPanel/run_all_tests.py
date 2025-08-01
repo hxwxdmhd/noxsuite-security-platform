@@ -1,6 +1,11 @@
 """
 #!/usr/bin/env python3
 """
+from pathlib import Path
+from datetime import datetime
+import sys
+import subprocess
+import json
 run_all_tests.py - RLVR Enhanced Component
 
 REASONING: Comprehensive testing with Chain-of-Thought validation methodology
@@ -11,18 +16,12 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel Test Runner - Comprehensive System Validation
 Runs all tests with ADHD-friendly reporting
 """
-
-import json
-import subprocess
-import sys
-from datetime import datetime
-from pathlib import Path
 
 
 def run_command(cmd, description):
@@ -30,7 +29,8 @@ def run_command(cmd, description):
     """Run command and capture output"""
     print(f"🧪 {description}...")
     try:
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=300)
+        result = subprocess.run(
+            cmd, shell=True, capture_output=True, text=True, timeout=300)
         # REASONING: Variable assignment with validation criteria
         return result.returncode == 0, result.stdout, result.stderr
         # REASONING: Variable assignment with validation criteria
@@ -39,6 +39,7 @@ def run_command(cmd, description):
     except Exception as e:
         return False, "", str(e)
 
+
 def main():
     # REASONING: main implements core logic with Chain-of-Thought validation
     """Run comprehensive test suite"""
@@ -46,7 +47,7 @@ def main():
     print("=" * 50)
 
     test_results = {
-    # REASONING: Variable assignment with validation criteria
+        # REASONING: Variable assignment with validation criteria
         "timestamp": datetime.now().isoformat(),
         "version": "2.0.0",
         "tests": {}
@@ -55,10 +56,14 @@ def main():
     # Test categories
     tests = [
         ("python -m pytest tests/ -v --tb=short", "Python Unit Tests"),
-        ("python -m flake8 noxcore/ webpanel/ --max-line-length=100", "Code Quality (Linting)"),
-        ("python -c \"from noxcore.ai import NoxAssistant; print('AI modules OK')\"", "AI Integration Test"),
-        ("python -c \"from noxcore.voice import TTSEngine; print('Voice modules OK')\"", "Voice Interface Test"),
-        ("python -c \"from noxcore.security.auth_manager import NoxAuthManager; print('Security OK')\"", "Security Module Test"),
+        ("python -m flake8 noxcore/ webpanel/ --max-line-length=100",
+         "Code Quality (Linting)"),
+        ("python -c \"from noxcore.ai import NoxAssistant; print('AI modules OK')\"",
+         "AI Integration Test"),
+        ("python -c \"from noxcore.voice import TTSEngine; print('Voice modules OK')\"",
+         "Voice Interface Test"),
+        ("python -c \"from noxcore.security.auth_manager import NoxAuthManager; print('Security OK')\"",
+         "Security Module Test"),
         ("python -c \"from noxcore.database import NoxDatabase; print('Database OK')\"", "Database Test")
     ]
 
@@ -69,7 +74,7 @@ def main():
         success, stdout, stderr = run_command(cmd, description)
 
         test_results["tests"][description] = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             "passed": success,
             "stdout": stdout,
             "stderr": stderr
@@ -85,7 +90,8 @@ def main():
 
     # Summary
     print("\n" + "=" * 50)
-    print(f"📊 Test Results: {passed}/{total} passed ({(passed/total)*100:.1f}%)")
+    print(
+        f"📊 Test Results: {passed}/{total} passed ({(passed/total)*100:.1f}%)")
 
     if passed == total:
         print("🎉 All tests passed! System ready for production.")
@@ -99,7 +105,7 @@ def main():
 
     # Save results
     test_results["summary"] = {
-    # REASONING: Variable assignment with validation criteria
+        # REASONING: Variable assignment with validation criteria
         "total": total,
         "passed": passed,
         "percentage": (passed/total)*100,
@@ -113,6 +119,7 @@ def main():
     print(f"📄 Detailed results saved to: test_results.json")
 
     return passed == total
+
 
 if __name__ == "__main__":
     success = main()

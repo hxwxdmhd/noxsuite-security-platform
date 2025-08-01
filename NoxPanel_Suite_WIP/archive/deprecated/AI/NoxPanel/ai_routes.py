@@ -43,14 +43,18 @@ def dashboard():
 
         # Calculate summary statistics
         total_models = len(models_status)
-        online_count = sum(1 for m in models_status.values() if m['status'] == ModelStatus.ONLINE.value)
-        offline_count = sum(1 for m in models_status.values() if m['status'] == ModelStatus.OFFLINE.value)
-        degraded_count = sum(1 for m in models_status.values() if m['status'] == ModelStatus.DEGRADED.value)
+        online_count = sum(1 for m in models_status.values()
+                           if m['status'] == ModelStatus.ONLINE.value)
+        offline_count = sum(1 for m in models_status.values()
+                            if m['status'] == ModelStatus.OFFLINE.value)
+        degraded_count = sum(1 for m in models_status.values(
+        ) if m['status'] == ModelStatus.DEGRADED.value)
 
         # Calculate average latency for online models
         online_latencies = [m['latency_ms'] for m in models_status.values()
-                           if m['latency_ms'] is not None and m['status'] == ModelStatus.ONLINE.value]
-        avg_latency = sum(online_latencies) / len(online_latencies) if online_latencies else 0
+                            if m['latency_ms'] is not None and m['status'] == ModelStatus.ONLINE.value]
+        avg_latency = sum(online_latencies) / \
+                          len(online_latencies) if online_latencies else 0
 
         summary = {
             'total_models': total_models,
@@ -62,7 +66,7 @@ def dashboard():
         }
 
         return render_template('ai_dashboard.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -74,9 +78,9 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             models=models_status,
-                             summary=summary,
-                             timestamp=datetime.now())
+                               models=models_status,
+                               summary=summary,
+                               timestamp=datetime.now())
 
     except Exception as e:
         logger.error(f"❌ Error in AI dashboard: {e}")
@@ -121,7 +125,6 @@ def api_status():
             'timestamp': datetime.now().isoformat()
         }), 500
 
-
     """
     RLVR: Removes entity with dependency checking
 
@@ -134,6 +137,8 @@ def api_status():
 
     COMPLIANCE: STANDARD
     """
+
+
 @ai_bp.route('/api/test/<provider>', methods=['POST'])
 def api_test_model(provider):
     """
@@ -154,7 +159,7 @@ def api_test_model(provider):
 
         return jsonify({
             'success': True,
-    """
+            """
     RLVR: Implements api_health with error handling and validation
 
     REASONING CHAIN:
@@ -202,7 +207,7 @@ def api_restart_model(provider):
 
     COMPLIANCE: STANDARD
     """
-        if 'error' in restart_result:
+       if 'error' in restart_result:
             return jsonify({
                 'success': False,
                 'error': restart_result['error'],
@@ -259,7 +264,8 @@ def api_health():
         monitor = get_ai_monitor()
         models_status = monitor.get_all_status()
 
-        online_models = [k for k, v in models_status.items() if v['status'] == ModelStatus.ONLINE.value]
+        online_models = [k for k, v in models_status.items(
+        ) if v['status'] == ModelStatus.ONLINE.value]
         total_models = len(models_status)
 
         health_status = "healthy" if len(online_models) > 0 else "unhealthy"
@@ -271,7 +277,7 @@ def api_health():
             'online_models': len(online_models),
             'total_models': total_models,
             'online_providers': online_models,
-    """
+            """
     RLVR: Implements settings with error handling and validation
 
     REASONING CHAIN:
@@ -315,15 +321,17 @@ def test_model_ui(provider):
 
     COMPLIANCE: STANDARD
     """
-        monitor = get_ai_monitor()
+       monitor = get_ai_monitor()
         test_result = monitor.test_specific_model(provider)
 
         if 'error' in test_result:
             flash(f"❌ Model {provider} not found", 'error')
         elif test_result['success']:
-            flash(f"✅ {test_result['model']} is responding (latency: {test_result['latency_ms']:.0f}ms)", 'success')
+            flash(
+                f"✅ {test_result['model']} is responding (latency: {test_result['latency_ms']:.0f}ms)", 'success')
         else:
-            flash(f"❌ {test_result['model']} test failed: {test_result['error_message']}", 'error')
+            flash(
+                f"❌ {test_result['model']} test failed: {test_result['error_message']}", 'error')
 
         return redirect(url_for('ai.dashboard'))
 
@@ -371,9 +379,11 @@ def restart_model_ui(provider):
         if 'error' in restart_result:
             flash(f"❌ Model {provider} not found", 'error')
         elif restart_result['restart_success'] and restart_result['test_success']:
-            flash(f"🎉 {restart_result['model']} successfully restarted and is online!", 'success')
+            flash(
+                f"🎉 {restart_result['model']} successfully restarted and is online!", 'success')
         elif restart_result['restart_success']:
-            flash(f"🔄 {restart_result['model']} restart command sent, but communication test failed", 'warning')
+            flash(
+                f"🔄 {restart_result['model']} restart command sent, but communication test failed", 'warning')
         else:
             flash(f"❌ Failed to restart {restart_result['model']}", 'error')
 
@@ -436,8 +446,8 @@ def settings():
             }
 
         return render_template('ai_settings.html',
-                             models=models_config,
-                             timestamp=datetime.now())
+                               models=models_config,
+                               timestamp=datetime.now())
 
     except Exception as e:
         logger.error(f"❌ Error loading settings: {e}")
@@ -463,7 +473,8 @@ def update_settings():
                 model.port = int(request.form[f"{model_key}_port"])
                 model.start_command = request.form[f"{model_key}_start_command"]
                 model.test_prompt = request.form[f"{model_key}_test_prompt"]
-                model.max_restart_attempts = int(request.form[f"{model_key}_max_restart_attempts"])
+                model.max_restart_attempts = int(
+                    request.form[f"{model_key}_max_restart_attempts"])
 
         # Save configuration
         monitor._save_model_config()

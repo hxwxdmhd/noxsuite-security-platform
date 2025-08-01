@@ -1,3 +1,13 @@
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime
+import sys
+import subprocess
+import shutil
+import platform
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -17,17 +27,6 @@ Adaptive platform support for:
 Automatically detects and adapts to the current environment.
 """
 
-import json
-import logging
-import os
-import platform
-import shutil
-import subprocess
-import sys
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
 
 class PlatformAdapter:
     """
@@ -36,7 +35,7 @@ class PlatformAdapter:
     2. Analysis: Class requires specific implementation patterns for PlatformAdapter functionality
     3. Solution: Implement PlatformAdapter with SOLID principles and enterprise patterns
     4. Validation: Test PlatformAdapter with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Platform-specific adaptation system."""
@@ -48,15 +47,16 @@ class PlatformAdapter:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Initialize platform adapter."""
-        self.workspace_path = Path(workspace_path)
-        self.platform_info = self.detect_platform()
+     """Initialize platform adapter."""
+      self.workspace_path = Path(workspace_path)
+       self.platform_info = self.detect_platform()
         self.setup_logging()
 
-        logger.info(f"Platform Adapter initialized for: {self.platform_info['platform']}")
+        logger.info(
+            f"Platform Adapter initialized for: {self.platform_info['platform']}")
         logger.info(f"Environment: {self.platform_info['environment']}")
         logger.info(f"Container: {self.platform_info['container']}")
 
@@ -67,14 +67,15 @@ class PlatformAdapter:
     2. Analysis: Implementation requires specific logic for setup_logging operation
     3. Solution: Implement setup_logging with enterprise-grade patterns and error handling
     4. Validation: Test setup_logging with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Set up platform-specific logging."""
-        log_dir = self.workspace_path / "envs" / "logs"
-        log_dir.mkdir(parents=True, exist_ok=True)
+     """Set up platform-specific logging."""
+      log_dir = self.workspace_path / "envs" / "logs"
+       log_dir.mkdir(parents=True, exist_ok=True)
 
-        log_file = log_dir / f"platform_adapter_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        log_file = log_dir / \
+            f"platform_adapter_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
         logging.basicConfig(
             level=logging.INFO,
@@ -94,12 +95,12 @@ class PlatformAdapter:
     2. Analysis: Implementation requires specific logic for detect_platform operation
     3. Solution: Implement detect_platform with enterprise-grade patterns and error handling
     4. Validation: Test detect_platform with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Detect current platform and environment."""
-        platform_info = {
-            "platform": platform.system(),
+     """Detect current platform and environment."""
+      platform_info = {
+           "platform": platform.system(),
             "platform_version": platform.version(),
             "architecture": platform.architecture()[0],
             "python_version": platform.python_version(),
@@ -107,10 +108,10 @@ class PlatformAdapter:
             "container": "none",
             "cloud_provider": "none",
             "ci_cd": "none"
-        }
+           }
 
-        # Detect environment type
-        if os.environ.get('DOCKER_CONTAINER'):
+       # Detect environment type
+       if os.environ.get('DOCKER_CONTAINER'):
             platform_info["container"] = "docker"
             platform_info["environment"] = "container"
         elif os.environ.get('KUBERNETES_SERVICE_HOST'):
@@ -151,11 +152,11 @@ class PlatformAdapter:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate platform-specific configurations."""
-        configs = {}
+     """Generate platform-specific configurations."""
+      configs = {}
 
-        # Linux configuration
-        configs["linux"] = self.generate_linux_config()
+       # Linux configuration
+       configs["linux"] = self.generate_linux_config()
 
         # Windows configuration
         configs["windows"] = self.generate_windows_config()
@@ -183,9 +184,9 @@ class PlatformAdapter:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate Linux-specific configuration."""
-        return {
-            "environment": "linux",
+     """Generate Linux-specific configuration."""
+      return {
+           "environment": "linux",
             "python_command": "python3",
             "package_manager": "apt" if shutil.which("apt") else "yum" if shutil.which("yum") else "pacman",
             "service_manager": "systemd" if shutil.which("systemctl") else "init",
@@ -196,17 +197,17 @@ class PlatformAdapter:
                 "home": os.path.expanduser("~"),
                 "temp": "/tmp"
             },
-            "dependencies": [
+           "dependencies": [
                 "python3-pip",
                 "python3-venv",
                 "python3-dev",
                 "build-essential"
             ],
-            "install_commands": [
+           "install_commands": [
                 "sudo apt update && sudo apt install -y python3-pip python3-venv python3-dev build-essential",
                 "pip3 install -r requirements.txt"
             ]
-        }
+           }
 
     def generate_windows_config(self) -> Dict[str, Any]:
     """
@@ -218,9 +219,9 @@ class PlatformAdapter:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate Windows-specific configuration."""
-        return {
-            "environment": "windows",
+     """Generate Windows-specific configuration."""
+      return {
+           "environment": "windows",
             "python_command": "python",
             "package_manager": "pip",
             "service_manager": "services",
@@ -231,15 +232,15 @@ class PlatformAdapter:
                 "home": os.path.expanduser("~"),
                 "temp": os.environ.get("TEMP", "C:\\temp")
             },
-            "dependencies": [
+           "dependencies": [
                 "pip",
                 "virtualenv"
             ],
-            "install_commands": [
+           "install_commands": [
                 "pip install --upgrade pip",
                 "pip install -r requirements.txt"
             ]
-        }
+           }
 
     def generate_docker_config(self) -> Dict[str, Any]:
     """
@@ -251,8 +252,8 @@ class PlatformAdapter:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate Docker configuration."""
-        dockerfile_content = '''FROM python:3.11-slim
+     """Generate Docker configuration."""
+      dockerfile_content = '''FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -283,7 +284,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \\
 CMD ["python", "main.py"]
 '''
 
-        docker_compose_content = '''version: '3.8'
+       docker_compose_content = '''version: '3.8'
 
 services:
   rlvr-app:
@@ -338,15 +339,15 @@ services:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate Kubernetes configuration."""
-        k8s_deployment = {
-            "apiVersion": "apps/v1",
+     """Generate Kubernetes configuration."""
+      k8s_deployment = {
+           "apiVersion": "apps/v1",
             "kind": "Deployment",
             "metadata": {
                 "name": "rlvr-app",
                 "labels": {"app": "rlvr-app"}
             },
-            "spec": {
+           "spec": {
                 "replicas": 3,
                 "selector": {"matchLabels": {"app": "rlvr-app"}},
                 "template": {
@@ -378,9 +379,9 @@ services:
                     }
                 }
             }
-        }
+           }
 
-        k8s_service = {
+       k8s_service = {
             "apiVersion": "v1",
             "kind": "Service",
             "metadata": {"name": "rlvr-app-service"},
@@ -411,9 +412,9 @@ services:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate AWS-specific configuration."""
-        return {
-            "environment": "aws",
+     """Generate AWS-specific configuration."""
+      return {
+           "environment": "aws",
             "services": {
                 "compute": "EC2",
                 "container": "ECS",
@@ -421,12 +422,12 @@ services:
                 "database": "RDS",
                 "monitoring": "CloudWatch"
             },
-            "terraform": {
+           "terraform": {
                 "provider": "aws",
                 "region": "us-west-2",
                 "instance_type": "t3.medium"
             }
-        }
+           }
 
     def generate_azure_config(self) -> Dict[str, Any]:
     """
@@ -438,9 +439,9 @@ services:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate Azure-specific configuration."""
-        return {
-            "environment": "azure",
+     """Generate Azure-specific configuration."""
+      return {
+           "environment": "azure",
             "services": {
                 "compute": "Virtual Machines",
                 "container": "Container Instances",
@@ -448,7 +449,7 @@ services:
                 "database": "SQL Database",
                 "monitoring": "Monitor"
             }
-        }
+           }
 
     def generate_gcp_config(self) -> Dict[str, Any]:
     """
@@ -460,9 +461,9 @@ services:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate GCP-specific configuration."""
-        return {
-            "environment": "gcp",
+     """Generate GCP-specific configuration."""
+      return {
+           "environment": "gcp",
             "services": {
                 "compute": "Compute Engine",
                 "container": "Cloud Run",
@@ -470,7 +471,7 @@ services:
                 "database": "Cloud SQL",
                 "monitoring": "Cloud Monitoring"
             }
-        }
+           }
 
     def adapt_to_current_platform(self) -> Dict[str, Any]:
     """
@@ -482,10 +483,11 @@ services:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Adapt configuration to current platform."""
-        logger.info(f"Adapting to {self.platform_info['platform']} platform...")
+     """Adapt configuration to current platform."""
+      logger.info(
+           f"Adapting to {self.platform_info['platform']} platform...")
 
-        configs = self.generate_platform_configs()
+       configs = self.generate_platform_configs()
         current_platform = self.platform_info['platform'].lower()
 
         # Select appropriate configuration
@@ -508,7 +510,8 @@ services:
             active_config.update(configs[cloud_provider])
 
         # Save platform-specific configuration
-        config_file = self.workspace_path / "envs" / f"{current_platform}_config.json"
+        config_file = self.workspace_path / "envs" / \
+            f"{current_platform}_config.json"
         with open(config_file, 'w', encoding='utf-8') as f:
             json.dump(active_config, f, indent=2)
 
@@ -525,7 +528,8 @@ services:
             "status": "success"
         }
 
-        logger.info(f"Platform adaptation completed: {adaptation_result['status']}")
+        logger.info(
+            f"Platform adaptation completed: {adaptation_result['status']}")
         return adaptation_result
 
     def generate_platform_scripts(self, config: Dict[str, Any]):
@@ -538,9 +542,9 @@ services:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate platform-specific deployment scripts."""
-        scripts_dir = self.workspace_path / "envs" / "scripts"
-        scripts_dir.mkdir(parents=True, exist_ok=True)
+     """Generate platform-specific deployment scripts."""
+      scripts_dir = self.workspace_path / "envs" / "scripts"
+       scripts_dir.mkdir(parents=True, exist_ok=True)
 
         # Generate installation script
         if config.get("environment") == "linux":
@@ -586,6 +590,7 @@ services:
                 import yaml
                 yaml.dump(config["service"], f, default_flow_style=False)
 
+
 def main():
     """
     REASONING CHAIN:
@@ -593,7 +598,7 @@ def main():
     2. Analysis: Implementation requires specific logic for main operation
     3. Solution: Implement main with enterprise-grade patterns and error handling
     4. Validation: Test main with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Main execution function."""
@@ -615,7 +620,8 @@ def main():
         logger.info(f"Container: {adaptation_result['container']}")
         logger.info(f"Cloud Provider: {adaptation_result['cloud_provider']}")
         logger.info(f"Config File: {adaptation_result['config_file']}")
-        logger.info(f"Adaptations: {len(adaptation_result['adaptations_applied'])}")
+        logger.info(
+            f"Adaptations: {len(adaptation_result['adaptations_applied'])}")
         logger.info(f"Status: {adaptation_result['status']}")
         logger.info("="*60)
 
@@ -629,6 +635,7 @@ def main():
     except Exception as e:
         logger.info(f"Platform adapter error: {str(e)}")
         logging.error(f"Platform adapter error: {str(e)}")
+
 
 if __name__ == "__main__":
     main()

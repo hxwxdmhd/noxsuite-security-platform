@@ -76,6 +76,7 @@ sys.path.insert(0, project_root)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class TenantStatus(Enum):
     """Tenant status enumeration"""
     ACTIVE = "active"
@@ -83,6 +84,7 @@ class TenantStatus(Enum):
     CANCELLED = "cancelled"
     PENDING = "pending"
     TRIAL = "trial"
+
 
 class SubscriptionPlan(Enum):
     """Subscription plan types"""
@@ -92,12 +94,14 @@ class SubscriptionPlan(Enum):
     ENTERPRISE = "enterprise"
     CUSTOM = "custom"
 
+
 class BillingCycle(Enum):
     """Billing cycle options"""
     MONTHLY = "monthly"
     QUARTERLY = "quarterly"
     ANNUALLY = "annually"
     CUSTOM = "custom"
+
 
 class ResourceType(Enum):
     """Resource types for quota management"""
@@ -108,6 +112,7 @@ class ResourceType(Enum):
     API_CALLS = "api_calls"
     USERS = "users"
     DATABASES = "databases"
+
 
 @dataclass
 class Tenant:
@@ -123,7 +128,7 @@ class Tenant:
     owner_email: str
     settings: Dict[str, Any] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert tenant to dictionary"""
         return {
@@ -140,6 +145,7 @@ class Tenant:
             'metadata': self.metadata
         }
 
+
 @dataclass
 class ResourceQuota:
     """Resource quota definition"""
@@ -150,6 +156,7 @@ class ResourceQuota:
     soft_limit: Optional[int] = None
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
+
 
 @dataclass
 class BillingInfo:
@@ -164,6 +171,7 @@ class BillingInfo:
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
 
+
 @dataclass
 class TenantUsage:
     """Tenant resource usage tracking"""
@@ -173,19 +181,21 @@ class TenantUsage:
     timestamp: datetime
     metadata: Dict[str, Any] = field(default_factory=dict)
 
+
 class DatabaseManager:
     """
     Multi-tenant database management system
     """
-    
+
     def __init__(self, master_db_url: str = "mysql+pymysql://tenants.db"):
         self.master_db_url = master_db_url
         self.tenant_connections = {}
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-        
+        self.logger = logging.getLogger(
+            f"{__name__}.{self.__class__.__name__}")
+
         # Initialize master database
         self._init_master_database()
-    
+
     def _init_master_database(self):
         """Initialize master database with tenant metadata"""
         try:
@@ -196,14 +206,15 @@ class DatabaseManager:
                 self.SessionLocal = sessionmaker(bind=self.engine)
             else:
                 # Fallback to SQLite
-                self.master_conn = pymysql.connect("tenants.db", check_same_thread=False)
+                self.master_conn = pymysql.connect(
+                    "tenants.db", check_same_thread=False)
                 self._create_master_tables_sqlite()
-            
+
             self.logger.info("Master database initialized")
-            
+
         except Exception as e:
             self.logger.error(f"Failed to initialize master database: {e}")
-    
+
     def _create_master_tables(self):
         """Create master database tables using SQLAlchemy"""
         try:
@@ -223,7 +234,7 @@ class DatabaseManager:
                 Column('metadata', Text),
                 Column('db_url', String, nullable=False)
             )
-            
+
             # Define resource quotas table
             self.quotas_table = Table(
                 'resource_quotas', self.Base.metadata,
@@ -236,7 +247,7 @@ class DatabaseManager:
                 Column('created_at', DateTime, nullable=False),
                 Column('updated_at', DateTime, nullable=False)
             )
-            
+
             # Define billing table
             self.billing_table = Table(
                 'billing_info', self.Base.metadata,
@@ -251,7 +262,7 @@ class DatabaseManager:
                 Column('created_at', DateTime, nullable=False),
                 Column('updated_at', DateTime, nullable=False)
             )
-            
+
             # Define usage tracking table
             self.usage_table = Table(
                 'tenant_usage', self.Base.metadata,
@@ -262,18 +273,18 @@ class DatabaseManager:
                 Column('timestamp', DateTime, nullable=False),
                 Column('metadata', Text)
             )
-            
+
             # Create all tables
             self.Base.metadata.create_all(self.engine)
-            
+
         except Exception as e:
             self.logger.error(f"Error creating master tables: {e}")
-    
+
     def _create_master_tables_sqlite(self):
         """Create master database tables using SQLite"""
         try:
             cursor = self.master_conn.cursor()
-            
+
             # Create tenants table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS tenants (
@@ -291,7 +302,7 @@ class DatabaseManager:
                     db_url TEXT NOT NULL
                 )
             """)
-            
+
             # Create resource quotas table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS resource_quotas (
@@ -306,7 +317,7 @@ class DatabaseManager:
                     FOREIGN KEY (tenant_id) REFERENCES tenants (id)
                 )
             """)
-            
+
             # Create billing table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS billing_info (
@@ -323,7 +334,7 @@ class DatabaseManager:
                     FOREIGN KEY (tenant_id) REFERENCES tenants (id)
                 )
             """)
-            
+
             # Create usage tracking table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS tenant_usage (
@@ -336,12 +347,12 @@ class DatabaseManager:
                     FOREIGN KEY (tenant_id) REFERENCES tenants (id)
                 )
             """)
-            
+
             self.master_conn.commit()
-            
+
         except Exception as e:
             self.logger.error(f"Error creating SQLite tables: {e}")
-    
+
     def create_tenant_database(self, tenant_id: str) -> str:
         """Create a dedicated database for a tenant"""
         try:
@@ -350,14 +361,14 @@ class DatabaseManager:
                 db_url = f"postgresql://user:password@localhost:5432/tenant_{tenant_id}"
             else:
                 db_url = f"mysql+pymysql://tenant_{tenant_id}.db"
-            
+
             # Create database connection
             if HAS_SQLALCHEMY:
                 engine = create_engine(db_url)
-                
+
                 # Create tenant-specific tables
                 self._create_tenant_tables(engine, tenant_id)
-                
+
                 # Store connection
                 self.tenant_connections[tenant_id] = engine
             else:
@@ -365,20 +376,20 @@ class DatabaseManager:
                 conn = pymysql.connect(f"tenant_{tenant_id}.db")
                 self._create_tenant_tables_sqlite(conn, tenant_id)
                 self.tenant_connections[tenant_id] = conn
-            
+
             self.logger.info(f"Created database for tenant: {tenant_id}")
             return db_url
-            
+
         except Exception as e:
             self.logger.error(f"Error creating tenant database: {e}")
             return ""
-    
+
     def _create_tenant_tables(self, engine, tenant_id: str):
         """Create tenant-specific tables"""
         try:
             # Create tenant-specific base
             Base = declarative_base()
-            
+
             # Define tenant tables
             users_table = Table(
                 'users', Base.metadata,
@@ -389,18 +400,18 @@ class DatabaseManager:
                 Column('created_at', DateTime, nullable=False),
                 Column('updated_at', DateTime, nullable=False)
             )
-            
+
             # Create all tenant tables
             Base.metadata.create_all(engine)
-            
+
         except Exception as e:
             self.logger.error(f"Error creating tenant tables: {e}")
-    
+
     def _create_tenant_tables_sqlite(self, conn, tenant_id: str):
         """Create tenant-specific tables using SQLite"""
         try:
             cursor = conn.cursor()
-            
+
             # Create users table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS users (
@@ -412,19 +423,19 @@ class DatabaseManager:
                     updated_at TEXT NOT NULL
                 )
             """)
-            
+
             conn.commit()
-            
+
         except Exception as e:
             self.logger.error(f"Error creating tenant SQLite tables: {e}")
-    
+
     @contextmanager
     def get_tenant_session(self, tenant_id: str):
         """Get database session for specific tenant"""
         try:
             if tenant_id not in self.tenant_connections:
                 raise ValueError(f"Tenant database not found: {tenant_id}")
-            
+
             if HAS_SQLALCHEMY:
                 engine = self.tenant_connections[tenant_id]
                 SessionLocal = sessionmaker(bind=engine)
@@ -436,25 +447,28 @@ class DatabaseManager:
             else:
                 conn = self.tenant_connections[tenant_id]
                 yield conn
-                
+
         except Exception as e:
             self.logger.error(f"Error getting tenant session: {e}")
             yield None
+
 
 class TenantManager:
     """
     Complete tenant management system
     """
-    
+
     def __init__(self, db_manager: DatabaseManager):
         self.db_manager = db_manager
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logging.getLogger(
+            f"{__name__}.{self.__class__.__name__}")
         self.tenants_cache = {}
-        
+
         # Initialize Redis cache if available
         if HAS_REDIS:
             try:
-                self.redis_client = redis.Redis(host='localhost', port=6379, db=0)
+                self.redis_client = redis.Redis(
+                    host='localhost', port=6379, db=0)
                 self.redis_client.ping()
                 self.logger.info("Redis cache initialized")
             except Exception as e:
@@ -462,19 +476,19 @@ class TenantManager:
                 self.redis_client = None
         else:
             self.redis_client = None
-    
+
     def create_tenant(self, name: str, slug: str, domain: str, owner_email: str,
-                     plan: SubscriptionPlan = SubscriptionPlan.FREE) -> Optional[Tenant]:
+                      plan: SubscriptionPlan = SubscriptionPlan.FREE) -> Optional[Tenant]:
         """Create a new tenant"""
         try:
             # Generate tenant ID
             tenant_id = str(uuid.uuid4())
-            
+
             # Create tenant database
             db_url = self.db_manager.create_tenant_database(tenant_id)
             if not db_url:
                 raise Exception("Failed to create tenant database")
-            
+
             # Create tenant object
             tenant = Tenant(
                 id=tenant_id,
@@ -487,16 +501,16 @@ class TenantManager:
                 updated_at=datetime.now(),
                 owner_email=owner_email
             )
-            
+
             # Store in master database
             self._store_tenant(tenant, db_url)
-            
+
             # Initialize default quotas
             self._initialize_default_quotas(tenant_id, plan)
-            
+
             # Initialize billing info
             self._initialize_billing_info(tenant_id, plan)
-            
+
             # Cache tenant
             self.tenants_cache[tenant_id] = tenant
             if self.redis_client:
@@ -505,14 +519,14 @@ class TenantManager:
                     3600,
                     json.dumps(tenant.to_dict())
                 )
-            
+
             self.logger.info(f"Created tenant: {name} ({tenant_id})")
             return tenant
-            
+
         except Exception as e:
             self.logger.error(f"Error creating tenant: {e}")
             return None
-    
+
     def _store_tenant(self, tenant: Tenant, db_url: str):
         """Store tenant in master database"""
         try:
@@ -548,10 +562,10 @@ class TenantManager:
                     json.dumps(tenant.metadata), db_url
                 ))
                 self.db_manager.master_conn.commit()
-                
+
         except Exception as e:
             self.logger.error(f"Error storing tenant: {e}")
-    
+
     def _initialize_default_quotas(self, tenant_id: str, plan: SubscriptionPlan):
         """Initialize default resource quotas for tenant"""
         try:
@@ -582,9 +596,10 @@ class TenantManager:
                     ResourceType.DATABASES: 100
                 }
             }
-            
-            limits = quota_limits.get(plan, quota_limits[SubscriptionPlan.FREE])
-            
+
+            limits = quota_limits.get(
+                plan, quota_limits[SubscriptionPlan.FREE])
+
             for resource_type, limit in limits.items():
                 quota = ResourceQuota(
                     tenant_id=tenant_id,
@@ -593,15 +608,15 @@ class TenantManager:
                     soft_limit=int(limit * 0.8)  # 80% soft limit
                 )
                 self._store_quota(quota)
-                
+
         except Exception as e:
             self.logger.error(f"Error initializing quotas: {e}")
-    
+
     def _store_quota(self, quota: ResourceQuota):
         """Store resource quota in database"""
         try:
             quota_id = str(uuid.uuid4())
-            
+
             if HAS_SQLALCHEMY:
                 with self.db_manager.SessionLocal() as session:
                     session.execute(
@@ -628,10 +643,10 @@ class TenantManager:
                     quota.created_at.isoformat(), quota.updated_at.isoformat()
                 ))
                 self.db_manager.master_conn.commit()
-                
+
         except Exception as e:
             self.logger.error(f"Error storing quota: {e}")
-    
+
     def _initialize_billing_info(self, tenant_id: str, plan: SubscriptionPlan):
         """Initialize billing information for tenant"""
         try:
@@ -642,9 +657,9 @@ class TenantManager:
                 SubscriptionPlan.PROFESSIONAL: Decimal('99.99'),
                 SubscriptionPlan.ENTERPRISE: Decimal('299.99')
             }
-            
+
             price = pricing.get(plan, Decimal('0.00'))
-            
+
             billing_info = BillingInfo(
                 tenant_id=tenant_id,
                 plan=plan,
@@ -654,17 +669,17 @@ class TenantManager:
                 next_billing_date=datetime.now() + timedelta(days=30),
                 payment_method='credit_card'
             )
-            
+
             self._store_billing_info(billing_info)
-            
+
         except Exception as e:
             self.logger.error(f"Error initializing billing info: {e}")
-    
+
     def _store_billing_info(self, billing_info: BillingInfo):
         """Store billing information in database"""
         try:
             billing_id = str(uuid.uuid4())
-            
+
             if HAS_SQLALCHEMY:
                 with self.db_manager.SessionLocal() as session:
                     session.execute(
@@ -689,23 +704,24 @@ class TenantManager:
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     billing_id, billing_info.tenant_id, billing_info.plan.value,
-                    billing_info.billing_cycle.value, str(billing_info.price_per_cycle),
+                    billing_info.billing_cycle.value, str(
+                        billing_info.price_per_cycle),
                     billing_info.currency, billing_info.next_billing_date.isoformat(),
                     billing_info.payment_method, billing_info.created_at.isoformat(),
                     billing_info.updated_at.isoformat()
                 ))
                 self.db_manager.master_conn.commit()
-                
+
         except Exception as e:
             self.logger.error(f"Error storing billing info: {e}")
-    
+
     def get_tenant(self, tenant_id: str) -> Optional[Tenant]:
         """Get tenant by ID"""
         try:
             # Check cache first
             if tenant_id in self.tenants_cache:
                 return self.tenants_cache[tenant_id]
-            
+
             # Check Redis cache
             if self.redis_client:
                 cached_tenant = self.redis_client.get(f"tenant:{tenant_id}")
@@ -718,15 +734,17 @@ class TenantManager:
                         domain=tenant_data['domain'],
                         status=TenantStatus(tenant_data['status']),
                         plan=SubscriptionPlan(tenant_data['plan']),
-                        created_at=datetime.fromisoformat(tenant_data['created_at']),
-                        updated_at=datetime.fromisoformat(tenant_data['updated_at']),
+                        created_at=datetime.fromisoformat(
+                            tenant_data['created_at']),
+                        updated_at=datetime.fromisoformat(
+                            tenant_data['updated_at']),
                         owner_email=tenant_data['owner_email'],
                         settings=tenant_data['settings'],
                         metadata=tenant_data['metadata']
                     )
                     self.tenants_cache[tenant_id] = tenant
                     return tenant
-            
+
             # Query database
             if HAS_SQLALCHEMY:
                 with self.db_manager.SessionLocal() as session:
@@ -735,7 +753,7 @@ class TenantManager:
                             self.db_manager.tenants_table.c.id == tenant_id
                         )
                     ).fetchone()
-                    
+
                     if result:
                         tenant = Tenant(
                             id=result.id,
@@ -747,10 +765,12 @@ class TenantManager:
                             created_at=result.created_at,
                             updated_at=result.updated_at,
                             owner_email=result.owner_email,
-                            settings=json.loads(result.settings) if result.settings else {},
-                            metadata=json.loads(result.metadata) if result.metadata else {}
+                            settings=json.loads(
+                                result.settings) if result.settings else {},
+                            metadata=json.loads(
+                                result.metadata) if result.metadata else {}
                         )
-                        
+
                         # Cache tenant
                         self.tenants_cache[tenant_id] = tenant
                         if self.redis_client:
@@ -759,13 +779,14 @@ class TenantManager:
                                 3600,
                                 json.dumps(tenant.to_dict())
                             )
-                        
+
                         return tenant
             else:
                 cursor = self.db_manager.master_conn.cursor()
-                cursor.execute("SELECT * FROM tenants WHERE id = ?", (tenant_id,))
+                cursor.execute(
+                    "SELECT * FROM tenants WHERE id = ?", (tenant_id,))
                 result = cursor.fetchone()
-                
+
                 if result:
                     tenant = Tenant(
                         id=result[0],
@@ -780,17 +801,17 @@ class TenantManager:
                         settings=json.loads(result[9]) if result[9] else {},
                         metadata=json.loads(result[10]) if result[10] else {}
                     )
-                    
+
                     # Cache tenant
                     self.tenants_cache[tenant_id] = tenant
                     return tenant
-            
+
             return None
-            
+
         except Exception as e:
             self.logger.error(f"Error getting tenant: {e}")
             return None
-    
+
     def get_tenant_by_domain(self, domain: str) -> Optional[Tenant]:
         """Get tenant by domain"""
         try:
@@ -801,37 +822,38 @@ class TenantManager:
                             self.db_manager.tenants_table.c.domain == domain
                         )
                     ).fetchone()
-                    
+
                     if result:
                         return self.get_tenant(result.id)
             else:
                 cursor = self.db_manager.master_conn.cursor()
-                cursor.execute("SELECT id FROM tenants WHERE domain = ?", (domain,))
+                cursor.execute(
+                    "SELECT id FROM tenants WHERE domain = ?", (domain,))
                 result = cursor.fetchone()
-                
+
                 if result:
                     return self.get_tenant(result[0])
-            
+
             return None
-            
+
         except Exception as e:
             self.logger.error(f"Error getting tenant by domain: {e}")
             return None
-    
+
     def update_tenant(self, tenant_id: str, updates: Dict[str, Any]) -> bool:
         """Update tenant information"""
         try:
             tenant = self.get_tenant(tenant_id)
             if not tenant:
                 return False
-            
+
             # Update tenant object
             for key, value in updates.items():
                 if hasattr(tenant, key):
                     setattr(tenant, key, value)
-            
+
             tenant.updated_at = datetime.now()
-            
+
             # Update database
             if HAS_SQLALCHEMY:
                 with self.db_manager.SessionLocal() as session:
@@ -860,7 +882,7 @@ class TenantManager:
                     json.dumps(tenant.metadata), tenant_id
                 ))
                 self.db_manager.master_conn.commit()
-            
+
             # Update cache
             self.tenants_cache[tenant_id] = tenant
             if self.redis_client:
@@ -869,21 +891,21 @@ class TenantManager:
                     3600,
                     json.dumps(tenant.to_dict())
                 )
-            
+
             self.logger.info(f"Updated tenant: {tenant_id}")
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Error updating tenant: {e}")
             return False
-    
+
     def delete_tenant(self, tenant_id: str) -> bool:
         """Delete tenant and all associated data"""
         try:
             tenant = self.get_tenant(tenant_id)
             if not tenant:
                 return False
-            
+
             # Delete from database
             if HAS_SQLALCHEMY:
                 with self.db_manager.SessionLocal() as session:
@@ -912,44 +934,48 @@ class TenantManager:
                     session.commit()
             else:
                 cursor = self.db_manager.master_conn.cursor()
-                cursor.execute("DELETE FROM resource_quotas WHERE tenant_id = ?", (tenant_id,))
-                cursor.execute("DELETE FROM billing_info WHERE tenant_id = ?", (tenant_id,))
-                cursor.execute("DELETE FROM tenant_usage WHERE tenant_id = ?", (tenant_id,))
-                cursor.execute("DELETE FROM tenants WHERE id = ?", (tenant_id,))
+                cursor.execute(
+                    "DELETE FROM resource_quotas WHERE tenant_id = ?", (tenant_id,))
+                cursor.execute(
+                    "DELETE FROM billing_info WHERE tenant_id = ?", (tenant_id,))
+                cursor.execute(
+                    "DELETE FROM tenant_usage WHERE tenant_id = ?", (tenant_id,))
+                cursor.execute(
+                    "DELETE FROM tenants WHERE id = ?", (tenant_id,))
                 self.db_manager.master_conn.commit()
-            
+
             # Remove from cache
             if tenant_id in self.tenants_cache:
                 del self.tenants_cache[tenant_id]
-            
+
             if self.redis_client:
                 self.redis_client.delete(f"tenant:{tenant_id}")
-            
+
             # Close tenant database connection
             if tenant_id in self.db_manager.tenant_connections:
                 conn = self.db_manager.tenant_connections[tenant_id]
                 if hasattr(conn, 'close'):
                     conn.close()
                 del self.db_manager.tenant_connections[tenant_id]
-            
+
             self.logger.info(f"Deleted tenant: {tenant_id}")
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Error deleting tenant: {e}")
             return False
-    
+
     def list_tenants(self, limit: int = 100, offset: int = 0) -> List[Tenant]:
         """List all tenants with pagination"""
         try:
             tenants = []
-            
+
             if HAS_SQLALCHEMY:
                 with self.db_manager.SessionLocal() as session:
                     results = session.execute(
                         self.db_manager.tenants_table.select().limit(limit).offset(offset)
                     ).fetchall()
-                    
+
                     for result in results:
                         tenant = Tenant(
                             id=result.id,
@@ -961,15 +987,18 @@ class TenantManager:
                             created_at=result.created_at,
                             updated_at=result.updated_at,
                             owner_email=result.owner_email,
-                            settings=json.loads(result.settings) if result.settings else {},
-                            metadata=json.loads(result.metadata) if result.metadata else {}
+                            settings=json.loads(
+                                result.settings) if result.settings else {},
+                            metadata=json.loads(
+                                result.metadata) if result.metadata else {}
                         )
                         tenants.append(tenant)
             else:
                 cursor = self.db_manager.master_conn.cursor()
-                cursor.execute("SELECT * FROM tenants LIMIT ? OFFSET ?", (limit, offset))
+                cursor.execute(
+                    "SELECT * FROM tenants LIMIT ? OFFSET ?", (limit, offset))
                 results = cursor.fetchall()
-                
+
                 for result in results:
                     tenant = Tenant(
                         id=result[0],
@@ -985,18 +1014,18 @@ class TenantManager:
                         metadata=json.loads(result[10]) if result[10] else {}
                     )
                     tenants.append(tenant)
-            
+
             return tenants
-            
+
         except Exception as e:
             self.logger.error(f"Error listing tenants: {e}")
             return []
-    
+
     def get_tenant_quotas(self, tenant_id: str) -> List[ResourceQuota]:
         """Get resource quotas for tenant"""
         try:
             quotas = []
-            
+
             if HAS_SQLALCHEMY:
                 with self.db_manager.SessionLocal() as session:
                     results = session.execute(
@@ -1004,7 +1033,7 @@ class TenantManager:
                             self.db_manager.quotas_table.c.tenant_id == tenant_id
                         )
                     ).fetchall()
-                    
+
                     for result in results:
                         quota = ResourceQuota(
                             tenant_id=result.tenant_id,
@@ -1018,9 +1047,10 @@ class TenantManager:
                         quotas.append(quota)
             else:
                 cursor = self.db_manager.master_conn.cursor()
-                cursor.execute("SELECT * FROM resource_quotas WHERE tenant_id = ?", (tenant_id,))
+                cursor.execute(
+                    "SELECT * FROM resource_quotas WHERE tenant_id = ?", (tenant_id,))
                 results = cursor.fetchall()
-                
+
                 for result in results:
                     quota = ResourceQuota(
                         tenant_id=result[1],
@@ -1032,44 +1062,45 @@ class TenantManager:
                         updated_at=datetime.fromisoformat(result[7])
                     )
                     quotas.append(quota)
-            
+
             return quotas
-            
+
         except Exception as e:
             self.logger.error(f"Error getting tenant quotas: {e}")
             return []
-    
-    def check_resource_quota(self, tenant_id: str, resource_type: ResourceType, 
-                           requested_amount: int = 1) -> bool:
+
+    def check_resource_quota(self, tenant_id: str, resource_type: ResourceType,
+                             requested_amount: int = 1) -> bool:
         """Check if tenant has enough quota for resource"""
         try:
             quotas = self.get_tenant_quotas(tenant_id)
-            
+
             for quota in quotas:
                 if quota.resource_type == resource_type:
                     available = quota.limit - quota.used
                     return available >= requested_amount
-            
+
             return False
-            
+
         except Exception as e:
             self.logger.error(f"Error checking resource quota: {e}")
             return False
-    
-    def consume_resource(self, tenant_id: str, resource_type: ResourceType, 
-                        amount: int = 1) -> bool:
+
+    def consume_resource(self, tenant_id: str, resource_type: ResourceType,
+                         amount: int = 1) -> bool:
         """Consume resource quota"""
         try:
             if not self.check_resource_quota(tenant_id, resource_type, amount):
                 return False
-            
+
             # Update quota usage
             if HAS_SQLALCHEMY:
                 with self.db_manager.SessionLocal() as session:
                     session.execute(
                         self.db_manager.quotas_table.update().where(
                             (self.db_manager.quotas_table.c.tenant_id == tenant_id) &
-                            (self.db_manager.quotas_table.c.resource_type == resource_type.value)
+                            (self.db_manager.quotas_table.c.resource_type ==
+                             resource_type.value)
                         ).values(
                             used_value=self.db_manager.quotas_table.c.used_value + amount,
                             updated_at=datetime.now()
@@ -1084,18 +1115,18 @@ class TenantManager:
                     WHERE tenant_id = ? AND resource_type = ?
                 """, (amount, datetime.now().isoformat(), tenant_id, resource_type.value))
                 self.db_manager.master_conn.commit()
-            
+
             # Track usage
             self.track_usage(tenant_id, resource_type, amount)
-            
+
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Error consuming resource: {e}")
             return False
-    
-    def track_usage(self, tenant_id: str, resource_type: ResourceType, 
-                   amount: int, metadata: Dict[str, Any] = None):
+
+    def track_usage(self, tenant_id: str, resource_type: ResourceType,
+                    amount: int, metadata: Dict[str, Any] = None):
         """Track resource usage"""
         try:
             usage = TenantUsage(
@@ -1105,9 +1136,9 @@ class TenantManager:
                 timestamp=datetime.now(),
                 metadata=metadata or {}
             )
-            
+
             usage_id = str(uuid.uuid4())
-            
+
             if HAS_SQLALCHEMY:
                 with self.db_manager.SessionLocal() as session:
                     session.execute(
@@ -1132,19 +1163,21 @@ class TenantManager:
                     json.dumps(usage.metadata)
                 ))
                 self.db_manager.master_conn.commit()
-                
+
         except Exception as e:
             self.logger.error(f"Error tracking usage: {e}")
+
 
 class MultiTenantMiddleware:
     """
     Middleware for tenant-aware request handling
     """
-    
+
     def __init__(self, tenant_manager: TenantManager):
         self.tenant_manager = tenant_manager
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-    
+        self.logger = logging.getLogger(
+            f"{__name__}.{self.__class__.__name__}")
+
     def get_tenant_from_request(self, request) -> Optional[Tenant]:
         """Extract tenant from request"""
         try:
@@ -1159,58 +1192,59 @@ class MultiTenantMiddleware:
                     tenant = self.tenant_manager.get_tenant_by_domain(host)
                     if tenant:
                         return tenant
-            
+
             # Try to get tenant from header
             tenant_id = request.headers.get('X-Tenant-ID')
             if tenant_id:
                 return self.tenant_manager.get_tenant(tenant_id)
-            
+
             # Try to get tenant from path
             path = request.path
             if path.startswith('/tenant/'):
                 tenant_id = path.split('/')[2]
                 return self.tenant_manager.get_tenant(tenant_id)
-            
+
             return None
-            
+
         except Exception as e:
             self.logger.error(f"Error getting tenant from request: {e}")
             return None
-    
+
     def process_request(self, request, handler):
         """Process request with tenant context"""
         try:
             tenant = self.get_tenant_from_request(request)
             if not tenant:
                 return {"error": "Tenant not found"}, 404
-            
+
             if tenant.status != TenantStatus.ACTIVE:
                 return {"error": "Tenant not active"}, 403
-            
+
             # Add tenant to request context
             request.tenant = tenant
-            
+
             # Process request
             response = handler(request)
-            
+
             return response
-            
+
         except Exception as e:
             self.logger.error(f"Error processing request: {e}")
             return {"error": "Internal server error"}, 500
+
 
 def main():
     """Main function for testing multi-tenant system"""
     try:
         print("Multi-Tenant Architecture System - Test Mode")
         print("=" * 50)
-        
+
         # Initialize database manager
         db_manager = DatabaseManager()
-        
+
         # Initialize tenant manager
         tenant_manager = TenantManager(db_manager)
-        
+
         # Test tenant creation
         print("Testing tenant creation...")
         tenant = tenant_manager.create_tenant(
@@ -1220,41 +1254,43 @@ def main():
             owner_email="admin@test-org.com",
             plan=SubscriptionPlan.PROFESSIONAL
         )
-        
+
         if tenant:
             print(f"Created tenant: {tenant.name} ({tenant.id})")
-            
+
             # Test tenant retrieval
             retrieved_tenant = tenant_manager.get_tenant(tenant.id)
             if retrieved_tenant:
                 print(f"Retrieved tenant: {retrieved_tenant.name}")
-            
+
             # Test quota checking
             can_create_user = tenant_manager.check_resource_quota(
                 tenant.id, ResourceType.USERS, 1
             )
             print(f"Can create user: {can_create_user}")
-            
+
             # Test resource consumption
             if can_create_user:
                 consumed = tenant_manager.consume_resource(
                     tenant.id, ResourceType.USERS, 1
                 )
                 print(f"Consumed user quota: {consumed}")
-            
+
             # Test quota status
             quotas = tenant_manager.get_tenant_quotas(tenant.id)
             for quota in quotas:
-                print(f"Quota: {quota.resource_type.value} - {quota.used}/{quota.limit}")
-            
+                print(
+                    f"Quota: {quota.resource_type.value} - {quota.used}/{quota.limit}")
+
         else:
             print("Failed to create tenant")
-        
+
         print("\nMulti-tenant system test completed!")
-        
+
     except Exception as e:
         print(f"Error in multi-tenant system: {e}")
         logger.error(f"Multi-tenant system error: {e}")
+
 
 if __name__ == "__main__":
     main()

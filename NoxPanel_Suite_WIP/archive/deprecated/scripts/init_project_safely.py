@@ -21,18 +21,18 @@ from typing import Dict, List, Optional
 
 class ProjectSafetyInitializer:
     """Initializes U.A.C.M.S. safety and compliance system for projects"""
-    
+
     def __init__(self, project_root: str = None):
         self.project_root = Path(project_root or os.getcwd())
         self.scripts_dir = self.project_root / "scripts"
         self.docs_dir = self.project_root / "docs"
         self.config_dir = self.project_root / "config"
         self.pre_commit_dir = self.project_root / ".pre-commit"
-        
+
         # Create directories if they don't exist
         for directory in [self.scripts_dir, self.docs_dir, self.config_dir]:
             directory.mkdir(parents=True, exist_ok=True)
-    
+
     def create_project_state(self) -> Dict:
         """Create initial project state configuration"""
         project_state = {
@@ -103,9 +103,9 @@ class ProjectSafetyInitializer:
                 "ai_synchronization": True
             }
         }
-        
+
         return project_state
-    
+
     def create_merge_plan(self) -> str:
         """Create merge proposal plan document"""
         merge_plan = f"""# U.A.C.M.S. Merge Proposal Plan
@@ -151,9 +151,9 @@ class ProjectSafetyInitializer:
 **This plan is the source of truth for all architectural decisions.**
 **All AI agents must validate changes against this document.**
 """
-        
+
         return merge_plan
-    
+
     def create_phase_lock_readme(self) -> str:
         """Create phase lock documentation"""
         readme = f"""# 🔒 U.A.C.M.S. PHASE LOCK SYSTEM
@@ -220,9 +220,9 @@ Phase 5: Audit 5 → Enterprise Features
 **This document is automatically updated by U.A.C.M.S.**  
 **Last Updated**: {datetime.now().isoformat()}
 """
-        
+
         return readme
-    
+
     def create_pre_commit_hook(self) -> str:
         """Create pre-commit hook for merge plan validation"""
         hook_script = """#!/usr/bin/env python3
@@ -267,9 +267,9 @@ def main():
 if __name__ == "__main__":
     sys.exit(main())
 """
-        
+
         return hook_script
-    
+
     def create_audit_1_script(self) -> str:
         """Create Audit 1 validation script"""
         audit_script = """#!/usr/bin/env python3
@@ -321,14 +321,14 @@ def main():
 if __name__ == "__main__":
     sys.exit(main())
 """
-        
+
         return audit_script
-    
+
     def initialize_project_safely(self) -> Dict:
         """Initialize complete U.A.C.M.S. system"""
         print("🛠️  U.A.C.M.S. Project Safety Initializer")
         print("=" * 50)
-        
+
         initialization_report = {
             "timestamp": datetime.now().isoformat(),
             "project_root": str(self.project_root),
@@ -336,32 +336,35 @@ if __name__ == "__main__":
             "components_created": [],
             "errors": []
         }
-        
+
         try:
             # Create project state
             project_state = self.create_project_state()
             project_state_file = self.project_root / "project_state.json"
             with open(project_state_file, 'w') as f:
                 json.dump(project_state, f, indent=2)
-            initialization_report["components_created"].append("project_state.json")
+            initialization_report["components_created"].append(
+                "project_state.json")
             print("✅ Project state configuration created")
-            
+
             # Create merge plan
             merge_plan = self.create_merge_plan()
             merge_plan_file = self.docs_dir / "merge_plan.md"
             with open(merge_plan_file, 'w') as f:
                 f.write(merge_plan)
-            initialization_report["components_created"].append("docs/merge_plan.md")
+            initialization_report["components_created"].append(
+                "docs/merge_plan.md")
             print("✅ Merge proposal plan created")
-            
+
             # Create phase lock README
             phase_lock_readme = self.create_phase_lock_readme()
             readme_file = self.project_root / "README_PHASE_LOCK.md"
             with open(readme_file, 'w') as f:
                 f.write(phase_lock_readme)
-            initialization_report["components_created"].append("README_PHASE_LOCK.md")
+            initialization_report["components_created"].append(
+                "README_PHASE_LOCK.md")
             print("✅ Phase lock documentation created")
-            
+
             # Create pre-commit hook
             hook_script = self.create_pre_commit_hook()
             self.pre_commit_dir.mkdir(parents=True, exist_ok=True)
@@ -369,56 +372,60 @@ if __name__ == "__main__":
             with open(hook_file, 'w') as f:
                 f.write(hook_script)
             hook_file.chmod(0o755)  # Make executable
-            initialization_report["components_created"].append(".pre-commit/hook_check_merge.py")
+            initialization_report["components_created"].append(
+                ".pre-commit/hook_check_merge.py")
             print("✅ Pre-commit hook created")
-            
+
             # Create audit 1 script
             audit_1_script = self.create_audit_1_script()
             audit_1_file = self.scripts_dir / "audit_1.py"
             with open(audit_1_file, 'w') as f:
                 f.write(audit_1_script)
             audit_1_file.chmod(0o755)  # Make executable
-            initialization_report["components_created"].append("scripts/audit_1.py")
+            initialization_report["components_created"].append(
+                "scripts/audit_1.py")
             print("✅ Audit 1 script created")
-            
+
             # Copy main U.A.C.M.S. scripts if they don't exist
             uacms_scripts = [
                 "enforce_structure.py",
-                "audit_system.py", 
+                "audit_system.py",
                 "update_memory.py"
             ]
-            
+
             for script_name in uacms_scripts:
                 script_file = self.scripts_dir / script_name
                 if not script_file.exists():
                     # Create placeholder - in real implementation, these would be copied
-                    script_file.write_text(f"# U.A.C.M.S. {script_name}\n# This would be the actual script content\n")
-                    initialization_report["components_created"].append(f"scripts/{script_name}")
-            
+                    script_file.write_text(
+                        f"# U.A.C.M.S. {script_name}\n# This would be the actual script content\n")
+                    initialization_report["components_created"].append(
+                        f"scripts/{script_name}")
+
             print("✅ U.A.C.M.S. scripts verified")
-            
+
             initialization_report["initialization_status"] = "COMPLETED"
             print("\n🎯 U.A.C.M.S. INITIALIZATION: COMPLETED")
-            
+
         except Exception as e:
             initialization_report["initialization_status"] = "FAILED"
             initialization_report["errors"].append(str(e))
             print(f"❌ Initialization failed: {e}")
-        
+
         # Save initialization report
         report_file = self.project_root / "uacms_initialization_report.json"
         with open(report_file, 'w') as f:
             json.dump(initialization_report, f, indent=2)
-        
+
         print(f"📊 Initialization report saved to: {report_file}")
-        
+
         return initialization_report
-    
+
     def display_initialization_status(self):
         """Display current initialization status"""
         print("📋 U.A.C.M.S. Initialization Status")
         print("=" * 50)
-        
+
         # Check for key files
         key_files = [
             "project_state.json",
@@ -428,7 +435,7 @@ if __name__ == "__main__":
             "scripts/audit_system.py",
             "scripts/update_memory.py"
         ]
-        
+
         print("Component Status:")
         for file_path in key_files:
             full_path = self.project_root / file_path
@@ -436,37 +443,42 @@ if __name__ == "__main__":
                 print(f"  ✅ {file_path}")
             else:
                 print(f"  ❌ {file_path}")
-        
+
         # Check project state
         project_state_file = self.project_root / "project_state.json"
         if project_state_file.exists():
             try:
                 with open(project_state_file, 'r') as f:
                     state = json.load(f)
-                
+
                 print(f"\nProject State:")
                 print(f"  System: {state.get('system_name', 'Unknown')}")
                 print(f"  Version: {state.get('version', 'Unknown')}")
                 print(f"  Phase: {state.get('current_phase', 'Unknown')}")
-                print(f"  Compliance: {state.get('architectural_compliance', {}).get('compliance', 0)}%")
-                
+                print(
+                    f"  Compliance: {state.get('architectural_compliance', {}).get('compliance', 0)}%")
+
             except Exception as e:
                 print(f"  ❌ Error reading project state: {e}")
+
 
 def main():
     """Main entry point"""
     import argparse
-    
-    parser = argparse.ArgumentParser(description="U.A.C.M.S. Project Safety Initializer")
+
+    parser = argparse.ArgumentParser(
+        description="U.A.C.M.S. Project Safety Initializer")
     parser.add_argument("--project-root", help="Project root directory")
-    parser.add_argument("--init", action="store_true", help="Initialize U.A.C.M.S. system")
-    parser.add_argument("--status", action="store_true", help="Show initialization status")
-    
+    parser.add_argument("--init", action="store_true",
+                        help="Initialize U.A.C.M.S. system")
+    parser.add_argument("--status", action="store_true",
+                        help="Show initialization status")
+
     args = parser.parse_args()
-    
+
     # Create initializer
     initializer = ProjectSafetyInitializer(args.project_root)
-    
+
     if args.init:
         report = initializer.initialize_project_safely()
         sys.exit(0 if report["initialization_status"] == "COMPLETED" else 1)
@@ -474,6 +486,7 @@ def main():
         initializer.display_initialization_status()
     else:
         initializer.display_initialization_status()
+
 
 if __name__ == "__main__":
     main()

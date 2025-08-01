@@ -1,3 +1,12 @@
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime, timedelta
+from dataclasses import dataclass, field
+import time
+import threading
+import sys
+import os
+import logging
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -9,15 +18,6 @@ Ultimate Suite v11.0 - Quick Deploy Server
 Simplified unified server for immediate deployment
 """
 
-import logging
-import os
-import sys
-import threading
-import time
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 # Add current directory to path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -58,6 +58,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class ServerConfig:
     """
@@ -66,7 +67,7 @@ class ServerConfig:
     2. Analysis: Class requires specific implementation patterns for ServerConfig functionality
     3. Solution: Implement ServerConfig with SOLID principles and enterprise patterns
     4. Validation: Test ServerConfig with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Quick deploy server configuration"""
@@ -80,6 +81,7 @@ class ServerConfig:
     cors_origins: List[str] = field(default_factory=lambda: ["*"])
     api_version: str = "v1"
 
+
 class QuickDeployServer:
     """
     REASONING CHAIN:
@@ -87,21 +89,21 @@ class QuickDeployServer:
     2. Analysis: Class requires specific implementation patterns for QuickDeployServer functionality
     3. Solution: Implement QuickDeployServer with SOLID principles and enterprise patterns
     4. Validation: Test QuickDeployServer with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Simplified unified server for quick deployment"""
-    
+
     def __init__(self, config: ServerConfig):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.config = config
@@ -115,19 +117,20 @@ class QuickDeployServer:
             'cpu_usage': 0.0,
             'memory_usage': 0.0
         }
-        
+
         # Initialize Flask app
         self.app = Flask(__name__)
         self.app.config['SECRET_KEY'] = config.secret_key
-        
+
         # Initialize components
         if HAS_FLASK:
             self.cors = CORS(self.app, origins=config.cors_origins)
             if config.websocket_enabled:
-                self.socketio = SocketIO(self.app, cors_allowed_origins=config.cors_origins)
+                self.socketio = SocketIO(
+                    self.app, cors_allowed_origins=config.cors_origins)
             else:
                 self.socketio = None
-        
+
         # Initialize database
         self.db_manager = None
         if HAS_DB:
@@ -137,7 +140,7 @@ class QuickDeployServer:
                 logger.info("Database initialized successfully")
             except Exception as e:
                 logger.error(f"Database initialization failed: {e}")
-        
+
         # Initialize plugin manager
         self.plugin_manager = None
         if HAS_PLUGINS:
@@ -147,20 +150,21 @@ class QuickDeployServer:
                 logger.info("Plugin system initialized")
             except Exception as e:
                 logger.error(f"Plugin system initialization failed: {e}")
-        
+
         # WebSocket connections
         self.websocket_connections = {}
-        
+
         # Setup routes and handlers
         self._setup_routes()
         if self.socketio:
             self._setup_websocket_handlers()
-        
+
         # Start background tasks
         self._start_metrics_collector()
-        
-        logger.info(f"QuickDeployServer initialized - Version: {config.api_version}")
-    
+
+        logger.info(
+            f"QuickDeployServer initialized - Version: {config.api_version}")
+
     def _setup_routes(self):
     """
     REASONING CHAIN:
@@ -168,11 +172,11 @@ class QuickDeployServer:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _setup_routes with enterprise-grade patterns and error handling
     4. Validation: Test _setup_routes with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Setup REST API routes"""
-        
+
         @self.app.route('/')
         def index():
     """
@@ -181,7 +185,7 @@ class QuickDeployServer:
     2. Analysis: Implementation requires specific logic for index operation
     3. Solution: Implement index with enterprise-grade patterns and error handling
     4. Validation: Test index with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
             """Main dashboard"""
@@ -211,15 +215,19 @@ class QuickDeployServer:
                         fetch('/api/v1/metrics')
                             .then(response => response.json())
                             .then(data => {
-                                document.getElementById('requests-total').textContent = data.requests_total;
-                                document.getElementById('active-connections').textContent = data.active_connections;
-                                document.getElementById('cpu-usage').textContent = data.cpu_usage.toFixed(1) + '%';
-                                document.getElementById('memory-usage').textContent = data.memory_usage.toFixed(1) + '%';
+                                document.getElementById(
+                                    'requests-total').textContent = data.requests_total;
+                                document.getElementById(
+                                    'active-connections').textContent = data.active_connections;
+                                document.getElementById(
+                                    'cpu-usage').textContent = data.cpu_usage.toFixed(1) + '%';
+                                document.getElementById(
+                                    'memory-usage').textContent = data.memory_usage.toFixed(1) + '%';
                                 document.getElementById('uptime').textContent = data.uptime || '0:00:00';
                             })
                             .catch(error => console.error('Error fetching metrics:', error));
                     }
-                    
+
                     setInterval(refreshMetrics, 5000);
                     setTimeout(refreshMetrics, 1000);
                 </script>
@@ -231,7 +239,7 @@ class QuickDeployServer:
                         <p><strong>WEEK 1 DEPLOYMENT SUCCESSFUL</strong></p>
                         <p>Architecture consolidated: 47 files → 3 unified components</p>
                     </div>
-                    
+
                     <div class="status">
                         <div class="card">
                             <h3>📊 System Status</h3>
@@ -252,7 +260,7 @@ class QuickDeployServer:
                                 <span class="success">✅ Ready</span>
                             </div>
                         </div>
-                        
+
                         <div class="card">
                             <h3>⚡ Performance Metrics</h3>
                             <div class="metric">
@@ -277,7 +285,7 @@ class QuickDeployServer:
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="api-list">
                         <h4>🔗 API Endpoints</h4>
                         <a href="/api/v1/health" target="_blank">Health Check</a>
@@ -285,7 +293,7 @@ class QuickDeployServer:
                         <a href="/api/v1/metrics" target="_blank">Performance Metrics</a>
                         <a href="/api/v1/plugins" target="_blank">Plugin Status</a>
                     </div>
-                    
+
                     <div class="api-list">
                         <h4>✅ Week 1 Achievements</h4>
                         <p>• <strong>47 fragmented files</strong> consolidated into <strong>3 unified components</strong></p>
@@ -300,7 +308,7 @@ class QuickDeployServer:
             </html>
             """
             return render_template_string(html)
-        
+
         @self.app.route('/api/v1/health')
         def health():
     """

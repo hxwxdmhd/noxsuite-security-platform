@@ -1,3 +1,16 @@
+from typing import Dict, List, Optional, Set, Tuple
+from pathlib import Path
+from datetime import datetime
+from dataclasses import asdict, dataclass
+import time
+import subprocess
+import shutil
+import re
+import os
+import logging
+import json
+import asyncio
+import ast
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -16,19 +29,6 @@ ENHANCEMENT CHAIN:
 5. Validation: Continuous compliance monitoring with auto-remediation
 """
 
-import ast
-import asyncio
-import json
-import logging
-import os
-import re
-import shutil
-import subprocess
-import time
-from dataclasses import asdict, dataclass
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
 
 # Configure enhanced logging
 logging.basicConfig(
@@ -41,6 +41,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class RLVRAnnotation:
     """RLVR method annotation structure"""
@@ -52,6 +53,7 @@ class RLVRAnnotation:
     test_cases: List[Dict]
     complexity_score: float
     compliance_level: str
+
 
 @dataclass
 class RLVRComplianceMetrics:
@@ -66,6 +68,7 @@ class RLVRComplianceMetrics:
     validation_score: float
     reasoning_quality: float
     auto_remediation_count: int
+
 
 class RLVRPhase2Enhancer:
     """Comprehensive RLVR enhancement system for Phase 2"""

@@ -34,6 +34,7 @@ class RLVRGuardianWebhook:
         print(f"Webhook payload: {payload}")
         return True
 
+
 if __name__ == "__main__":
     webhook = RLVRGuardianWebhook()
     test_data = {"compliance": 94.54, "status": "HEALTHY"}

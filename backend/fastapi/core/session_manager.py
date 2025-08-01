@@ -115,7 +115,7 @@ class EnhancedSessionManager:
 
         # Remove oldest sessions if exceeding limit
         if len(user_sessions) >= self.max_sessions_per_user:
-            sessions_to_remove = user_sessions[self.max_sessions_per_user - 1 :]
+            sessions_to_remove = user_sessions[self.max_sessions_per_user - 1:]
             for session_id, _ in sessions_to_remove:
                 del self.sessions[session_id]
 

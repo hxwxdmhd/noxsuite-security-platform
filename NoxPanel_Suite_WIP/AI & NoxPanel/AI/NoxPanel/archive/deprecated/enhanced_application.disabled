@@ -10,6 +10,26 @@ Main Flask application with all enhanced features and modules
 ✅ Complete platform coverage
 """
 
+from webpanel.vm_routes import vm_bp
+from webpanel.updates_routes import updates_bp
+from webpanel.setup_routes import setup_bp
+from webpanel.security_routes import security_bp
+from webpanel.scripts_routes import scripts_bp
+from webpanel.proxy_routes import proxy_bp
+from webpanel.plugin_loader import plugin_bp
+from webpanel.platforms_routes import platforms_bp
+from webpanel.pi_routes import pi_bp
+from webpanel.notifications_routes import notifications_bp
+from webpanel.models import models_bp
+from webpanel.media_routes import media_bp
+from webpanel.knowledge_routes import knowledge_bp
+from webpanel.job_scheduler import scheduler_bp
+from webpanel.chatbot import chatbot_bp
+from webpanel.backups_routes import backups_bp
+from webpanel.api_docs_routes import api_docs_bp
+from webpanel.analytics_routes import analytics_bp
+from webpanel.ai_monitor_api import ai_monitor_bp
+from webpanel.admin_blueprint import admin_bp
 import json
 import logging
 import sys
@@ -22,30 +42,10 @@ from flask import Flask, jsonify, redirect, render_template, request, url_for
 # Add webpanel to path
 sys.path.insert(0, str(Path(__file__).parent / "webpanel"))
 
-from webpanel.admin_blueprint import admin_bp
-from webpanel.ai_monitor_api import ai_monitor_bp
-from webpanel.analytics_routes import analytics_bp
-from webpanel.api_docs_routes import api_docs_bp
-from webpanel.backups_routes import backups_bp
-from webpanel.chatbot import chatbot_bp
-from webpanel.job_scheduler import scheduler_bp
 
 # Import all blueprints
-from webpanel.knowledge_routes import knowledge_bp
-from webpanel.media_routes import media_bp
-from webpanel.models import models_bp
-from webpanel.notifications_routes import notifications_bp
-from webpanel.pi_routes import pi_bp
-from webpanel.platforms_routes import platforms_bp
-from webpanel.plugin_loader import plugin_bp
-from webpanel.proxy_routes import proxy_bp
-from webpanel.scripts_routes import scripts_bp
-from webpanel.security_routes import security_bp
-from webpanel.setup_routes import setup_bp
-from webpanel.updates_routes import updates_bp
 
 # Import newly generated blueprints
-from webpanel.vm_routes import vm_bp
 
 # Configure logging
 logging.basicConfig(
@@ -54,28 +54,29 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class NoxPanelEnhancedApp:
     """Enhanced NoxPanel Application with all features"""
-    
+
     def __init__(self):
         self.app = Flask(__name__,
-                        template_folder='templates',
-                        static_folder='static')
-        
+                         template_folder='templates',
+                         static_folder='static')
+
         # Configure app
         self.app.secret_key = 'noxpanel-enhanced-v6-key'
         self.app.config['JSON_SORT_KEYS'] = False
-        
+
         # Initialize
         self._setup_routes()
         self._register_blueprints()
         self._setup_error_handlers()
-        
+
         logger.info("🚀 NoxPanel Enhanced App v6.0 initialized")
 
     def _setup_routes(self):
         """Setup main application routes"""
-        
+
         @self.app.route('/')
         def index():
             """Enhanced main dashboard"""
@@ -84,7 +85,7 @@ class NoxPanelEnhancedApp:
                 cpu_percent = psutil.cpu_percent()
                 memory = psutil.virtual_memory()
                 disk = psutil.disk_usage('/')
-                
+
                 # Platform status
                 platforms = {
                     'heimnetz': {'status': 'healthy', 'port': 5100},
@@ -93,7 +94,7 @@ class NoxPanelEnhancedApp:
                     'security_hub': {'status': 'healthy', 'port': None},
                     'system_tools': {'status': 'healthy', 'port': None}
                 }
-                
+
                 stats = {
                     'cpu_percent': cpu_percent,
                     'memory_percent': memory.percent,
@@ -103,16 +104,16 @@ class NoxPanelEnhancedApp:
                     'total_routes': len([rule.rule for rule in self.app.url_map.iter_rules()]),
                     'features_available': 13
                 }
-                
-                return render_template('enhanced_gateway.html', 
-                                     title="NoxPanel Gateway v6.0",
-                                     stats=stats)
+
+                return render_template('enhanced_gateway.html',
+                                       title="NoxPanel Gateway v6.0",
+                                       stats=stats)
             except Exception as e:
                 logger.error(f"Dashboard error: {e}")
-                return render_template('enhanced_gateway.html', 
-                                     title="NoxPanel Gateway v6.0",
-                                     stats={},
-                                     error=str(e))
+                return render_template('enhanced_gateway.html',
+                                       title="NoxPanel Gateway v6.0",
+                                       stats={},
+                                       error=str(e))
 
         @self.app.route('/api/health')
         def health_check():
@@ -242,7 +243,7 @@ class NoxPanelEnhancedApp:
             (chatbot_bp, "AI Chatbot"),
             (models_bp, "AI Models"),
             (ai_monitor_bp, "AI Monitor"),
-            
+
             # Enhanced feature blueprints
             (vm_bp, "VM Manager"),
             (proxy_bp, "SSL/Proxy Manager"),
@@ -258,7 +259,7 @@ class NoxPanelEnhancedApp:
             (notifications_bp, "Notifications Center"),
             (api_docs_bp, "API Documentation")
         ]
-        
+
         registered_count = 0
         for blueprint, description in blueprints:
             try:
@@ -267,16 +268,17 @@ class NoxPanelEnhancedApp:
                 registered_count += 1
             except Exception as e:
                 logger.error(f"❌ Failed to register {description}: {e}")
-        
-        logger.info(f"🎉 Successfully registered {registered_count}/{len(blueprints)} blueprints")
+
+        logger.info(
+            f"🎉 Successfully registered {registered_count}/{len(blueprints)} blueprints")
 
     def _setup_error_handlers(self):
         """Setup error handlers"""
-        
+
         @self.app.errorhandler(404)
         def not_found(error):
             return render_template('errors/404.html'), 404
-        
+
         @self.app.errorhandler(500)
         def internal_error(error):
             return render_template('errors/500.html'), 500
@@ -295,15 +297,19 @@ class NoxPanelEnhancedApp:
         """Run the enhanced application"""
         logger.info(f"🚀 Starting NoxPanel Enhanced v6.0 on {host}:{port}")
         logger.info(f"📊 {len(self.app.blueprints)} blueprints registered")
-        logger.info(f"🔗 {len([rule.rule for rule in self.app.url_map.iter_rules()])} routes available")
-        
+        logger.info(
+            f"🔗 {len([rule.rule for rule in self.app.url_map.iter_rules()])} routes available")
+
         self.app.run(host=host, port=port, debug=debug)
 
 # Create enhanced dashboard template
+
+
 def create_enhanced_dashboard_template():
     """Create the enhanced dashboard template"""
-    template_path = Path(__file__).parent / "templates" / "enhanced_dashboard.html"
-    
+    template_path = Path(__file__).parent / "templates" / \
+        "enhanced_dashboard.html"
+
     template_content = '''{% extends "base.html" %}
 
 {% block title %}NoxPanel Enhanced v6.0{% endblock %}
@@ -657,7 +663,7 @@ document.querySelectorAll('.feature-card a').forEach(link => {
 });
 </script>
 {% endblock %}'''
-    
+
     try:
         template_path.parent.mkdir(parents=True, exist_ok=True)
         template_path.write_text(template_content, encoding='utf-8')
@@ -665,23 +671,25 @@ document.querySelectorAll('.feature-card a').forEach(link => {
     except Exception as e:
         logger.error(f"Failed to create dashboard template: {e}")
 
+
 def main():
     """Main execution function"""
     print("🎯 NoxPanel Enhanced Application v6.0")
     print("=" * 50)
-    
+
     # Create enhanced dashboard template
     create_enhanced_dashboard_template()
-    
+
     # Initialize and run app
     app = NoxPanelEnhancedApp()
-    
+
     try:
         app.run(host='127.0.0.1', port=5004, debug=False)
     except KeyboardInterrupt:
         logger.info("🛑 Application stopped by user")
     except Exception as e:
         logger.error(f"❌ Application error: {e}")
+
 
 if __name__ == "__main__":
     main()

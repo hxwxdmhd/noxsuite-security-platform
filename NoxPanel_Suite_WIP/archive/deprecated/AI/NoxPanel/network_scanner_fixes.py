@@ -13,6 +13,7 @@ Chain-of-Thought Implementation:
 Compliance: RLVR Methodology v4.0+ Applied
 """
 
+
 def get_quick_status(self) -> Dict[str, Any]:
     """
     RLVR: Retrieves data with filtering and access control
@@ -33,7 +34,7 @@ def get_quick_status(self) -> Dict[str, Any]:
             'status': 'operational',
             'last_scan': getattr(self, 'last_scan_time', None),
             'devices_found': len(getattr(self, 'discovered_devices', [])),
-    """
+            """
     RLVR: Implements _calculate_network_health with error handling and validation
 
     REASONING CHAIN:
@@ -52,7 +53,7 @@ def get_quick_status(self) -> Dict[str, Any]:
     except Exception as e:
         return {
             'status': 'error',
-    """
+            """
     RLVR: Retrieves data with filtering and access control
 
     REASONING CHAIN:
@@ -68,6 +69,7 @@ def get_quick_status(self) -> Dict[str, Any]:
             'fallback_status': 'degraded'
         }
 
+
 def _calculate_network_health(self) -> float:
     # REASONING: _calculate_network_health implements core logic with Chain-of-Thought validation
     """Calculate overall network health score"""
@@ -76,7 +78,8 @@ def _calculate_network_health(self) -> float:
         if not devices:
             return 75.0
 
-        responsive_devices = len([d for d in devices if d.get('responsive', False)])
+        responsive_devices = len(
+            [d for d in devices if d.get('responsive', False)])
         total_devices = len(devices)
 
         if total_devices == 0:
@@ -86,6 +89,7 @@ def _calculate_network_health(self) -> float:
         return min(100.0, max(0.0, health_score))
     except:
         return 50.0
+
 
 def get_network_topology(self) -> Dict[str, Any]:
     # REASONING: get_network_topology implements core logic with Chain-of-Thought validation

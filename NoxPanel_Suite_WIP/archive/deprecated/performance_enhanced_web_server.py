@@ -11,13 +11,13 @@ adaptive caching validation, and LSP behavior tracki        @self.app.route('/ap
                 # Load agent status if available
                 status_file = PROJECT_ROOT / 'agent_collaboration_status.json'
                 config_file = PROJECT_ROOT / 'agent_collaboration_config.json'
-                
+
                 if status_file.exists() and config_file.exists():
                     with open(status_file, 'r') as f:
                         status_data = json.load(f)
                     with open(config_file, 'r') as f:
                         config_data = json.load(f)
-                    
+
                     return jsonify({
                         'collaboration_active': config_data.get('collaboration_active', True),
                         'supermaven_status': 'active',
@@ -35,18 +35,18 @@ adaptive caching validation, and LSP behavior tracki        @self.app.route('/ap
                         'status': 'not_configured',
                         'message': 'Multi-agent collaboration not yet activated'
                     })
-                    
+
             except Exception as e:
                 return jsonify({'error': str(e), 'status': 'error'})
-        
+
         @self.app.route('/api/launch/workspace/<workspace_name>')
         def launch_workspace(workspace_name):
             """API endpoint to get workspace launch information"""
             workspace_file = PROJECT_ROOT / f"{workspace_name}.code-workspace"
-            
+
             if not workspace_file.exists():
                 return jsonify({'error': f'Workspace {workspace_name} not found'}), 404
-                
+
             return jsonify({
                 'workspace': workspace_name,
                 'file_path': str(workspace_file),
@@ -95,24 +95,27 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(PROJECT_ROOT / 'data' / 'logs' / 'performance_web.log'),
+        logging.FileHandler(PROJECT_ROOT / 'data' /
+                            'logs' / 'performance_web.log'),
         logging.StreamHandler()
     ]
 )
 
 logger = logging.getLogger(__name__)
 
+
 class PerformanceEnhancedWebServer:
     """Enhanced web server with performance monitoring integration"""
-    
+
     def __init__(self, host='0.0.0.0', port=5000):
         self.host = host
         self.port = port
         self.app = Flask(__name__)
         self.app.secret_key = 'noxpanel_optimized_development'
-        
+
         # Performance monitoring
-        self.session_manager = DevelopmentSessionManager() if DevelopmentSessionManager else None
+        self.session_manager = DevelopmentSessionManager(
+        ) if DevelopmentSessionManager else None
         self.performance_data = {
             'start_time': datetime.now(),
             'request_count': 0,
@@ -121,44 +124,45 @@ class PerformanceEnhancedWebServer:
             'cache_metrics': {},
             'fritzwatcher_status': 'unknown'
         }
-        
+
         # Background monitoring
         self.monitoring_thread = None
         self.monitoring_active = True
-        
+
         # Setup routes
         self._setup_routes()
-        
+
         # Start background monitoring
         self._start_background_monitoring()
-        
+
     def _setup_routes(self):
         """Setup Flask routes with performance monitoring"""
-        
+
         @self.app.before_request
         def before_request():
             """Track request metrics"""
             self.performance_data['request_count'] += 1
             request.start_time = time.time()
-            
+
         @self.app.after_request
         def after_request(response):
             """Log response metrics"""
             if hasattr(request, 'start_time'):
                 response_time = time.time() - request.start_time
-                logger.debug(f"Request to {request.path} took {response_time:.3f}s")
+                logger.debug(
+                    f"Request to {request.path} took {response_time:.3f}s")
             return response
-        
+
         @self.app.route('/')
         def dashboard():
             """Main performance dashboard"""
             return render_template_string(self._get_dashboard_template())
-            
+
         @self.app.route('/api/health')
         def health_check():
             """Health check with performance metrics"""
             uptime = datetime.now() - self.performance_data['start_time']
-            
+
             return jsonify({
                 'status': 'healthy',
                 'uptime': str(uptime),
@@ -169,42 +173,44 @@ class PerformanceEnhancedWebServer:
                 'adaptive_caching': 'operational',
                 'auto_healing': 'active'
             })
-            
+
         @self.app.route('/api/performance/workspaces')
         def workspace_performance():
             """Get workspace performance metrics"""
             if not self.session_manager:
                 return jsonify({'error': 'Performance monitoring not available'})
-                
-            workspaces = ['NoxPanel-Core', 'NoxPanel-AI', 'NoxPanel-Plugins', 'NoxPanel-DevOps']
+
+            workspaces = ['NoxPanel-Core', 'NoxPanel-AI',
+                'NoxPanel-Plugins', 'NoxPanel-DevOps']
             workspace_metrics = {}
-            
+
             for workspace in workspaces:
-                metrics = self.session_manager.validate_workspace_performance(workspace)
+                metrics = self.session_manager.validate_workspace_performance(
+                    workspace)
                 workspace_metrics[workspace] = {
                     'file_count': metrics.get('file_count', 0),
                     'performance_score': metrics.get('performance_score', 0),
                     'lsp_optimizations': len(metrics.get('lsp_settings', {})),
                     'exclusion_patterns': len(metrics.get('excluded_patterns', []))
                 }
-                
+
             return jsonify(workspace_metrics)
-            
+
         @self.app.route('/api/performance/lsp')
         def lsp_performance():
             """Get LSP performance metrics"""
             if not self.session_manager:
                 return jsonify({'error': 'LSP monitoring not available'})
-                
+
             lsp_metrics = self.session_manager.monitor_lsp_behavior()
-            
+
             return jsonify({
                 'python_lsp': lsp_metrics.get('python_lsp', {}),
                 'typescript_lsp': lsp_metrics.get('typescript_lsp', {}),
                 'overall_health': lsp_metrics.get('overall_health', 'unknown'),
                 'overall_score': lsp_metrics.get('overall_score', 0)
             })
-            
+
         @self.app.route('/api/performance/cache')
         def cache_performance():
             \"\"\"Get adaptive cache performance metrics\"\"\"

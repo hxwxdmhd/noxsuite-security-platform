@@ -41,7 +41,8 @@ from plugin_framework_core import (
 )
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
@@ -53,79 +54,81 @@ class PluginSDK:
     """
     Plugin Development SDK providing tools and utilities for plugin creation.
     """
-    
+
     def __init__(self, workspace_directory: Path = None):
-        self.workspace_directory = workspace_directory or Path("./plugin_workspace")
+        self.workspace_directory = workspace_directory or Path(
+            "./plugin_workspace")
         self.workspace_directory.mkdir(parents=True, exist_ok=True)
-        
+
         self.templates_directory = self.workspace_directory / "templates"
         self.templates_directory.mkdir(parents=True, exist_ok=True)
-        
+
         self.logger = logging.getLogger("PluginSDK")
         self.logger.info("Plugin SDK initialized")
-    
+
     # ========================================================================
     # Plugin Scaffolding and Generation
     # ========================================================================
-    
+
     def create_plugin_project(self, plugin_id: str, plugin_type: PluginType,
-                             plugin_name: str = None, author: str = "Plugin Developer") -> Path:
+                              plugin_name: str = None, author: str = "Plugin Developer") -> Path:
         """
         Create a complete plugin project with scaffolding.
-        
+
         Args:
             plugin_id: Unique plugin identifier
             plugin_type: Type of plugin to create
             plugin_name: Human-readable plugin name
             author: Plugin author name
-            
+
         Returns:
             Path to created plugin project
         """
-        
+
         try:
             plugin_name = plugin_name or plugin_id.replace("_", " ").title()
-            
+
             # Create plugin directory
             plugin_dir = self.workspace_directory / plugin_id
             plugin_dir.mkdir(exist_ok=True)
-            
+
             # Create directory structure
             (plugin_dir / "src").mkdir(exist_ok=True)
             (plugin_dir / "tests").mkdir(exist_ok=True)
             (plugin_dir / "docs").mkdir(exist_ok=True)
             (plugin_dir / "config").mkdir(exist_ok=True)
-            
+
             # Generate plugin metadata
-            metadata = self._generate_plugin_metadata(plugin_id, plugin_name, plugin_type, author)
+            metadata = self._generate_plugin_metadata(
+                plugin_id, plugin_name, plugin_type, author)
             self._write_plugin_metadata(plugin_dir, metadata)
-            
+
             # Generate main plugin file
             self._generate_main_plugin_file(plugin_dir, metadata)
-            
+
             # Generate configuration files
             self._generate_plugin_config_files(plugin_dir, metadata)
-            
+
             # Generate test files
             self._generate_plugin_test_files(plugin_dir, metadata)
-            
+
             # Generate documentation
             self._generate_plugin_documentation(plugin_dir, metadata)
-            
+
             # Generate setup and build files
             self._generate_plugin_build_files(plugin_dir, metadata)
-            
+
             self.logger.info(f"Created plugin project: {plugin_dir}")
             return plugin_dir
-            
+
         except Exception as e:
             self.logger.error(f"Error creating plugin project: {e}")
             raise
-    
-    def _generate_plugin_metadata(self, plugin_id: str, plugin_name: str, 
-                                plugin_type: PluginType, author: str) -> PluginMetadata:
+
+    def _generate_plugin_metadata(self, plugin_id: str, plugin_name: str,
+                                  plugin_type: PluginType, author: str) -> PluginMetadata:
         """Generate plugin metadata"""
-        
+
         return PluginMetadata(
             id=plugin_id,
             name=plugin_name,
@@ -138,23 +141,25 @@ class PluginSDK:
             sandbox_required=True,
             estimated_memory_mb=128,
             estimated_cpu_percent=10.0,
-            requires_network=plugin_type in [PluginType.NETWORK, PluginType.INTEGRATION],
-            requires_filesystem=plugin_type in [PluginType.SYSTEM, PluginType.UTILITY]
+            requires_network=plugin_type in [
+                PluginType.NETWORK, PluginType.INTEGRATION],
+            requires_filesystem=plugin_type in [
+                PluginType.SYSTEM, PluginType.UTILITY]
         )
-    
+
     def _write_plugin_metadata(self, plugin_dir: Path, metadata: PluginMetadata):
         """Write plugin metadata to plugin.json"""
-        
+
         metadata_file = plugin_dir / "plugin.json"
-        
+
         # Convert metadata to dictionary
         metadata_dict = asdict(metadata)
-        
+
         # Handle enum serialization
         metadata_dict["plugin_type"] = metadata.plugin_type.value
         metadata_dict["created_at"] = metadata.created_at.isoformat()
         metadata_dict["updated_at"] = metadata.updated_at.isoformat()
-        
+
         # Handle dependencies
         metadata_dict["dependencies"] = [
             {
@@ -166,15 +171,15 @@ class PluginSDK:
             }
             for dep in metadata.dependencies
         ]
-        
+
         with open(metadata_file, 'w', encoding='utf-8') as f:
             json.dump(metadata_dict, f, indent=2)
-    
+
     def _generate_main_plugin_file(self, plugin_dir: Path, metadata: PluginMetadata):
         """Generate main plugin implementation file"""
-        
+
         main_file = plugin_dir / "src" / "__init__.py"
-        
+
         plugin_code = f'''#!/usr/bin/env python3
 """
 {metadata.name} Plugin
@@ -529,13 +534,13 @@ if __name__ == "__main__":
     # Run plugin tests when executed directly
     asyncio.run(test_plugin())
 '''
-        
+
         with open(main_file, 'w', encoding='utf-8') as f:
             f.write(plugin_code)
-    
+
     def _generate_plugin_config_files(self, plugin_dir: Path, metadata: PluginMetadata):
         """Generate plugin configuration files"""
-        
+
         # Default configuration
         default_config = plugin_dir / "config" / "default.json"
         config_data = {
@@ -546,10 +551,10 @@ if __name__ == "__main__":
             "timeout_seconds": 30,
             "retry_attempts": 3
         }
-        
+
         with open(default_config, 'w', encoding='utf-8') as f:
             json.dump(config_data, f, indent=2)
-        
+
         # Configuration schema
         schema_file = plugin_dir / "config" / "schema.json"
         schema_data = {
@@ -566,15 +571,15 @@ if __name__ == "__main__":
             },
             "required": ["plugin_id"]
         }
-        
+
         with open(schema_file, 'w', encoding='utf-8') as f:
             json.dump(schema_data, f, indent=2)
-    
+
     def _generate_plugin_test_files(self, plugin_dir: Path, metadata: PluginMetadata):
         """Generate plugin test files"""
-        
+
         test_file = plugin_dir / "tests" / "test_plugin.py"
-        
+
         test_code = f'''#!/usr/bin/env python3
 """
 Unit tests for {metadata.name} Plugin
@@ -755,10 +760,10 @@ if __name__ == "__main__":
     # Run tests
     pytest.main([__file__, "-v"])
 '''
-        
+
         with open(test_file, 'w', encoding='utf-8') as f:
             f.write(test_code)
-        
+
         # Generate pytest configuration
         pytest_config = plugin_dir / "tests" / "pytest.ini"
         with open(pytest_config, 'w', encoding='utf-8') as f:
@@ -773,12 +778,12 @@ markers =
     integration: Integration tests
     performance: Performance tests
 """)
-    
+
     def _generate_plugin_documentation(self, plugin_dir: Path, metadata: PluginMetadata):
         """Generate plugin documentation"""
-        
+
         readme_file = plugin_dir / "README.md"
-        
+
         readme_content = f'''# {metadata.name} Plugin
 
 {metadata.description}
@@ -908,13 +913,13 @@ This plugin is licensed under the MIT License.
 
 For support and questions, please contact: {metadata.author}
 '''
-        
+
         with open(readme_file, 'w', encoding='utf-8') as f:
             f.write(readme_content)
-    
+
     def _generate_plugin_build_files(self, plugin_dir: Path, metadata: PluginMetadata):
         """Generate plugin build and setup files"""
-        
+
         # Requirements file
         requirements_file = plugin_dir / "requirements.txt"
         with open(requirements_file, 'w', encoding='utf-8') as f:
@@ -930,7 +935,7 @@ For support and questions, please contact: {metadata.author}
 pytest>=6.0.0
 pytest-asyncio>=0.18.0
 """)
-        
+
         # Setup script
         setup_file = plugin_dir / "setup.py"
         setup_content = f'''#!/usr/bin/env python3
@@ -988,10 +993,10 @@ setup(
     }},
 )
 '''
-        
+
         with open(setup_file, 'w', encoding='utf-8') as f:
             f.write(setup_content)
-        
+
         # Makefile for common operations
         makefile = plugin_dir / "Makefile"
         makefile_content = f'''# {metadata.name} Plugin Makefile
@@ -1024,25 +1029,25 @@ build:
 package:
 \tpython setup.py sdist bdist_wheel
 '''
-        
+
         with open(makefile, 'w', encoding='utf-8') as f:
             f.write(makefile_content)
-    
+
     # ========================================================================
     # Plugin Testing and Validation
     # ========================================================================
-    
+
     async def validate_plugin(self, plugin_path: Path) -> Dict[str, Any]:
         """
         Validate a plugin for framework compliance.
-        
+
         Args:
             plugin_path: Path to plugin directory
-            
+
         Returns:
             Validation results dictionary
         """
-        
+
         try:
             validation_results = {
                 "valid": True,
@@ -1053,29 +1058,31 @@ package:
                     "validation_time": datetime.now().isoformat()
                 }
             }
-            
+
             # Check plugin structure
             structure_results = await self._validate_plugin_structure(plugin_path)
             validation_results["errors"].extend(structure_results["errors"])
-            validation_results["warnings"].extend(structure_results["warnings"])
-            
+            validation_results["warnings"].extend(
+                structure_results["warnings"])
+
             # Check plugin metadata
             metadata_results = await self._validate_plugin_metadata(plugin_path)
             validation_results["errors"].extend(metadata_results["errors"])
             validation_results["warnings"].extend(metadata_results["warnings"])
-            
+
             # Check plugin code
             code_results = await self._validate_plugin_code(plugin_path)
             validation_results["errors"].extend(code_results["errors"])
             validation_results["warnings"].extend(code_results["warnings"])
-            
+
             # Set overall validity
-            validation_results["valid"] = len(validation_results["errors"]) == 0
-            
+            validation_results["valid"] = len(
+                validation_results["errors"]) == 0
+
             self.logger.info(f"Plugin validation completed for: {plugin_path}")
-            
+
             return validation_results
-            
+
         except Exception as e:
             self.logger.error(f"Error validating plugin: {e}")
             return {
@@ -1084,19 +1091,19 @@ package:
                 "warnings": [],
                 "info": {"plugin_path": str(plugin_path)}
             }
-    
+
     async def _validate_plugin_structure(self, plugin_path: Path) -> Dict[str, List[str]]:
         """Validate plugin directory structure"""
-        
+
         errors = []
         warnings = []
-        
+
         # Check required files
         required_files = ["plugin.json"]
         for file_name in required_files:
             if not (plugin_path / file_name).exists():
                 errors.append(f"Missing required file: {file_name}")
-        
+
         # Check for plugin implementation
         src_dir = plugin_path / "src"
         if src_dir.exists():
@@ -1107,128 +1114,132 @@ package:
             py_files = list(plugin_path.glob("*.py"))
             if not py_files:
                 errors.append("No Python files found in plugin directory")
-        
+
         # Check for documentation
         if not (plugin_path / "README.md").exists():
-            warnings.append("No README.md found - consider adding documentation")
-        
+            warnings.append(
+                "No README.md found - consider adding documentation")
+
         return {"errors": errors, "warnings": warnings}
-    
+
     async def _validate_plugin_metadata(self, plugin_path: Path) -> Dict[str, List[str]]:
         """Validate plugin metadata"""
-        
+
         errors = []
         warnings = []
-        
+
         metadata_file = plugin_path / "plugin.json"
         if not metadata_file.exists():
             errors.append("plugin.json not found")
             return {"errors": errors, "warnings": warnings}
-        
+
         try:
             with open(metadata_file, 'r', encoding='utf-8') as f:
                 metadata = json.load(f)
-            
+
             # Check required fields
-            required_fields = ["id", "name", "version", "description", "author"]
+            required_fields = ["id", "name",
+                               "version", "description", "author"]
             for field in required_fields:
                 if field not in metadata:
                     errors.append(f"Missing required metadata field: {field}")
-            
+
             # Validate version format
             if "version" in metadata:
                 version = metadata["version"]
                 if not self._is_valid_version(version):
-                    warnings.append(f"Version '{version}' may not follow semantic versioning")
-            
+                    warnings.append(
+                        f"Version '{version}' may not follow semantic versioning")
+
             # Check plugin type
             if "plugin_type" in metadata:
                 valid_types = [t.value for t in PluginType]
                 if metadata["plugin_type"] not in valid_types:
-                    errors.append(f"Invalid plugin_type: {metadata['plugin_type']}")
-            
+                    errors.append(
+                        f"Invalid plugin_type: {metadata['plugin_type']}")
+
         except json.JSONDecodeError as e:
             errors.append(f"Invalid JSON in plugin.json: {e}")
         except Exception as e:
             errors.append(f"Error reading plugin.json: {e}")
-        
+
         return {"errors": errors, "warnings": warnings}
-    
+
     async def _validate_plugin_code(self, plugin_path: Path) -> Dict[str, List[str]]:
         """Validate plugin code"""
-        
+
         errors = []
         warnings = []
-        
+
         # Find Python files
         python_files = []
         if (plugin_path / "src").exists():
             python_files.extend((plugin_path / "src").glob("**/*.py"))
         else:
             python_files.extend(plugin_path.glob("*.py"))
-        
+
         if not python_files:
             errors.append("No Python files found")
             return {"errors": errors, "warnings": warnings}
-        
+
         # Basic syntax checking
         for py_file in python_files:
             try:
                 with open(py_file, 'r', encoding='utf-8') as f:
                     code = f.read()
-                
+
                 # Try to compile the code
                 compile(code, str(py_file), 'exec')
-                
+
             except SyntaxError as e:
                 errors.append(f"Syntax error in {py_file.name}: {e}")
             except Exception as e:
                 warnings.append(f"Issue reading {py_file.name}: {e}")
-        
+
         return {"errors": errors, "warnings": warnings}
-    
+
     def _is_valid_version(self, version: str) -> bool:
         """Check if version follows semantic versioning"""
-        
+
         import re
 
         # Simple semantic versioning regex
         semver_pattern = r'^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
-        
+
         return re.match(semver_pattern, version) is not None
-    
+
     # ========================================================================
     # Plugin Packaging and Distribution
     # ========================================================================
-    
+
     def package_plugin(self, plugin_path: Path, output_directory: Path = None) -> Path:
         """
         Package a plugin for distribution.
-        
+
         Args:
             plugin_path: Path to plugin directory
             output_directory: Directory to output package to
-            
+
         Returns:
             Path to created package
         """
-        
+
         try:
             output_directory = output_directory or self.workspace_directory / "packages"
             output_directory.mkdir(parents=True, exist_ok=True)
-            
+
             # Read plugin metadata
             metadata_file = plugin_path / "plugin.json"
             with open(metadata_file, 'r', encoding='utf-8') as f:
                 metadata = json.load(f)
-            
+
             plugin_id = metadata["id"]
             version = metadata["version"]
-            
+
             # Create package filename
             package_filename = f"{plugin_id}-{version}.zip"
             package_path = output_directory / package_filename
-            
+
             # Create zip package
             with zipfile.ZipFile(package_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
                 for file_path in plugin_path.rglob("*"):
@@ -1242,56 +1253,56 @@ package:
                             "build",
                             "dist"
                         ]
-                        
+
                         skip = False
                         for pattern in skip_patterns:
                             if pattern in str(file_path):
                                 skip = True
                                 break
-                        
+
                         if not skip:
                             arc_name = file_path.relative_to(plugin_path)
                             zipf.write(file_path, arc_name)
-            
+
             self.logger.info(f"Created plugin package: {package_path}")
             return package_path
-            
+
         except Exception as e:
             self.logger.error(f"Error packaging plugin: {e}")
             raise
-    
+
     def extract_plugin_package(self, package_path: Path, target_directory: Path = None) -> Path:
         """
         Extract a plugin package.
-        
+
         Args:
             package_path: Path to plugin package zip file
             target_directory: Directory to extract to
-            
+
         Returns:
             Path to extracted plugin directory
         """
-        
+
         try:
             target_directory = target_directory or self.workspace_directory / "extracted"
             target_directory.mkdir(parents=True, exist_ok=True)
-            
+
             # Extract package
             with zipfile.ZipFile(package_path, 'r') as zipf:
                 zipf.extractall(target_directory)
-            
+
             # Find plugin directory (should contain plugin.json)
             for item in target_directory.iterdir():
                 if item.is_dir() and (item / "plugin.json").exists():
                     self.logger.info(f"Extracted plugin to: {item}")
                     return item
-            
+
             # If no subdirectory found, the target directory is the plugin directory
             if (target_directory / "plugin.json").exists():
                 return target_directory
-            
+
             raise ValueError("No valid plugin found in package")
-            
+
         except Exception as e:
             self.logger.error(f"Error extracting plugin package: {e}")
             raise
@@ -1303,19 +1314,20 @@ package:
 
 class PluginCLI:
     """Command-line interface for plugin development"""
-    
+
     def __init__(self):
         self.sdk = PluginSDK()
         self.logger = logging.getLogger("PluginCLI")
-    
-    def create_plugin(self, plugin_id: str, plugin_type: str, 
-                     author: str = "Plugin Developer") -> bool:
+
+    def create_plugin(self, plugin_id: str, plugin_type: str,
+                      author: str = "Plugin Developer") -> bool:
         """Create a new plugin project"""
-        
+
         try:
             plugin_type_enum = PluginType(plugin_type.lower())
-            plugin_dir = self.sdk.create_plugin_project(plugin_id, plugin_type_enum, author=author)
-            
+            plugin_dir = self.sdk.create_plugin_project(
+                plugin_id, plugin_type_enum, author=author)
+
             print(f"✅ Created plugin project: {plugin_dir}")
             print(f"📝 Plugin ID: {plugin_id}")
             print(f"🏷️  Plugin Type: {plugin_type}")
@@ -1326,56 +1338,56 @@ class PluginCLI:
             print("   3. Configure settings in config/default.json")
             print("   4. Run tests with: make test")
             print("   5. Package with: make package")
-            
+
             return True
-            
+
         except Exception as e:
             print(f"❌ Error creating plugin: {e}")
             return False
-    
+
     async def validate_plugin(self, plugin_path: str) -> bool:
         """Validate a plugin"""
-        
+
         try:
             plugin_path = Path(plugin_path)
             results = await self.sdk.validate_plugin(plugin_path)
-            
+
             print(f"🔍 Plugin Validation Results for: {plugin_path}")
             print("=" * 50)
-            
+
             if results["valid"]:
                 print("✅ Plugin is valid!")
             else:
                 print("❌ Plugin validation failed")
-            
+
             if results["errors"]:
                 print(f"\n❌ Errors ({len(results['errors'])}):")
                 for error in results["errors"]:
                     print(f"   - {error}")
-            
+
             if results["warnings"]:
                 print(f"\n⚠️  Warnings ({len(results['warnings'])}):")
                 for warning in results["warnings"]:
                     print(f"   - {warning}")
-            
+
             return results["valid"]
-            
+
         except Exception as e:
             print(f"❌ Error validating plugin: {e}")
             return False
-    
+
     def package_plugin(self, plugin_path: str, output_dir: str = None) -> bool:
         """Package a plugin"""
-        
+
         try:
             plugin_path = Path(plugin_path)
             output_dir = Path(output_dir) if output_dir else None
-            
+
             package_path = self.sdk.package_plugin(plugin_path, output_dir)
-            
+
             print(f"📦 Successfully packaged plugin: {package_path}")
             return True
-            
+
         except Exception as e:
             print(f"❌ Error packaging plugin: {e}")
             return False
@@ -1387,13 +1399,13 @@ class PluginCLI:
 
 async def main():
     """Example usage of the Plugin SDK"""
-    
+
     print("🛠️  Plugin Framework SDK - Example Usage")
     print("=" * 60)
-    
+
     # Initialize SDK
     sdk = PluginSDK()
-    
+
     # Create example plugin project
     print("\n📝 Creating example plugin project...")
     plugin_dir = sdk.create_plugin_project(
@@ -1402,25 +1414,26 @@ async def main():
         plugin_name="Example Utility Plugin",
         author="SDK Example"
     )
-    
+
     print(f"✅ Created plugin project: {plugin_dir}")
-    
+
     # Validate the created plugin
     print(f"\n🔍 Validating plugin: {plugin_dir}")
     validation_results = await sdk.validate_plugin(plugin_dir)
-    
-    print(f"Validation result: {'✅ Valid' if validation_results['valid'] else '❌ Invalid'}")
+
+    print(
+        f"Validation result: {'✅ Valid' if validation_results['valid'] else '❌ Invalid'}")
     if validation_results["errors"]:
         print("Errors:")
         for error in validation_results["errors"]:
             print(f"  - {error}")
-    
+
     # Package the plugin
     print(f"\n📦 Packaging plugin: {plugin_dir}")
     package_path = sdk.package_plugin(plugin_dir)
-    
+
     print(f"✅ Package created: {package_path}")
-    
+
     print("\n🎉 Plugin SDK demonstration complete!")
 
 

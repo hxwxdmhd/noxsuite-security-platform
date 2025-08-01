@@ -22,6 +22,7 @@ class PluginMetadata:
     permissions: List[str]
     dependencies: List[str]
 
+
 @dataclass
 class PluginResponse:
     """Standard plugin response structure"""
@@ -33,6 +34,7 @@ class PluginResponse:
     def __post_init__(self):
         if self.timestamp is None:
             self.timestamp = datetime.now().isoformat()
+
 
 class PluginBase:
     """Base class for all NoxPanel plugins"""
@@ -62,6 +64,7 @@ class PluginBase:
             "status": "running",
             "uptime": str(datetime.now() - self.start_time)
         }
+
 
 class PluginAPIClient:
     """API client for plugin communication with NoxPanel"""

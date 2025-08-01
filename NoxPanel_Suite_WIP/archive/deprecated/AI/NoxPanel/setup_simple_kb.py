@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def create_simple_knowledge_db():
     """
     RLVR: Creates new entity with validation and error handling
@@ -71,8 +72,10 @@ def create_simple_knowledge_db():
     # Create indexes
     conn.execute("CREATE INDEX idx_knowledge_tags ON knowledge_items(tags)")
     conn.execute("CREATE INDEX idx_knowledge_topic ON knowledge_items(topic)")
-    conn.execute("CREATE INDEX idx_knowledge_category ON knowledge_items(category)")
-    conn.execute("CREATE INDEX idx_knowledge_type ON knowledge_items(content_type)")
+    conn.execute(
+        "CREATE INDEX idx_knowledge_category ON knowledge_items(category)")
+    conn.execute(
+        "CREATE INDEX idx_knowledge_type ON knowledge_items(content_type)")
 
     # Sample data
     sample_items = [
@@ -523,6 +526,7 @@ while ($true) {
     logger.info(f"📍 Database location: {db_path}")
 
     return True
+
 
 if __name__ == "__main__":
     print("🧠 NoxPanel Knowledge Base Setup (Simple)")

@@ -18,6 +18,7 @@ certs_bp = Blueprint(
     static_folder='static'
 )
 
+
 @certs_bp.route('/')
 def dashboard():
     """
@@ -59,11 +60,12 @@ def dashboard():
     """
     try:
         return render_template('certs/dashboard.html',
-                             title='Certificate Manager',
-                             timestamp=datetime.now())
+                               title='Certificate Manager',
+                               timestamp=datetime.now())
     except Exception as e:
         logger.error(f"Error in Certificate Manager dashboard: {e}")
         return render_template('error.html', error=str(e)), 500
+
 
 @certs_bp.route('/api/status')
 def api_status():
@@ -78,6 +80,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Error in Certificate Manager API: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @certs_bp.route('/api/action', methods=['POST'])
 def api_action():

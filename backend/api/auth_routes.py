@@ -295,7 +295,8 @@ async def disable_mfa(
     Raises:
         HTTPException: If MFA disable fails
     """
-    result = auth_service.disable_mfa(user["user_id"], request.verification_code)
+    result = auth_service.disable_mfa(
+        user["user_id"], request.verification_code)
 
     if result["status"] != AuthStatus.SUCCESS:
         raise HTTPException(

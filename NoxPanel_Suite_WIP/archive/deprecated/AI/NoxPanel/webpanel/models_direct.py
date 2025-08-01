@@ -12,6 +12,7 @@ from flask import jsonify, render_template, request
 
 logger = logging.getLogger(__name__)
 
+
 def register_models_api(app):
     """
     RLVR: Removes entity with dependency checking

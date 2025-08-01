@@ -47,7 +47,8 @@ class EnhancedJWTManager:
             }
         )
 
-        encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
+        encoded_jwt = jwt.encode(
+            to_encode, self.secret_key, algorithm=self.algorithm)
         return encoded_jwt
 
     def create_refresh_token(self, user_id: str) -> str:
@@ -83,7 +84,8 @@ class EnhancedJWTManager:
                 return None
 
             # Decode token
-            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+            payload = jwt.decode(token, self.secret_key,
+                                 algorithms=[self.algorithm])
 
             # Verify token type
             if payload.get("type") != token_type:
@@ -114,7 +116,8 @@ class EnhancedJWTManager:
     def revoke_token(self, token: str) -> bool:
         """Revoke a token by adding to blacklist"""
         try:
-            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+            payload = jwt.decode(token, self.secret_key,
+                                 algorithms=[self.algorithm])
             jti = payload.get("jti")
 
             if jti:

@@ -16,6 +16,7 @@ from noxpanel_sdk import PluginBase, PluginMetadata, PluginResponse
 # Configure logging
 logger = logging.getLogger(__name__)
 
+
 class {plugin_class}(PluginBase):
     """
     {plugin_description}
@@ -153,9 +154,12 @@ class {plugin_class}(PluginBase):
         return 0.0
 
 # Plugin entry point
+
+
 def create_plugin() -> {plugin_class}:
     """Create plugin instance"""
     return {plugin_class}()
+
 
 # Plugin metadata export
 PLUGIN_METADATA = {{

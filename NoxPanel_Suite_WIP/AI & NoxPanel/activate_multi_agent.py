@@ -1,3 +1,7 @@
+from pathlib import Path
+from datetime import datetime
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -14,11 +18,6 @@ Activates intelligent collaboration between:
 This creates the infrastructure for accelerated development through
 agent coordination while maintaining our 75% performance optimization.
 """
-
-import json
-import os
-from datetime import datetime
-from pathlib import Path
 
 
 def activate_multi_agent_collaboration():

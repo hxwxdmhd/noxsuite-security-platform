@@ -8,6 +8,7 @@ import pymysql
 
 logger = logging.getLogger(__name__)
 
+
 class NoxDatabase:
     """SQLite database manager for NoxPanel"""
 
@@ -36,9 +37,9 @@ class NoxDatabase:
 
     COMPLIANCE: STANDARD
     """
-        self.db_path = Path(db_path)
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        self.init_database()
+    self.db_path = Path(db_path)
+    self.db_path.parent.mkdir(parents=True, exist_ok=True)
+    self.init_database()
 
     def init_database(self):
         """Initialize database schema"""
@@ -87,17 +88,17 @@ class NoxDatabase:
                     CREATE TABLE IF NOT EXISTS health_logs (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
     """
-    RLVR: Creates new entity with validation and error handling
+                                   RLVR: Creates new entity with validation and error handling
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for create_default_user
-    2. Analysis: Function complexity 1.2/5.0
-    3. Solution: Creates new entity with validation and error handling
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                                   REASONING CHAIN:
+                                   1. Problem: Input parameters and business logic for create_default_user
+                                   2. Analysis: Function complexity 1.2/5.0
+                                   3. Solution: Creates new entity with validation and error handling
+                                   4. Implementation: Chain-of-Thought validation with error handling
+                                   5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                                   COMPLIANCE: STANDARD
+                                   """
                         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         component TEXT NOT NULL,
                         status TEXT NOT NULL,
@@ -106,31 +107,31 @@ class NoxDatabase:
                     );
 
     """
-    RLVR: Retrieves data with filtering and access control
+                                   RLVR: Retrieves data with filtering and access control
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for get_user
-    2. Analysis: Function complexity 1.5/5.0
-    3. Solution: Retrieves data with filtering and access control
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                                   REASONING CHAIN:
+                                   1. Problem: Input parameters and business logic for get_user
+                                   2. Analysis: Function complexity 1.5/5.0
+                                   3. Solution: Retrieves data with filtering and access control
+                                   4. Implementation: Chain-of-Thought validation with error handling
+                                   5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                                   COMPLIANCE: STANDARD
+                                   """
                     -- Configuration settings
                     CREATE TABLE IF NOT EXISTS settings (
     """
-    RLVR: Modifies existing entity with validation
+                                   RLVR: Modifies existing entity with validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for update_device
-    2. Analysis: Function complexity 1.7/5.0
-    3. Solution: Modifies existing entity with validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                                   REASONING CHAIN:
+                                   1. Problem: Input parameters and business logic for update_device
+                                   2. Analysis: Function complexity 1.7/5.0
+                                   3. Solution: Modifies existing entity with validation
+                                   4. Implementation: Chain-of-Thought validation with error handling
+                                   5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                                   COMPLIANCE: STANDARD
+                                   """
                         key TEXT PRIMARY KEY,
                         value TEXT NOT NULL,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -150,7 +151,8 @@ class NoxDatabase:
         from .auth import hash_password
 
         cursor = conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM users WHERE username = ?", ("admin",))
+        cursor.execute(
+            "SELECT COUNT(*) FROM users WHERE username = ?", ("admin",))
 
         if cursor.fetchone()[0] == 0:
     """
@@ -165,8 +167,8 @@ class NoxDatabase:
 
     COMPLIANCE: STANDARD
     """
-            admin_password = os.getenv("ADMIN_PASS", "admin123!")
-            hashed_password = hash_password(admin_password)
+    admin_password = os.getenv("ADMIN_PASS", "admin123!")
+    hashed_password = hash_password(admin_password)
 
     """
     RLVR: Retrieves data with filtering and access control
@@ -180,12 +182,12 @@ class NoxDatabase:
 
     COMPLIANCE: STANDARD
     """
-            cursor.execute("""
+    cursor.execute("""
                 INSERT INTO users (username, password_hash, role)
                 VALUES (?, ?, ?)
             """, ("admin", hashed_password, "admin"))
 
-            logger.info("Default admin user created")
+    logger.info("Default admin user created")
 
     """
     RLVR: Implements cleanup_old_logs with error handling and validation
@@ -199,6 +201,7 @@ class NoxDatabase:
 
     COMPLIANCE: STANDARD
     """
+
     def get_user(self, username):
         """Get user by username"""
         try:
@@ -208,17 +211,17 @@ class NoxDatabase:
                 cursor.execute("""
                     SELECT * FROM users
     """
-    RLVR: Implements initialize_database with error handling and validation
+                               RLVR: Implements initialize_database with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for initialize_database
-    2. Analysis: Function complexity 1.3/5.0
-    3. Solution: Implements initialize_database with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                               REASONING CHAIN:
+                               1. Problem: Input parameters and business logic for initialize_database
+                               2. Analysis: Function complexity 1.3/5.0
+                               3. Solution: Implements initialize_database with error handling and validation
+                               4. Implementation: Chain-of-Thought validation with error handling
+                               5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                               COMPLIANCE: STANDARD
+                               """
                     WHERE username = ? AND active = 1
                 """, (username,))
                 return dict(cursor.fetchone()) if cursor.fetchone() else None
@@ -233,7 +236,8 @@ class NoxDatabase:
                 cursor = conn.cursor()
 
                 # Check if device exists
-                cursor.execute("SELECT id FROM devices WHERE ip_address = ?", (ip,))
+                cursor.execute(
+                    "SELECT id FROM devices WHERE ip_address = ?", (ip,))
                 existing = cursor.fetchone()
 
                 if existing:

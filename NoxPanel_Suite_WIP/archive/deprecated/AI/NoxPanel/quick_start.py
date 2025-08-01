@@ -25,6 +25,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
 def create_simple_app():
     """
     RLVR: Creates new entity with validation and error handling
@@ -75,10 +76,10 @@ def create_simple_app():
 
     COMPLIANCE: STANDARD
     """
-        response.headers['Connection'] = 'keep-alive'
-        response.headers['Keep-Alive'] = 'timeout=30, max=100'
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    response.headers['Connection'] = 'keep-alive'
+     response.headers['Keep-Alive'] = 'timeout=30, max=100'
+      response.headers['Access-Control-Allow-Origin'] = '*'
+       response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
         return response
 
@@ -144,11 +145,11 @@ def create_simple_app():
     """
     COMPLIANCE: STANDARD
     """
-        # Import with absolute path
-        import os
-        import sys
-        webpanel_path = os.path.join(os.path.dirname(__file__), 'webpanel')
-        if webpanel_path not in sys.path:
+    # Import with absolute path
+    import os
+     import sys
+      webpanel_path = os.path.join(os.path.dirname(__file__), 'webpanel')
+       if webpanel_path not in sys.path:
             sys.path.insert(0, webpanel_path)
 
         from knowledge_routes import knowledge_bp
@@ -157,6 +158,7 @@ def create_simple_app():
     except Exception as e:
         logger.error(f"[INIT] Failed to load Knowledge Management: {e}")
         # Create a simple knowledge route as fallback
+
         @app.route('/knowledge')
         def knowledge_fallback():
             return jsonify({
@@ -196,7 +198,8 @@ def create_simple_app():
     # Error handlers
     @app.errorhandler(404)
     def not_found(error):
-        logger.warning(f"404 error for URL: {request.url} | Path: {request.path}")
+        logger.warning(
+            f"404 error for URL: {request.url} | Path: {request.path}")
         return jsonify({
             'error': 'Not Found',
             'message': f'The requested URL {request.path} was not found.',
@@ -226,6 +229,7 @@ def create_simple_app():
 
     return app
 
+
 def main():
     """Main application entry point"""
     logger.info("[INIT] Starting NoxPanel v5.0 Quick Start Server...")
@@ -252,6 +256,7 @@ def main():
     except Exception as e:
         logger.error(f"[FAIL] Server startup failed: {e}")
         sys.exit(1)
+
 
 if __name__ == '__main__':
     main()

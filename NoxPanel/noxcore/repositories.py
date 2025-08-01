@@ -97,7 +97,8 @@ class UserRepository(BaseRepository):
                 if row:
                     user = dict(row)
                     user["settings"] = self._deserialize_json(user["settings"])
-                    user["preferences"] = self._deserialize_json(user["preferences"])
+                    user["preferences"] = self._deserialize_json(
+                        user["preferences"])
                     return user
                 return None
         except Exception as e:
@@ -126,7 +127,8 @@ class UserRepository(BaseRepository):
                     (user_id,),
                 )
         except Exception as e:
-            logger.error(f"Failed to update last login for user {user_id}: {e}")
+            logger.error(
+                f"Failed to update last login for user {user_id}: {e}")
 
 
 class KnowledgeRepository(BaseRepository):
@@ -292,9 +294,11 @@ class TagRepository(BaseRepository):
             with self.db.get_connection() as conn:
                 cursor = conn.cursor()
                 if tag_id:
-                    cursor.execute("SELECT * FROM tags WHERE id = ?", (tag_id,))
+                    cursor.execute(
+                        "SELECT * FROM tags WHERE id = ?", (tag_id,))
                 elif name:
-                    cursor.execute("SELECT * FROM tags WHERE name = ?", (name,))
+                    cursor.execute(
+                        "SELECT * FROM tags WHERE name = ?", (name,))
                 else:
                     return None
 

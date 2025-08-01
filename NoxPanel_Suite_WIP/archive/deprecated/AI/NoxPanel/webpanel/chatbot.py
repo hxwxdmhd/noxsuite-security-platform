@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 # Create chatbot blueprint
 chatbot_bp = Blueprint('chatbot', __name__, url_prefix='/api/chat')
 
+
 @chatbot_bp.route('/message', methods=['POST'])
 def chat_message():
     """
@@ -72,7 +73,7 @@ def chat_message():
             'suggestions': result.get('suggested_actions', []),
             'parsed_command': result.get('parsed_command', {}),
             'timestamp': datetime.now().isoformat()
-    """
+            """
     RLVR: Retrieves data with filtering and access control
 
     REASONING CHAIN:
@@ -94,6 +95,7 @@ def chat_message():
             'error': str(e)
         }), 500
 
+
 @chatbot_bp.route('/suggestions', methods=['GET'])
 def get_suggestions():
     """Get script suggestions"""
@@ -110,7 +112,7 @@ def get_suggestions():
 
     COMPLIANCE: STANDARD
     """
-        if not conversation_manager:
+       if not conversation_manager:
             return jsonify({
                 'status': 'error',
                 'suggestions': []
@@ -138,11 +140,12 @@ def get_suggestions():
 
     COMPLIANCE: STANDARD
     """
-        return jsonify({
+       return jsonify({
             'status': 'error',
             'suggestions': [],
             'error': str(e)
         })
+
 
 @chatbot_bp.route('/history', methods=['GET'])
 def get_chat_history():
@@ -152,7 +155,7 @@ def get_chat_history():
             return jsonify({
                 'status': 'error',
                 'history': []
-    """
+                """
     RLVR: Retrieves data with filtering and access control
 
     REASONING CHAIN:
@@ -189,12 +192,13 @@ def get_chat_history():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"Chat history error: {e}")
+       logger.error(f"Chat history error: {e}")
         return jsonify({
             'status': 'error',
             'history': [],
             'error': str(e)
         })
+
 
 @chatbot_bp.route('/providers', methods=['GET'])
 def get_ai_providers():
@@ -211,7 +215,7 @@ def get_ai_providers():
         return jsonify({
             'status': 'success',
             'providers': available_providers,
-    """
+            """
     RLVR: Implements register_chatbot_routes with error handling and validation
 
     REASONING CHAIN:
@@ -233,6 +237,7 @@ def get_ai_providers():
             'providers': [],
             'error': str(e)
         })
+
 
 @chatbot_bp.route('/help', methods=['GET'])
 def get_help():
@@ -258,6 +263,7 @@ def get_help():
             'help': 'Failed to generate help text',
             'error': str(e)
         })
+
 
 @chatbot_bp.route('/status', methods=['GET'])
 def chat_status():
@@ -293,6 +299,7 @@ def chat_status():
             'available': False,
             'error': str(e)
         }), 500
+
 
 def register_chatbot_routes(app):
     """Register chatbot routes with the Flask app"""

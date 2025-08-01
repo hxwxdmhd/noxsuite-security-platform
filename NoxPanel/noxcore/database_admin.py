@@ -150,7 +150,8 @@ class DatabaseAdmin:
 
                     for table_name in tables:
                         cursor.execute(f"SELECT * FROM {table_name}")
-                        data[table_name] = [dict(row) for row in cursor.fetchall()]
+                        data[table_name] = [dict(row)
+                                            for row in cursor.fetchall()]
 
             # Add metadata
             data["_metadata"] = {
@@ -300,9 +301,11 @@ def main():
         description="NoxGuard Database Administration Tool"
     )
     parser.add_argument("--db-path", help="Database file path")
-    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    parser.add_argument("--verbose", "-v",
+                        action="store_true", help="Verbose output")
 
-    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+    subparsers = parser.add_subparsers(
+        dest="command", help="Available commands")
 
     # Status command
     subparsers.add_parser("status", help="Show database status")
@@ -311,26 +314,31 @@ def main():
     subparsers.add_parser("health", help="Check database health")
 
     # Backup command
-    backup_parser = subparsers.add_parser("backup", help="Create database backup")
+    backup_parser = subparsers.add_parser(
+        "backup", help="Create database backup")
     backup_parser.add_argument("--path", help="Backup file path")
 
     # Restore command
-    restore_parser = subparsers.add_parser("restore", help="Restore from backup")
-    restore_parser.add_argument("backup_path", help="Backup file to restore from")
+    restore_parser = subparsers.add_parser(
+        "restore", help="Restore from backup")
+    restore_parser.add_argument(
+        "backup_path", help="Backup file to restore from")
 
     # Optimize command
     subparsers.add_parser("optimize", help="Optimize database")
 
     # Cleanup command
     cleanup_parser = subparsers.add_parser("cleanup", help="Clean up old data")
-    cleanup_parser.add_argument("--days", type=int, default=30, help="Retention days")
+    cleanup_parser.add_argument(
+        "--days", type=int, default=30, help="Retention days")
 
     # User management commands
     user_parser = subparsers.add_parser("user", help="User management")
     user_subparsers = user_parser.add_subparsers(dest="user_command")
 
     # Create user
-    create_user_parser = user_subparsers.add_parser("create", help="Create user")
+    create_user_parser = user_subparsers.add_parser(
+        "create", help="Create user")
     create_user_parser.add_argument("username", help="Username")
     create_user_parser.add_argument("password", help="Password")
     create_user_parser.add_argument("--email", help="Email address")
@@ -347,7 +355,8 @@ def main():
     reset_password_parser.add_argument("password", help="New password")
 
     # Deactivate user
-    deactivate_parser = user_subparsers.add_parser("deactivate", help="Deactivate user")
+    deactivate_parser = user_subparsers.add_parser(
+        "deactivate", help="Deactivate user")
     deactivate_parser.add_argument("username", help="Username")
 
     # Export command
@@ -362,22 +371,28 @@ def main():
     import_parser.add_argument("path", help="JSON file to import")
 
     # Report command
-    report_parser = subparsers.add_parser("report", help="Generate database report")
+    report_parser = subparsers.add_parser(
+        "report", help="Generate database report")
     report_parser.add_argument("--output", help="Output file path")
 
     # Migration commands
-    migration_parser = subparsers.add_parser("migrate", help="Database migrations")
-    migration_subparsers = migration_parser.add_subparsers(dest="migration_command")
+    migration_parser = subparsers.add_parser(
+        "migrate", help="Database migrations")
+    migration_subparsers = migration_parser.add_subparsers(
+        dest="migration_command")
 
     migration_subparsers.add_parser("status", help="Migration status")
 
-    migrate_up_parser = migration_subparsers.add_parser("up", help="Apply migrations")
-    migrate_up_parser.add_argument("--version", type=int, help="Target version")
+    migrate_up_parser = migration_subparsers.add_parser(
+        "up", help="Apply migrations")
+    migrate_up_parser.add_argument(
+        "--version", type=int, help="Target version")
 
     migrate_down_parser = migration_subparsers.add_parser(
         "down", help="Rollback migrations"
     )
-    migrate_down_parser.add_argument("version", type=int, help="Target version")
+    migrate_down_parser.add_argument(
+        "version", type=int, help="Target version")
 
     args = parser.parse_args()
 
@@ -436,7 +451,8 @@ def main():
                     )
 
             elif args.user_command == "reset-password":
-                success = admin.reset_user_password(args.username, args.password)
+                success = admin.reset_user_password(
+                    args.username, args.password)
                 sys.exit(0 if success else 1)
 
             elif args.user_command == "deactivate":
@@ -457,7 +473,8 @@ def main():
                 logger.info(report)
 
         elif args.command == "migrate":
-            migration_manager = MigrationManager(args.db_path or "data/db/noxpanel.db")
+            migration_manager = MigrationManager(
+                args.db_path or "data/db/noxpanel.db")
 
             if args.migration_command == "status":
                 status = migration_manager.status()

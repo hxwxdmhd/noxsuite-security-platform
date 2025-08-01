@@ -22,7 +22,8 @@ logger = logging.getLogger(__name__)
 
 # Enhanced Authentication Schemas
 class UserCredentials(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50, regex=r"^[a-zA-Z0-9_]+$")
+    username: str = Field(..., min_length=3, max_length=50,
+                          regex=r"^[a-zA-Z0-9_]+$")
     password: str = Field(..., min_length=8, max_length=128)
 
 
@@ -57,9 +58,11 @@ class EnhancedAuthManager:
 
     def __init__(self):
         self.pwd_context = CryptContext(
-            schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12  # Stronger hashing
+            # Stronger hashing
+            schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12
         )
-        self.secret_key = os.getenv("JWT_SECRET_KEY", self._generate_secret_key())
+        self.secret_key = os.getenv(
+            "JWT_SECRET_KEY", self._generate_secret_key())
         self.algorithm = "HS256"
         self.access_token_expire_minutes = 30
         self.refresh_token_expire_days = 7
@@ -161,7 +164,8 @@ class EnhancedAuthManager:
             lock_time = datetime.fromisoformat(locked_until)
             return datetime.utcnow() < lock_time
         except (ValueError, TypeError) as e:
-            self.logger.warning(f"Invalid lock time format for user {username}: {e}")
+            self.logger.warning(
+                f"Invalid lock time format for user {username}: {e}")
             return False
 
     def _record_failed_attempt(self, username: str):
@@ -283,7 +287,8 @@ class EnhancedAuthManager:
 
         except Exception as e:
             self.logger.error(f"Access token creation error: {e}")
-            raise HTTPException(status_code=500, detail="Token creation failed")
+            raise HTTPException(
+                status_code=500, detail="Token creation failed")
 
     def create_refresh_token(self, data: Dict[str, Any]) -> str:
         """Create enhanced JWT refresh token"""
@@ -309,7 +314,8 @@ class EnhancedAuthManager:
 
         except Exception as e:
             self.logger.error(f"Refresh token creation error: {e}")
-            raise HTTPException(status_code=500, detail="Refresh token creation failed")
+            raise HTTPException(
+                status_code=500, detail="Refresh token creation failed")
 
     def verify_token(
         self, token: str, expected_type: str = "access_token"
@@ -383,7 +389,8 @@ class EnhancedAuthManager:
                 self.blacklisted_tokens.add(jti)
         except (jwt.InvalidTokenError, ValueError) as e:
             # If we can't decode, blacklist the full token
-            self.logger.warning(f"Could not decode token for blacklisting: {e}")
+            self.logger.warning(
+                f"Could not decode token for blacklisting: {e}")
             self.blacklisted_tokens.add(token)
 
 
@@ -468,7 +475,8 @@ async def login(credentials: UserCredentials, request: Request):
 
         # Generate tokens
         access_token = auth_manager.create_access_token(token_data)
-        refresh_token = auth_manager.create_refresh_token({"sub": user["username"]})
+        refresh_token = auth_manager.create_refresh_token(
+            {"sub": user["username"]})
 
         return TokenResponse(
             access_token=access_token,
@@ -519,7 +527,8 @@ async def refresh_token(refresh_token: str):
         }
 
         new_access_token = auth_manager.create_access_token(token_data)
-        new_refresh_token = auth_manager.create_refresh_token({"sub": user["username"]})
+        new_refresh_token = auth_manager.create_refresh_token(
+            {"sub": user["username"]})
 
         # Blacklist old refresh token
         auth_manager.blacklist_token(refresh_token)

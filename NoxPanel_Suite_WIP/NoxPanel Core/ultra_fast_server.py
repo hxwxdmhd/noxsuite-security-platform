@@ -1,3 +1,9 @@
+from flask import Flask, Response, jsonify, request
+from functools import lru_cache
+import time
+import os
+import json
+import gc
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -8,13 +14,6 @@ Ultra-Fast Test Server for Gate 3 Performance Testing
 Optimized for <10ms response times with minimal overhead
 """
 
-import gc
-import json
-import os
-import time
-from functools import lru_cache
-
-from flask import Flask, Response, jsonify, request
 
 # Disable Flask debug mode for maximum performance
 app = Flask(__name__)
@@ -361,4 +360,5 @@ if __name__ == "__main__":
     logger.info("Server running on http://localhost:5000")
 
     # Run with optimized settings
-    app.run(host="0.0.0.0", port=5000, debug=False, threaded=True, use_reloader=False)
+    app.run(host="0.0.0.0", port=5000, debug=False,
+            threaded=True, use_reloader=False)

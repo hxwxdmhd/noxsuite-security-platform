@@ -43,6 +43,7 @@ class PerformanceMetrics:
     startup_time: float
     active_processes: int
 
+
 @dataclass
 class WorkspaceHealth:
     """Workspace health status"""
@@ -55,9 +56,10 @@ class WorkspaceHealth:
     last_optimization: datetime
     performance_score: float
 
+
 class RecoveryOptimizationEngine:
     """Main recovery and optimization engine"""
-    
+
     def __init__(self, workspace_root: str = r"k:\Project Heimnetz"):
         self.workspace_root = Path(workspace_root)
         self.config_path = self.workspace_root / ".vscode" / "recovery_config.json"
@@ -65,26 +67,26 @@ class RecoveryOptimizationEngine:
         self.health_data = {}
         self.optimization_queue = []
         self.background_tasks = []
-        
+
         # Ensure directories exist
         (self.workspace_root / "data").mkdir(exist_ok=True)
         (self.workspace_root / ".vscode").mkdir(exist_ok=True)
-        
+
         # Set up logging
         self.setup_logging()
-        
+
         # Load configuration
         self.config = self.load_recovery_config()
-        
+
         # Initialize performance tracking
         self.metrics_history = []
         self.load_metrics_history()
-        
+
     def setup_logging(self):
         """Set up comprehensive logging"""
         log_file = self.workspace_root / "data" / "logs" / "recovery_optimization.log"
         log_file.parent.mkdir(exist_ok=True, parents=True)
-        
+
         logging.basicConfig(
             level=logging.INFO,
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -94,7 +96,7 @@ class RecoveryOptimizationEngine:
             ]
         )
         self.logger = logging.getLogger('RecoveryEngine')
-        
+
     def load_recovery_config(self) -> Dict[str, Any]:
         """Load recovery and optimization configuration"""
         default_config = {
@@ -128,7 +130,7 @@ class RecoveryOptimizationEngine:
                 "cpu_usage": 60  # percentage
             }
         }
-        
+
         if self.config_path.exists():
             try:
                 with open(self.config_path, 'r') as f:
@@ -139,14 +141,15 @@ class RecoveryOptimizationEngine:
                         config[key] = value
                 return config
             except Exception as e:
-                self.logger.warning(f"Failed to load config, using defaults: {e}")
-        
+                self.logger.warning(
+                    f"Failed to load config, using defaults: {e}")
+
         # Save default config
         with open(self.config_path, 'w') as f:
             json.dump(default_config, f, indent=2, default=str)
-            
+
         return default_config
-        
+
     def load_metrics_history(self):
         """Load historical performance metrics"""
         if self.metrics_path.exists():
@@ -154,23 +157,26 @@ class RecoveryOptimizationEngine:
                 with open(self.metrics_path, 'r') as f:
                     data = json.load(f)
                     for entry in data.get('metrics', []):
-                        entry['timestamp'] = datetime.fromisoformat(entry['timestamp'])
-                        self.metrics_history.append(PerformanceMetrics(**entry))
+                        entry['timestamp'] = datetime.fromisoformat(
+                            entry['timestamp'])
+                        self.metrics_history.append(
+                            PerformanceMetrics(**entry))
             except Exception as e:
                 self.logger.warning(f"Failed to load metrics history: {e}")
-                
+
     def save_metrics_history(self):
         """Save performance metrics to disk"""
         try:
             data = {
                 'last_updated': datetime.now().isoformat(),
-                'metrics': [asdict(metric) for metric in self.metrics_history[-100:]]  # Keep last 100 entries
+                # Keep last 100 entries
+                'metrics': [asdict(metric) for metric in self.metrics_history[-100:]]
             }
             with open(self.metrics_path, 'w') as f:
                 json.dump(data, f, indent=2, default=str)
         except Exception as e:
             self.logger.error(f"Failed to save metrics: {e}")
-            
+
     def collect_performance_metrics(self) -> PerformanceMetrics:
         """Collect current system performance metrics"""
         try:
@@ -178,19 +184,20 @@ class RecoveryOptimizationEngine:
             cpu_usage = psutil.cpu_percent(interval=1)
             memory = psutil.virtual_memory()
             disk_io = psutil.disk_io_counters()._asdict() if psutil.disk_io_counters() else {}
-            
+
             # Process metrics
-            active_processes = len([p for p in psutil.process_iter() if p.name() in ['Code.exe', 'node.exe', 'python.exe']])
-            
+            active_processes = len([p for p in psutil.process_iter() if p.name() in [
+                                   'Code.exe', 'node.exe', 'python.exe']])
+
             # Estimate LSP response time based on system load
             lsp_response = max(0.5, min(5.0, cpu_usage / 20))
-            
+
             # Count files for indexing estimate
             file_count = sum(1 for _ in self.workspace_root.rglob("*.py"))
-            
+
             # Estimate startup time based on current conditions
             startup_time = max(15, min(120, file_count / 50 + memory.percent))
-            
+
             return PerformanceMetrics(
                 timestamp=datetime.now(),
                 cpu_usage=cpu_usage,
@@ -201,7 +208,7 @@ class RecoveryOptimizationEngine:
                 startup_time=startup_time,
                 active_processes=active_processes
             )
-            
+
         except Exception as e:
             self.logger.error(f"Failed to collect metrics: {e}")
             return PerformanceMetrics(
@@ -210,48 +217,53 @@ class RecoveryOptimizationEngine:
                 lsp_response_time=5.0, file_indexing_count=0,
                 startup_time=120, active_processes=0
             )
-            
+
     def analyze_workspace_health(self) -> Dict[str, WorkspaceHealth]:
         """Analyze health of all workspaces"""
         workspaces = {
             "NoxPanel-Core": self.workspace_root / "NoxPanel-Core.code-workspace",
-            "NoxPanel-AI": self.workspace_root / "NoxPanel-AI.code-workspace", 
+            "NoxPanel-AI": self.workspace_root / "NoxPanel-AI.code-workspace",
             "NoxPanel-Plugins": self.workspace_root / "NoxPanel-Plugins.code-workspace",
             "NoxPanel-DevOps": self.workspace_root / "NoxPanel-DevOps.code-workspace"
         }
-        
+
         health_results = {}
-        
+
         for name, workspace_file in workspaces.items():
             if not workspace_file.exists():
                 continue
-                
+
             try:
                 # Load workspace configuration
                 with open(workspace_file, 'r') as f:
                     workspace_config = json.load(f)
-                    
+
                 # Analyze workspace folders
                 folders = workspace_config.get('folders', [])
                 file_count = 0
                 missing_files = []
                 orphaned_files = []
-                
+
                 for folder in folders:
-                    folder_path = self.workspace_root / folder['path'].lstrip('./')
+                    folder_path = self.workspace_root / \
+                        folder['path'].lstrip('./')
                     if folder_path.exists():
-                        file_count += sum(1 for _ in folder_path.rglob("*") if _.is_file())
+                        file_count += sum(1 for _ in folder_path.rglob("*")
+                                          if _.is_file())
                     else:
                         missing_files.append(str(folder_path))
-                        
+
                 # Estimate memory usage based on file count
-                memory_usage = min(4096, file_count * 2)  # 2MB per file estimate
-                
+                # 2MB per file estimate
+                memory_usage = min(4096, file_count * 2)
+
                 # Calculate performance score
-                performance_score = max(0, min(100, 
-                    100 - (file_count / 50) - (memory_usage / 100) + len(missing_files) * -10
-                ))
-                
+                performance_score = max(0, min(100,
+                                               100 -
+                                               (file_count / 50) - (memory_usage /
+                                                                    100) + len(missing_files) * -10
+                                               ))
+
                 health_results[name] = WorkspaceHealth(
                     name=name,
                     file_count=file_count,
@@ -262,30 +274,30 @@ class RecoveryOptimizationEngine:
                     last_optimization=datetime.now() - timedelta(hours=1),
                     performance_score=performance_score
                 )
-                
+
             except Exception as e:
                 self.logger.error(f"Failed to analyze workspace {name}: {e}")
-                
+
         return health_results
-        
+
     def implement_dynamic_lsp_isolation(self):
         """Implement dynamic LSP server isolation per language domain"""
         self.logger.info("🔧 Implementing Dynamic LSP Isolation...")
-        
+
         lsp_configs = {}
-        
+
         for workspace in ["NoxPanel-Core", "NoxPanel-AI", "NoxPanel-Plugins", "NoxPanel-DevOps"]:
             config_path = self.workspace_root / f"{workspace}.code-workspace"
             if not config_path.exists():
                 continue
-                
+
             # Load existing config
             with open(config_path, 'r') as f:
                 workspace_config = json.load(f)
-                
+
             # Add LSP-specific settings
             workspace_settings = workspace_config.setdefault('settings', {})
-            
+
             if workspace == "NoxPanel-AI":
                 # AI workspace - heavy Python analysis
                 workspace_settings.update({
@@ -317,26 +329,27 @@ class RecoveryOptimizationEngine:
                     "python.analysis.autoSearchPaths": True,
                     "python.analysis.indexing": True
                 })
-                
+
             # Save updated configuration
             with open(config_path, 'w') as f:
                 json.dump(workspace_config, f, indent=2)
-                
+
             lsp_configs[workspace] = workspace_settings
-            
-        self.logger.info(f"✅ LSP isolation configured for {len(lsp_configs)} workspaces")
+
+        self.logger.info(
+            f"✅ LSP isolation configured for {len(lsp_configs)} workspaces")
         return lsp_configs
-        
+
     def implement_adaptive_caching(self):
         """Implement workspace-specific adaptive caching with override controls"""
         self.logger.info("💾 Implementing Adaptive Caching System...")
-        
+
         cache_dir = self.workspace_root / ".vscode" / "adaptive_cache"
         cache_dir.mkdir(exist_ok=True, parents=True)
-        
+
         # Create cache management script
         cache_manager = cache_dir / "cache_manager.py"
-        
+
         cache_manager_code = '''#!/usr/bin/env python3
 """
 Adaptive Cache Manager
@@ -406,18 +419,19 @@ if __name__ == "__main__":
         manager.cleanup_stale_cache()
         print(f"Cache cleanup completed for {sys.argv[1]}")
 '''
-        
+
         with open(cache_manager, 'w') as f:
             f.write(cache_manager_code)
-            
+
         # Add cache settings to each workspace
         for workspace in ["NoxPanel-Core", "NoxPanel-AI", "NoxPanel-Plugins", "NoxPanel-DevOps"]:
             config_path = self.workspace_root / f"{workspace}.code-workspace"
             if config_path.exists():
                 with open(config_path, 'r') as f:
                     workspace_config = json.load(f)
-                    
-                workspace_settings = workspace_config.setdefault('settings', {})
+
+                workspace_settings = workspace_config.setdefault(
+                    'settings', {})
                 workspace_settings.update({
                     "typescript.tsc.autoDetect": "off",
                     "npm.autoDetect": "off",
@@ -431,12 +445,12 @@ if __name__ == "__main__":
                         "**/archive/**": True
                     }
                 })
-                
+
                 # Add cache-specific tasks
                 tasks = workspace_config.setdefault('tasks', {})
                 tasks.setdefault('version', '2.0.0')
                 task_list = tasks.setdefault('tasks', [])
-                
+
                 task_list.append({
                     "label": f"Cache Cleanup - {workspace}",
                     "type": "shell",
@@ -450,16 +464,16 @@ if __name__ == "__main__":
                         "panel": "shared"
                     }
                 })
-                
+
                 with open(config_path, 'w') as f:
                     json.dump(workspace_config, f, indent=2)
-                    
+
         self.logger.info("✅ Adaptive caching implemented for all workspaces")
-        
+
     def implement_lazy_loading(self):
         """Implement lazy-loading project subtrees during workspace mount"""
         self.logger.info("⚡ Implementing Lazy Loading System...")
-        
+
         # Create lazy loading configuration
         lazy_config = {
             "enabled": True,
@@ -476,20 +490,21 @@ if __name__ == "__main__":
                 "**/node_modules/**"
             ]
         }
-        
+
         lazy_config_path = self.workspace_root / ".vscode" / "lazy_loading.json"
         with open(lazy_config_path, 'w') as f:
             json.dump(lazy_config, f, indent=2)
-            
+
         # Update workspace configurations with lazy loading
         for workspace in ["NoxPanel-Core", "NoxPanel-AI", "NoxPanel-Plugins", "NoxPanel-DevOps"]:
             config_path = self.workspace_root / f"{workspace}.code-workspace"
             if config_path.exists():
                 with open(config_path, 'r') as f:
                     workspace_config = json.load(f)
-                    
-                workspace_settings = workspace_config.setdefault('settings', {})
-                
+
+                workspace_settings = workspace_config.setdefault(
+                    'settings', {})
+
                 # Add file exclusions for performance
                 workspace_settings.update({
                     "files.exclude": {
@@ -498,7 +513,8 @@ if __name__ == "__main__":
                         "**/node_modules": True,
                         "**/__pycache__": True,
                         "**/data/logs/**": True,
-                        "**/archive/**": workspace != "NoxPanel-DevOps",  # Only DevOps needs archive access
+                        # Only DevOps needs archive access
+                        "**/archive/**": workspace != "NoxPanel-DevOps",
                         "**/*.log": True,
                         "**/*.tmp": True
                     },
@@ -516,19 +532,19 @@ if __name__ == "__main__":
                         "**/__pycache__/**": True
                     }
                 })
-                
+
                 with open(config_path, 'w') as f:
                     json.dump(workspace_config, f, indent=2)
-                    
+
         self.logger.info("✅ Lazy loading configured for optimal performance")
-        
+
     def create_auto_healing_system(self):
         """Create background task queue for auto-healing orphaned/missing files"""
         self.logger.info("🔄 Creating Auto-Healing System...")
-        
+
         healing_script = self.workspace_root / "scripts" / "auto_healing_agent.py"
         healing_script.parent.mkdir(exist_ok=True, parents=True)
-        
+
         healing_agent_code = '''#!/usr/bin/env python3
 """
 Auto-Healing Agent
@@ -715,56 +731,58 @@ if __name__ == "__main__":
         result = agent.run_healing_cycle()
         print(json.dumps(result, indent=2))
 '''
-        
+
         with open(healing_script, 'w') as f:
             f.write(healing_agent_code)
-            
+
         self.logger.info("✅ Auto-healing system created")
-        
+
     def validate_fritzwatcher_integrity(self) -> bool:
         """Validate FRITZWATCHER plugin system integrity"""
         self.logger.info("🔍 Validating FRITZWATCHER plugin integrity...")
-        
+
         required_files = [
             "plugins/fritzwatcher_plugin.py",
             "plugins/router_registry.py",
-            "plugins/roaming_tracker.py", 
+            "plugins/roaming_tracker.py",
             "plugins/keepass_helper.py",
             "plugins/fritzwatcher_web.py",
             "plugins/test_fritzwatcher_integration.py"
         ]
-        
+
         missing_files = []
         for file_path in required_files:
             full_path = self.workspace_root / file_path
             if not full_path.exists():
                 missing_files.append(file_path)
-                
+
         if missing_files:
             self.logger.error(f"❌ Missing FRITZWATCHER files: {missing_files}")
             return False
         else:
             self.logger.info("✅ FRITZWATCHER plugin integrity validated")
             return True
-            
+
     def generate_recovery_report(self) -> Dict[str, Any]:
         """Generate comprehensive recovery and optimization report"""
         self.logger.info("📊 Generating recovery and optimization report...")
-        
+
         # Collect current metrics
         current_metrics = self.collect_performance_metrics()
         self.metrics_history.append(current_metrics)
-        
+
         # Analyze workspace health
         workspace_health = self.analyze_workspace_health()
-        
+
         # Calculate improvements
         baseline_startup = 120  # Pre-optimization baseline
         baseline_memory = 85    # Pre-optimization memory usage %
-        
-        improvement_startup = max(0, (baseline_startup - current_metrics.startup_time) / baseline_startup * 100)
-        improvement_memory = max(0, (baseline_memory - current_metrics.memory_usage) / baseline_memory * 100)
-        
+
+        improvement_startup = max(
+            0, (baseline_startup - current_metrics.startup_time) / baseline_startup * 100)
+        improvement_memory = max(
+            0, (baseline_memory - current_metrics.memory_usage) / baseline_memory * 100)
+
         report = {
             "recovery_status": {
                 "timestamp": datetime.now().isoformat(),
@@ -791,81 +809,86 @@ if __name__ == "__main__":
             "workspace_health": {name: asdict(health) for name, health in workspace_health.items()},
             "optimization_features": {
                 "dynamic_lsp_isolation": "✅ ACTIVE",
-                "adaptive_caching": "✅ ACTIVE", 
+                "adaptive_caching": "✅ ACTIVE",
                 "lazy_loading": "✅ ACTIVE",
                 "auto_healing": "✅ ACTIVE"
             },
             "recommendations": []
         }
-        
+
         # Add recommendations based on analysis
         if current_metrics.startup_time > 30:
-            report["recommendations"].append("Consider further file exclusions in workspace configurations")
-            
+            report["recommendations"].append(
+                "Consider further file exclusions in workspace configurations")
+
         if current_metrics.memory_usage > 75:
-            report["recommendations"].append("Enable memory-conserving LSP settings")
-            
+            report["recommendations"].append(
+                "Enable memory-conserving LSP settings")
+
         if any(len(health.missing_files) > 0 for health in workspace_health.values()):
-            report["recommendations"].append("Run auto-healing cycle to restore missing files")
-            
+            report["recommendations"].append(
+                "Run auto-healing cycle to restore missing files")
+
         # Save report
         report_path = self.workspace_root / "data" / "recovery_optimization_report.json"
         with open(report_path, 'w') as f:
             json.dump(report, f, indent=2, default=str)
-            
+
         self.logger.info(f"✅ Recovery report saved to {report_path}")
         return report
-        
+
     def run_complete_optimization(self):
         """Run complete recovery and optimization process"""
-        self.logger.info("🚀 Starting Complete Recovery and Optimization Process...")
-        
+        self.logger.info(
+            "🚀 Starting Complete Recovery and Optimization Process...")
+
         start_time = time.time()
-        
+
         try:
             # Phase 1: System Analysis
             self.logger.info("Phase 1: System Analysis...")
             initial_metrics = self.collect_performance_metrics()
             workspace_health = self.analyze_workspace_health()
-            
+
             # Phase 2: LSP Optimization
             self.logger.info("Phase 2: Dynamic LSP Isolation...")
             self.implement_dynamic_lsp_isolation()
-            
+
             # Phase 3: Caching System
             self.logger.info("Phase 3: Adaptive Caching...")
             self.implement_adaptive_caching()
-            
+
             # Phase 4: Lazy Loading
             self.logger.info("Phase 4: Lazy Loading Implementation...")
             self.implement_lazy_loading()
-            
+
             # Phase 5: Auto-Healing
             self.logger.info("Phase 5: Auto-Healing System...")
             self.create_auto_healing_system()
-            
+
             # Phase 6: FRITZWATCHER Validation
             self.logger.info("Phase 6: FRITZWATCHER Integrity Check...")
             fritzwatcher_ok = self.validate_fritzwatcher_integrity()
-            
+
             # Phase 7: Final Report
             self.logger.info("Phase 7: Final Report Generation...")
             final_report = self.generate_recovery_report()
-            
+
             # Save metrics
             self.save_metrics_history()
-            
+
             elapsed_time = time.time() - start_time
-            
-            self.logger.info(f"🎉 Complete optimization finished in {elapsed_time:.1f} seconds")
-            
+
+            self.logger.info(
+                f"🎉 Complete optimization finished in {elapsed_time:.1f} seconds")
+
             return {
                 "success": True,
                 "elapsed_time": elapsed_time,
                 "fritzwatcher_integrity": fritzwatcher_ok,
                 "optimization_report": final_report
             }
-            
+
         except Exception as e:
             self.logger.error(f"❌ Optimization failed: {e}")
             return {
@@ -874,20 +897,22 @@ if __name__ == "__main__":
                 "elapsed_time": time.time() - start_time
             }
 
+
 def main():
     """Main entry point"""
     import argparse
-    
-    parser = argparse.ArgumentParser(description='NoxPanel Recovery and Optimization Engine')
-    parser.add_argument('command', choices=['optimize', 'heal', 'report', 'status'], 
-                       help='Command to execute')
-    parser.add_argument('--workspace', default=r'k:\Project Heimnetz', 
-                       help='Workspace root directory')
-    
+
+    parser = argparse.ArgumentParser(
+        description='NoxPanel Recovery and Optimization Engine')
+    parser.add_argument('command', choices=['optimize', 'heal', 'report', 'status'],
+                        help='Command to execute')
+    parser.add_argument('--workspace', default=r'k:\Project Heimnetz',
+                        help='Workspace root directory')
+
     args = parser.parse_args()
-    
+
     engine = RecoveryOptimizationEngine(args.workspace)
-    
+
     if args.command == 'optimize':
         result = engine.run_complete_optimization()
         print(json.dumps(result, indent=2, default=str))
@@ -895,7 +920,8 @@ def main():
         # Run auto-healing cycle
         healing_script = engine.workspace_root / "scripts" / "auto_healing_agent.py"
         if healing_script.exists():
-            subprocess.run([sys.executable, str(healing_script), args.workspace])
+            subprocess.run([sys.executable, str(
+                healing_script), args.workspace])
         else:
             print("Auto-healing system not yet created. Run 'optimize' first.")
     elif args.command == 'report':
@@ -909,6 +935,7 @@ def main():
             "workspace_health": {name: asdict(h) for name, h in health.items()}
         }
         print(json.dumps(status, indent=2, default=str))
+
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,18 @@
+import aiohttp
+from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+from datetime import datetime
+from dataclasses import asdict, dataclass
+from concurrent.futures import ThreadPoolExecutor
+import sys
+import subprocess
+import re
+import os
+import logging
+import json
+import hashlib
+import asyncio
+import ast
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -18,28 +33,13 @@ Phase 4 focuses on:
 - Cross-system validation
 """
 
-import ast
-import asyncio
-import hashlib
-import json
-import logging
-import os
-import re
-import subprocess
-import sys
-from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict, dataclass
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-
-import aiohttp
 
 # Set console encoding for Windows compatibility
 if sys.platform == "win32":
     import codecs
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
     sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)
+
 
 @dataclass
 class Phase4Metrics:
@@ -49,7 +49,7 @@ class Phase4Metrics:
     2. Analysis: Class requires specific implementation patterns for Phase4Metrics functionality
     3. Solution: Implement Phase4Metrics with SOLID principles and enterprise patterns
     4. Validation: Test Phase4Metrics with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Phase 4 Deep Integration metrics."""
@@ -66,6 +66,7 @@ class Phase4Metrics:
     optimization_candidates: int
     integration_points: int
 
+
 class RLVRPhase4DeepIntegration:
     """
     REASONING CHAIN:
@@ -73,7 +74,7 @@ class RLVRPhase4DeepIntegration:
     2. Analysis: Class requires specific implementation patterns for RLVRPhase4DeepIntegration functionality
     3. Solution: Implement RLVRPhase4DeepIntegration with SOLID principles and enterprise patterns
     4. Validation: Test RLVRPhase4DeepIntegration with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Phase 4 Deep Integration & Optimization System."""
@@ -85,11 +86,11 @@ class RLVRPhase4DeepIntegration:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Initialize Phase 4 Deep Integration System."""
-        self.workspace_path = Path(workspace_path)
+      """Initialize Phase 4 Deep Integration System."""
+       self.workspace_path = Path(workspace_path)
         self.rlvr_dir = self.workspace_path / "rlvr"
         self.phase4_dir = self.rlvr_dir / "phase4"
         self.setup_phase4_directories()
@@ -113,10 +114,14 @@ class RLVRPhase4DeepIntegration:
         self.logger = self.setup_logging()
         self.ollama_config = self.load_ollama_config()
 
-        self.print_safe("Phase 4 Deep Integration & Optimization System initialized")
-        self.print_safe(f"Baseline compliance: {self.metrics.baseline_compliance:.2f}%")
-        self.print_safe(f"Target compliance: {self.metrics.target_compliance:.1f}%")
-        self.print_safe(f"Gap to close: {self.metrics.target_compliance - self.metrics.baseline_compliance:.2f}%")
+        self.print_safe(
+            "Phase 4 Deep Integration & Optimization System initialized")
+        self.print_safe(
+            f"Baseline compliance: {self.metrics.baseline_compliance:.2f}%")
+        self.print_safe(
+            f"Target compliance: {self.metrics.target_compliance:.1f}%")
+        self.print_safe(
+            f"Gap to close: {self.metrics.target_compliance - self.metrics.baseline_compliance:.2f}%")
 
     def print_safe(self, message: str):
     """
@@ -125,11 +130,11 @@ class RLVRPhase4DeepIntegration:
     2. Analysis: Implementation requires specific logic for print_safe operation
     3. Solution: Implement print_safe with enterprise-grade patterns and error handling
     4. Validation: Test print_safe with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Safe print method for Windows compatibility."""
-        try:
+      """Safe print method for Windows compatibility."""
+       try:
             logger.info(message)
         except UnicodeEncodeError:
             logger.info(message.encode('ascii', 'ignore').decode('ascii'))
@@ -144,8 +149,9 @@ class RLVRPhase4DeepIntegration:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Set up Phase 4 logging."""
-        log_file = self.phase4_dir / "logs" / f"phase4_deep_integration_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+      """Set up Phase 4 logging."""
+       log_file = self.phase4_dir / "logs" / \
+            f"phase4_deep_integration_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
         logging.basicConfig(
             level=logging.INFO,
@@ -168,8 +174,8 @@ class RLVRPhase4DeepIntegration:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Create Phase 4 directory structure."""
-        directories = [
+      """Create Phase 4 directory structure."""
+       directories = [
             self.phase4_dir,
             self.phase4_dir / "reports",
             self.phase4_dir / "logs",
@@ -193,8 +199,8 @@ class RLVRPhase4DeepIntegration:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Load Ollama configuration from .env file."""
-        try:
+      """Load Ollama configuration from .env file."""
+       try:
             env_file = self.workspace_path / "NoxPanel" / ".env"
             if env_file.exists():
                 env_content = env_file.read_text(encoding='utf-8')
@@ -272,12 +278,14 @@ class RLVRPhase4DeepIntegration:
 
         # Remove duplicates and filter
         high_impact_files = list(set(high_impact_files))
-        high_impact_files = [f for f in high_impact_files if f.exists() and f.suffix == '.py']
+        high_impact_files = [
+            f for f in high_impact_files if f.exists() and f.suffix == '.py']
 
         # Sort by file size (larger files likely more complex)
         high_impact_files.sort(key=lambda f: f.stat().st_size, reverse=True)
 
-        self.print_safe(f"Identified {len(high_impact_files)} high-impact modules")
+        self.print_safe(
+            f"Identified {len(high_impact_files)} high-impact modules")
         return high_impact_files[:20]  # Top 20 high-impact modules
 
     async def analyze_integration_points(self) -> List[Dict[str, Any]]:
@@ -317,9 +325,11 @@ class RLVRPhase4DeepIntegration:
                     self.logger.warning(f"Could not analyze {file_path}: {e}")
 
         # Sort by complexity and match count
-        integration_points.sort(key=lambda x: x['matches'] * x['complexity'], reverse=True)
+        integration_points.sort(
+            key=lambda x: x['matches'] * x['complexity'], reverse=True)
 
-        self.print_safe(f"Analyzed {len(integration_points)} integration points")
+        self.print_safe(
+            f"Analyzed {len(integration_points)} integration points")
         return integration_points[:50]  # Top 50 integration points
 
     async def apply_deep_optimization(self, high_impact_modules: List[Path]) -> Dict[str, Any]:
@@ -342,20 +352,27 @@ class RLVRPhase4DeepIntegration:
                 tree = ast.parse(content)
 
                 # Count optimizable elements
-                functions = [node for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)]
-                classes = [node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)]
+                functions = [node for node in ast.walk(
+                    tree) if isinstance(node, ast.FunctionDef)]
+                classes = [node for node in ast.walk(
+                    tree) if isinstance(node, ast.ClassDef)]
 
                 if functions or classes:
                     optimization_results["modules_optimized"] += 1
-                    optimization_results["functions_optimized"] += len(functions)
+                    optimization_results["functions_optimized"] += len(
+                        functions)
                     optimization_results["classes_optimized"] += len(classes)
 
                     # Apply RLVR optimization patterns
-                    optimized_content = self.apply_optimization_patterns(content, functions, classes)
+                    optimized_content = self.apply_optimization_patterns(
+                        content, functions, classes)
 
                     # Save optimization results
-                    optimization_file = self.phase4_dir / "optimization_results" / f"{module_path.stem}_optimized.py"
-                    optimization_file.write_text(optimized_content, encoding='utf-8')
+                    optimization_file = self.phase4_dir / \
+                        "optimization_results" / \
+                            f"{module_path.stem}_optimized.py"
+                    optimization_file.write_text(
+                        optimized_content, encoding='utf-8')
 
                     optimization_results["performance_improvements"].append({
                         "module": module_path.name,
@@ -367,7 +384,8 @@ class RLVRPhase4DeepIntegration:
             except Exception as e:
                 self.logger.warning(f"Could not optimize {module_path}: {e}")
 
-        self.print_safe(f"Deep optimization completed: {optimization_results['modules_optimized']} modules optimized")
+        self.print_safe(
+            f"Deep optimization completed: {optimization_results['modules_optimized']} modules optimized")
         return optimization_results
 
     def apply_optimization_patterns(self, content: str, functions: List, classes: List) -> str:
@@ -380,8 +398,8 @@ class RLVRPhase4DeepIntegration:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Apply optimization patterns to content."""
-        optimized_content = content
+      """Apply optimization patterns to content."""
+       optimized_content = content
 
         # Add comprehensive RLVR optimization header
         timestamp = datetime.now().isoformat()
@@ -435,9 +453,11 @@ Last Updated: {timestamp}
         ollama_available = await self.check_ollama_availability()
 
         if ollama_available:
-            self.print_safe("Ollama AI integration active - applying advanced patterns")
+            self.print_safe(
+                "Ollama AI integration active - applying advanced patterns")
 
-            for module_path in high_impact_modules[:5]:  # Process top 5 modules with AI
+            # Process top 5 modules with AI
+            for module_path in high_impact_modules[:5]:
                 try:
                     content = module_path.read_text(encoding='utf-8')
 
@@ -453,15 +473,19 @@ Last Updated: {timestamp}
                         })
 
                 except Exception as e:
-                    self.logger.warning(f"AI enhancement failed for {module_path}: {e}")
+                    self.logger.warning(
+                        f"AI enhancement failed for {module_path}: {e}")
 
         else:
-            self.print_safe("Ollama not available - applying standard AI patterns")
+            self.print_safe(
+                "Ollama not available - applying standard AI patterns")
             # Apply standard AI patterns without Ollama
             ai_results["modules_enhanced"] = len(high_impact_modules)
-            ai_results["optimization_score"] = 75.0  # Standard AI enhancement score
+            # Standard AI enhancement score
+            ai_results["optimization_score"] = 75.0
 
-        self.print_safe(f"AI-driven enhancement completed: {ai_results['modules_enhanced']} modules enhanced")
+        self.print_safe(
+            f"AI-driven enhancement completed: {ai_results['modules_enhanced']} modules enhanced")
         return ai_results
 
     async def check_ollama_availability(self) -> bool:
@@ -541,7 +565,8 @@ Last Updated: {timestamp}
                 total_score += result
 
             except Exception as e:
-                self.logger.warning(f"Validation failed for {validation_name}: {e}")
+                self.logger.warning(
+                    f"Validation failed for {validation_name}: {e}")
                 validation_results["validation_points"].append({
                     "name": validation_name,
                     "score": 0.0,
@@ -550,11 +575,14 @@ Last Updated: {timestamp}
 
         # Calculate overall scores
         validation_results["systems_validated"] = len(validation_points)
-        validation_results["integration_health"] = total_score / len(validation_points)
-        validation_results["compatibility_score"] = min(100.0, total_score / len(validation_points))
+        validation_results["integration_health"] = total_score / \
+            len(validation_points)
+        validation_results["compatibility_score"] = min(
+            100.0, total_score / len(validation_points))
         validation_results["deployment_readiness"] = validation_results["compatibility_score"]
 
-        self.print_safe(f"Cross-system validation completed: {validation_results['integration_health']:.1f}% health score")
+        self.print_safe(
+            f"Cross-system validation completed: {validation_results['integration_health']:.1f}% health score")
         return validation_results
 
     async def validate_configuration(self) -> float:
@@ -567,7 +595,8 @@ Last Updated: {timestamp}
             score += 30.0
 
         # Check for configuration files
-        config_patterns = ["**/config*.py", "**/settings*.py", "**/*.json", "**/*.yaml"]
+        config_patterns = ["**/config*.py",
+                           "**/settings*.py", "**/*.json", "**/*.yaml"]
         for pattern in config_patterns:
             if list(self.workspace_path.glob(pattern)):
                 score += 20.0
@@ -591,7 +620,8 @@ Last Updated: {timestamp}
         score = 60.0  # Base score
 
         # Look for database files
-        db_patterns = ["**/db*.py", "**/database*.py", "**/*.db", "**/models*.py"]
+        db_patterns = ["**/db*.py", "**/database*.py",
+                       "**/*.db", "**/models*.py"]
         for pattern in db_patterns:
             if list(self.workspace_path.glob(pattern)):
                 score += 15.0
@@ -603,7 +633,8 @@ Last Updated: {timestamp}
         score = 75.0  # Base score
 
         # Check for requirements files
-        req_files = ["requirements.txt", "requirements-dev.txt", "setup.py", "pyproject.toml"]
+        req_files = ["requirements.txt", "requirements-dev.txt",
+                     "setup.py", "pyproject.toml"]
         for req_file in req_files:
             if (self.workspace_path / req_file).exists():
                 score += 10.0
@@ -630,15 +661,18 @@ Last Updated: {timestamp}
         """Calculate final Phase 4 metrics."""
 
         # Calculate improvement scores
-        deep_integration_score = min(100.0, optimization_results["modules_optimized"] * 5.0)
+        deep_integration_score = min(
+            100.0, optimization_results["modules_optimized"] * 5.0)
         ai_optimization_score = ai_results.get("optimization_score", 75.0)
-        performance_optimization = min(100.0, optimization_results["functions_optimized"] * 2.0)
+        performance_optimization = min(
+            100.0, optimization_results["functions_optimized"] * 2.0)
 
         # Calculate new compliance rate
         baseline = self.metrics.baseline_compliance
         optimization_boost = deep_integration_score * 0.2  # 20% weight
         ai_boost = ai_optimization_score * 0.25  # 25% weight
-        validation_boost = validation_results["integration_health"] * 0.15  # 15% weight
+        # 15% weight
+        validation_boost = validation_results["integration_health"] * 0.15
 
         new_compliance = baseline + optimization_boost + ai_boost + validation_boost
 
@@ -692,11 +726,13 @@ Last Updated: {timestamp}
         }
 
         # Save report
-        report_file = self.phase4_dir / "reports" / f"phase4_deployment_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        report_file = self.phase4_dir / "reports" / \
+            f"phase4_deployment_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(report_file, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
         return report
+
 
 async def main():
     """Main execution function for Phase 4 Deep Integration."""
@@ -714,30 +750,43 @@ async def main():
         logger.info("="*80)
 
         summary = deployment_report.get("summary", {})
-        logger.info(f"Baseline Compliance: {summary.get('baseline_compliance', '0.00%')}")
-        logger.info(f"New Compliance: {summary.get('new_compliance', '0.00%')}")
-        logger.info(f"Improvement Factor: {summary.get('improvement_factor', '1.00x')}")
-        logger.info(f"Target Achieved: {summary.get('target_achieved', False)}")
-        logger.info(f"Deployment Readiness: {summary.get('deployment_readiness', '0.0%')}")
-        logger.info(f"Modules Processed: {summary.get('modules_processed', 0)}")
+        logger.info(
+            f"Baseline Compliance: {summary.get('baseline_compliance', '0.00%')}")
+        logger.info(
+            f"New Compliance: {summary.get('new_compliance', '0.00%')}")
+        logger.info(
+            f"Improvement Factor: {summary.get('improvement_factor', '1.00x')}")
+        logger.info(
+            f"Target Achieved: {summary.get('target_achieved', False)}")
+        logger.info(
+            f"Deployment Readiness: {summary.get('deployment_readiness', '0.0%')}")
+        logger.info(
+            f"Modules Processed: {summary.get('modules_processed', 0)}")
         logger.info(f"AI Enhanced Modules: {summary.get('ai_enhanced', 0)}")
 
         deployment_status = deployment_report.get("deployment_status", {})
         logger.info(f"\nDeployment Status:")
-        logger.info(f"  Production Ready: {deployment_status.get('ready_for_production', False)}")
-        logger.info(f"  Integration Health: {deployment_status.get('integration_health', 'UNKNOWN')}")
-        logger.info(f"  Performance: {deployment_status.get('performance_optimization', 'UNKNOWN')}")
-        logger.info(f"  Security: {deployment_status.get('security_validation', 'UNKNOWN')}")
-        logger.info(f"  AI Enhancement: {deployment_status.get('ai_enhancement', 'UNKNOWN')}")
+        logger.info(
+            f"  Production Ready: {deployment_status.get('ready_for_production', False)}")
+        logger.info(
+            f"  Integration Health: {deployment_status.get('integration_health', 'UNKNOWN')}")
+        logger.info(
+            f"  Performance: {deployment_status.get('performance_optimization', 'UNKNOWN')}")
+        logger.info(
+            f"  Security: {deployment_status.get('security_validation', 'UNKNOWN')}")
+        logger.info(
+            f"  AI Enhancement: {deployment_status.get('ai_enhancement', 'UNKNOWN')}")
 
         if summary.get("target_achieved", False):
             logger.info("\nSUCCESS: Phase 4 achieved 60%+ compliance target!")
             logger.info("System is ready for enterprise deployment!")
         else:
-            logger.info(f"\nPROGRESS: Phase 4 achieved {summary.get('new_compliance', '0.00%')} compliance")
+            logger.info(
+                f"\nPROGRESS: Phase 4 achieved {summary.get('new_compliance', '0.00%')} compliance")
             logger.info("Significant progress made toward 60%+ target")
 
-        logger.info("\nPhase 4 Deep Integration & Optimization completed successfully.")
+        logger.info(
+            "\nPhase 4 Deep Integration & Optimization completed successfully.")
 
     except Exception as e:
         logger.info(f"Phase 4 Deep Integration error: {str(e)}")

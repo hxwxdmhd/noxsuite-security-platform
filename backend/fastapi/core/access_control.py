@@ -188,7 +188,8 @@ class AccessControlManager:
 
             if permission not in self.roles_permissions[role]:
                 self.roles_permissions[role].append(permission)
-                self.logger.info(f"Added permission {permission} to role {role}")
+                self.logger.info(
+                    f"Added permission {permission} to role {role}")
                 return True
 
             return False
@@ -204,7 +205,8 @@ class AccessControlManager:
                 and permission in self.roles_permissions[role]
             ):
                 self.roles_permissions[role].remove(permission)
-                self.logger.info(f"Removed permission {permission} from role {role}")
+                self.logger.info(
+                    f"Removed permission {permission} from role {role}")
                 return True
 
             return False
@@ -229,7 +231,8 @@ class AccessControlManager:
             if Path(file_path).exists():
                 with open(file_path, "r") as f:
                     self.roles_permissions = json.load(f)
-                self.logger.info(f"Roles and permissions loaded from {file_path}")
+                self.logger.info(
+                    f"Roles and permissions loaded from {file_path}")
                 return True
             else:
                 self.logger.warning(f"Roles file not found: {file_path}")
@@ -261,7 +264,8 @@ def require_permission(permission: str):
                 current_user = kwargs.get("current_user")
 
             if not current_user:
-                raise HTTPException(status_code=401, detail="Authentication required")
+                raise HTTPException(
+                    status_code=401, detail="Authentication required")
 
             user_roles = current_user.get("roles", [])
 
@@ -294,7 +298,8 @@ def require_any_permission(permissions: List[str]):
                 current_user = kwargs.get("current_user")
 
             if not current_user:
-                raise HTTPException(status_code=401, detail="Authentication required")
+                raise HTTPException(
+                    status_code=401, detail="Authentication required")
 
             user_roles = current_user.get("roles", [])
 
@@ -328,12 +333,14 @@ def require_role(role: str):
                 current_user = kwargs.get("current_user")
 
             if not current_user:
-                raise HTTPException(status_code=401, detail="Authentication required")
+                raise HTTPException(
+                    status_code=401, detail="Authentication required")
 
             user_roles = current_user.get("roles", [])
 
             if role not in user_roles:
-                raise HTTPException(status_code=403, detail=f"Role required: {role}")
+                raise HTTPException(
+                    status_code=403, detail=f"Role required: {role}")
 
             return await func(*args, **kwargs)
 
@@ -374,7 +381,8 @@ def initialize_access_control():
         return True
 
     except Exception as e:
-        access_control.logger.error(f"Failed to initialize access control: {e}")
+        access_control.logger.error(
+            f"Failed to initialize access control: {e}")
         return False
 
 

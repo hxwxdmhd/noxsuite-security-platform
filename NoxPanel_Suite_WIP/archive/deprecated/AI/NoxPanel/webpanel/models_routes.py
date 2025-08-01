@@ -18,6 +18,7 @@ models_bp = Blueprint(
     static_folder='static'
 )
 
+
 @models_bp.route('/')
 def dashboard():
     """
@@ -59,11 +60,12 @@ def dashboard():
     """
     try:
         return render_template('models/dashboard.html',
-                             title='AI Models',
-                             timestamp=datetime.now())
+                               title='AI Models',
+                               timestamp=datetime.now())
     except Exception as e:
         logger.error(f"Error in AI Models dashboard: {e}")
         return render_template('error.html', error=str(e)), 500
+
 
 @models_bp.route('/api/status')
 def api_status():
@@ -78,6 +80,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Error in AI Models API: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @models_bp.route('/api/action', methods=['POST'])
 def api_action():

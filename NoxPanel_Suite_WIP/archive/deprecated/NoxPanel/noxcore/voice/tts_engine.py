@@ -11,6 +11,7 @@ import pyttsx3
 
 logger = logging.getLogger(__name__)
 
+
 class TTSEngine:
     """Text-to-Speech engine with J.A.R.V.I.S.-inspired personality"""
 
@@ -141,14 +142,17 @@ class TTSEngine:
 
     COMPLIANCE: STANDARD
     """
+
     def _initialize_engine(self) -> bool:
         """Initialize the TTS engine"""
         try:
             self.engine = pyttsx3.init()
 
             # Configure voice properties
-            self.engine.setProperty('rate', self.personality_config["voice_rate"])
-            self.engine.setProperty('volume', self.personality_config["voice_volume"])
+            self.engine.setProperty(
+                'rate', self.personality_config["voice_rate"])
+            self.engine.setProperty(
+                'volume', self.personality_config["voice_volume"])
 
             # Try to set a more sophisticated voice
     """

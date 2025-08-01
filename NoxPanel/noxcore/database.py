@@ -463,14 +463,16 @@ class NoxDatabase:
     def _create_default_user(self, conn: sqlite3.Connection):
         """Create default admin user if none exists"""
         cursor = conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM users WHERE username = ?", ("admin",))
+        cursor.execute(
+            "SELECT COUNT(*) FROM users WHERE username = ?", ("admin",))
 
         if cursor.fetchone()[0] == 0:
             # Simple password hashing (in production, use proper hashing like bcrypt)
             import hashlib
 
             admin_password = os.getenv("ADMIN_PASS", "admin123!")
-            hashed_password = hashlib.sha256(admin_password.encode()).hexdigest()
+            hashed_password = hashlib.sha256(
+                admin_password.encode()).hexdigest()
 
             cursor.execute(
                 """
@@ -483,7 +485,8 @@ class NoxDatabase:
                     "admin@noxguard.local",
                     "admin",
                     json.dumps({"theme": "dark", "notifications": True}),
-                    json.dumps({"dashboard_layout": "default", "auto_refresh": 30}),
+                    json.dumps(
+                        {"dashboard_layout": "default", "auto_refresh": 30}),
                 ),
             )
 

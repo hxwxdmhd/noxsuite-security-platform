@@ -45,6 +45,7 @@ class PerformancemonitorPlugin:
         content = f"{self.plugin_name}-{self.version}-{datetime.now().date()}"
         return hashlib.sha512(content.encode()).hexdigest()
 
+
 if __name__ == "__main__":
     plugin = PerformancemonitorPlugin(".")
     result = plugin.execute()

@@ -414,6 +414,7 @@ The system has successfully achieved Gate 5 with maximum security score and is f
         report_file.write_text(report_content, encoding='utf-8')
         return str(report_file)
 
+
 def main():
     """Main execution function."""
     try:
@@ -438,6 +439,7 @@ def main():
 
     except Exception as e:
         print(f"Deployment status error: {str(e)}")
+
 
 if __name__ == "__main__":
     main()

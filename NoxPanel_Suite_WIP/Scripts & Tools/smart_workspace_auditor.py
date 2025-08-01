@@ -1,3 +1,15 @@
+from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+from datetime import datetime
+from dataclasses import dataclass, field
+import traceback
+import sys
+import subprocess
+import re
+import os
+import json
+import importlib.util
+import ast
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -18,19 +30,6 @@ REASONING CHAIN:
 COMPLIANCE: ENHANCED - Full enterprise-grade audit with RLVR methodology
 """
 
-import ast
-import importlib.util
-import json
-import os
-import re
-import subprocess
-import sys
-import traceback
-from dataclasses import dataclass, field
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-
 
 @dataclass
 class AuditResult:
@@ -40,7 +39,7 @@ class AuditResult:
     2. Analysis: Class requires specific implementation patterns for AuditResult functionality
     3. Solution: Implement AuditResult with SOLID principles and enterprise patterns
     4. Validation: Test AuditResult with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Structured audit result for tracking issues and fixes"""
@@ -51,7 +50,8 @@ class AuditResult:
     line_number: Optional[int] = None
     fix_applied: bool = False
     fix_description: Optional[str] = None
-    
+
+
 @dataclass
 class WorkspaceAudit:
     """
@@ -60,7 +60,7 @@ class WorkspaceAudit:
     2. Analysis: Class requires specific implementation patterns for WorkspaceAudit functionality
     3. Solution: Implement WorkspaceAudit with SOLID principles and enterprise patterns
     4. Validation: Test WorkspaceAudit with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Comprehensive workspace audit results"""
@@ -71,6 +71,7 @@ class WorkspaceAudit:
     recommendations: List[str] = field(default_factory=list)
     quality_scores: Dict[str, float] = field(default_factory=dict)
 
+
 class SmartWorkspaceAuditor:
     """
     REASONING CHAIN:
@@ -79,21 +80,21 @@ class SmartWorkspaceAuditor:
     3. Solution: Automated audit with autonomous fixing capabilities
     4. Validation: Each phase provides structured reporting and verification
     """
-    
+
     def __init__(self, workspace_root: str = "."):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        self.workspace_root = Path(workspace_root)
-        self.audit = WorkspaceAudit()
+      self.workspace_root = Path(workspace_root)
+       self.audit = WorkspaceAudit()
         self.python_files = []
         self.javascript_files = []
         self.critical_server_files = [
@@ -102,7 +103,7 @@ class SmartWorkspaceAuditor:
             "AI & NoxPanel/activate_multi_agent.py",
             "Scripts & Tools/launch_unified_server.py"
         ]
-        
+
     def run_comprehensive_audit(self) -> WorkspaceAudit:
         """
         REASONING CHAIN:
@@ -111,38 +112,39 @@ class SmartWorkspaceAuditor:
         3. Solution: Phase-by-phase audit with autonomous remediation
         4. Validation: Comprehensive reporting with actionable insights
         """
-        logger.info("🔍 Starting Smart Workspace Change Auditor & Code Improvement")
+        logger.info(
+            "🔍 Starting Smart Workspace Change Auditor & Code Improvement")
         logger.info("=" * 70)
-        
+
         # Phase 1: Track workspace changes and file movements
         self._phase1_track_changes()
-        
+
         # Phase 2: Code integrity audit
         self._phase2_code_integrity()
-        
+
         # Phase 3: Import and dependency verification
         self._phase3_import_verification()
-        
+
         # Phase 4: Code quality and standards compliance
         self._phase4_quality_analysis()
-        
+
         # Phase 5: Automated testing and validation
         self._phase5_testing_validation()
-        
+
         # Phase 6: Docker and CI/CD validation
         self._phase6_docker_validation()
-        
+
         # Phase 7: Smart auto-refactoring
         self._phase7_auto_refactoring()
-        
+
         # Phase 8: Generate improvement recommendations
         self._phase8_recommendations()
-        
+
         # Generate final report
         self._generate_change_audit_report()
-        
+
         return self.audit
-    
+
     def _phase1_track_changes(self) -> None:
     """
     REASONING CHAIN:
@@ -150,15 +152,15 @@ class SmartWorkspaceAuditor:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _phase1_track_changes with enterprise-grade patterns and error handling
     4. Validation: Test _phase1_track_changes with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Track workspace changes and verify reorganization"""
-        logger.info("\n📁 Phase 1: Tracking Workspace Changes")
-        
+      """Track workspace changes and verify reorganization"""
+       logger.info("\n📁 Phase 1: Tracking Workspace Changes")
+
         # Discover Python and JavaScript files
         self._discover_files()
-        
+
         # Check critical server files
         for server_file in self.critical_server_files:
             file_path = self.workspace_root / server_file
@@ -176,13 +178,14 @@ class SmartWorkspaceAuditor:
             else:
                 self.audit.issues_found.append(AuditResult(
                     category="CRITICAL_FILES",
-                    severity="CRITICAL", 
+                    severity="CRITICAL",
                     description=f"Critical server file missing: {server_file}",
                     file_path=str(file_path)
                 ))
-        
+
         # Check workspace configuration
-        workspace_config = self.workspace_root / "noxpanel-modular-workspace.code-workspace"
+        workspace_config = self.workspace_root / \
+            "noxpanel-modular-workspace.code-workspace"
         if workspace_config.exists():
             logger.info(f"  ✅ Workspace configuration found")
         else:
@@ -191,7 +194,7 @@ class SmartWorkspaceAuditor:
                 severity="HIGH",
                 description="VS Code workspace configuration missing"
             ))
-    
+
     def _phase2_code_integrity(self) -> None:
     """
     REASONING CHAIN:
@@ -199,18 +202,18 @@ class SmartWorkspaceAuditor:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _phase2_code_integrity with enterprise-grade patterns and error handling
     4. Validation: Test _phase2_code_integrity with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Audit code integrity and detect issues"""
-        logger.info("\n🔧 Phase 2: Code Integrity Audit")
-        
+      """Audit code integrity and detect issues"""
+       logger.info("\n🔧 Phase 2: Code Integrity Audit")
+
         for py_file in self.python_files:
             try:
                 # Check if file is syntactically valid
                 with open(py_file, 'r', encoding='utf-8', errors='ignore') as f:
                     content = f.read()
-                
+
                 if not content.strip():
                     self.audit.issues_found.append(AuditResult(
                         category="EMPTY_FILES",
@@ -219,11 +222,12 @@ class SmartWorkspaceAuditor:
                         file_path=str(py_file)
                     ))
                     continue
-                
+
                 # Parse AST to check syntax
                 try:
                     ast.parse(content)
-                    logger.info(f"  ✅ {py_file.relative_to(self.workspace_root)}")
+                    logger.info(
+                        f"  ✅ {py_file.relative_to(self.workspace_root)}")
                 except SyntaxError as e:
                     self.audit.issues_found.append(AuditResult(
                         category="SYNTAX_ERRORS",
@@ -232,7 +236,7 @@ class SmartWorkspaceAuditor:
                         file_path=str(py_file),
                         line_number=e.lineno
                     ))
-                    
+
             except Exception as e:
                 self.audit.issues_found.append(AuditResult(
                     category="FILE_ACCESS",
@@ -240,7 +244,7 @@ class SmartWorkspaceAuditor:
                     description=f"Cannot read file {py_file.relative_to(self.workspace_root)}: {e}",
                     file_path=str(py_file)
                 ))
-    
+
     def _phase3_import_verification(self) -> None:
     """
     REASONING CHAIN:
@@ -248,40 +252,42 @@ class SmartWorkspaceAuditor:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _phase3_import_verification with enterprise-grade patterns and error handling
     4. Validation: Test _phase3_import_verification with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Verify imports and dependencies after reorganization"""
-        logger.info("\n📦 Phase 3: Import and Dependency Verification")
-        
+      """Verify imports and dependencies after reorganization"""
+       logger.info("\n📦 Phase 3: Import and Dependency Verification")
+
         import_issues = []
-        
+
         for py_file in self.python_files:
             try:
                 with open(py_file, 'r', encoding='utf-8', errors='ignore') as f:
                     content = f.read()
-                
+
                 if not content.strip():
                     continue
-                
+
                 # Extract imports using AST
                 try:
                     tree = ast.parse(content)
                     for node in ast.walk(tree):
                         if isinstance(node, ast.Import):
                             for alias in node.names:
-                                self._verify_import(alias.name, py_file, node.lineno)
+                                self._verify_import(
+                                    alias.name, py_file, node.lineno)
                         elif isinstance(node, ast.ImportFrom):
                             if node.module:
-                                self._verify_import(node.module, py_file, node.lineno)
-                                
+                                self._verify_import(
+                                    node.module, py_file, node.lineno)
+
                 except SyntaxError:
                     # Already caught in phase 2
                     continue
-                    
+
             except Exception as e:
                 continue
-    
+
     def _verify_import(self, module_name: str, file_path: Path, line_number: int) -> None:
     """
     REASONING CHAIN:
@@ -289,20 +295,20 @@ class SmartWorkspaceAuditor:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _verify_import with enterprise-grade patterns and error handling
     4. Validation: Test _verify_import with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Verify if an import is valid after reorganization"""
-        # Skip standard library and known third-party modules
-        skip_modules = {
+      """Verify if an import is valid after reorganization"""
+       # Skip standard library and known third-party modules
+       skip_modules = {
             'os', 'sys', 'json', 'datetime', 'pathlib', 'typing', 'dataclasses',
             'flask', 'fastapi', 'redis', 'sqlalchemy', 'psutil', 'requests',
             'numpy', 'pandas', 'torch', 'transformers', 'pytest', 'asyncio'
         }
-        
+
         if module_name.split('.')[0] in skip_modules:
             return
-            
+
         # Check for local imports that might be broken after reorganization
         if module_name.startswith('.') or any(x in module_name for x in ['models_', 'server_', 'unified_']):
             # This is likely a local import that may need verification
@@ -325,7 +331,7 @@ class SmartWorkspaceAuditor:
                     file_path=str(file_path),
                     line_number=line_number
                 ))
-    
+
     def _phase4_quality_analysis(self) -> None:
     """
     REASONING CHAIN:
@@ -333,12 +339,12 @@ class SmartWorkspaceAuditor:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _phase4_quality_analysis with enterprise-grade patterns and error handling
     4. Validation: Test _phase4_quality_analysis with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Run code quality analysis and apply fixes"""
-        logger.info("\n📊 Phase 4: Code Quality Analysis")
-        
+      """Run code quality analysis and apply fixes"""
+       logger.info("\n📊 Phase 4: Code Quality Analysis")
+
         # Check for tools availability and run if available
         quality_tools = {
             'black': self._run_black_formatting,
@@ -347,7 +353,7 @@ class SmartWorkspaceAuditor:
             'mypy': self._run_mypy_typing,
             'bandit': self._run_bandit_security
         }
-        
+
         for tool_name, tool_func in quality_tools.items():
             try:
                 tool_func()
@@ -357,7 +363,7 @@ class SmartWorkspaceAuditor:
                     severity="LOW",
                     description=f"Could not run {tool_name}: {e}"
                 ))
-    
+
     def _run_black_formatting(self) -> None:
     """
     REASONING CHAIN:
@@ -365,13 +371,13 @@ class SmartWorkspaceAuditor:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _run_black_formatting with enterprise-grade patterns and error handling
     4. Validation: Test _run_black_formatting with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Run Black code formatting"""
-        try:
-            result = subprocess.run(['black', '--check', '.'], 
-                                  capture_output=True, text=True, cwd=self.workspace_root)
+      """Run Black code formatting"""
+       try:
+            result = subprocess.run(['black', '--check', '.'],
+                                    capture_output=True, text=True, cwd=self.workspace_root)
             if result.returncode != 0:
                 logger.info("  ⚠️ Black formatting issues found")
                 # Auto-fix if possible
@@ -387,7 +393,7 @@ class SmartWorkspaceAuditor:
                 logger.info("  ✅ Black formatting check passed")
         except FileNotFoundError:
             logger.info("  ⚠️ Black not installed - skipping formatting")
-    
+
     def _run_isort_imports(self) -> None:
     """
     REASONING CHAIN:
@@ -398,17 +404,17 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Run isort import sorting"""
-        try:
-            result = subprocess.run(['isort', '--check-only', '.'], 
-                                  capture_output=True, text=True, cwd=self.workspace_root)
+      """Run isort import sorting"""
+       try:
+            result = subprocess.run(['isort', '--check-only', '.'],
+                                    capture_output=True, text=True, cwd=self.workspace_root)
             if result.returncode != 0:
                 logger.info("  ⚠️ Import sorting issues found")
                 # Auto-fix if possible
                 subprocess.run(['isort', '.'], cwd=self.workspace_root)
                 self.audit.fixes_applied.append(AuditResult(
                     category="IMPORT_SORTING",
-                    severity="LOW", 
+                    severity="LOW",
                     description="Applied isort import sorting",
                     fix_applied=True,
                     fix_description="Automatically sorted imports with isort"
@@ -417,7 +423,7 @@ class SmartWorkspaceAuditor:
                 logger.info("  ✅ Import sorting check passed")
         except FileNotFoundError:
             logger.info("  ⚠️ isort not installed - skipping import sorting")
-    
+
     def _run_flake8_linting(self) -> None:
     """
     REASONING CHAIN:
@@ -428,10 +434,10 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Run flake8 linting"""
-        try:
-            result = subprocess.run(['flake8', '--max-line-length=88', '--ignore=E203,W503', '.'], 
-                                  capture_output=True, text=True, cwd=self.workspace_root)
+      """Run flake8 linting"""
+       try:
+            result = subprocess.run(['flake8', '--max-line-length=88', '--ignore=E203,W503', '.'],
+                                    capture_output=True, text=True, cwd=self.workspace_root)
             if result.returncode != 0:
                 logger.info("  ⚠️ Flake8 linting issues found")
                 # Parse output and create issues
@@ -447,13 +453,14 @@ class SmartWorkspaceAuditor:
                                 severity="LOW",
                                 description=f"Flake8: {description}",
                                 file_path=file_path,
-                                line_number=int(line_num) if line_num.isdigit() else None
+                                line_number=int(
+                                    line_num) if line_num.isdigit() else None
                             ))
             else:
                 logger.info("  ✅ Flake8 linting check passed")
         except FileNotFoundError:
             logger.info("  ⚠️ Flake8 not installed - skipping linting")
-    
+
     def _run_mypy_typing(self) -> None:
     """
     REASONING CHAIN:
@@ -464,10 +471,10 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Run mypy type checking"""
-        try:
-            result = subprocess.run(['mypy', '--ignore-missing-imports', '.'], 
-                                  capture_output=True, text=True, cwd=self.workspace_root)
+      """Run mypy type checking"""
+       try:
+            result = subprocess.run(['mypy', '--ignore-missing-imports', '.'],
+                                    capture_output=True, text=True, cwd=self.workspace_root)
             if result.returncode != 0:
                 logger.info("  ⚠️ MyPy type checking issues found")
                 # Could extract specific issues here
@@ -480,7 +487,7 @@ class SmartWorkspaceAuditor:
                 logger.info("  ✅ MyPy type checking passed")
         except FileNotFoundError:
             logger.info("  ⚠️ MyPy not installed - skipping type checking")
-    
+
     def _run_bandit_security(self) -> None:
     """
     REASONING CHAIN:
@@ -491,19 +498,21 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Run Bandit security analysis"""
-        try:
-            result = subprocess.run(['bandit', '-r', '.', '-f', 'json'], 
-                                  capture_output=True, text=True, cwd=self.workspace_root)
+      """Run Bandit security analysis"""
+       try:
+            result = subprocess.run(['bandit', '-r', '.', '-f', 'json'],
+                                    capture_output=True, text=True, cwd=self.workspace_root)
             if result.returncode != 0 and result.stdout:
                 try:
                     bandit_results = json.loads(result.stdout)
                     if bandit_results.get('results'):
-                        logger.info(f"  ⚠️ Bandit found {len(bandit_results['results'])} security issues")
+                        logger.info(
+                            f"  ⚠️ Bandit found {len(bandit_results['results'])} security issues")
                         for issue in bandit_results['results']:
                             self.audit.issues_found.append(AuditResult(
                                 category="SECURITY",
-                                severity="HIGH" if issue.get('issue_severity') == 'HIGH' else "MEDIUM",
+                                severity="HIGH" if issue.get(
+                                    'issue_severity') == 'HIGH' else "MEDIUM",
                                 description=f"Security: {issue.get('issue_text', 'Unknown issue')}",
                                 file_path=issue.get('filename'),
                                 line_number=issue.get('line_number')
@@ -515,8 +524,9 @@ class SmartWorkspaceAuditor:
             else:
                 logger.info("  ✅ Bandit security check passed")
         except FileNotFoundError:
-            logger.info("  ⚠️ Bandit not installed - skipping security analysis")
-    
+            logger.info(
+                "  ⚠️ Bandit not installed - skipping security analysis")
+
     def _phase5_testing_validation(self) -> None:
     """
     REASONING CHAIN:
@@ -527,31 +537,33 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Run automated testing and validation"""
-        logger.info("\n🧪 Phase 5: Testing and Validation")
-        
+      """Run automated testing and validation"""
+       logger.info("\n🧪 Phase 5: Testing and Validation")
+
         # Check for test files and structure
         test_dirs = ['tests', 'test', 'NoxPanel Core/tests']
         test_files_found = 0
-        
+
         for test_dir in test_dirs:
             test_path = self.workspace_root / test_dir
             if test_path.exists():
-                test_files = list(test_path.rglob('test_*.py')) + list(test_path.rglob('*_test.py'))
+                test_files = list(test_path.rglob('test_*.py')) + \
+                    list(test_path.rglob('*_test.py'))
                 test_files_found += len(test_files)
-                logger.info(f"  ✅ Found {len(test_files)} test files in {test_dir}")
-        
+                logger.info(
+                    f"  ✅ Found {len(test_files)} test files in {test_dir}")
+
         if test_files_found == 0:
             self.audit.issues_found.append(AuditResult(
                 category="TESTING",
                 severity="MEDIUM",
                 description="No test files found in workspace"
             ))
-        
+
         # Try to run pytest if available
         try:
-            result = subprocess.run(['pytest', '--maxfail=1', '--disable-warnings', '-v'], 
-                                  capture_output=True, text=True, cwd=self.workspace_root, timeout=60)
+            result = subprocess.run(['pytest', '--maxfail=1', '--disable-warnings', '-v'],
+                                    capture_output=True, text=True, cwd=self.workspace_root, timeout=60)
             if result.returncode == 0:
                 logger.info("  ✅ Pytest execution successful")
             else:
@@ -563,7 +575,7 @@ class SmartWorkspaceAuditor:
                 ))
         except (FileNotFoundError, subprocess.TimeoutExpired):
             logger.info("  ⚠️ Pytest not available or timed out")
-    
+
     def _phase6_docker_validation(self) -> None:
     """
     REASONING CHAIN:
@@ -574,9 +586,9 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Validate Docker configurations and builds"""
-        logger.info("\n🐳 Phase 6: Docker and CI/CD Validation")
-        
+      """Validate Docker configurations and builds"""
+       logger.info("\n🐳 Phase 6: Docker and CI/CD Validation")
+
         # Check for Docker files
         docker_files = [
             'Dockerfile',
@@ -584,12 +596,12 @@ class SmartWorkspaceAuditor:
             'Docker & Config/docker-compose.yml',
             'Docker & Config/Dockerfile'
         ]
-        
+
         for docker_file in docker_files:
             file_path = self.workspace_root / docker_file
             if file_path.exists():
                 logger.info(f"  ✅ Found {docker_file}")
-                
+
                 # Basic validation of docker-compose files
                 if docker_file.endswith('docker-compose.yml'):
                     try:
@@ -611,7 +623,7 @@ class SmartWorkspaceAuditor:
                         severity="MEDIUM",
                         description=f"Docker configuration missing: {docker_file}"
                     ))
-    
+
     def _phase7_auto_refactoring(self) -> None:
     """
     REASONING CHAIN:
@@ -622,23 +634,24 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Apply smart auto-refactoring improvements"""
-        logger.info("\n⚡ Phase 7: Smart Auto-Refactoring")
-        
+      """Apply smart auto-refactoring improvements"""
+       logger.info("\n⚡ Phase 7: Smart Auto-Refactoring")
+
         # Fix empty critical files by restoring from archive
-        empty_critical_files = [issue for issue in self.audit.issues_found 
-                              if issue.category == "CRITICAL_FILES" and "empty" in issue.description]
-        
+        empty_critical_files = [issue for issue in self.audit.issues_found
+                                if issue.category == "CRITICAL_FILES" and "empty" in issue.description]
+
         for issue in empty_critical_files:
             if issue.file_path:
-                self._attempt_restore_from_archive(Path(issue.file_path), issue)
-        
+                self._attempt_restore_from_archive(
+                    Path(issue.file_path), issue)
+
         # Add RLVR documentation to functions missing it
         self._add_rlvr_documentation()
-        
+
         # Update workspace configuration if needed
         self._update_workspace_config()
-    
+
     def _attempt_restore_from_archive(self, empty_file: Path, issue: AuditResult) -> None:
     """
     REASONING CHAIN:
@@ -649,23 +662,24 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Attempt to restore empty file from archive"""
-        try:
+      """Attempt to restore empty file from archive"""
+       try:
             archive_path = self.workspace_root / "archive" / "deprecated" / empty_file.name
             if archive_path.exists() and archive_path.stat().st_size > 0:
                 # Copy from archive
                 import shutil
                 shutil.copy2(archive_path, empty_file)
                 logger.info(f"  ✅ Restored {empty_file.name} from archive")
-                
+
                 issue.fix_applied = True
                 issue.fix_description = f"Restored from archive/deprecated/{empty_file.name}"
                 self.audit.fixes_applied.append(issue)
             else:
-                logger.info(f"  ⚠️ Cannot restore {empty_file.name} - no archive found")
+                logger.info(
+                    f"  ⚠️ Cannot restore {empty_file.name} - no archive found")
         except Exception as e:
             logger.info(f"  ❌ Failed to restore {empty_file.name}: {e}")
-    
+
     def _add_rlvr_documentation(self) -> None:
     """
     REASONING CHAIN:
@@ -676,8 +690,8 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Add RLVR documentation to functions missing it"""
-        rlvr_template = '''"""
+      """Add RLVR documentation to functions missing it"""
+       rlvr_template = '''"""
         REASONING CHAIN:
         1. Problem: [Specific problem being solved]
         2. Analysis: [Complexity assessment and approach]
@@ -686,7 +700,7 @@ class SmartWorkspaceAuditor:
         
         COMPLIANCE: STANDARD
         """'''
-        
+
         # This would need more sophisticated AST manipulation
         # For now, just flag functions without docstrings
         functions_without_docs = 0
@@ -694,7 +708,7 @@ class SmartWorkspaceAuditor:
             try:
                 with open(py_file, 'r', encoding='utf-8', errors='ignore') as f:
                     content = f.read()
-                
+
                 if content.strip():
                     tree = ast.parse(content)
                     for node in ast.walk(tree):
@@ -703,14 +717,14 @@ class SmartWorkspaceAuditor:
                                 functions_without_docs += 1
             except:
                 continue
-        
+
         if functions_without_docs > 0:
             self.audit.issues_found.append(AuditResult(
                 category="DOCUMENTATION",
                 severity="LOW",
                 description=f"Found {functions_without_docs} functions without docstrings"
             ))
-    
+
     def _update_workspace_config(self) -> None:
     """
     REASONING CHAIN:
@@ -721,13 +735,14 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Update VS Code workspace configuration if needed"""
-        workspace_config = self.workspace_root / "noxpanel-modular-workspace.code-workspace"
+      """Update VS Code workspace configuration if needed"""
+       workspace_config = self.workspace_root / \
+            "noxpanel-modular-workspace.code-workspace"
         if workspace_config.exists():
             try:
                 with open(workspace_config, 'r', encoding='utf-8') as f:
                     content = f.read()
-                
+
                 # Check for common issues in workspace config
                 if '"./src/**"' in content:
                     self.audit.issues_found.append(AuditResult(
@@ -736,7 +751,7 @@ class SmartWorkspaceAuditor:
                         description="Workspace config contains outdated './src/**' path",
                         file_path=str(workspace_config)
                     ))
-                
+
                 logger.info("  ✅ Workspace configuration validated")
             except Exception as e:
                 self.audit.issues_found.append(AuditResult(
@@ -745,7 +760,7 @@ class SmartWorkspaceAuditor:
                     description=f"Could not validate workspace config: {e}",
                     file_path=str(workspace_config)
                 ))
-    
+
     def _phase8_recommendations(self) -> None:
     """
     REASONING CHAIN:
@@ -756,52 +771,56 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate improvement recommendations"""
-        logger.info("\n💡 Phase 8: Generating Recommendations")
-        
+      """Generate improvement recommendations"""
+       logger.info("\n💡 Phase 8: Generating Recommendations")
+
         # Analyze patterns in issues found
         issue_categories = {}
         for issue in self.audit.issues_found:
-            issue_categories[issue.category] = issue_categories.get(issue.category, 0) + 1
-        
+            issue_categories[issue.category] = issue_categories.get(
+                issue.category, 0) + 1
+
         # Generate specific recommendations
         if issue_categories.get("EMPTY_FILES", 0) > 0:
             self.audit.recommendations.append(
                 "Consider removing empty files or implementing missing functionality"
             )
-        
+
         if issue_categories.get("BROKEN_IMPORTS", 0) > 0:
             self.audit.recommendations.append(
                 "Update import statements to reflect new folder structure"
             )
-        
+
         if issue_categories.get("CRITICAL_FILES", 0) > 0:
             self.audit.recommendations.append(
                 "Restore critical server files from archive or implement missing functionality"
             )
-        
+
         if issue_categories.get("TESTING", 0) > 0:
             self.audit.recommendations.append(
                 "Implement comprehensive test coverage for critical components"
             )
-        
+
         if issue_categories.get("SECURITY", 0) > 0:
             self.audit.recommendations.append(
                 "Address security issues found by Bandit analysis"
             )
-        
+
         # Calculate quality scores
         total_files = len(self.python_files)
         if total_files > 0:
             self.audit.quality_scores["syntax_health"] = 1.0 - (
-                len([i for i in self.audit.issues_found if i.category == "SYNTAX_ERRORS"]) / total_files
+                len([i for i in self.audit.issues_found if i.category ==
+                    "SYNTAX_ERRORS"]) / total_files
             )
             self.audit.quality_scores["import_health"] = 1.0 - (
-                len([i for i in self.audit.issues_found if i.category == "BROKEN_IMPORTS"]) / total_files
+                len([i for i in self.audit.issues_found if i.category ==
+                    "BROKEN_IMPORTS"]) / total_files
             )
-        
-        logger.info(f"  📊 Generated {len(self.audit.recommendations)} recommendations")
-    
+
+        logger.info(
+            f"  📊 Generated {len(self.audit.recommendations)} recommendations")
+
     def _discover_files(self) -> None:
     """
     REASONING CHAIN:
@@ -812,18 +831,24 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Discover Python and JavaScript files in workspace"""
-        self.python_files = list(self.workspace_root.rglob("*.py"))
-        self.javascript_files = list(self.workspace_root.rglob("*.js")) + list(self.workspace_root.rglob("*.ts")) + list(self.workspace_root.rglob("*.tsx"))
-        
+      """Discover Python and JavaScript files in workspace"""
+       self.python_files = list(self.workspace_root.rglob("*.py"))
+        self.javascript_files = list(self.workspace_root.rglob("*.js")) + list(
+            self.workspace_root.rglob("*.ts")) + list(self.workspace_root.rglob("*.tsx"))
+
         # Filter out common exclusions
-        exclusions = {'__pycache__', '.git', 'node_modules', '.venv', 'venv', 'archive'}
-        self.python_files = [f for f in self.python_files if not any(ex in str(f) for ex in exclusions)]
-        self.javascript_files = [f for f in self.javascript_files if not any(ex in str(f) for ex in exclusions)]
-        
-        self.audit.files_analyzed = len(self.python_files) + len(self.javascript_files)
-        logger.info(f"  📊 Discovered {len(self.python_files)} Python files, {len(self.javascript_files)} JS/TS files")
-    
+        exclusions = {'__pycache__', '.git',
+                      'node_modules', '.venv', 'venv', 'archive'}
+        self.python_files = [f for f in self.python_files if not any(
+            ex in str(f) for ex in exclusions)]
+        self.javascript_files = [f for f in self.javascript_files if not any(
+            ex in str(f) for ex in exclusions)]
+
+        self.audit.files_analyzed = len(
+            self.python_files) + len(self.javascript_files)
+        logger.info(
+            f"  📊 Discovered {len(self.python_files)} Python files, {len(self.javascript_files)} JS/TS files")
+
     def _generate_change_audit_report(self) -> None:
     """
     REASONING CHAIN:
@@ -834,8 +859,8 @@ class SmartWorkspaceAuditor:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate comprehensive CHANGE_AUDIT.md report"""
-        report_content = f"""# Smart Workspace Change Audit Report
+      """Generate comprehensive CHANGE_AUDIT.md report"""
+       report_content = f"""# Smart Workspace Change Audit Report
 
 **Generated**: {self.audit.timestamp.strftime('%Y-%m-%d %H:%M:%S')}  
 **Files Analyzed**: {self.audit.files_analyzed}  
@@ -894,16 +919,16 @@ This comprehensive audit analyzed the NoxPanel/Heimnetz workspace after recent r
 *Generated by Smart Workspace Change Auditor & Code Improvement System*
 *RLVR Methodology: Reasoning, Logic, Validation, Review*
 """
-        
+
         # Write report
         report_path = self.workspace_root / "Documentation" / "CHANGE_AUDIT.md"
         report_path.parent.mkdir(exist_ok=True)
-        
+
         with open(report_path, 'w', encoding='utf-8') as f:
             f.write(report_content)
-        
+
         logger.info(f"\n📋 Generated comprehensive audit report: {report_path}")
-    
+
     def _format_quality_scores(self) -> str:
     """
     REASONING CHAIN:
@@ -914,17 +939,18 @@ This comprehensive audit analyzed the NoxPanel/Heimnetz workspace after recent r
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Format quality scores for report"""
-        if not self.audit.quality_scores:
+      """Format quality scores for report"""
+       if not self.audit.quality_scores:
             return "- No quality scores calculated"
-        
+
         lines = []
         for metric, score in self.audit.quality_scores.items():
             percentage = f"{score * 100:.1f}%"
-            lines.append(f"- **{metric.replace('_', ' ').title()}**: {percentage}")
-        
+            lines.append(
+                f"- **{metric.replace('_', ' ').title()}**: {percentage}")
+
         return '\n'.join(lines)
-    
+
     def _format_issues_by_severity(self, severity: str) -> str:
     """
     REASONING CHAIN:
@@ -935,19 +961,20 @@ This comprehensive audit analyzed the NoxPanel/Heimnetz workspace after recent r
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Format issues by severity level"""
-        issues = [i for i in self.audit.issues_found if i.severity == severity]
+      """Format issues by severity level"""
+       issues = [i for i in self.audit.issues_found if i.severity == severity]
         if not issues:
             return "- No issues found"
-        
+
         lines = []
         for issue in issues:
             location = f" in `{issue.file_path}`" if issue.file_path else ""
             line_info = f":{issue.line_number}" if issue.line_number else ""
-            lines.append(f"- **{issue.category}**: {issue.description}{location}{line_info}")
-        
+            lines.append(
+                f"- **{issue.category}**: {issue.description}{location}{line_info}")
+
         return '\n'.join(lines)
-    
+
     def _format_fixes_applied(self) -> str:
     """
     REASONING CHAIN:
@@ -958,16 +985,17 @@ This comprehensive audit analyzed the NoxPanel/Heimnetz workspace after recent r
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Format fixes that were applied"""
-        if not self.audit.fixes_applied:
+      """Format fixes that were applied"""
+       if not self.audit.fixes_applied:
             return "- No automated fixes were applied"
-        
+
         lines = []
         for fix in self.audit.fixes_applied:
-            lines.append(f"- **{fix.category}**: {fix.fix_description or fix.description}")
-        
+            lines.append(
+                f"- **{fix.category}**: {fix.fix_description or fix.description}")
+
         return '\n'.join(lines)
-    
+
     def _format_recommendations(self) -> str:
     """
     REASONING CHAIN:
@@ -978,15 +1006,16 @@ This comprehensive audit analyzed the NoxPanel/Heimnetz workspace after recent r
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Format recommendations"""
-        if not self.audit.recommendations:
+      """Format recommendations"""
+       if not self.audit.recommendations:
             return "- No specific recommendations generated"
-        
+
         lines = []
         for i, rec in enumerate(self.audit.recommendations, 1):
             lines.append(f"{i}. {rec}")
-        
+
         return '\n'.join(lines)
+
 
 def main():
     """
@@ -995,14 +1024,14 @@ def main():
     2. Analysis: Implementation requires specific logic for main operation
     3. Solution: Implement main with enterprise-grade patterns and error handling
     4. Validation: Test main with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Main execution function"""
     try:
         auditor = SmartWorkspaceAuditor()
         audit_result = auditor.run_comprehensive_audit()
-        
+
         logger.info("\n" + "=" * 70)
         logger.info("🎯 AUDIT COMPLETE")
         logger.info("=" * 70)
@@ -1010,33 +1039,38 @@ def main():
         logger.info(f"🔍 Issues Found: {len(audit_result.issues_found)}")
         logger.info(f"🔧 Fixes Applied: {len(audit_result.fixes_applied)}")
         logger.info(f"💡 Recommendations: {len(audit_result.recommendations)}")
-        
+
         # Summary by severity
         severity_counts = {}
         for issue in audit_result.issues_found:
-            severity_counts[issue.severity] = severity_counts.get(issue.severity, 0) + 1
-        
+            severity_counts[issue.severity] = severity_counts.get(
+                issue.severity, 0) + 1
+
         logger.info("\n📋 Issues by Severity:")
         for severity in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']:
             count = severity_counts.get(severity, 0)
             if count > 0:
                 logger.info(f"  {severity}: {count}")
-        
+
         if severity_counts.get('CRITICAL', 0) > 0:
-            logger.info("\n⚠️  CRITICAL issues found - immediate attention required!")
+            logger.info(
+                "\n⚠️  CRITICAL issues found - immediate attention required!")
         elif severity_counts.get('HIGH', 0) > 0:
             logger.info("\n⚠️  HIGH priority issues found - address soon")
         else:
-            logger.info("\n✅ No critical issues found - workspace is in good shape!")
-        
-        logger.info("\n📋 Detailed report generated: Documentation/CHANGE_AUDIT.md")
-        
+            logger.info(
+                "\n✅ No critical issues found - workspace is in good shape!")
+
+        logger.info(
+            "\n📋 Detailed report generated: Documentation/CHANGE_AUDIT.md")
+
     except Exception as e:
         logger.info(f"\n❌ Audit failed with error: {e}")
         logger.info(f"Traceback: {traceback.format_exc()}")
         return 1
-    
+
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -40,9 +40,8 @@ This module implements the Requests API.
 :license: Apache2, see LICENSE for more details.
 """
 
+
 from . import sessions
-
-
 def request(method, url, **kwargs):
     """Constructs and sends a :class:`Request <Request>`.
 

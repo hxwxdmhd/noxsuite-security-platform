@@ -1,6 +1,9 @@
 """
 #!/usr/bin/env python3
 """
+from pathlib import Path
+import sys
+import logging
 main.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,20 +14,18 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel v2.0.0 - Main Application Launcher
 AI-Powered Network Management with J.A.R.V.I.S. Intelligence
 """
 
-import logging
-import sys
-from pathlib import Path
 
 # Add project root to path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
+
 
 def initialize_system():
     # REASONING: initialize_system implements core logic with Chain-of-Thought validation
@@ -63,7 +64,8 @@ def initialize_system():
             if tts.is_available():
                 print("✅ Voice interface ready (TTS operational)")
                 # Welcome message
-                tts.speak("NOX Panel version 2 point 0 is now online. All systems operational.")
+                tts.speak(
+                    "NOX Panel version 2 point 0 is now online. All systems operational.")
             else:
                 print("⚠️  Voice interface limited")
         else:
@@ -74,6 +76,7 @@ def initialize_system():
     print("🎯 Initialization complete - Starting web interface...")
     print("📱 Access dashboard: http://localhost:5000")
     print("🎤 Voice commands: Say 'Hey Nox' to activate")
+
 
 if __name__ == "__main__":
     initialize_system()

@@ -90,26 +90,27 @@ auth_manager = None
 resource_monitor = None
 quota_manager = None
 
+
 def init_managers():
     """Initialize all managers"""
     global tenant_manager, auth_manager, resource_monitor, quota_manager
-    
+
     try:
         # Initialize database manager
         from tenant_manager import DatabaseManager
         db_manager = DatabaseManager()
-        
+
         # Initialize managers
         tenant_manager = TenantManager(db_manager)
         auth_manager = TenantAuthManager(tenant_manager)
         resource_monitor = ResourceMonitor()
         quota_manager = QuotaManager(resource_monitor, tenant_manager)
-        
+
         # Start resource monitoring
         resource_monitor.start_monitoring(interval=60)
-        
+
         logger.info("All managers initialized successfully")
-        
+
     except Exception as e:
         logger.error(f"Error initializing managers: {e}")
         # Create mock managers for testing
@@ -117,6 +118,7 @@ def init_managers():
         auth_manager = None
         resource_monitor = None
         quota_manager = None
+
 
 def get_tenant_from_request():
     """Get tenant from current request"""
@@ -129,37 +131,39 @@ def get_tenant_from_request():
                 tenant = tenant_manager.get_tenant_by_domain(host)
                 if tenant:
                     return tenant
-        
+
         # Try to get tenant from session
         tenant_id = session.get('tenant_id')
         if tenant_id and tenant_manager:
             return tenant_manager.get_tenant(tenant_id)
-        
+
         # Try to get tenant from header
         tenant_id = request.headers.get('X-Tenant-ID')
         if tenant_id and tenant_manager:
             return tenant_manager.get_tenant(tenant_id)
-        
+
         return None
-        
+
     except Exception as e:
         logger.error(f"Error getting tenant from request: {e}")
         return None
+
 
 def get_current_user():
     """Get current user from session"""
     try:
         user_id = session.get('user_id')
         tenant_id = session.get('tenant_id')
-        
+
         if user_id and tenant_id and auth_manager:
             return auth_manager.get_user(tenant_id, user_id)
-        
+
         return None
-        
+
     except Exception as e:
         logger.error(f"Error getting current user: {e}")
         return None
+
 
 def require_auth(f):
     """Decorator to require authentication"""
@@ -172,6 +176,7 @@ def require_auth(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 def require_tenant(f):
     """Decorator to require tenant context"""
     @wraps(f)
@@ -183,6 +188,7 @@ def require_tenant(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 def require_permission(permission: Permission):
     """Decorator to require specific permission"""
     def decorator(f):
@@ -191,34 +197,36 @@ def require_permission(permission: Permission):
             user = get_current_user()
             if not user:
                 return jsonify({'error': 'Authentication required'}), 401
-            
+
             if auth_manager and not auth_manager.check_permission(user, permission):
                 return jsonify({'error': 'Insufficient permissions'}), 403
-            
+
             return f(*args, **kwargs)
         return decorated_function
     return decorator
 
 # Authentication Routes
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """User login"""
     if request.method == 'GET':
         return render_template('login.html')
-    
+
     try:
         data = request.get_json() or request.form
         email = data.get('email')
         password = data.get('password')
-        
+
         if not email or not password:
             return jsonify({'error': 'Email and password required'}), 400
-        
+
         # Get tenant from request
         tenant = get_tenant_from_request()
         if not tenant:
             return jsonify({'error': 'Tenant not found'}), 404
-        
+
         # Authenticate user
         if auth_manager:
             user = auth_manager.authenticate_user(
@@ -228,29 +236,30 @@ def login():
                 ip_address=request.remote_addr,
                 user_agent=request.headers.get('User-Agent', '')
             )
-            
+
             if user:
                 # Set session
                 session['user_id'] = user.id
                 session['tenant_id'] = tenant.id
                 session['user_role'] = user.role.value
                 session.permanent = True
-                
+
                 # Generate tokens
                 tokens = auth_manager.generate_tokens(user)
-                
+
                 return jsonify({
                     'success': True,
                     'user': user.to_dict(),
                     'tokens': tokens,
                     'redirect_url': url_for('dashboard')
                 })
-        
+
         return jsonify({'error': 'Invalid credentials'}), 401
-        
+
     except Exception as e:
         logger.error(f"Login error: {e}")
         return jsonify({'error': 'Login failed'}), 500
+
 
 @app.route('/logout')
 def logout():
@@ -258,26 +267,27 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     """User registration"""
     if request.method == 'GET':
         return render_template('register.html')
-    
+
     try:
         data = request.get_json() or request.form
         name = data.get('name')
         email = data.get('email')
         password = data.get('password')
-        
+
         if not all([name, email, password]):
             return jsonify({'error': 'All fields required'}), 400
-        
+
         # Get tenant from request
         tenant = get_tenant_from_request()
         if not tenant:
             return jsonify({'error': 'Tenant not found'}), 404
-        
+
         # Create user
         if auth_manager:
             user = auth_manager.create_user(
@@ -287,21 +297,23 @@ def register():
                 password=password,
                 role=UserRole.USER
             )
-            
+
             if user:
                 return jsonify({
                     'success': True,
                     'message': 'User created successfully',
                     'redirect_url': url_for('login')
                 })
-        
+
         return jsonify({'error': 'Registration failed'}), 500
-        
+
     except Exception as e:
         logger.error(f"Registration error: {e}")
         return jsonify({'error': 'Registration failed'}), 500
 
 # Dashboard Routes
+
+
 @app.route('/')
 @app.route('/dashboard')
 @require_auth
@@ -311,7 +323,7 @@ def dashboard():
     try:
         tenant = g.current_tenant
         user = g.current_user
-        
+
         # Get tenant statistics
         stats = {
             'total_users': 0,
@@ -320,12 +332,12 @@ def dashboard():
             'alerts': [],
             'billing_info': {}
         }
-        
+
         if tenant_manager:
             # Get tenant users (mock data)
             stats['total_users'] = 15
             stats['active_users'] = 12
-        
+
         if quota_manager:
             # Get resource usage
             for resource_type in ResourceType:
@@ -334,20 +346,20 @@ def dashboard():
                 status, alert = quota_manager.check_quota_status(
                     tenant.id, resource_type, current_usage
                 )
-                
+
                 stats['resource_usage'][resource_type.value] = {
                     'current': current_usage,
                     'limit': 100 if resource_type == ResourceType.USERS else 10240,
                     'status': status.value if status else 'normal'
                 }
-                
+
                 if alert:
                     stats['alerts'].append({
                         'type': alert.alert_type.value,
                         'message': alert.message,
                         'resource': alert.resource_type.value
                     })
-        
+
         if resource_monitor:
             # Get system metrics
             system_metrics = resource_monitor.get_latest_system_metrics()
@@ -358,15 +370,16 @@ def dashboard():
                     'disk_usage': system_metrics.disk_usage,
                     'active_connections': system_metrics.active_connections
                 }
-        
-        return render_template('dashboard.html', 
-                             tenant=tenant, 
-                             user=user, 
-                             stats=stats)
-        
+
+        return render_template('dashboard.html',
+                               tenant=tenant,
+                               user=user,
+                               stats=stats)
+
     except Exception as e:
         logger.error(f"Dashboard error: {e}")
         return render_template('error.html', error="Dashboard error"), 500
+
 
 @app.route('/users')
 @require_auth
@@ -377,7 +390,7 @@ def users():
     try:
         tenant = g.current_tenant
         user = g.current_user
-        
+
         # Get tenant users (mock data)
         users_list = [
             {
@@ -397,15 +410,16 @@ def users():
                 'created_at': datetime.now().isoformat()
             }
         ]
-        
-        return render_template('users.html', 
-                             tenant=tenant, 
-                             user=user, 
-                             users=users_list)
-        
+
+        return render_template('users.html',
+                               tenant=tenant,
+                               user=user,
+                               users=users_list)
+
     except Exception as e:
         logger.error(f"Users error: {e}")
         return render_template('error.html', error="Users error"), 500
+
 
 @app.route('/resources')
 @require_auth
@@ -416,41 +430,42 @@ def resources():
     try:
         tenant = g.current_tenant
         user = g.current_user
-        
+
         # Get resource usage data
         resource_data = {}
-        
+
         if quota_manager:
             for resource_type in ResourceType:
                 # Mock current usage
                 current_usage = 50 if resource_type == ResourceType.USERS else 1024
                 limit = 100 if resource_type == ResourceType.USERS else 10240
-                
+
                 status, alert = quota_manager.check_quota_status(
                     tenant.id, resource_type, current_usage
                 )
-                
+
                 resource_data[resource_type.value] = {
                     'current': current_usage,
                     'limit': limit,
                     'percentage': (current_usage / limit) * 100,
                     'status': status.value if status else 'normal'
                 }
-        
+
         # Get recent alerts
         alerts = []
         if quota_manager:
             alerts = quota_manager.get_tenant_alerts(tenant.id, resolved=False)
-        
-        return render_template('resources.html', 
-                             tenant=tenant, 
-                             user=user, 
-                             resource_data=resource_data,
-                             alerts=alerts)
-        
+
+        return render_template('resources.html',
+                               tenant=tenant,
+                               user=user,
+                               resource_data=resource_data,
+                               alerts=alerts)
+
     except Exception as e:
         logger.error(f"Resources error: {e}")
         return render_template('error.html', error="Resources error"), 500
+
 
 @app.route('/billing')
 @require_auth
@@ -461,7 +476,7 @@ def billing():
     try:
         tenant = g.current_tenant
         user = g.current_user
-        
+
         # Get billing information (mock data)
         billing_info = {
             'current_plan': tenant.plan.value,
@@ -486,15 +501,16 @@ def billing():
                 }
             ]
         }
-        
-        return render_template('billing.html', 
-                             tenant=tenant, 
-                             user=user, 
-                             billing_info=billing_info)
-        
+
+        return render_template('billing.html',
+                               tenant=tenant,
+                               user=user,
+                               billing_info=billing_info)
+
     except Exception as e:
         logger.error(f"Billing error: {e}")
         return render_template('error.html', error="Billing error"), 500
+
 
 @app.route('/api-keys')
 @require_auth
@@ -505,7 +521,7 @@ def api_keys():
     try:
         tenant = g.current_tenant
         user = g.current_user
-        
+
         # Get API keys (mock data)
         api_keys_list = [
             {
@@ -527,15 +543,16 @@ def api_keys():
                 'usage_count': 750
             }
         ]
-        
-        return render_template('api_keys.html', 
-                             tenant=tenant, 
-                             user=user, 
-                             api_keys=api_keys_list)
-        
+
+        return render_template('api_keys.html',
+                               tenant=tenant,
+                               user=user,
+                               api_keys=api_keys_list)
+
     except Exception as e:
         logger.error(f"API keys error: {e}")
         return render_template('error.html', error="API keys error"), 500
+
 
 @app.route('/settings')
 @require_auth
@@ -546,16 +563,18 @@ def settings():
     try:
         tenant = g.current_tenant
         user = g.current_user
-        
-        return render_template('settings.html', 
-                             tenant=tenant, 
-                             user=user)
-        
+
+        return render_template('settings.html',
+                               tenant=tenant,
+                               user=user)
+
     except Exception as e:
         logger.error(f"Settings error: {e}")
         return render_template('error.html', error="Settings error"), 500
 
 # API Routes
+
+
 @app.route('/api/tenant/info')
 @require_auth
 @require_tenant
@@ -563,7 +582,7 @@ def api_tenant_info():
     """Get tenant information"""
     try:
         tenant = g.current_tenant
-        
+
         return jsonify({
             'id': tenant.id,
             'name': tenant.name,
@@ -572,10 +591,11 @@ def api_tenant_info():
             'status': tenant.status.value,
             'created_at': tenant.created_at.isoformat()
         })
-        
+
     except Exception as e:
         logger.error(f"API tenant info error: {e}")
         return jsonify({'error': 'Failed to get tenant info'}), 500
+
 
 @app.route('/api/user/profile')
 @require_auth
@@ -583,7 +603,7 @@ def api_user_profile():
     """Get user profile"""
     try:
         user = g.current_user
-        
+
         return jsonify({
             'id': user.id,
             'name': user.name,
@@ -593,10 +613,11 @@ def api_user_profile():
             'created_at': user.created_at.isoformat(),
             'last_login': user.last_login.isoformat() if user.last_login else None
         })
-        
+
     except Exception as e:
         logger.error(f"API user profile error: {e}")
         return jsonify({'error': 'Failed to get user profile'}), 500
+
 
 @app.route('/api/resources/status')
 @require_auth
@@ -606,31 +627,32 @@ def api_resources_status():
     """Get resource status"""
     try:
         tenant = g.current_tenant
-        
+
         resource_status = {}
-        
+
         if quota_manager:
             for resource_type in ResourceType:
                 # Mock current usage
                 current_usage = 50 if resource_type == ResourceType.USERS else 1024
                 limit = 100 if resource_type == ResourceType.USERS else 10240
-                
+
                 status, alert = quota_manager.check_quota_status(
                     tenant.id, resource_type, current_usage
                 )
-                
+
                 resource_status[resource_type.value] = {
                     'current': current_usage,
                     'limit': limit,
                     'percentage': (current_usage / limit) * 100,
                     'status': status.value if status else 'normal'
                 }
-        
+
         return jsonify(resource_status)
-        
+
     except Exception as e:
         logger.error(f"API resources status error: {e}")
         return jsonify({'error': 'Failed to get resource status'}), 500
+
 
 @app.route('/api/system/metrics')
 @require_auth
@@ -651,12 +673,13 @@ def api_system_metrics():
                     'response_time': system_metrics.response_time,
                     'timestamp': system_metrics.timestamp.isoformat()
                 })
-        
+
         return jsonify({'error': 'System metrics not available'}), 503
-        
+
     except Exception as e:
         logger.error(f"API system metrics error: {e}")
         return jsonify({'error': 'Failed to get system metrics'}), 500
+
 
 @app.route('/api/alerts')
 @require_auth
@@ -666,11 +689,12 @@ def api_alerts():
     """Get tenant alerts"""
     try:
         tenant = g.current_tenant
-        
+
         alerts = []
         if quota_manager:
-            tenant_alerts = quota_manager.get_tenant_alerts(tenant.id, resolved=False)
-            
+            tenant_alerts = quota_manager.get_tenant_alerts(
+                tenant.id, resolved=False)
+
             for alert in tenant_alerts:
                 alerts.append({
                     'id': alert.id,
@@ -682,12 +706,13 @@ def api_alerts():
                     'threshold': alert.threshold,
                     'created_at': alert.created_at.isoformat()
                 })
-        
+
         return jsonify(alerts)
-        
+
     except Exception as e:
         logger.error(f"API alerts error: {e}")
         return jsonify({'error': 'Failed to get alerts'}), 500
+
 
 @app.route('/api/users', methods=['POST'])
 @require_auth
@@ -698,15 +723,15 @@ def api_create_user():
     try:
         tenant = g.current_tenant
         data = request.get_json()
-        
+
         name = data.get('name')
         email = data.get('email')
         password = data.get('password')
         role = data.get('role', 'user')
-        
+
         if not all([name, email, password]):
             return jsonify({'error': 'All fields required'}), 400
-        
+
         if auth_manager:
             user = auth_manager.create_user(
                 tenant_id=tenant.id,
@@ -715,18 +740,19 @@ def api_create_user():
                 password=password,
                 role=UserRole(role)
             )
-            
+
             if user:
                 return jsonify({
                     'success': True,
                     'user': user.to_dict()
                 })
-        
+
         return jsonify({'error': 'Failed to create user'}), 500
-        
+
     except Exception as e:
         logger.error(f"API create user error: {e}")
         return jsonify({'error': 'Failed to create user'}), 500
+
 
 @app.route('/api/api-keys', methods=['POST'])
 @require_auth
@@ -738,13 +764,13 @@ def api_create_api_key():
         tenant = g.current_tenant
         user = g.current_user
         data = request.get_json()
-        
+
         name = data.get('name')
         permissions = data.get('permissions', ['api:read'])
-        
+
         if not name:
             return jsonify({'error': 'API key name required'}), 400
-        
+
         if auth_manager:
             # Convert permission strings to Permission enum
             perm_set = set()
@@ -753,14 +779,14 @@ def api_create_api_key():
                     perm_set.add(Permission(perm))
                 except ValueError:
                     continue
-            
+
             api_key = auth_manager.create_api_key(
                 tenant_id=tenant.id,
                 user_id=user.id,
                 name=name,
                 permissions=perm_set
             )
-            
+
             if api_key:
                 return jsonify({
                     'success': True,
@@ -772,29 +798,34 @@ def api_create_api_key():
                         'created_at': api_key.created_at.isoformat()
                     }
                 })
-        
+
         return jsonify({'error': 'Failed to create API key'}), 500
-        
+
     except Exception as e:
         logger.error(f"API create API key error: {e}")
         return jsonify({'error': 'Failed to create API key'}), 500
 
 # Error handlers
+
+
 @app.errorhandler(404)
 def not_found(error):
     return render_template('error.html', error="Page not found"), 404
+
 
 @app.errorhandler(500)
 def internal_error(error):
     return render_template('error.html', error="Internal server error"), 500
 
 # Template creation (basic HTML templates)
+
+
 def create_templates():
     """Create basic HTML templates"""
     try:
         templates_dir = os.path.join(project_root, 'templates')
         os.makedirs(templates_dir, exist_ok=True)
-        
+
         # Base template
         base_template = """<!DOCTYPE html>
 <html lang="en">
@@ -871,10 +902,10 @@ def create_templates():
     {% block scripts %}{% endblock %}
 </body>
 </html>"""
-        
+
         with open(os.path.join(templates_dir, 'base.html'), 'w') as f:
             f.write(base_template)
-        
+
         # Login template
         login_template = """{% extends "base.html" %}
 
@@ -937,10 +968,10 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 });
 </script>
 {% endblock %}"""
-        
+
         with open(os.path.join(templates_dir, 'login.html'), 'w') as f:
             f.write(login_template)
-        
+
         # Dashboard template
         dashboard_template = """{% extends "base.html" %}
 
@@ -1113,10 +1144,10 @@ const chart = new Chart(ctx, {
 </script>
 {% endif %}
 {% endblock %}"""
-        
+
         with open(os.path.join(templates_dir, 'dashboard.html'), 'w') as f:
             f.write(dashboard_template)
-        
+
         # Error template
         error_template = """{% extends "base.html" %}
 
@@ -1129,27 +1160,28 @@ const chart = new Chart(ctx, {
     <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
 </div>
 {% endblock %}"""
-        
+
         with open(os.path.join(templates_dir, 'error.html'), 'w') as f:
             f.write(error_template)
-        
+
         logger.info("HTML templates created successfully")
-        
+
     except Exception as e:
         logger.error(f"Error creating templates: {e}")
+
 
 def main():
     """Main function to run the web interface"""
     try:
         print("Multi-Tenant Web Interface - Starting Server")
         print("=" * 50)
-        
+
         # Initialize managers
         init_managers()
-        
+
         # Create templates
         create_templates()
-        
+
         # Run the Flask app
         app.run(
             host='0.0.0.0',
@@ -1157,10 +1189,11 @@ def main():
             debug=True,
             threaded=True
         )
-        
+
     except Exception as e:
         print(f"Error running web interface: {e}")
         logger.error(f"Web interface error: {e}")
+
 
 if __name__ == "__main__":
     main()

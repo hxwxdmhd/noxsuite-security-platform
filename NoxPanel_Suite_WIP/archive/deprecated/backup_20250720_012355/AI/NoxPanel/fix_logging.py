@@ -62,6 +62,7 @@ def fix_unicode_in_file(file_path):
 
     return False
 
+
 if __name__ == "__main__":
     files_to_fix = [
         "webpanel/app_v5.py",

@@ -106,7 +106,8 @@ class CriticalAuthManager:
         )
 
         # Token configuration
-        self.secret_key = os.getenv("JWT_SECRET_KEY", self._generate_secret_key())
+        self.secret_key = os.getenv(
+            "JWT_SECRET_KEY", self._generate_secret_key())
         self.algorithm = "HS256"
         self.access_token_expire_minutes = 30
         self.refresh_token_expire_days = 7
@@ -216,7 +217,8 @@ class CriticalAuthManager:
         with open(users_file, "w", encoding="utf-8") as f:
             json.dump(default_users, f, indent=2, ensure_ascii=False)
 
-        logger.info("Created critical authentication users with enhanced security")
+        logger.info(
+            "Created critical authentication users with enhanced security")
         return default_users
 
     def _enhance_user_data(self, user_data: Dict[str, Any]):
@@ -225,9 +227,11 @@ class CriticalAuthManager:
         user_data.setdefault("failed_attempts", 0)
         user_data.setdefault("locked_until", None)
         user_data.setdefault("account_locked", False)
-        user_data.setdefault("password_changed_at", datetime.utcnow().isoformat())
+        user_data.setdefault("password_changed_at",
+                             datetime.utcnow().isoformat())
         user_data.setdefault(
-            "password_expires_at", (datetime.utcnow() + timedelta(days=90)).isoformat()
+            "password_expires_at", (datetime.utcnow() +
+                                    timedelta(days=90)).isoformat()
         )
         user_data.setdefault("two_factor_enabled", False)
         user_data.setdefault("login_history", [])
@@ -249,7 +253,8 @@ class CriticalAuthManager:
 
                     for session_id in expired_sessions:
                         self.terminate_session(session_id)
-                        logger.info(f"Cleaned up expired session: {session_id}")
+                        logger.info(
+                            f"Cleaned up expired session: {session_id}")
 
                     # Clean old rate limit entries
                     cutoff = current_time - timedelta(hours=1)
@@ -303,11 +308,14 @@ class CriticalAuthManager:
         has_upper = any(c.isupper() for c in password)
         has_lower = any(c.islower() for c in password)
         has_digit = any(c.isdigit() for c in password)
-        has_special = any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?~`" for c in password)
+        has_special = any(
+            c in "!@#$%^&*()_+-=[]{}|;:,.<>?~`" for c in password)
 
         # Additional checks
-        has_no_common = password.lower() not in ["password", "123456", "admin", "user"]
-        has_min_entropy = len(set(password)) >= 6  # At least 6 unique characters
+        has_no_common = password.lower() not in [
+            "password", "123456", "admin", "user"]
+        # At least 6 unique characters
+        has_min_entropy = len(set(password)) >= 6
 
         return all(
             [
@@ -441,11 +449,13 @@ class CriticalAuthManager:
 
             # Account status checks
             if not user.get("is_active", False):
-                logger.warning(f"Authentication attempt for inactive user: {username}")
+                logger.warning(
+                    f"Authentication attempt for inactive user: {username}")
                 return None
 
             if self._is_user_locked(username):
-                logger.warning(f"Authentication attempt for locked user: {username}")
+                logger.warning(
+                    f"Authentication attempt for locked user: {username}")
                 return None
 
             # Password verification
@@ -459,7 +469,8 @@ class CriticalAuthManager:
                 try:
                     expiry_date = datetime.fromisoformat(password_expires)
                     if datetime.utcnow() > expiry_date:
-                        logger.warning(f"Password expired for user: {username}")
+                        logger.warning(
+                            f"Password expired for user: {username}")
                         return None
                 except Exception as e:
                     logger.warning(f"Unexpected error: {e}")
@@ -534,7 +545,8 @@ class CriticalAuthManager:
 
         except Exception as e:
             logger.error(f"Access token creation error: {e}")
-            raise HTTPException(status_code=500, detail="Token creation failed")
+            raise HTTPException(
+                status_code=500, detail="Token creation failed")
 
     def create_refresh_token(
         self, data: Dict[str, Any], remember_me: bool = False
@@ -568,7 +580,8 @@ class CriticalAuthManager:
 
         except Exception as e:
             logger.error(f"Refresh token creation error: {e}")
-            raise HTTPException(status_code=500, detail="Refresh token creation failed")
+            raise HTTPException(
+                status_code=500, detail="Refresh token creation failed")
 
     def verify_token(
         self, token: str, expected_type: str = "access_token"
@@ -576,7 +589,8 @@ class CriticalAuthManager:
         """Production-grade token verification"""
         try:
             # Check blacklist
-            payload_preview = jwt.decode(token, options={"verify_signature": False})
+            payload_preview = jwt.decode(
+                token, options={"verify_signature": False})
             jti = payload_preview.get("jti")
             if jti and jti in self.blacklisted_tokens:
                 logger.warning("Attempt to use blacklisted token")
@@ -777,8 +791,10 @@ async def critical_login(
         )
 
         # Extract JTIs for session tracking
-        access_payload = jwt.decode(access_token, options={"verify_signature": False})
-        refresh_payload = jwt.decode(refresh_token, options={"verify_signature": False})
+        access_payload = jwt.decode(access_token, options={
+                                    "verify_signature": False})
+        refresh_payload = jwt.decode(refresh_token, options={
+                                     "verify_signature": False})
 
         # Create session
         session = critical_auth.create_session(
@@ -1002,7 +1018,8 @@ async def get_active_sessions(current_user: Dict[str, Any] = Depends(get_current
                     "created_at": session.created_at.isoformat(),
                     "last_activity": session.last_activity.isoformat(),
                     "ip_address": session.ip_address,
-                    "user_agent": session.user_agent[:100],  # Truncate for security
+                    # Truncate for security
+                    "user_agent": session.user_agent[:100],
                     "fingerprint": session.fingerprint,
                 }
             )

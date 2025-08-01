@@ -3,6 +3,8 @@ Advanced Security Scanner Plugin v2.0
 Comprehensive vulnerability assessment and threat detection
 """
 
+from plugin_system import PluginInterface, PluginMetadata
+from typing import Any, Dict
 import json
 import os
 import socket
@@ -15,25 +17,21 @@ from datetime import datetime
 plugin_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, plugin_dir)
 
-from typing import Any, Dict
-
-from plugin_system import PluginInterface, PluginMetadata
-
 
 class SecurityScannerPlugin(PluginInterface):
     """Advanced Security Scanner with vulnerability assessment"""
-    
+
     def __init__(self):
     """
     RLVR: Implements __init__ with error handling and validation
-    
+
     REASONING CHAIN:
     1. Problem: Input parameters and business logic for __init__
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Implements __init__ with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
     5. Validation: 3 test cases covering edge cases
-    
+
     COMPLIANCE: STANDARD
     """
         self.config = {}
@@ -47,41 +45,41 @@ class SecurityScannerPlugin(PluginInterface):
                 "cvss_score": 9.8
             },
             "open_ftp": {
-                "severity": "high", 
+                "severity": "high",
                 "description": "FTP service may allow unencrypted file transfer",
     """
     RLVR: Retrieves data with filtering and access control
-    
+
     REASONING CHAIN:
     1. Problem: Input parameters and business logic for get_metadata
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Retrieves data with filtering and access control
     4. Implementation: Chain-of-Thought validation with error handling
     5. Validation: 3 test cases covering edge cases
-    
+
     COMPLIANCE: STANDARD
     """
     RLVR: Implements initialize with error handling and validation
-    
+
     REASONING CHAIN:
     1. Problem: Input parameters and business logic for initialize
     2. Analysis: Function complexity 1.3/5.0
     3. Solution: Implements initialize with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
     5. Validation: 3 test cases covering edge cases
-    
+
     COMPLIANCE: STANDARD
     """
     """
     RLVR: Controls program flow with conditional logic and error handling
-    
+
     REASONING CHAIN:
     1. Problem: Input parameters and business logic for execute
     2. Analysis: Function complexity 2.1/5.0
     3. Solution: Controls program flow with conditional logic and error handling
     4. Implementation: Chain-of-Thought validation with error handling
     5. Validation: 3 test cases covering edge cases
-    
+
     COMPLIANCE: STANDARD
     """
     """
@@ -95,7 +93,7 @@ class SecurityScannerPlugin(PluginInterface):
                 "cvss_score": 6.5
             }
         }
-    
+
     def get_metadata(self) -> PluginMetadata:
         return PluginMetadata(
             name="security_scanner",
@@ -104,27 +102,29 @@ class SecurityScannerPlugin(PluginInterface):
             author="NoxPanel Security Team",
             category="security",
             dependencies=["socket", "threading"],
-            permissions=["network_scan", "port_scan", "vulnerability_assessment"]
+            permissions=["network_scan", "port_scan",
+                "vulnerability_assessment"]
         )
-    
+
     def initialize(self, config: Dict[str, Any]) -> bool:
         """Initialize Security Scanner plugin"""
         try:
             self.config = config
     """
     RLVR: Implements _perform_vulnerability_scan with error handling and validation
-    
+
     REASONING CHAIN:
     1. Problem: Input parameters and business logic for _perform_vulnerability_scan
     2. Analysis: Function complexity 1.3/5.0
     3. Solution: Implements _perform_vulnerability_scan with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
     5. Validation: 3 test cases covering edge cases
-    
+
     COMPLIANCE: STANDARD
     """
             self.status = "active"
-            print("✅ Security Scanner plugin initialized - Advanced threat detection ready")
+            print(
+                "✅ Security Scanner plugin initialized - Advanced threat detection ready")
             return True
         except Exception as e:
             print(f"❌ Error initializing Security Scanner plugin: {e}")

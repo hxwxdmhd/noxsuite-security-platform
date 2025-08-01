@@ -78,6 +78,7 @@ except ImportError:
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class UserRole(Enum):
     """User role types"""
     SUPER_ADMIN = "super_admin"
@@ -88,6 +89,7 @@ class UserRole(Enum):
     VIEWER = "viewer"
     GUEST = "guest"
 
+
 class Permission(Enum):
     """System permissions"""
     # Tenant management
@@ -95,41 +97,42 @@ class Permission(Enum):
     TENANT_READ = "tenant:read"
     TENANT_UPDATE = "tenant:update"
     TENANT_DELETE = "tenant:delete"
-    
+
     # User management
     USER_CREATE = "user:create"
     USER_READ = "user:read"
     USER_UPDATE = "user:update"
     USER_DELETE = "user:delete"
     USER_INVITE = "user:invite"
-    
+
     # Role management
     ROLE_CREATE = "role:create"
     ROLE_READ = "role:read"
     ROLE_UPDATE = "role:update"
     ROLE_DELETE = "role:delete"
     ROLE_ASSIGN = "role:assign"
-    
+
     # System administration
     SYSTEM_ADMIN = "system:admin"
     SYSTEM_CONFIG = "system:config"
     SYSTEM_MONITOR = "system:monitor"
-    
+
     # Data access
     DATA_READ = "data:read"
     DATA_WRITE = "data:write"
     DATA_DELETE = "data:delete"
     DATA_EXPORT = "data:export"
-    
+
     # API access
     API_READ = "api:read"
     API_WRITE = "api:write"
     API_ADMIN = "api:admin"
-    
+
     # Billing
     BILLING_READ = "billing:read"
     BILLING_WRITE = "billing:write"
     BILLING_ADMIN = "billing:admin"
+
 
 class AuthTokenType(Enum):
     """Authentication token types"""
@@ -138,6 +141,7 @@ class AuthTokenType(Enum):
     API_KEY = "api_key"
     INVITATION = "invitation"
     RESET_PASSWORD = "reset_password"
+
 
 @dataclass
 class User:
@@ -155,7 +159,7 @@ class User:
     last_login: Optional[datetime] = None
     settings: Dict[str, Any] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert user to dictionary"""
         return {
@@ -173,6 +177,7 @@ class User:
             'metadata': self.metadata
         }
 
+
 @dataclass
 class Role:
     """Role entity"""
@@ -183,7 +188,7 @@ class Role:
     permissions: Set[Permission]
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert role to dictionary"""
         return {
@@ -195,6 +200,7 @@ class Role:
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
+
 
 @dataclass
 class AuthToken:
@@ -208,6 +214,7 @@ class AuthToken:
     is_active: bool = True
     created_at: datetime = field(default_factory=datetime.now)
     metadata: Dict[str, Any] = field(default_factory=dict)
+
 
 @dataclass
 class APIKey:
@@ -224,6 +231,7 @@ class APIKey:
     last_used: Optional[datetime] = None
     usage_count: int = 0
 
+
 @dataclass
 class LoginAttempt:
     """Login attempt tracking"""
@@ -236,33 +244,37 @@ class LoginAttempt:
     timestamp: datetime = field(default_factory=datetime.now)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
+
 class TenantAuthManager:
     """
     Tenant-aware authentication and authorization manager
     """
-    
+
     def __init__(self, tenant_manager: TenantManager = None, db_url: str = "mysql+pymysql://auth.db"):
         self.tenant_manager = tenant_manager
         self.db_url = db_url
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-        
+        self.logger = logging.getLogger(
+            f"{__name__}.{self.__class__.__name__}")
+
         # JWT configuration
-        self.jwt_secret = os.environ.get('JWT_SECRET', secrets.token_urlsafe(32))
+        self.jwt_secret = os.environ.get(
+            'JWT_SECRET', secrets.token_urlsafe(32))
         self.jwt_algorithm = 'HS256'
         self.access_token_expire = timedelta(hours=1)
         self.refresh_token_expire = timedelta(days=30)
-        
+
         # Cache for users and roles
         self.users_cache = {}
         self.roles_cache = {}
-        
+
         # Initialize database
         self._init_database()
-        
+
         # Initialize Redis cache if available
         if HAS_REDIS:
             try:
-                self.redis_client = redis.Redis(host='localhost', port=6379, db=1)
+                self.redis_client = redis.Redis(
+                    host='localhost', port=6379, db=1)
                 self.redis_client.ping()
                 self.logger.info("Redis cache initialized for auth")
             except Exception as e:
@@ -270,10 +282,10 @@ class TenantAuthManager:
                 self.redis_client = None
         else:
             self.redis_client = None
-        
+
         # Initialize default roles
         self._init_default_roles()
-    
+
     def _init_database(self):
         """Initialize authentication database"""
         try:
@@ -285,14 +297,15 @@ class TenantAuthManager:
             else:
                 # Fallback to SQLite
                 import pymysql
-                self.auth_conn = pymysql.connect("auth.db", check_same_thread=False)
+                self.auth_conn = pymysql.connect(
+                    "auth.db", check_same_thread=False)
                 self._create_auth_tables_sqlite()
-            
+
             self.logger.info("Authentication database initialized")
-            
+
         except Exception as e:
             self.logger.error(f"Failed to initialize auth database: {e}")
-    
+
     def _create_auth_tables(self):
         """Create authentication tables using SQLAlchemy"""
         try:
@@ -313,7 +326,7 @@ class TenantAuthManager:
                 Column('settings', Text),
                 Column('metadata', Text)
             )
-            
+
             # Roles table
             self.roles_table = Table(
                 'roles', self.Base.metadata,
@@ -325,7 +338,7 @@ class TenantAuthManager:
                 Column('created_at', DateTime, nullable=False),
                 Column('updated_at', DateTime, nullable=False)
             )
-            
+
             # Auth tokens table
             self.auth_tokens_table = Table(
                 'auth_tokens', self.Base.metadata,
@@ -339,7 +352,7 @@ class TenantAuthManager:
                 Column('created_at', DateTime, nullable=False),
                 Column('metadata', Text)
             )
-            
+
             # API keys table
             self.api_keys_table = Table(
                 'api_keys', self.Base.metadata,
@@ -355,7 +368,7 @@ class TenantAuthManager:
                 Column('last_used', DateTime),
                 Column('usage_count', Integer, default=0)
             )
-            
+
             # Login attempts table
             self.login_attempts_table = Table(
                 'login_attempts', self.Base.metadata,
@@ -368,18 +381,18 @@ class TenantAuthManager:
                 Column('timestamp', DateTime, nullable=False),
                 Column('metadata', Text)
             )
-            
+
             # Create all tables
             self.Base.metadata.create_all(self.engine)
-            
+
         except Exception as e:
             self.logger.error(f"Error creating auth tables: {e}")
-    
+
     def _create_auth_tables_sqlite(self):
         """Create authentication tables using SQLite"""
         try:
             cursor = self.auth_conn.cursor()
-            
+
             # Users table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS users (
@@ -399,7 +412,7 @@ class TenantAuthManager:
                     UNIQUE(tenant_id, email)
                 )
             """)
-            
+
             # Roles table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS roles (
@@ -413,7 +426,7 @@ class TenantAuthManager:
                     UNIQUE(tenant_id, name)
                 )
             """)
-            
+
             # Auth tokens table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS auth_tokens (
@@ -428,7 +441,7 @@ class TenantAuthManager:
                     metadata TEXT
                 )
             """)
-            
+
             # API keys table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS api_keys (
@@ -445,7 +458,7 @@ class TenantAuthManager:
                     usage_count INTEGER DEFAULT 0
                 )
             """)
-            
+
             # Login attempts table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS login_attempts (
@@ -459,12 +472,12 @@ class TenantAuthManager:
                     metadata TEXT
                 )
             """)
-            
+
             self.auth_conn.commit()
-            
+
         except Exception as e:
             self.logger.error(f"Error creating SQLite auth tables: {e}")
-    
+
     def _init_default_roles(self):
         """Initialize default roles for each tenant"""
         try:
@@ -519,15 +532,15 @@ class TenantAuthManager:
                     'permissions': set()
                 }
             }
-            
+
             self.default_roles = default_roles
             self.logger.info("Default roles initialized")
-            
+
         except Exception as e:
             self.logger.error(f"Error initializing default roles: {e}")
-    
+
     def create_user(self, tenant_id: str, email: str, name: str, password: str,
-                   role: UserRole = UserRole.USER) -> Optional[User]:
+                    role: UserRole = UserRole.USER) -> Optional[User]:
         """Create a new user"""
         try:
             # Check if user already exists
@@ -535,13 +548,13 @@ class TenantAuthManager:
             if existing_user:
                 self.logger.warning(f"User already exists: {email}")
                 return None
-            
+
             # Generate user ID
             user_id = str(uuid.uuid4())
-            
+
             # Hash password
             password_hash = generate_password_hash(password)
-            
+
             # Create user object
             user = User(
                 id=user_id,
@@ -551,20 +564,20 @@ class TenantAuthManager:
                 role=role,
                 password_hash=password_hash
             )
-            
+
             # Store user in database
             self._store_user(user)
-            
+
             # Cache user
             self.users_cache[f"{tenant_id}:{user_id}"] = user
-            
+
             self.logger.info(f"Created user: {email} ({user_id})")
             return user
-            
+
         except Exception as e:
             self.logger.error(f"Error creating user: {e}")
             return None
-    
+
     def _store_user(self, user: User):
         """Store user in database"""
         try:
@@ -602,10 +615,10 @@ class TenantAuthManager:
                     json.dumps(user.settings), json.dumps(user.metadata)
                 ))
                 self.auth_conn.commit()
-                
+
         except Exception as e:
             self.logger.error(f"Error storing user: {e}")
-    
+
     def get_user(self, tenant_id: str, user_id: str) -> Optional[User]:
         """Get user by ID"""
         try:
@@ -613,7 +626,7 @@ class TenantAuthManager:
             cache_key = f"{tenant_id}:{user_id}"
             if cache_key in self.users_cache:
                 return self.users_cache[cache_key]
-            
+
             # Query database
             if HAS_SQLALCHEMY:
                 with self.SessionLocal() as session:
@@ -623,7 +636,7 @@ class TenantAuthManager:
                             (self.users_table.c.id == user_id)
                         )
                     ).fetchone()
-                    
+
                     if result:
                         user = User(
                             id=result.id,
@@ -637,10 +650,12 @@ class TenantAuthManager:
                             created_at=result.created_at,
                             updated_at=result.updated_at,
                             last_login=result.last_login,
-                            settings=json.loads(result.settings) if result.settings else {},
-                            metadata=json.loads(result.metadata) if result.metadata else {}
+                            settings=json.loads(
+                                result.settings) if result.settings else {},
+                            metadata=json.loads(
+                                result.metadata) if result.metadata else {}
                         )
-                        
+
                         # Cache user
                         self.users_cache[cache_key] = user
                         return user
@@ -651,7 +666,7 @@ class TenantAuthManager:
                     (tenant_id, user_id)
                 )
                 result = cursor.fetchone()
-                
+
                 if result:
                     user = User(
                         id=result[0],
@@ -664,21 +679,22 @@ class TenantAuthManager:
                         is_verified=bool(result[7]),
                         created_at=datetime.fromisoformat(result[8]),
                         updated_at=datetime.fromisoformat(result[9]),
-                        last_login=datetime.fromisoformat(result[10]) if result[10] else None,
+                        last_login=datetime.fromisoformat(
+                            result[10]) if result[10] else None,
                         settings=json.loads(result[11]) if result[11] else {},
                         metadata=json.loads(result[12]) if result[12] else {}
                     )
-                    
+
                     # Cache user
                     self.users_cache[cache_key] = user
                     return user
-            
+
             return None
-            
+
         except Exception as e:
             self.logger.error(f"Error getting user: {e}")
             return None
-    
+
     def get_user_by_email(self, tenant_id: str, email: str) -> Optional[User]:
         """Get user by email"""
         try:
@@ -690,7 +706,7 @@ class TenantAuthManager:
                             (self.users_table.c.email == email)
                         )
                     ).fetchone()
-                    
+
                     if result:
                         return self.get_user(tenant_id, result.id)
             else:
@@ -700,52 +716,53 @@ class TenantAuthManager:
                     (tenant_id, email)
                 )
                 result = cursor.fetchone()
-                
+
                 if result:
                     return self.get_user(tenant_id, result[0])
-            
+
             return None
-            
+
         except Exception as e:
             self.logger.error(f"Error getting user by email: {e}")
             return None
-    
+
     def authenticate_user(self, tenant_id: str, email: str, password: str,
-                         ip_address: str = "", user_agent: str = "") -> Optional[User]:
+                          ip_address: str = "", user_agent: str = "") -> Optional[User]:
         """Authenticate user with credentials"""
         try:
             # Get user
             user = self.get_user_by_email(tenant_id, email)
-            
+
             # Record login attempt
-            self.record_login_attempt(tenant_id, email, ip_address, user_agent, user is not None)
-            
+            self.record_login_attempt(
+                tenant_id, email, ip_address, user_agent, user is not None)
+
             if not user:
                 return None
-            
+
             # Check if user is active
             if not user.is_active:
                 self.logger.warning(f"Inactive user login attempt: {email}")
                 return None
-            
+
             # Check password
             if not check_password_hash(user.password_hash, password):
                 self.logger.warning(f"Invalid password for user: {email}")
                 return None
-            
+
             # Update last login
             user.last_login = datetime.now()
             self.update_user(user)
-            
+
             self.logger.info(f"User authenticated: {email}")
             return user
-            
+
         except Exception as e:
             self.logger.error(f"Error authenticating user: {e}")
             return None
-    
+
     def record_login_attempt(self, tenant_id: str, email: str, ip_address: str,
-                           user_agent: str, success: bool):
+                             user_agent: str, success: bool):
         """Record login attempt"""
         try:
             attempt = LoginAttempt(
@@ -756,7 +773,7 @@ class TenantAuthManager:
                 user_agent=user_agent,
                 success=success
             )
-            
+
             if HAS_SQLALCHEMY:
                 with self.SessionLocal() as session:
                     session.execute(
@@ -783,15 +800,15 @@ class TenantAuthManager:
                     attempt.timestamp.isoformat(), json.dumps(attempt.metadata)
                 ))
                 self.auth_conn.commit()
-                
+
         except Exception as e:
             self.logger.error(f"Error recording login attempt: {e}")
-    
+
     def generate_tokens(self, user: User) -> Dict[str, str]:
         """Generate access and refresh tokens"""
         try:
             now = datetime.utcnow()
-            
+
             # Generate access token
             access_payload = {
                 'user_id': user.id,
@@ -802,13 +819,13 @@ class TenantAuthManager:
                 'iat': now,
                 'exp': now + self.access_token_expire
             }
-            
+
             access_token = jwt.encode(
-                access_payload, 
-                self.jwt_secret, 
+                access_payload,
+                self.jwt_secret,
                 algorithm=self.jwt_algorithm
             )
-            
+
             # Generate refresh token
             refresh_payload = {
                 'user_id': user.id,
@@ -817,37 +834,37 @@ class TenantAuthManager:
                 'iat': now,
                 'exp': now + self.refresh_token_expire
             }
-            
+
             refresh_token = jwt.encode(
                 refresh_payload,
                 self.jwt_secret,
                 algorithm=self.jwt_algorithm
             )
-            
+
             # Store tokens in database
             self._store_token(
                 user.id, user.tenant_id, AuthTokenType.ACCESS_TOKEN,
                 access_token, now + self.access_token_expire
             )
-            
+
             self._store_token(
                 user.id, user.tenant_id, AuthTokenType.REFRESH_TOKEN,
                 refresh_token, now + self.refresh_token_expire
             )
-            
+
             return {
                 'access_token': access_token,
                 'refresh_token': refresh_token,
                 'token_type': 'bearer',
                 'expires_in': int(self.access_token_expire.total_seconds())
             }
-            
+
         except Exception as e:
             self.logger.error(f"Error generating tokens: {e}")
             return {}
-    
+
     def _store_token(self, user_id: str, tenant_id: str, token_type: AuthTokenType,
-                    token: str, expires_at: datetime):
+                     token: str, expires_at: datetime):
         """Store authentication token"""
         try:
             auth_token = AuthToken(
@@ -858,7 +875,7 @@ class TenantAuthManager:
                 token=token,
                 expires_at=expires_at
             )
-            
+
             if HAS_SQLALCHEMY:
                 with self.SessionLocal() as session:
                     session.execute(
@@ -887,10 +904,10 @@ class TenantAuthManager:
                     auth_token.created_at.isoformat(), json.dumps(auth_token.metadata)
                 ))
                 self.auth_conn.commit()
-                
+
         except Exception as e:
             self.logger.error(f"Error storing token: {e}")
-    
+
     def verify_token(self, token: str) -> Optional[Dict[str, Any]]:
         """Verify JWT token"""
         try:
@@ -899,7 +916,7 @@ class TenantAuthManager:
                 self.jwt_secret,
                 algorithms=[self.jwt_algorithm]
             )
-            
+
             # Check if token is in database and active
             if HAS_SQLALCHEMY:
                 with self.SessionLocal() as session:
@@ -909,7 +926,7 @@ class TenantAuthManager:
                             (self.auth_tokens_table.c.is_active == True)
                         )
                     ).fetchone()
-                    
+
                     if not result:
                         return None
             else:
@@ -919,12 +936,12 @@ class TenantAuthManager:
                     (token,)
                 )
                 result = cursor.fetchone()
-                
+
                 if not result:
                     return None
-            
+
             return payload
-            
+
         except jwt.ExpiredSignatureError:
             self.logger.warning("Token expired")
             return None
@@ -934,19 +951,19 @@ class TenantAuthManager:
         except Exception as e:
             self.logger.error(f"Error verifying token: {e}")
             return None
-    
+
     def create_api_key(self, tenant_id: str, user_id: str, name: str,
-                      permissions: Set[Permission] = None,
-                      expires_at: datetime = None) -> Optional[APIKey]:
+                       permissions: Set[Permission] = None,
+                       expires_at: datetime = None) -> Optional[APIKey]:
         """Create API key for tenant"""
         try:
             # Generate API key
             api_key = f"hk_{''.join(secrets.choice('abcdefghijklmnopqrstuvwxyz0123456789') for _ in range(40))}"
-            
+
             # Default permissions
             if permissions is None:
                 permissions = {Permission.API_READ}
-            
+
             # Create API key object
             api_key_obj = APIKey(
                 id=str(uuid.uuid4()),
@@ -957,7 +974,7 @@ class TenantAuthManager:
                 permissions=permissions,
                 expires_at=expires_at
             )
-            
+
             # Store in database
             if HAS_SQLALCHEMY:
                 with self.SessionLocal() as session:
@@ -968,7 +985,8 @@ class TenantAuthManager:
                             user_id=api_key_obj.user_id,
                             name=api_key_obj.name,
                             key=api_key_obj.key,
-                            permissions=json.dumps([p.value for p in api_key_obj.permissions]),
+                            permissions=json.dumps(
+                                [p.value for p in api_key_obj.permissions]),
                             expires_at=api_key_obj.expires_at,
                             is_active=api_key_obj.is_active,
                             created_at=api_key_obj.created_at,
@@ -992,14 +1010,14 @@ class TenantAuthManager:
                     api_key_obj.usage_count
                 ))
                 self.auth_conn.commit()
-            
+
             self.logger.info(f"Created API key: {name} for tenant {tenant_id}")
             return api_key_obj
-            
+
         except Exception as e:
             self.logger.error(f"Error creating API key: {e}")
             return None
-    
+
     def verify_api_key(self, api_key: str) -> Optional[APIKey]:
         """Verify API key"""
         try:
@@ -1011,12 +1029,12 @@ class TenantAuthManager:
                             (self.api_keys_table.c.is_active == True)
                         )
                     ).fetchone()
-                    
+
                     if result:
                         # Check expiration
                         if result.expires_at and datetime.now() > result.expires_at:
                             return None
-                        
+
                         # Update usage
                         session.execute(
                             self.api_keys_table.update().where(
@@ -1027,14 +1045,15 @@ class TenantAuthManager:
                             )
                         )
                         session.commit()
-                        
+
                         return APIKey(
                             id=result.id,
                             tenant_id=result.tenant_id,
                             user_id=result.user_id,
                             name=result.name,
                             key=result.key,
-                            permissions=set(Permission(p) for p in json.loads(result.permissions)),
+                            permissions=set(Permission(p)
+                                            for p in json.loads(result.permissions)),
                             expires_at=result.expires_at,
                             is_active=result.is_active,
                             created_at=result.created_at,
@@ -1048,12 +1067,12 @@ class TenantAuthManager:
                     (api_key,)
                 )
                 result = cursor.fetchone()
-                
+
                 if result:
                     # Check expiration
                     if result[7] and datetime.now() > datetime.fromisoformat(result[7]):
                         return None
-                    
+
                     # Update usage
                     cursor.execute("""
                         UPDATE api_keys 
@@ -1061,45 +1080,49 @@ class TenantAuthManager:
                         WHERE id = ?
                     """, (datetime.now().isoformat(), result[0]))
                     self.auth_conn.commit()
-                    
+
                     return APIKey(
                         id=result[0],
                         tenant_id=result[1],
                         user_id=result[2],
                         name=result[3],
                         key=result[4],
-                        permissions=set(Permission(p) for p in json.loads(result[5])),
-                        expires_at=datetime.fromisoformat(result[7]) if result[7] else None,
+                        permissions=set(Permission(p)
+                                        for p in json.loads(result[5])),
+                        expires_at=datetime.fromisoformat(
+                            result[7]) if result[7] else None,
                         is_active=bool(result[8]),
                         created_at=datetime.fromisoformat(result[9]),
-                        last_used=datetime.fromisoformat(result[10]) if result[10] else None,
+                        last_used=datetime.fromisoformat(
+                            result[10]) if result[10] else None,
                         usage_count=result[11]
                     )
-            
+
             return None
-            
+
         except Exception as e:
             self.logger.error(f"Error verifying API key: {e}")
             return None
-    
+
     def check_permission(self, user: User, permission: Permission) -> bool:
         """Check if user has specific permission"""
         try:
             # Get user's role permissions
-            role_perms = self.default_roles.get(user.role, {}).get('permissions', set())
-            
+            role_perms = self.default_roles.get(
+                user.role, {}).get('permissions', set())
+
             # Check if user has permission
             return permission in role_perms
-            
+
         except Exception as e:
             self.logger.error(f"Error checking permission: {e}")
             return False
-    
+
     def update_user(self, user: User) -> bool:
         """Update user information"""
         try:
             user.updated_at = datetime.now()
-            
+
             if HAS_SQLALCHEMY:
                 with self.SessionLocal() as session:
                     session.execute(
@@ -1132,16 +1155,17 @@ class TenantAuthManager:
                     user.id
                 ))
                 self.auth_conn.commit()
-            
+
             # Update cache
             cache_key = f"{user.tenant_id}:{user.id}"
             self.users_cache[cache_key] = user
-            
+
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Error updating user: {e}")
             return False
+
 
 def require_auth(tenant_auth: TenantAuthManager):
     """Decorator to require authentication"""
@@ -1153,29 +1177,31 @@ def require_auth(tenant_auth: TenantAuthManager):
                 auth_header = kwargs.get('auth_header', '')
                 if not auth_header.startswith('Bearer '):
                     return {"error": "Authorization required"}, 401
-                
+
                 token = auth_header.split(' ')[1]
                 payload = tenant_auth.verify_token(token)
-                
+
                 if not payload:
                     return {"error": "Invalid token"}, 401
-                
+
                 # Get user
-                user = tenant_auth.get_user(payload['tenant_id'], payload['user_id'])
+                user = tenant_auth.get_user(
+                    payload['tenant_id'], payload['user_id'])
                 if not user:
                     return {"error": "User not found"}, 404
-                
+
                 # Add user to kwargs
                 kwargs['current_user'] = user
-                
+
                 return func(*args, **kwargs)
-                
+
             except Exception as e:
                 logger.error(f"Auth decorator error: {e}")
                 return {"error": "Authentication error"}, 500
-        
+
         return wrapper
     return decorator
+
 
 def require_permission(tenant_auth: TenantAuthManager, permission: Permission):
     """Decorator to require specific permission"""
@@ -1186,31 +1212,32 @@ def require_permission(tenant_auth: TenantAuthManager, permission: Permission):
                 current_user = kwargs.get('current_user')
                 if not current_user:
                     return {"error": "Authentication required"}, 401
-                
+
                 if not tenant_auth.check_permission(current_user, permission):
                     return {"error": "Insufficient permissions"}, 403
-                
+
                 return func(*args, **kwargs)
-                
+
             except Exception as e:
                 logger.error(f"Permission decorator error: {e}")
                 return {"error": "Permission error"}, 500
-        
+
         return wrapper
     return decorator
+
 
 def main():
     """Main function for testing tenant auth system"""
     try:
         print("Tenant Authentication System - Test Mode")
         print("=" * 50)
-        
+
         # Initialize tenant auth manager
         tenant_auth = TenantAuthManager()
-        
+
         # Test tenant creation (mock tenant)
         tenant_id = "test-tenant-123"
-        
+
         # Test user creation
         print("Testing user creation...")
         user = tenant_auth.create_user(
@@ -1220,10 +1247,10 @@ def main():
             password="securepassword123",
             role=UserRole.TENANT_ADMIN
         )
-        
+
         if user:
             print(f"Created user: {user.name} ({user.id})")
-            
+
             # Test user authentication
             print("Testing user authentication...")
             auth_user = tenant_auth.authenticate_user(
@@ -1231,47 +1258,51 @@ def main():
                 email="admin@test.com",
                 password="securepassword123"
             )
-            
+
             if auth_user:
                 print(f"User authenticated: {auth_user.email}")
-                
+
                 # Test token generation
                 print("Testing token generation...")
                 tokens = tenant_auth.generate_tokens(auth_user)
-                
+
                 if tokens:
                     print(f"Generated tokens: {list(tokens.keys())}")
-                    
+
                     # Test token verification
                     print("Testing token verification...")
                     payload = tenant_auth.verify_token(tokens['access_token'])
-                    
+
                     if payload:
                         print(f"Token verified: {payload['email']}")
-                        
+
                         # Test permission checking
                         print("Testing permission checking...")
-                        can_read = tenant_auth.check_permission(auth_user, Permission.USER_READ)
-                        can_delete = tenant_auth.check_permission(auth_user, Permission.TENANT_DELETE)
+                        can_read = tenant_auth.check_permission(
+                            auth_user, Permission.USER_READ)
+                        can_delete = tenant_auth.check_permission(
+                            auth_user, Permission.TENANT_DELETE)
                         print(f"Can read users: {can_read}")
                         print(f"Can delete tenant: {can_delete}")
-                        
+
                         # Test API key creation
                         print("Testing API key creation...")
                         api_key = tenant_auth.create_api_key(
                             tenant_id=tenant_id,
                             user_id=auth_user.id,
                             name="Test API Key",
-                            permissions={Permission.API_READ, Permission.DATA_READ}
+                            permissions={Permission.API_READ,
+                                         Permission.DATA_READ}
                         )
-                        
+
                         if api_key:
                             print(f"Created API key: {api_key.name}")
-                            
+
                             # Test API key verification
                             print("Testing API key verification...")
-                            verified_key = tenant_auth.verify_api_key(api_key.key)
-                            
+                            verified_key = tenant_auth.verify_api_key(
+                                api_key.key)
+
                             if verified_key:
                                 print(f"API key verified: {verified_key.name}")
                             else:
@@ -1286,12 +1317,13 @@ def main():
                 print("User authentication failed")
         else:
             print("User creation failed")
-        
+
         print("\nTenant authentication system test completed!")
-        
+
     except Exception as e:
         print(f"Error in tenant auth system: {e}")
         logger.error(f"Tenant auth system error: {e}")
+
 
 if __name__ == "__main__":
     main()

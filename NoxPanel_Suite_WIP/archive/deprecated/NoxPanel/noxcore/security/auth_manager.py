@@ -53,7 +53,7 @@ class NoxAuthManager:
 
     COMPLIANCE: STANDARD
     """
-        self.app = app
+       self.app = app
     """
     RLVR: Validates input according to business rules and constraints
 
@@ -150,7 +150,7 @@ class NoxAuthManager:
     """
     COMPLIANCE: STANDARD
     """
-        self.secret_key = None
+       self.secret_key = None
         self.token_expiry = timedelta(hours=24)
         self.failed_attempts = {}  # IP-based attempt tracking
         self.max_attempts = 5
@@ -172,8 +172,9 @@ class NoxAuthManager:
 
     COMPLIANCE: STANDARD
     """
-        self.app = app
-        self.secret_key = app.config.get('JWT_SECRET_KEY', secrets.token_urlsafe(32))
+       self.app = app
+        self.secret_key = app.config.get(
+            'JWT_SECRET_KEY', secrets.token_urlsafe(32))
 
         # Set security headers
         @app.after_request
@@ -223,7 +224,7 @@ class NoxAuthManager:
 
     COMPLIANCE: STANDARD
     """
-        try:
+       try:
             payload = jwt.decode(token, self.secret_key, algorithms=['HS256'])
             return True, payload
         except jwt.ExpiredSignatureError:
@@ -311,9 +312,11 @@ class NoxAuthManager:
 
                 if isinstance(value, str):
                     if min_length and len(value) < min_length:
-                        errors.append(f"{field} must be at least {min_length} characters")
+                        errors.append(
+                            f"{field} must be at least {min_length} characters")
                     if max_length and len(value) > max_length:
-                        errors.append(f"{field} must be no more than {max_length} characters")
+                        errors.append(
+                            f"{field} must be no more than {max_length} characters")
 
                 # Pattern validation
                 pattern = rule.get('pattern')
@@ -323,6 +326,7 @@ class NoxAuthManager:
                         errors.append(f"{field} format is invalid")
 
         return len(errors) == 0, errors
+
 
 def require_auth(f):
     """
@@ -365,7 +369,7 @@ def require_auth(f):
         valid, payload = auth_manager.verify_token(token)
         if not valid:
             return jsonify({
-    """
+                """
     RLVR: Implements require_role with error handling and validation
 
     REASONING CHAIN:
@@ -387,6 +391,7 @@ def require_auth(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
 
 def require_role(role: str):
     """Decorator to require specific role"""

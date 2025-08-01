@@ -1,3 +1,19 @@
+from typing import Any, Dict, List, Optional, Set, Tuple
+from pathlib import Path
+from datetime import datetime
+from dataclasses import asdict, dataclass
+from concurrent.futures import ThreadPoolExecutor
+import time
+import threading
+import subprocess
+import shutil
+import re
+import os
+import logging
+import json
+import hashlib
+import asyncio
+import ast
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -16,28 +32,13 @@ ADVANCED CHAIN:
 5. Validation: Comprehensive enterprise-grade testing with continuous monitoring
 """
 
-import ast
-import asyncio
-import hashlib
-import json
-import logging
-import os
-import re
-import shutil
-import subprocess
-import threading
-import time
-from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict, dataclass
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
 
 # Configure advanced logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - [RLVR-PHASE3] %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("rlvr_phase3_advanced.log"), logging.StreamHandler()],
+    handlers=[logging.FileHandler(
+        "rlvr_phase3_advanced.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
@@ -319,8 +320,10 @@ class RLVRPhase3AdvancedEnhancer:
                     complexity = self.calculate_advanced_complexity(node)
 
                     # Detect patterns
-                    detected_patterns = self.detect_advanced_patterns(node, content)
-                    analysis_result["patterns_detected"].extend(detected_patterns)
+                    detected_patterns = self.detect_advanced_patterns(
+                        node, content)
+                    analysis_result["patterns_detected"].extend(
+                        detected_patterns)
 
                     # Check enterprise criteria
                     if complexity > 3.0:
@@ -354,7 +357,8 @@ class RLVRPhase3AdvancedEnhancer:
             return analysis_result
 
         except Exception as e:
-            logger.error(f"Error analyzing advanced patterns in {file_path}: {str(e)}")
+            logger.error(
+                f"Error analyzing advanced patterns in {file_path}: {str(e)}")
             return {"error": str(e)}
 
     def calculate_advanced_complexity(self, node: ast.FunctionDef) -> float:
@@ -430,14 +434,16 @@ class RLVRPhase3AdvancedEnhancer:
             keyword in func_name
             for keyword in ["auth", "secure", "encrypt", "validate", "verify"]
         ):
-            detected_patterns.append(self.advanced_patterns["enterprise_security"])
+            detected_patterns.append(
+                self.advanced_patterns["enterprise_security"])
 
         # Performance critical pattern detection
         if any(
             keyword in func_name
             for keyword in ["optimize", "performance", "cache", "fast", "efficient"]
         ):
-            detected_patterns.append(self.advanced_patterns["performance_critical"])
+            detected_patterns.append(
+                self.advanced_patterns["performance_critical"])
 
         # Cross-module pattern detection
         if any(
@@ -528,7 +534,7 @@ class RLVRPhase3AdvancedEnhancer:
 
         # Check for external module calls in docstring or comments
         func_context = (
-            content[node.lineno : node.end_lineno]
+            content[node.lineno: node.end_lineno]
             if hasattr(node, "end_lineno")
             else ""
         )
@@ -552,14 +558,16 @@ class RLVRPhase3AdvancedEnhancer:
 
         # Calculate AI potential based on multiple factors
         complexity_factor = (
-            analysis_result["complex_functions"] / analysis_result["total_functions"]
+            analysis_result["complex_functions"] /
+            analysis_result["total_functions"]
         )
         pattern_factor = (
             len(analysis_result["patterns_detected"])
             / analysis_result["total_functions"]
         )
         performance_factor = (
-            analysis_result["performance_critical"] / analysis_result["total_functions"]
+            analysis_result["performance_critical"] /
+            analysis_result["total_functions"]
         )
 
         ai_potential = (
@@ -590,10 +598,12 @@ class RLVRPhase3AdvancedEnhancer:
             / analysis_result["total_functions"]
         )
         security_factor = (
-            analysis_result["security_sensitive"] / analysis_result["total_functions"]
+            analysis_result["security_sensitive"] /
+            analysis_result["total_functions"]
         )
         cross_module_factor = (
-            analysis_result["cross_module_deps"] / analysis_result["total_functions"]
+            analysis_result["cross_module_deps"] /
+            analysis_result["total_functions"]
         )
 
         enterprise_score = (
@@ -709,7 +719,8 @@ class RLVRPhase3AdvancedEnhancer:
         except Exception as e:
             enhancement_result["status"] = "error"
             enhancement_result["error"] = str(e)
-            logger.error(f"Error in advanced enhancement {file_path}: {str(e)}")
+            logger.error(
+                f"Error in advanced enhancement {file_path}: {str(e)}")
 
         enhancement_result["processing_time"] = time.time() - start_time
         return enhancement_result
@@ -740,7 +751,8 @@ class RLVRPhase3AdvancedEnhancer:
             if analysis_result.get("enterprise_candidates", 0) > 0:
                 # Enhanced content would be applied here
                 # For now, we'll simulate the enhancement
-                enhancements_applied = analysis_result.get("enterprise_candidates", 0)
+                enhancements_applied = analysis_result.get(
+                    "enterprise_candidates", 0)
 
                 # Log enhancement application
                 logger.info(
@@ -783,7 +795,7 @@ class RLVRPhase3AdvancedEnhancer:
         batch_size = self.optimization_settings["batch_size"]
 
         for i in range(0, len(backend_files), batch_size):
-            batch = backend_files[i : i + batch_size]
+            batch = backend_files[i: i + batch_size]
 
             # Process batch with advanced enhancement
             batch_tasks = [
@@ -794,7 +806,8 @@ class RLVRPhase3AdvancedEnhancer:
             # Collect results
             for result in batch_results:
                 enhancement_results.append(result)
-                total_advanced_enhancements += result.get("advanced_enhancements", 0)
+                total_advanced_enhancements += result.get(
+                    "advanced_enhancements", 0)
                 total_enterprise_patterns += result.get(
                     "enterprise_patterns_applied", 0
                 )
@@ -859,8 +872,10 @@ class RLVRPhase3AdvancedEnhancer:
         self.update_dashboard_data(phase3_report)
 
         logger.info(f"🚀 Phase 3 Advanced Enhancement Complete!")
-        logger.info(f"📊 Advanced enhancements applied: {total_advanced_enhancements}")
-        logger.info(f"🏢 Enterprise patterns applied: {total_enterprise_patterns}")
+        logger.info(
+            f"📊 Advanced enhancements applied: {total_advanced_enhancements}")
+        logger.info(
+            f"🏢 Enterprise patterns applied: {total_enterprise_patterns}")
         logger.info(f"🤖 AI enhancement score: {average_ai_score:.1f}%")
         logger.info(f"🏆 Enterprise readiness: {average_enterprise_score:.1f}%")
         logger.info(f"📈 New compliance rate: {new_compliance_rate:.3%}")
@@ -958,7 +973,8 @@ class RLVRPhase3AdvancedEnhancer:
         total_processing_time = sum(
             r.get("processing_time", 0.0) for r in enhancement_results
         )
-        average_processing_time = total_processing_time / len(enhancement_results)
+        average_processing_time = total_processing_time / \
+            len(enhancement_results)
 
         # Performance score (lower processing time = higher score)
         performance_score = max(0.0, 100.0 - (average_processing_time * 10))
@@ -1030,7 +1046,8 @@ async def main():
         enhancer = RLVRPhase3AdvancedEnhancer(str(workspace_path))
 
         logger.info("🚀 Initializing Phase 3 Advanced Enhancement System...")
-        logger.info(f"📊 Current compliance: {enhancer.metrics.compliance_rate:.3%}")
+        logger.info(
+            f"📊 Current compliance: {enhancer.metrics.compliance_rate:.3%}")
         logger.info(
             f"🏢 Enterprise readiness: {enhancer.metrics.enterprise_readiness:.1f}%"
         )
@@ -1056,7 +1073,8 @@ async def main():
         logger.info(
             f"🏆 Enterprise readiness: {phase3_report['average_enterprise_readiness_score']:.1f}%"
         )
-        logger.info(f"⚡ Performance score: {phase3_report['performance_score']:.1f}%")
+        logger.info(
+            f"⚡ Performance score: {phase3_report['performance_score']:.1f}%")
         logger.info(
             f"📈 New compliance rate: {phase3_report['new_compliance_rate']:.3f}%"
         )

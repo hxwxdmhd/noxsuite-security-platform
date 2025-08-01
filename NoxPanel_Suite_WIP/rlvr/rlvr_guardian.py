@@ -1,3 +1,19 @@
+import yaml
+import psutil
+from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+from datetime import datetime, timedelta
+from dataclasses import asdict, dataclass
+import time
+import sys
+import subprocess
+import shutil
+import platform
+import os
+import logging
+import json
+import hashlib
+import asyncio
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -22,29 +38,13 @@ POST-CERTIFICATION OBJECTIVES:
 🔁 ADAPTIVE INTELLIGENCE ENABLED
 """
 
-import asyncio
-import hashlib
-import json
-import logging
-import os
-import platform
-import shutil
-import subprocess
-import sys
-import time
-from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-
-import psutil
-import yaml
 
 # Set console encoding for Windows compatibility
 if sys.platform == "win32":
     import codecs
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
     sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)
+
 
 @dataclass
 class SystemMetrics:
@@ -54,7 +54,7 @@ class SystemMetrics:
     2. Analysis: Class requires specific implementation patterns for SystemMetrics functionality
     3. Solution: Implement SystemMetrics with SOLID principles and enterprise patterns
     4. Validation: Test SystemMetrics with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """System runtime metrics for adaptive intelligence."""
@@ -69,6 +69,7 @@ class SystemMetrics:
     rlvr_compliance: float
     guardian_health: float
 
+
 @dataclass
 class ComplianceMonitoring:
     """
@@ -77,7 +78,7 @@ class ComplianceMonitoring:
     2. Analysis: Class requires specific implementation patterns for ComplianceMonitoring functionality
     3. Solution: Implement ComplianceMonitoring with SOLID principles and enterprise patterns
     4. Validation: Test ComplianceMonitoring with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Compliance monitoring and deviation tracking."""
@@ -88,6 +89,7 @@ class ComplianceMonitoring:
     regression_alerts: List[str]
     improvement_opportunities: List[str]
 
+
 class RLVRGuardian:
     """
     REASONING CHAIN:
@@ -95,7 +97,7 @@ class RLVRGuardian:
     2. Analysis: Class requires specific implementation patterns for RLVRGuardian functionality
     3. Solution: Implement RLVRGuardian with SOLID principles and enterprise patterns
     4. Validation: Test RLVRGuardian with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """RLVR Guardian - Post-Certification Monitoring System."""
@@ -107,11 +109,11 @@ class RLVRGuardian:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Initialize RLVR Guardian system."""
-        self.workspace_path = Path(workspace_path)
+      """Initialize RLVR Guardian system."""
+       self.workspace_path = Path(workspace_path)
         self.setup_guardian_infrastructure()
 
         # Current system state
@@ -135,11 +137,11 @@ class RLVRGuardian:
     2. Analysis: Implementation requires specific logic for print_safe operation
     3. Solution: Implement print_safe with enterprise-grade patterns and error handling
     4. Validation: Test print_safe with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Safe print method for Windows compatibility."""
-        try:
+      """Safe print method for Windows compatibility."""
+       try:
             logger.info(message)
         except UnicodeEncodeError:
             logger.info(message.encode('ascii', 'ignore').decode('ascii'))
@@ -154,8 +156,8 @@ class RLVRGuardian:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Set up Guardian infrastructure directories."""
-        directories = [
+      """Set up Guardian infrastructure directories."""
+       directories = [
             self.workspace_path / "compliance",
             self.workspace_path / "monitoring",
             self.workspace_path / "updates",
@@ -182,8 +184,9 @@ class RLVRGuardian:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Set up Guardian logging system."""
-        log_file = self.workspace_path / "compliance" / f"rlvr_guardian_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+      """Set up Guardian logging system."""
+       log_file = self.workspace_path / "compliance" / \
+            f"rlvr_guardian_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
         logging.basicConfig(
             level=logging.INFO,
@@ -206,12 +209,13 @@ class RLVRGuardian:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Collect system metrics for adaptive intelligence."""
-        return SystemMetrics(
+      """Collect system metrics for adaptive intelligence."""
+       return SystemMetrics(
             timestamp=datetime.now().isoformat(),
             cpu_usage=psutil.cpu_percent(interval=1),
             memory_usage=psutil.virtual_memory().percent,
-            disk_usage=psutil.disk_usage('/').percent if os.name != 'nt' else psutil.disk_usage('C:').percent,
+            disk_usage=psutil.disk_usage(
+                '/').percent if os.name != 'nt' else psutil.disk_usage('C:').percent,
             network_available=self.check_network_connectivity(),
             gpu_available=self.check_gpu_availability(),
             platform=platform.system(),
@@ -230,8 +234,8 @@ class RLVRGuardian:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Check network connectivity."""
-        try:
+      """Check network connectivity."""
+       try:
             import socket
             socket.create_connection(("8.8.8.8", 53), timeout=3)
             return True
@@ -248,8 +252,8 @@ class RLVRGuardian:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Check GPU availability."""
-        try:
+      """Check GPU availability."""
+       try:
             import GPUtil
             gpus = GPUtil.getGPUs()
             return len(gpus) > 0
@@ -266,8 +270,8 @@ class RLVRGuardian:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Detect deployment context."""
-        if os.environ.get('DOCKER_CONTAINER'):
+      """Detect deployment context."""
+       if os.environ.get('DOCKER_CONTAINER'):
             return "container"
         elif os.environ.get('KUBERNETES_SERVICE_HOST'):
             return "kubernetes"
@@ -360,7 +364,8 @@ class RLVRGuardian:
         with open(report_file, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
-        self.print_safe(f"✅ Compliance monitoring completed - Status: {report['compliance_status']}")
+        self.print_safe(
+            f"✅ Compliance monitoring completed - Status: {report['compliance_status']}")
         return report
 
     async def scan_logs_and_trigger_alerts(self) -> Dict[str, Any]:
@@ -395,22 +400,28 @@ class RLVRGuardian:
 
                         # Check for critical patterns
                         if 'critical' in content.lower() or 'fatal' in content.lower():
-                            log_analysis["critical_issues"].append(f"Critical issue detected in {log_file.name}")
+                            log_analysis["critical_issues"].append(
+                                f"Critical issue detected in {log_file.name}")
 
                     except Exception as e:
-                        self.logger.warning(f"Could not scan log file {log_file}: {e}")
+                        self.logger.warning(
+                            f"Could not scan log file {log_file}: {e}")
 
         # Generate recommendations
         if log_analysis["errors_detected"] > 50:
-            log_analysis["recommendations"].append("High error count detected - investigate error patterns")
+            log_analysis["recommendations"].append(
+                "High error count detected - investigate error patterns")
 
         if log_analysis["warnings_detected"] > 100:
-            log_analysis["recommendations"].append("High warning count - review and optimize warning sources")
+            log_analysis["recommendations"].append(
+                "High warning count - review and optimize warning sources")
 
         if log_analysis["critical_issues"]:
-            log_analysis["recommendations"].append("Critical issues detected - immediate attention required")
+            log_analysis["recommendations"].append(
+                "Critical issues detected - immediate attention required")
 
-        self.print_safe(f"📋 Log analysis completed - {log_analysis['logs_scanned']} logs scanned")
+        self.print_safe(
+            f"📋 Log analysis completed - {log_analysis['logs_scanned']} logs scanned")
         return log_analysis
 
     async def suggest_ui_enhancements(self) -> Dict[str, Any]:
@@ -512,7 +523,8 @@ class RLVRGuardian:
 
                     try:
                         # Check file modification time
-                        mod_time = datetime.fromtimestamp(test_file.stat().st_mtime)
+                        mod_time = datetime.fromtimestamp(
+                            test_file.stat().st_mtime)
                         days_old = (datetime.now() - mod_time).days
 
                         if days_old > 90:  # Consider tests older than 90 days as potentially stale
@@ -524,24 +536,28 @@ class RLVRGuardian:
                                 pruning_results["tests_pruned"] += 1
 
                     except Exception as e:
-                        self.logger.warning(f"Could not analyze test file {test_file}: {e}")
+                        self.logger.warning(
+                            f"Could not analyze test file {test_file}: {e}")
 
         # Simulate annotation retraining
         pruning_results["annotations_retrained"] = pruning_results["stale_tests_found"] // 2
 
         # Generate recommendations
         if pruning_results["stale_tests_found"] > 10:
-            pruning_results["recommendations"].append("High number of stale tests found - review test maintenance practices")
+            pruning_results["recommendations"].append(
+                "High number of stale tests found - review test maintenance practices")
 
         if pruning_results["test_files_analyzed"] > 0:
-            pruning_results["recommendations"].append("Consider implementing automated test freshness monitoring")
+            pruning_results["recommendations"].append(
+                "Consider implementing automated test freshness monitoring")
 
-        self.print_safe(f"🧹 Pruning completed - {pruning_results['tests_pruned']} stale tests removed")
+        self.print_safe(
+            f"🧹 Pruning completed - {pruning_results['tests_pruned']} stale tests removed")
         return pruning_results
 
     async def generate_monitoring_outputs(self, compliance_report: Dict, log_analysis: Dict,
-                                        ui_suggestions: Dict, migration_proposals: Dict,
-                                        pruning_results: Dict) -> Dict[str, Any]:
+                                          ui_suggestions: Dict, migration_proposals: Dict,
+                                          pruning_results: Dict) -> Dict[str, Any]:
         """Generate all monitoring outputs."""
         self.print_safe("📊 Generating monitoring outputs...")
 
@@ -687,7 +703,8 @@ if __name__ == "__main__":
             yaml.dump(ci_config, f, default_flow_style=False)
 
         # Also save GitHub Actions workflow
-        github_workflow = self.workspace_path / ".github" / "workflows" / "rlvr_validate.yml"
+        github_workflow = self.workspace_path / \
+            ".github" / "workflows" / "rlvr_validate.yml"
         with open(github_workflow, 'w', encoding='utf-8') as f:
             yaml.dump(ci_config, f, default_flow_style=False)
 
@@ -756,6 +773,7 @@ if __name__ == "__main__":
         self.print_safe("🔄 Adaptive strategy adjustments completed")
         return strategy_adjustments
 
+
 async def main():
     """Main execution function for RLVR Guardian."""
     try:
@@ -772,10 +790,13 @@ async def main():
         logger.info("="*80)
 
         compliance_report = guardian_report["compliance_report"]
-        logger.info(f"📊 Compliance Status: {compliance_report['compliance_status']}")
-        logger.info(f"📈 Current Compliance: {compliance_report['current_compliance']:.2f}%")
+        logger.info(
+            f"📊 Compliance Status: {compliance_report['compliance_status']}")
+        logger.info(
+            f"📈 Current Compliance: {compliance_report['current_compliance']:.2f}%")
         logger.info(f"🎯 Target Compliance: 98.0%")
-        logger.info(f"📋 Improvement Opportunities: {len(compliance_report['improvement_opportunities'])}")
+        logger.info(
+            f"📋 Improvement Opportunities: {len(compliance_report['improvement_opportunities'])}")
 
         monitoring_outputs = guardian_report["monitoring_outputs"]
         logger.info(f"\n📊 Monitoring Outputs Generated:")
@@ -784,9 +805,12 @@ async def main():
 
         strategy_adjustments = guardian_report["strategy_adjustments"]
         logger.info(f"\n🧠 Adaptive Strategy Adjustments:")
-        logger.info(f"  Platform: {strategy_adjustments['current_context']['platform']}")
-        logger.info(f"  Deployment: {strategy_adjustments['current_context']['deployment']}")
-        logger.info(f"  Strategy Changes: {len(strategy_adjustments['strategy_changes'])}")
+        logger.info(
+            f"  Platform: {strategy_adjustments['current_context']['platform']}")
+        logger.info(
+            f"  Deployment: {strategy_adjustments['current_context']['deployment']}")
+        logger.info(
+            f"  Strategy Changes: {len(strategy_adjustments['strategy_changes'])}")
 
         logger.info("\n" + "="*80)
         logger.info("✅ RLVR GUARDIAN MONITORING CYCLE COMPLETED SUCCESSFULLY")

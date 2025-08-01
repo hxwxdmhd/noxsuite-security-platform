@@ -76,6 +76,7 @@ class SecurityTestConfig:
         "/api/admin/settings"
     ]
 
+
 class SecurityTester:
     """Comprehensive security testing framework"""
 
@@ -92,9 +93,9 @@ class SecurityTester:
 
     COMPLIANCE: STANDARD
     """
-        self.config = config
-        self.session = aiohttp.ClientSession()
-        self.results: Dict[str, Any] = {
+     self.config = config
+      self.session = aiohttp.ClientSession()
+       self.results: Dict[str, Any] = {
             'timestamp': datetime.utcnow().isoformat(),
             'config': config.__dict__,
             'tests': {},
@@ -181,20 +182,25 @@ class SecurityTester:
                 ) as response:
 
                     if response.status == 429:  # Rate limited
-                        results['details'].append(f"Rate limited after {attempt + 1} attempts")
+                        results['details'].append(
+                            f"Rate limited after {attempt + 1} attempts")
                         break
                     elif response.status == 401:
-                        results['details'].append(f"Attempt {attempt + 1}: Rejected")
+                        results['details'].append(
+                            f"Attempt {attempt + 1}: Rejected")
                     else:
                         results['passed'] = False
-                        results['details'].append(f"Unexpected response: {response.status}")
+                        results['details'].append(
+                            f"Unexpected response: {response.status}")
 
             except Exception as e:
-                results['details'].append(f"Error on attempt {attempt + 1}: {e}")
+                results['details'].append(
+                    f"Error on attempt {attempt + 1}: {e}")
 
         if len(results['details']) < 5:  # Should be rate limited before 5 attempts
             results['passed'] = False
-            self._add_vulnerability("Insufficient brute force protection", "HIGH")
+            self._add_vulnerability(
+                "Insufficient brute force protection", "HIGH")
 
         return results
 
@@ -220,10 +226,13 @@ class SecurityTester:
 
                     if response.status == 200:
                         results['passed'] = False
-                        results['details'].append(f"Invalid credentials accepted: {creds}")
-                        self._add_vulnerability("Weak credential validation", "HIGH")
+                        results['details'].append(
+                            f"Invalid credentials accepted: {creds}")
+                        self._add_vulnerability(
+                            "Weak credential validation", "HIGH")
                     else:
-                        results['details'].append(f"Properly rejected: {creds}")
+                        results['details'].append(
+                            f"Properly rejected: {creds}")
 
             except Exception as e:
                 results['details'].append(f"Error testing {creds}: {e}")
@@ -267,16 +276,19 @@ class SecurityTester:
                     for cookie_name in ['session', 'sessionid', 'JSESSIONID']:
                         if (cookie_name in initial_cookies and
                             cookie_name in auth_cookies and
-                            initial_cookies[cookie_name] != auth_cookies[cookie_name]):
+                                initial_cookies[cookie_name] != auth_cookies[cookie_name]):
                             session_changed = True
                             break
 
                     if not session_changed:
                         results['passed'] = False
-                        results['details'].append("Session ID not regenerated after login")
-                        self._add_vulnerability("Session fixation vulnerability", "MEDIUM")
+                        results['details'].append(
+                            "Session ID not regenerated after login")
+                        self._add_vulnerability(
+                            "Session fixation vulnerability", "MEDIUM")
                     else:
-                        results['details'].append("Session ID properly regenerated")
+                        results['details'].append(
+                            "Session ID properly regenerated")
 
         except Exception as e:
             results['details'].append(f"Error testing session fixation: {e}")
@@ -317,17 +329,21 @@ class SecurityTester:
                         "sql" in response_text.lower() or
                         "database" in response_text.lower() or
                         "mysql" in response_text.lower() or
-                        "postgresql" in response_text.lower()):
+                            "postgresql" in response_text.lower()):
 
                         results['passed'] = False
-                        results['details'].append(f"Potential SQL injection: {payload}")
-                        self._add_vulnerability(f"SQL injection in login: {payload}", "CRITICAL")
+                        results['details'].append(
+                            f"Potential SQL injection: {payload}")
+                        self._add_vulnerability(
+                            f"SQL injection in login: {payload}", "CRITICAL")
 
             except Exception as e:
-                results['details'].append(f"Error testing payload {payload}: {e}")
+                results['details'].append(
+                    f"Error testing payload {payload}: {e}")
 
         if results['passed']:
-            results['details'].append("No SQL injection vulnerabilities found in login")
+            results['details'].append(
+                "No SQL injection vulnerabilities found in login")
 
         return results
 
@@ -361,11 +377,14 @@ class SecurityTester:
                     # Check if payload is reflected unescaped
                     if payload in response_text:
                         results['passed'] = False
-                        results['details'].append(f"Reflected XSS found: {payload}")
-                        self._add_vulnerability(f"Reflected XSS: {payload}", "HIGH")
+                        results['details'].append(
+                            f"Reflected XSS found: {payload}")
+                        self._add_vulnerability(
+                            f"Reflected XSS: {payload}", "HIGH")
 
             except Exception as e:
-                results['details'].append(f"Error testing XSS payload {payload}: {e}")
+                results['details'].append(
+                    f"Error testing XSS payload {payload}: {e}")
 
         return results
 
@@ -397,11 +416,12 @@ class SecurityTester:
 
         # Count rate limit responses (429)
         rate_limited_count = sum(1 for r in responses
-                               if hasattr(r, 'status') and r.status == 429)
+                                 if hasattr(r, 'status') and r.status == 429)
 
         if rate_limited_count > 0:
             results['passed'] = True
-            results['details'].append(f"Rate limiting triggered after {rate_limited_count} requests")
+            results['details'].append(
+                f"Rate limiting triggered after {rate_limited_count} requests")
         else:
             results['details'].append("No rate limiting detected")
             self._add_vulnerability("Missing API rate limiting", "MEDIUM")
@@ -449,17 +469,21 @@ class SecurityTester:
 
                     results['details'].append(f"SSL connection successful")
                     results['details'].append(f"Cipher: {cipher}")
-                    results['details'].append(f"Certificate subject: {cert.get('subject', 'Unknown')}")
+                    results['details'].append(
+                        f"Certificate subject: {cert.get('subject', 'Unknown')}")
 
                     # Check certificate expiry
                     not_after = cert.get('notAfter')
                     if not_after:
-                        expiry = datetime.strptime(not_after, '%b %d %H:%M:%S %Y %Z')
+                        expiry = datetime.strptime(
+                            not_after, '%b %d %H:%M:%S %Y %Z')
                         days_until_expiry = (expiry - datetime.utcnow()).days
 
                         if days_until_expiry < 30:
-                            results['details'].append(f"Certificate expires in {days_until_expiry} days")
-                            self._add_vulnerability("SSL certificate expiring soon", "MEDIUM")
+                            results['details'].append(
+                                f"Certificate expires in {days_until_expiry} days")
+                            self._add_vulnerability(
+                                "SSL certificate expiring soon", "MEDIUM")
 
         except Exception as e:
             results['passed'] = False
@@ -492,19 +516,25 @@ class SecurityTester:
 
                 if csp_header:
                     results['passed'] = True
-                    results['details'].append(f"CSP header present: {csp_header}")
+                    results['details'].append(
+                        f"CSP header present: {csp_header}")
 
                     # Check for unsafe directives
                     if "'unsafe-inline'" in csp_header:
-                        results['details'].append("Warning: unsafe-inline detected in CSP")
-                        self._add_vulnerability("Unsafe CSP directive", "MEDIUM")
+                        results['details'].append(
+                            "Warning: unsafe-inline detected in CSP")
+                        self._add_vulnerability(
+                            "Unsafe CSP directive", "MEDIUM")
 
                     if "'unsafe-eval'" in csp_header:
-                        results['details'].append("Warning: unsafe-eval detected in CSP")
-                        self._add_vulnerability("Unsafe CSP directive", "MEDIUM")
+                        results['details'].append(
+                            "Warning: unsafe-eval detected in CSP")
+                        self._add_vulnerability(
+                            "Unsafe CSP directive", "MEDIUM")
                 else:
                     results['details'].append("CSP header missing")
-                    self._add_vulnerability("Missing Content Security Policy", "MEDIUM")
+                    self._add_vulnerability(
+                        "Missing Content Security Policy", "MEDIUM")
 
         except Exception as e:
             results['details'].append(f"Error testing CSP: {e}")
@@ -542,7 +572,8 @@ class SecurityTester:
                     return str(e)
 
         # Launch concurrent requests
-        tasks = [make_concurrent_request() for _ in range(self.config.concurrent_users)]
+        tasks = [make_concurrent_request()
+                 for _ in range(self.config.concurrent_users)]
         responses = await asyncio.gather(*tasks, return_exceptions=True)
 
         # Analyze responses
@@ -573,14 +604,16 @@ class SecurityTester:
     """
     COMPLIANCE: STANDARD
     """
-        results['details'].append(f"Successful requests: {successful_requests}")
-        results['details'].append(f"Failed requests: {failed_requests}")
+     results['details'].append(f"Successful requests: {successful_requests}")
+      results['details'].append(f"Failed requests: {failed_requests}")
 
-        if failed_requests > successful_requests * 0.5:  # More than 50% failed
+       if failed_requests > successful_requests * 0.5:  # More than 50% failed
             results['details'].append("Server handled concurrent load well")
         else:
-            results['details'].append("Potential DoS vulnerability - server accepted too many connections")
-            self._add_vulnerability("Insufficient connection limiting", "MEDIUM")
+            results['details'].append(
+                "Potential DoS vulnerability - server accepted too many connections")
+            self._add_vulnerability(
+                "Insufficient connection limiting", "MEDIUM")
 
         return results
 
@@ -607,11 +640,11 @@ class SecurityTester:
 
     COMPLIANCE: STANDARD
     """
-        total_tests = len(self.results['tests'])
-        total_vulnerabilities = len(self.results['vulnerabilities'])
+     total_tests = len(self.results['tests'])
+      total_vulnerabilities = len(self.results['vulnerabilities'])
 
-        # Count vulnerabilities by severity
-        severity_counts = {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0}
+       # Count vulnerabilities by severity
+       severity_counts = {'CRITICAL': 0, 'HIGH': 0, 'MEDIUM': 0, 'LOW': 0}
         for vuln in self.results['vulnerabilities']:
             severity = vuln.get('severity', 'UNKNOWN')
             if severity in severity_counts:
@@ -647,34 +680,45 @@ class SecurityTester:
         recommendations = []
 
         # Check for critical issues
-        critical_vulns = [v for v in self.results['vulnerabilities'] if v['severity'] == 'CRITICAL']
+        critical_vulns = [
+            v for v in self.results['vulnerabilities'] if v['severity'] == 'CRITICAL']
         if critical_vulns:
-            recommendations.append("🚨 CRITICAL: Address all critical vulnerabilities immediately")
+            recommendations.append(
+                "🚨 CRITICAL: Address all critical vulnerabilities immediately")
 
         # Common recommendations based on vulnerabilities
-        vuln_descriptions = [v['description'] for v in self.results['vulnerabilities']]
+        vuln_descriptions = [v['description']
+                             for v in self.results['vulnerabilities']]
 
         if any('SQL injection' in desc for desc in vuln_descriptions):
-            recommendations.append("🔧 Implement parameterized queries and input validation")
+            recommendations.append(
+                "🔧 Implement parameterized queries and input validation")
 
         if any('XSS' in desc for desc in vuln_descriptions):
-            recommendations.append("🔧 Implement output encoding and Content Security Policy")
+            recommendations.append(
+                "🔧 Implement output encoding and Content Security Policy")
 
         if any('rate limiting' in desc for desc in vuln_descriptions):
-            recommendations.append("🔧 Implement proper rate limiting on all endpoints")
+            recommendations.append(
+                "🔧 Implement proper rate limiting on all endpoints")
 
         if any('session' in desc for desc in vuln_descriptions):
-            recommendations.append("🔧 Strengthen session management and regeneration")
+            recommendations.append(
+                "🔧 Strengthen session management and regeneration")
 
         if any('SSL' in desc or 'TLS' in desc for desc in vuln_descriptions):
-            recommendations.append("🔧 Update SSL/TLS configuration and certificates")
+            recommendations.append(
+                "🔧 Update SSL/TLS configuration and certificates")
 
         if any('header' in desc for desc in vuln_descriptions):
-            recommendations.append("🔧 Implement all security headers (CSP, HSTS, etc.)")
+            recommendations.append(
+                "🔧 Implement all security headers (CSP, HSTS, etc.)")
 
         return recommendations
 
 # Main test runner
+
+
 async def run_security_tests(config: SecurityTestConfig = None) -> Dict[str, Any]:
     """Run comprehensive security test suite"""
     if config is None:
@@ -712,13 +756,14 @@ async def run_security_tests(config: SecurityTestConfig = None) -> Dict[str, Any
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="NoxPanel Security Test Suite")
+    parser = argparse.ArgumentParser(
+        description="NoxPanel Security Test Suite")
     parser.add_argument("--base-url", default="http://localhost:5000",
-                       help="Base URL for testing")
+                        help="Base URL for testing")
     parser.add_argument("--ssl-url", default="https://localhost:5443",
-                       help="SSL URL for testing")
+                        help="SSL URL for testing")
     parser.add_argument("--concurrent-users", type=int, default=100,
-                       help="Number of concurrent users for load testing")
+                        help="Number of concurrent users for load testing")
     parser.add_argument("--output", help="Output file for test results")
 
     args = parser.parse_args()

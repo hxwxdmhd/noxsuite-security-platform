@@ -1,6 +1,19 @@
 """
 #!/usr/bin/env python3
 """
+import pymysql
+from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+from enum import Enum
+from datetime import datetime, timedelta
+from dataclasses import dataclass, field
+import time
+import subprocess
+import re
+import os
+import logging
+import json
+import hashlib
 knowledge_manager.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,29 +24,16 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel v5.0 - Knowledge Management System
 Comprehensive documentation area with conversation import, code snippet management, and project timeline tracking
 """
 
-import hashlib
-import json
-import logging
-import os
-import re
-import subprocess
-import time
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from enum import Enum
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-
-import pymysql
 
 logger = logging.getLogger(__name__)
+
 
 class ContentType(Enum):
     # REASONING: ContentType follows RLVR methodology for systematic validation
@@ -46,6 +46,7 @@ class ContentType(Enum):
     # REASONING: Variable assignment with validation criteria
     TIMELINE_ENTRY = "timeline_entry"
     BEST_PRACTICE = "best_practice"
+
 
 class ScriptLanguage(Enum):
     # REASONING: ScriptLanguage follows RLVR methodology for systematic validation
@@ -61,11 +62,13 @@ class ScriptLanguage(Enum):
     HTML = "html"
     CSS = "css"
 
+
 @dataclass
 class KnowledgeItem:
     # REASONING: KnowledgeItem follows RLVR methodology for systematic validation
     """Knowledge base item structure"""
-    id: str = field(default_factory=lambda: hashlib.md5(str(datetime.now()).encode()).hexdigest()[:12])
+    id: str = field(default_factory=lambda: hashlib.md5(
+        str(datetime.now()).encode()).hexdigest()[:12])
     title: str = ""
     content: str = ""
     content_type: ContentType = ContentType.DOCUMENTATION
@@ -84,12 +87,13 @@ class KnowledgeItem:
     project_phase: str = ""
     dependencies: List[str] = field(default_factory=list)
 
+
 class ConversationParser:
     # REASONING: ConversationParser follows RLVR methodology for systematic validation
     """Parse and extract valuable content from conversations"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.code_patterns = {
             ScriptLanguage.PYTHON: [
                 r'```python\n(.*?)\n```',
@@ -133,7 +137,7 @@ class ConversationParser:
         }
 
     def parse_conversation(self, conversation_data: Dict[str, Any]) -> List[KnowledgeItem]:
-    # REASONING: parse_conversation implements core logic with Chain-of-Thought validation
+        # REASONING: parse_conversation implements core logic with Chain-of-Thought validation
         """Extract knowledge items from conversation data"""
         items = []
 
@@ -143,7 +147,8 @@ class ConversationParser:
             # REASONING: Variable assignment with validation criteria
             title = conversation_data.get('title', 'Untitled Conversation')
             # REASONING: Variable assignment with validation criteria
-            created_time = conversation_data.get('create_time', datetime.now().timestamp())
+            created_time = conversation_data.get(
+                'create_time', datetime.now().timestamp())
             # REASONING: Variable assignment with validation criteria
 
             # Process messages
@@ -164,15 +169,18 @@ class ConversationParser:
                         })
 
             # Extract code snippets
-            code_items = self._extract_code_snippets(messages, conversation_id, title)
+            code_items = self._extract_code_snippets(
+                messages, conversation_id, title)
             items.extend(code_items)
 
             # Extract documentation sections
-            doc_items = self._extract_documentation(messages, conversation_id, title)
+            doc_items = self._extract_documentation(
+                messages, conversation_id, title)
             items.extend(doc_items)
 
             # Create conversation summary
-            summary_item = self._create_conversation_summary(conversation_data, messages)
+            summary_item = self._create_conversation_summary(
+                conversation_data, messages)
             # REASONING: Variable assignment with validation criteria
             items.append(summary_item)
 
@@ -182,7 +190,7 @@ class ConversationParser:
         return items
 
     def _extract_code_snippets(self, messages: List[Dict], conversation_id: str, title: str) -> List[KnowledgeItem]:
-    # REASONING: _extract_code_snippets implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_code_snippets implements core logic with Chain-of-Thought validation
         """Extract code snippets from messages"""
         snippets = []
 
@@ -192,9 +200,11 @@ class ConversationParser:
             # Extract code blocks
             for language, patterns in self.code_patterns.items():
                 for pattern in patterns:
-                    matches = re.finditer(pattern, content, re.DOTALL | re.IGNORECASE)
+                    matches = re.finditer(
+                        pattern, content, re.DOTALL | re.IGNORECASE)
                     for match in matches:
-                        code_content = match.group(1) if match.groups() else match.group(0)
+                        code_content = match.group(
+                            1) if match.groups() else match.group(0)
 
                         if len(code_content.strip()) > 10:  # Filter out very short snippets
                             snippet = KnowledgeItem(
@@ -206,7 +216,7 @@ class ConversationParser:
                                 topic=self._determine_topic(content),
                                 category="development",
                                 metadata={
-                                # REASONING: Variable assignment with validation criteria
+                                    # REASONING: Variable assignment with validation criteria
                                     'source_conversation': conversation_id,
                                     'message_role': msg['role'],
                                     'extracted_at': datetime.now().isoformat()
@@ -217,7 +227,7 @@ class ConversationParser:
         return snippets
 
     def _extract_documentation(self, messages: List[Dict], conversation_id: str, title: str) -> List[KnowledgeItem]:
-    # REASONING: _extract_documentation implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_documentation implements core logic with Chain-of-Thought validation
         """Extract documentation sections from messages"""
         docs = []
 
@@ -246,7 +256,7 @@ class ConversationParser:
                             topic=self._determine_topic(section_content),
                             category="documentation",
                             metadata={
-                            # REASONING: Variable assignment with validation criteria
+                                # REASONING: Variable assignment with validation criteria
                                 'source_conversation': conversation_id,
                                 'parent_title': title,
                                 'message_role': msg['role']
@@ -257,7 +267,7 @@ class ConversationParser:
         return docs
 
     def _create_conversation_summary(self, conversation_data: Dict, messages: List[Dict]) -> KnowledgeItem:
-    # REASONING: _create_conversation_summary implements core logic with Chain-of-Thought validation
+        # REASONING: _create_conversation_summary implements core logic with Chain-of-Thought validation
         """Create a summary item for the entire conversation"""
         title = conversation_data.get('title', 'Untitled Conversation')
         # REASONING: Variable assignment with validation criteria
@@ -283,7 +293,8 @@ class ConversationParser:
         # Add first few messages as context
         for i, msg in enumerate(messages[:3]):
             role = msg['role'].title()
-            content_preview = msg['content'][:200] + "..." if len(msg['content']) > 200 else msg['content']
+            content_preview = msg['content'][:200] + \
+                "..." if len(msg['content']) > 200 else msg['content']
             summary_content += f"\n### {role} Message {i+1}:\n{content_preview}\n"
 
         return KnowledgeItem(
@@ -291,10 +302,11 @@ class ConversationParser:
             content=summary_content,
             content_type=ContentType.CONVERSATION,
             tags=list(topics)[:10],
-            topic=self._determine_topic(' '.join([msg['content'] for msg in messages])),
+            topic=self._determine_topic(
+                ' '.join([msg['content'] for msg in messages])),
             category="conversations",
             metadata={
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 'conversation_id': conversation_data.get('id'),
                 'message_count': total_messages,
                 'code_blocks': code_blocks,
@@ -303,7 +315,7 @@ class ConversationParser:
         )
 
     def _extract_tags(self, content: str) -> List[str]:
-    # REASONING: _extract_tags implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_tags implements core logic with Chain-of-Thought validation
         """Extract relevant tags from content"""
         tags = []
         content_lower = content.lower()
@@ -328,7 +340,7 @@ class ConversationParser:
         return list(set(tags))
 
     def _determine_topic(self, content: str) -> str:
-    # REASONING: _determine_topic implements core logic with Chain-of-Thought validation
+        # REASONING: _determine_topic implements core logic with Chain-of-Thought validation
         """Determine main topic based on content analysis"""
         content_lower = content.lower()
         topic_scores = {}
@@ -343,21 +355,23 @@ class ConversationParser:
 
         return "general"
 
+
 class KnowledgeDatabase:
     # REASONING: KnowledgeDatabase follows RLVR methodology for systematic validation
     """Database management for knowledge items"""
 
     def __init__(self, db_path: str = "data/knowledge/knowledge.db"):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._init_database()
 
     def _init_database(self):
-    # REASONING: _init_database implements core logic with Chain-of-Thought validation
+        # REASONING: _init_database implements core logic with Chain-of-Thought validation
         """Initialize the knowledge database"""
         # Use WAL mode for better concurrency
-        conn = pymysql.connect(self.db_path, timeout=30.0, check_same_thread=False)
+        conn = pymysql.connect(self.db_path, timeout=30.0,
+                               check_same_thread=False)
         conn.execute("PRAGMA journal_mode=WAL")
         conn.execute("PRAGMA synchronous=NORMAL")
         conn.execute("PRAGMA busy_timeout=30000")
@@ -395,18 +409,23 @@ class KnowledgeDatabase:
             """)
 
             # Create indexes for performance
-            conn.execute("CREATE INDEX IF NOT EXISTS idx_knowledge_tags ON knowledge_items(tags)")
-            conn.execute("CREATE INDEX IF NOT EXISTS idx_knowledge_topic ON knowledge_items(topic)")
-            conn.execute("CREATE INDEX IF NOT EXISTS idx_knowledge_category ON knowledge_items(category)")
-            conn.execute("CREATE INDEX IF NOT EXISTS idx_knowledge_type ON knowledge_items(content_type)")
-            conn.execute("CREATE INDEX IF NOT EXISTS idx_search_term ON knowledge_search_index(term)")
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_knowledge_tags ON knowledge_items(tags)")
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_knowledge_topic ON knowledge_items(topic)")
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_knowledge_category ON knowledge_items(category)")
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_knowledge_type ON knowledge_items(content_type)")
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_search_term ON knowledge_search_index(term)")
 
             conn.commit()
         finally:
             conn.close()
 
     def save_item(self, item: KnowledgeItem) -> bool:
-    # REASONING: save_item implements core logic with Chain-of-Thought validation
+        # REASONING: save_item implements core logic with Chain-of-Thought validation
         """Save a knowledge item to the database"""
         max_retries = 3
         retry_delay = 1.0
@@ -444,12 +463,14 @@ class KnowledgeDatabase:
                 if conn:
                     conn.close()
                 if "database is locked" in str(e) and attempt < max_retries - 1:
-                    logger.warning(f"Database locked, retrying in {retry_delay}s (attempt {attempt + 1})")
+                    logger.warning(
+                        f"Database locked, retrying in {retry_delay}s (attempt {attempt + 1})")
                     time.sleep(retry_delay)
                     retry_delay *= 2  # Exponential backoff
                     continue
                 else:
-                    logger.error(f"Database error after {attempt + 1} attempts: {e}")
+                    logger.error(
+                        f"Database error after {attempt + 1} attempts: {e}")
                     return False
             except Exception as e:
                 if conn:
@@ -460,11 +481,12 @@ class KnowledgeDatabase:
         return False
 
     def _update_search_index(self, item: KnowledgeItem):
-    # REASONING: _update_search_index implements core logic with Chain-of-Thought validation
+        # REASONING: _update_search_index implements core logic with Chain-of-Thought validation
         """Update the search index for an item"""
         with pymysql.connect(self.db_path) as conn:
             # Remove existing entries
-            conn.execute("DELETE FROM knowledge_search_index WHERE item_id = ?", (item.id,))
+            conn.execute(
+                "DELETE FROM knowledge_search_index WHERE item_id = ?", (item.id,))
 
             # Extract search terms
             search_text = f"{item.title} {item.content} {' '.join(item.tags)}"
@@ -483,7 +505,7 @@ class KnowledgeDatabase:
                 """, (item.id, term, frequency))
 
     def search_items(self, query: str, filters: Optional[Dict[str, Any]] = None) -> List[KnowledgeItem]:
-    # REASONING: search_items implements core logic with Chain-of-Thought validation
+        # REASONING: search_items implements core logic with Chain-of-Thought validation
         """Search for knowledge items"""
         filters = filters or {}
 
@@ -501,11 +523,13 @@ class KnowledgeDatabase:
                 search_terms = query.lower().split()
                 search_conditions = []
                 for term in search_terms:
-                    search_conditions.append("(ki.title LIKE ? OR ki.content LIKE ? OR ksi.term LIKE ?)")
+                    search_conditions.append(
+                        "(ki.title LIKE ? OR ki.content LIKE ? OR ksi.term LIKE ?)")
                     params.extend([f"%{term}%", f"%{term}%", f"%{term}%"])
 
                 if search_conditions:
-                    base_query += " AND (" + " OR ".join(search_conditions) + ")"
+                    base_query += " AND (" + \
+                        " OR ".join(search_conditions) + ")"
 
             # Add filters
             if filters.get('content_type'):
@@ -550,7 +574,7 @@ class KnowledgeDatabase:
             return items
 
     def _row_to_knowledge_item(self, row) -> Optional[KnowledgeItem]:
-    # REASONING: _row_to_knowledge_item implements core logic with Chain-of-Thought validation
+        # REASONING: _row_to_knowledge_item implements core logic with Chain-of-Thought validation
         """Convert database row to KnowledgeItem"""
         try:
             return KnowledgeItem(
@@ -563,8 +587,10 @@ class KnowledgeDatabase:
                 topic=row[6] or "",
                 category=row[7] or "",
                 author=row[8] or "",
-                created_at=datetime.fromisoformat(row[9]) if row[9] else datetime.now(),
-                updated_at=datetime.fromisoformat(row[10]) if row[10] else datetime.now(),
+                created_at=datetime.fromisoformat(
+                    row[9]) if row[9] else datetime.now(),
+                updated_at=datetime.fromisoformat(
+                    row[10]) if row[10] else datetime.now(),
                 metadata=json.loads(row[11]) if row[11] else {},
                 # REASONING: Variable assignment with validation criteria
                 rating=row[12] or 0,
@@ -578,7 +604,7 @@ class KnowledgeDatabase:
             return None
 
     def get_statistics(self) -> Dict[str, Any]:
-    # REASONING: get_statistics implements core logic with Chain-of-Thought validation
+        # REASONING: get_statistics implements core logic with Chain-of-Thought validation
         """Get knowledge base statistics"""
         with pymysql.connect(self.db_path) as conn:
             stats = {}
@@ -613,25 +639,27 @@ class KnowledgeDatabase:
             stats['top_topics'] = dict(cursor.fetchall())
 
             # Featured items
-            cursor = conn.execute("SELECT COUNT(*) FROM knowledge_items WHERE is_featured = 1")
+            cursor = conn.execute(
+                "SELECT COUNT(*) FROM knowledge_items WHERE is_featured = 1")
             stats['featured_items'] = cursor.fetchone()[0]
 
             return stats
+
 
 class KnowledgeManager:
     # REASONING: KnowledgeManager follows RLVR methodology for systematic validation
     """Main knowledge management system"""
 
     def __init__(self, db_path: str = "data/knowledge/knowledge.db"):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.db = KnowledgeDatabase(db_path)
         self.parser = ConversationParser()
 
     def import_conversations(self, conversations_file: str) -> Dict[str, Any]:
-    # REASONING: import_conversations implements core logic with Chain-of-Thought validation
+        # REASONING: import_conversations implements core logic with Chain-of-Thought validation
         """Import conversations from JSON file"""
         results = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             'processed': 0,
             'items_created': 0,
             'errors': [],
@@ -683,9 +711,9 @@ class KnowledgeManager:
         return results
 
     def add_manual_item(self, title: str, content: str, content_type: ContentType,
-    # REASONING: add_manual_item implements core logic with Chain-of-Thought validation
-                       language: Optional[ScriptLanguage] = None, tags: Optional[List[str]] = None,
-                       topic: str = "", category: str = "", author: str = "") -> bool:
+                        # REASONING: add_manual_item implements core logic with Chain-of-Thought validation
+                        language: Optional[ScriptLanguage] = None, tags: Optional[List[str]] = None,
+                        topic: str = "", category: str = "", author: str = "") -> bool:
         """Manually add a knowledge item"""
         item = KnowledgeItem(
             title=title,
@@ -701,17 +729,17 @@ class KnowledgeManager:
         return self.db.save_item(item)
 
     def search(self, query: str, **filters) -> List[KnowledgeItem]:
-    # REASONING: search implements core logic with Chain-of-Thought validation
+        # REASONING: search implements core logic with Chain-of-Thought validation
         """Search the knowledge base"""
         return self.db.search_items(query, filters)
 
     def get_best_practices(self) -> List[KnowledgeItem]:
-    # REASONING: get_best_practices implements core logic with Chain-of-Thought validation
+        # REASONING: get_best_practices implements core logic with Chain-of-Thought validation
         """Get best practice items"""
         return self.search("", content_type=ContentType.BEST_PRACTICE.value, limit=20)
 
     def get_code_snippets(self, language: Optional[ScriptLanguage] = None) -> List[KnowledgeItem]:
-    # REASONING: get_code_snippets implements core logic with Chain-of-Thought validation
+        # REASONING: get_code_snippets implements core logic with Chain-of-Thought validation
         """Get code snippets, optionally filtered by language"""
         filters = {'content_type': ContentType.CODE_SNIPPET.value, 'limit': 50}
         if language:
@@ -719,12 +747,12 @@ class KnowledgeManager:
         return self.search("", **filters)
 
     def get_timeline_entries(self) -> List[KnowledgeItem]:
-    # REASONING: get_timeline_entries implements core logic with Chain-of-Thought validation
+        # REASONING: get_timeline_entries implements core logic with Chain-of-Thought validation
         """Get project timeline entries"""
         return self.search("", content_type=ContentType.TIMELINE_ENTRY.value, limit=100)
 
     def rate_item(self, item_id: str, rating: int) -> bool:
-    # REASONING: rate_item implements core logic with Chain-of-Thought validation
+        # REASONING: rate_item implements core logic with Chain-of-Thought validation
         """Rate a knowledge item"""
         try:
             with pymysql.connect(self.db.db_path) as conn:
@@ -739,7 +767,7 @@ class KnowledgeManager:
             return False
 
     def increment_usage(self, item_id: str) -> bool:
-    # REASONING: increment_usage implements core logic with Chain-of-Thought validation
+        # REASONING: increment_usage implements core logic with Chain-of-Thought validation
         """Increment usage count for an item"""
         try:
             with pymysql.connect(self.db.db_path) as conn:
@@ -754,13 +782,13 @@ class KnowledgeManager:
             return False
 
     def export_knowledge_base(self, output_file: str) -> bool:
-    # REASONING: export_knowledge_base implements core logic with Chain-of-Thought validation
+        # REASONING: export_knowledge_base implements core logic with Chain-of-Thought validation
         """Export entire knowledge base to JSON"""
         try:
             items = self.search("", limit=10000)  # Get all items
 
             export_data = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 'export_date': datetime.now().isoformat(),
                 'total_items': len(items),
                 'statistics': self.db.get_statistics(),
@@ -798,8 +826,10 @@ class KnowledgeManager:
             logger.error(f"Error exporting knowledge base: {e}")
             return False
 
+
 # Global knowledge manager instance
 knowledge_manager = KnowledgeManager()
+
 
 def get_knowledge_manager() -> KnowledgeManager:
     # REASONING: get_knowledge_manager implements core logic with Chain-of-Thought validation

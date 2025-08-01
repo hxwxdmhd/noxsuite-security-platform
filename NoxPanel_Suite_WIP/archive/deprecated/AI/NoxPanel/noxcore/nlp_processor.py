@@ -1,6 +1,12 @@
 """
 #!/usr/bin/env python3
 """
+from typing import Any, Dict, List, Optional, Tuple
+from difflib import SequenceMatcher
+import re
+import os
+import logging
+import json
 nlp_processor.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,33 +17,28 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel v3.0 - Natural Language Processing Module
 Processes user commands and maps them to script execution
 """
 
-import json
-import logging
-import os
-import re
-from difflib import SequenceMatcher
-from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
+
 
 class CommandParser:
     # REASONING: CommandParser follows RLVR methodology for systematic validation
     """Parses natural language commands into actionable script execution"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.command_patterns = self._load_command_patterns()
         self.script_index = self._build_script_index()
 
     def _load_command_patterns(self) -> Dict[str, List[str]]:
-    # REASONING: _load_command_patterns implements core logic with Chain-of-Thought validation
+        # REASONING: _load_command_patterns implements core logic with Chain-of-Thought validation
         """Load command patterns for NLP parsing"""
         return {
             'execute': [
@@ -71,7 +72,7 @@ class CommandParser:
         }
 
     def _build_script_index(self) -> Dict[str, Dict[str, str]]:
-    # REASONING: _build_script_index implements core logic with Chain-of-Thought validation
+        # REASONING: _build_script_index implements core logic with Chain-of-Thought validation
         """Build searchable index of available scripts"""
         scripts_dir = os.path.join(os.path.dirname(__file__), '..', 'scripts')
         script_index = {}
@@ -98,7 +99,7 @@ class CommandParser:
         return script_index
 
     def _extract_script_description(self, script_path: str) -> str:
-    # REASONING: _extract_script_description implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_script_description implements core logic with Chain-of-Thought validation
         """Extract description from script docstring"""
         try:
             with open(script_path, 'r', encoding='utf-8') as f:
@@ -116,12 +117,13 @@ class CommandParser:
                     return line.strip()[1:].strip()
 
         except Exception as e:
-            logger.debug(f"Could not extract description from {script_path}: {e}")
+            logger.debug(
+                f"Could not extract description from {script_path}: {e}")
 
         return "No description available"
 
     def _extract_keywords(self, script_name: str, description: str) -> List[str]:
-    # REASONING: _extract_keywords implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_keywords implements core logic with Chain-of-Thought validation
         """Extract searchable keywords from script name and description"""
         keywords = []
 
@@ -131,14 +133,16 @@ class CommandParser:
         # Add description words
         if description:
             # Remove common words and extract meaningful terms
-            stop_words = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'}
+            stop_words = {'the', 'a', 'an', 'and', 'or', 'but',
+                          'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'}
             words = re.findall(r'\b\w+\b', description.lower())
-            keywords.extend([word for word in words if word not in stop_words and len(word) > 2])
+            keywords.extend(
+                [word for word in words if word not in stop_words and len(word) > 2])
 
         return list(set(keywords))  # Remove duplicates
 
     def parse_command(self, user_input: str) -> Dict[str, Any]:
-    # REASONING: parse_command implements core logic with Chain-of-Thought validation
+        # REASONING: parse_command implements core logic with Chain-of-Thought validation
         """Parse natural language command into structured data"""
         user_input = user_input.lower().strip()
 
@@ -150,7 +154,7 @@ class CommandParser:
                     target = match.group(1) if match.groups() else None
 
                     result = {
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         'intent': intent,
                         'target': target,
                         'confidence': 0.9,
@@ -177,13 +181,14 @@ class CommandParser:
         }
 
     def find_matching_scripts(self, query: str) -> List[Dict[str, any]]:
-    # REASONING: find_matching_scripts implements core logic with Chain-of-Thought validation
+        # REASONING: find_matching_scripts implements core logic with Chain-of-Thought validation
         """Find scripts that match the given query"""
         query = query.lower()
         matches = []
 
         for script_name, script_info in self.script_index.items():
-            score = self._calculate_similarity_score(query, script_name, script_info)
+            score = self._calculate_similarity_score(
+                query, script_name, script_info)
 
             if score > 0.3:  # Minimum similarity threshold
                 matches.append({
@@ -199,7 +204,7 @@ class CommandParser:
         return matches[:5]  # Return top 5 matches
 
     def _calculate_similarity_score(self, query: str, script_name: str, script_info: Dict[str, any]) -> float:
-    # REASONING: _calculate_similarity_score implements core logic with Chain-of-Thought validation
+        # REASONING: _calculate_similarity_score implements core logic with Chain-of-Thought validation
         """Calculate similarity score between query and script"""
         # Direct name match
         name_similarity = SequenceMatcher(None, query, script_name).ratio()
@@ -207,19 +212,21 @@ class CommandParser:
         # Keyword match
         query_words = set(re.findall(r'\b\w+\b', query.lower()))
         script_keywords = set(script_info['keywords'])
-        keyword_overlap = len(query_words.intersection(script_keywords)) / max(len(query_words), 1)
+        keyword_overlap = len(query_words.intersection(
+            script_keywords)) / max(len(query_words), 1)
 
         # Description similarity
         description = script_info['description'].lower()
         desc_similarity = SequenceMatcher(None, query, description).ratio()
 
         # Weighted combination
-        score = (name_similarity * 0.5) + (keyword_overlap * 0.3) + (desc_similarity * 0.2)
+        score = (name_similarity * 0.5) + \
+            (keyword_overlap * 0.3) + (desc_similarity * 0.2)
 
         return score
 
     def suggest_scripts(self, context: str = "") -> List[Dict[str, any]]:
-    # REASONING: suggest_scripts implements core logic with Chain-of-Thought validation
+        # REASONING: suggest_scripts implements core logic with Chain-of-Thought validation
         """Suggest scripts based on context or return popular/recent scripts"""
         if context:
             return self.find_matching_scripts(context)
@@ -236,7 +243,7 @@ class CommandParser:
         return suggestions[:10]  # Return first 10
 
     def generate_help_response(self) -> str:
-    # REASONING: generate_help_response implements core logic with Chain-of-Thought validation
+        # REASONING: generate_help_response implements core logic with Chain-of-Thought validation
         """Generate help text showing available commands and scripts"""
         help_text = """
 🤖 NoxPanel AI Assistant - Available Commands:
@@ -268,18 +275,19 @@ class CommandParser:
 
         return help_text
 
+
 class ConversationManager:
     # REASONING: ConversationManager follows RLVR methodology for systematic validation
     """Manages conversation context and history"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.conversation_history = []
         self.context = {}
         self.parser = CommandParser()
 
     def process_message(self, message: str, user_id: str = "default") -> Dict[str, any]:
-    # REASONING: process_message implements core logic with Chain-of-Thought validation
+        # REASONING: process_message implements core logic with Chain-of-Thought validation
         """Process user message and return appropriate response"""
         # Parse the command
         parsed = self.parser.parse_command(message)
@@ -303,7 +311,7 @@ class ConversationManager:
         }
 
     def _generate_response(self, parsed: Dict[str, any]) -> str:
-    # REASONING: _generate_response implements core logic with Chain-of-Thought validation
+        # REASONING: _generate_response implements core logic with Chain-of-Thought validation
         """Generate appropriate response based on parsed command"""
         intent = parsed.get('intent')
 
@@ -336,7 +344,7 @@ class ConversationManager:
             return "I'm not sure what you want to do. Try asking 'help' to see available commands."
 
     def _get_suggested_actions(self, parsed: Dict[str, any]) -> List[Dict[str, any]]:
-    # REASONING: _get_suggested_actions implements core logic with Chain-of-Thought validation
+        # REASONING: _get_suggested_actions implements core logic with Chain-of-Thought validation
         """Get suggested actions based on parsed command"""
         actions = []
 
@@ -352,19 +360,20 @@ class ConversationManager:
         return actions
 
     def _get_timestamp(self) -> str:
-    # REASONING: _get_timestamp implements core logic with Chain-of-Thought validation
+        # REASONING: _get_timestamp implements core logic with Chain-of-Thought validation
         """Get current timestamp"""
         from datetime import datetime
         return datetime.now().isoformat()
 
     def get_conversation_history(self, user_id: str = "default", limit: int = 10) -> List[Dict[str, any]]:
-    # REASONING: get_conversation_history implements core logic with Chain-of-Thought validation
+        # REASONING: get_conversation_history implements core logic with Chain-of-Thought validation
         """Get conversation history for a user"""
         user_history = [
             conv for conv in self.conversation_history
             if conv.get('user_id') == user_id
         ]
         return user_history[-limit:] if limit else user_history
+
 
 # Global instance for easy access
 conversation_manager = ConversationManager()

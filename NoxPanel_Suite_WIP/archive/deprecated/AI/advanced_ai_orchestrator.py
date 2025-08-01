@@ -27,11 +27,13 @@ class AIModelType(Enum):
     VOICE = "voice"
     VISION = "vision"
 
+
 class TaskPriority(Enum):
     CRITICAL = 1
     HIGH = 2
     MEDIUM = 3
     LOW = 4
+
 
 @dataclass
 class AITask:
@@ -46,6 +48,7 @@ class AITask:
     requires_chain: bool = False
     chain_models: List[AIModelType] = None
 
+
 @dataclass
 class AIResponse:
     task_id: str
@@ -56,6 +59,7 @@ class AIResponse:
     timestamp: float
     metadata: Dict[str, Any]
 
+
 @dataclass
 class ModelMetrics:
     total_requests: int = 0
@@ -65,6 +69,7 @@ class ModelMetrics:
     last_used: Optional[float] = None
     error_count: int = 0
     queue_length: int = 0
+
 
 class AIOrchestrator:
     """Advanced AI orchestration system with intelligent routing and load balancing"""
@@ -306,7 +311,8 @@ class AIOrchestrator:
         """Start the AI orchestrator"""
         if not self.running:
             self.running = True
-            self.worker_thread = threading.Thread(target=self._process_tasks, daemon=True)
+            self.worker_thread = threading.Thread(
+                target=self._process_tasks, daemon=True)
             self.worker_thread.start()
             self.logger.info("🤖 AI Orchestrator v9.0 started")
 
@@ -345,7 +351,8 @@ class AIOrchestrator:
         if cache_key in self.response_cache:
             cached_response = self.response_cache[cache_key]
             if time.time() - cached_response.timestamp < 3600:  # 1 hour cache
-                self.logger.info(f"📋 Returning cached response for task {task_id}")
+                self.logger.info(
+                    f"📋 Returning cached response for task {task_id}")
     """
     RLVR: Controls program flow with conditional logic and error handling
 

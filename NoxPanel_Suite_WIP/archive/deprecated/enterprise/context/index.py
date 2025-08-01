@@ -43,6 +43,7 @@ logger.add(
     level="INFO"
 )
 
+
 class ModelType(str, Enum):
     """Supported model types for context processing"""
     GPT4 = "gpt-4"
@@ -52,12 +53,14 @@ class ModelType(str, Enum):
     COPILOT = "github-copilot"
     CUSTOM = "custom"
 
+
 class ProtocolVersion(str, Enum):
     """MCP protocol versions"""
     V1_0 = "1.0"
     V1_1 = "1.1"
     V2_0 = "2.0"
     LATEST = "latest"
+
 
 class AgentIntent(str, Enum):
     """Agent interaction intents"""
@@ -70,6 +73,7 @@ class AgentIntent(str, Enum):
     DOCUMENTATION = "documentation"
     TESTING = "testing"
 
+
 @dataclass
 class ContextRequest:
     """Context request structure"""
@@ -80,7 +84,7 @@ class ContextRequest:
     prompt: str
     metadata: Dict[str, Any] = None
     protocol_version: ProtocolVersion = ProtocolVersion.LATEST
-    
+
     def __post_init__(self):
         if self.metadata is None:
             self.metadata = {}
@@ -89,12 +93,12 @@ class ContextRequest:
             "timestamp": datetime.now().isoformat(),
             "compatibility_score": self.calculate_compatibility()
         })
-    
+
     def generate_request_id(self) -> str:
         """Generate unique request ID"""
         content = f"{self.agent}:{self.model}:{self.intent}:{self.project_scope}:{time.time()}"
         return hashlib.md5(content.encode()).hexdigest()[:12]
-    
+
     def calculate_compatibility(self) -> float:
         """Calculate model compatibility score"""
         # Simple compatibility scoring based on model and intent
@@ -120,8 +124,9 @@ class ContextRequest:
                 AgentIntent.TESTING: 0.90
             }
         }
-        
+
         return compatibility_matrix.get(self.model, {}).get(self.intent, 0.7)
+
 
 @dataclass
 class ContextEmbedding:
@@ -131,31 +136,32 @@ class ContextEmbedding:
     metadata: Dict[str, Any]
     relevance_score: float = 0.0
     created_at: datetime = None
-    
+
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.now()
 
+
 class ContextForge:
     """
     ContextForge - Model Context Protocol Server
-    
+
     Manages contextual embeddings, protocol layers, and inference routes
     for AI agents in the NoxPanel Suite.
     """
-    
+
     def __init__(self, config_path: Optional[str] = None):
         self.config_path = config_path or "k:/Project Heimnetz/enterprise/context/config.json"
         self.config = self.load_config()
         self.embeddings_cache: Dict[str, ContextEmbedding] = {}
         self.protocol_registry: Dict[str, Dict] = {}
         self.active_sessions: Dict[str, Dict] = {}
-        
+
         # Initialize protocol registry
         self.initialize_protocols()
-        
+
         logger.info("ContextForge initialized with MCP server capabilities")
-    
+
     def load_config(self) -> Dict[str, Any]:
         """Load ContextForge configuration"""
         default_config = {
@@ -169,17 +175,18 @@ class ContextForge:
             "enable_dynamic_routing": True,
             "security_validation": True
         }
-        
+
         if os.path.exists(self.config_path):
             try:
                 with open(self.config_path, 'r') as f:
                     user_config = json.load(f)
                     default_config.update(user_config)
             except Exception as e:
-                logger.warning(f"Failed to load config from {self.config_path}: {e}")
-        
+                logger.warning(
+                    f"Failed to load config from {self.config_path}: {e}")
+
         return default_config
-    
+
     def initialize_protocols(self):
         """Initialize protocol registry with version-specific schemas"""
         protocols = {
@@ -202,71 +209,72 @@ class ContextForge:
                 "features": ["dynamic_routing", "streaming", "multi_modal", "advanced_caching"]
             }
         }
-        
+
         self.protocol_registry = protocols
         logger.info(f"Initialized {len(protocols)} protocol versions")
-    
+
     async def process_context_request(self, request: ContextRequest) -> Dict[str, Any]:
         """
         Process a context request and return optimized response
-        
+
         Args:
             request: ContextRequest object with agent, model, intent, and scope
-            
+
         Returns:
             Dict containing processed context, embeddings, and routing information
         """
-        logger.info(f"Processing context request: {request.metadata['request_id']}")
-        
+        logger.info(
+            f"Processing context request: {request.metadata['request_id']}")
+
         # Validate request
         if not self.validate_request(request):
             return {"error": "Invalid request", "code": 400}
-        
+
         # Get protocol schema
         protocol = self.get_protocol_schema(request.protocol_version)
-        
+
         # Analyze prompt for context requirements
         context_analysis = await self.analyze_prompt(request.prompt, request.intent)
-        
+
         # Generate or retrieve embeddings
         embeddings = await self.get_context_embeddings(request.project_scope, context_analysis)
-        
+
         # Route to appropriate handler
         response = await self.route_request(request, context_analysis, embeddings)
-        
+
         # Cache response for future use
         await self.cache_response(request.metadata['request_id'], response)
-        
+
         return response
-    
+
     def validate_request(self, request: ContextRequest) -> bool:
         """Validate context request"""
         if not request.agent or not request.model or not request.intent:
             return False
-        
+
         if request.model not in [m.value for m in ModelType]:
             return False
-        
+
         if request.intent not in [i.value for i in AgentIntent]:
             return False
-        
+
         return True
-    
+
     def get_protocol_schema(self, version: ProtocolVersion) -> Dict[str, Any]:
         """Get protocol schema for specified version"""
         if version == ProtocolVersion.LATEST:
             version = "2.0"
-        
+
         return self.protocol_registry.get(version.value, self.protocol_registry["2.0"])
-    
+
     async def analyze_prompt(self, prompt: str, intent: AgentIntent) -> Dict[str, Any]:
         """
         Analyze prompt to determine context requirements
-        
+
         Args:
             prompt: User's prompt text
             intent: Agent intent for the request
-            
+
         Returns:
             Analysis results including context requirements
         """
@@ -278,26 +286,26 @@ class ContextForge:
             "estimated_tokens": len(prompt.split()) * 1.3,  # Rough estimate
             "priority_score": self.calculate_priority(intent)
         }
-        
+
         return analysis
-    
+
     def calculate_complexity(self, prompt: str) -> float:
         """Calculate prompt complexity score"""
         # Simple complexity scoring based on various factors
         factors = {
             "length": min(len(prompt) / 1000, 1.0),
-            "technical_terms": len([w for w in prompt.split() if w.lower() in 
-                                  ['function', 'class', 'method', 'variable', 'api', 'database']]) / 50,
+            "technical_terms": len([w for w in prompt.split() if w.lower() in
+                                    ['function', 'class', 'method', 'variable', 'api', 'database']]) / 50,
             "code_blocks": prompt.count('```') / 10,
             "questions": prompt.count('?') / 10
         }
-        
+
         return min(sum(factors.values()) / len(factors), 1.0)
-    
+
     def determine_context_requirements(self, prompt: str, intent: AgentIntent) -> List[str]:
         """Determine what context is needed for the prompt"""
         requirements = []
-        
+
         # Intent-based requirements
         intent_requirements = {
             AgentIntent.REFACTOR: ["code_structure", "dependencies", "tests"],
@@ -307,11 +315,12 @@ class ContextForge:
             AgentIntent.OPTIMIZE: ["performance_data", "benchmarks", "bottlenecks"],
             AgentIntent.SECURITY: ["security_policies", "vulnerability_scans", "compliance"],
             AgentIntent.DOCUMENTATION: ["code_structure", "api_specs", "examples"],
-            AgentIntent.TESTING: ["test_framework", "coverage_reports", "test_data"]
+            AgentIntent.TESTING: ["test_framework",
+                                  "coverage_reports", "test_data"]
         }
-        
+
         requirements.extend(intent_requirements.get(intent, []))
-        
+
         # Content-based requirements
         if 'database' in prompt.lower():
             requirements.append("database_schema")
@@ -321,9 +330,9 @@ class ContextForge:
             requirements.append("ui_components")
         if 'backend' in prompt.lower():
             requirements.append("server_architecture")
-        
+
         return list(set(requirements))
-    
+
     def suggest_models(self, prompt: str, intent: AgentIntent) -> List[ModelType]:
         """Suggest appropriate models for the request"""
         # Model suggestions based on intent and prompt analysis
@@ -337,9 +346,9 @@ class ContextForge:
             AgentIntent.DOCUMENTATION: [ModelType.GPT4O, ModelType.CLAUDE],
             AgentIntent.TESTING: [ModelType.COPILOT, ModelType.GPT4_TURBO]
         }
-        
+
         return suggestions.get(intent, [ModelType.GPT4O])
-    
+
     def calculate_priority(self, intent: AgentIntent) -> float:
         """Calculate request priority score"""
         priority_scores = {
@@ -352,27 +361,27 @@ class ContextForge:
             AgentIntent.GENERATE: 0.4,
             AgentIntent.DOCUMENTATION: 0.3
         }
-        
+
         return priority_scores.get(intent, 0.5)
-    
+
     async def get_context_embeddings(self, project_scope: str, analysis: Dict[str, Any]) -> List[ContextEmbedding]:
         """
         Get or generate context embeddings for the project scope
-        
+
         Args:
             project_scope: Project scope identifier
             analysis: Prompt analysis results
-            
+
         Returns:
             List of relevant context embeddings
         """
         embeddings = []
-        
+
         # Check cache first
         cache_key = f"{project_scope}:{hash(str(analysis))}"
         if cache_key in self.embeddings_cache:
             return [self.embeddings_cache[cache_key]]
-        
+
         # Generate embeddings for context requirements
         for requirement in analysis.get("context_requirements", []):
             context_content = await self.get_context_content(project_scope, requirement)
@@ -381,16 +390,17 @@ class ContextForge:
                 embeddings.append(ContextEmbedding(
                     content=context_content,
                     embedding=embedding,
-                    metadata={"requirement": requirement, "project_scope": project_scope},
+                    metadata={"requirement": requirement,
+                              "project_scope": project_scope},
                     relevance_score=0.8  # Default relevance
                 ))
-        
+
         # Cache results
         if embeddings:
             self.embeddings_cache[cache_key] = embeddings[0]
-        
+
         return embeddings
-    
+
     async def get_context_content(self, project_scope: str, requirement: str) -> Optional[str]:
         """Get context content for a specific requirement"""
         # This would integrate with the existing NoxPanel context system
@@ -402,25 +412,25 @@ class ContextForge:
             "database_schema": f"Database schema for {project_scope}",
             "security_policies": f"Security policies for {project_scope}"
         }
-        
+
         return context_sources.get(requirement, f"Context content for {requirement} in {project_scope}")
-    
+
     async def generate_embedding(self, content: str) -> List[float]:
         """Generate embedding for content (placeholder implementation)"""
         # This would use actual embedding model in production
         # For now, return dummy embedding
         return [0.1] * self.config["embedding_dimensions"]
-    
-    async def route_request(self, request: ContextRequest, analysis: Dict[str, Any], 
-                          embeddings: List[ContextEmbedding]) -> Dict[str, Any]:
+
+    async def route_request(self, request: ContextRequest, analysis: Dict[str, Any],
+                            embeddings: List[ContextEmbedding]) -> Dict[str, Any]:
         """
         Route request to appropriate handler based on analysis
-        
+
         Args:
             request: Original context request
             analysis: Prompt analysis results
             embeddings: Context embeddings
-            
+
         Returns:
             Processed response with routing information
         """
@@ -433,7 +443,7 @@ class ContextForge:
             "estimated_cost": self.estimate_cost(request.model, analysis),
             "estimated_time": self.estimate_processing_time(analysis)
         }
-        
+
         # Prepare response
         response = {
             "request_id": request.metadata["request_id"],
@@ -444,21 +454,21 @@ class ContextForge:
             "protocol_version": request.protocol_version,
             "optimization_suggestions": self.get_optimization_suggestions(request, analysis)
         }
-        
+
         return response
-    
+
     def determine_processing_strategy(self, analysis: Dict[str, Any]) -> str:
         """Determine optimal processing strategy"""
         complexity = analysis.get("complexity_score", 0.5)
         estimated_tokens = analysis.get("estimated_tokens", 100)
-        
+
         if complexity > 0.8 or estimated_tokens > 2000:
             return "batch_processing"
         elif complexity > 0.5 or estimated_tokens > 500:
             return "streaming"
         else:
             return "direct"
-    
+
     def calculate_context_window(self, model: ModelType, analysis: Dict[str, Any]) -> int:
         """Calculate optimal context window size"""
         base_windows = {
@@ -468,13 +478,13 @@ class ContextForge:
             ModelType.CLAUDE: 100000,
             ModelType.COPILOT: 8000
         }
-        
+
         base_window = base_windows.get(model, 4000)
         complexity_factor = analysis.get("complexity_score", 0.5)
-        
+
         # Adjust window based on complexity
         return int(base_window * (0.7 + complexity_factor * 0.3))
-    
+
     def estimate_cost(self, model: ModelType, analysis: Dict[str, Any]) -> float:
         """Estimate processing cost"""
         base_costs = {
@@ -484,48 +494,51 @@ class ContextForge:
             ModelType.CLAUDE: 0.025,
             ModelType.COPILOT: 0.0  # Free for many use cases
         }
-        
+
         base_cost = base_costs.get(model, 0.03)
         tokens = analysis.get("estimated_tokens", 100)
-        
+
         return base_cost * (tokens / 1000)
-    
+
     def estimate_processing_time(self, analysis: Dict[str, Any]) -> float:
         """Estimate processing time in seconds"""
         complexity = analysis.get("complexity_score", 0.5)
         tokens = analysis.get("estimated_tokens", 100)
-        
+
         base_time = 2.0  # Base 2 seconds
         complexity_factor = complexity * 3.0
         token_factor = tokens / 1000
-        
+
         return base_time + complexity_factor + token_factor
-    
+
     def get_optimization_suggestions(self, request: ContextRequest, analysis: Dict[str, Any]) -> List[str]:
         """Get optimization suggestions for the request"""
         suggestions = []
-        
+
         # Model optimization suggestions
         if request.model == ModelType.GPT4 and analysis.get("complexity_score", 0) < 0.3:
-            suggestions.append("Consider using GPT-4 Turbo for better performance")
-        
+            suggestions.append(
+                "Consider using GPT-4 Turbo for better performance")
+
         # Context optimization
         if analysis.get("estimated_tokens", 0) > 1000:
-            suggestions.append("Consider breaking down the request into smaller chunks")
-        
+            suggestions.append(
+                "Consider breaking down the request into smaller chunks")
+
         # Intent optimization
         if request.intent == AgentIntent.GENERATE and "refactor" in request.prompt.lower():
-            suggestions.append("Consider using REFACTOR intent for better results")
-        
+            suggestions.append(
+                "Consider using REFACTOR intent for better results")
+
         return suggestions
-    
+
     async def cache_response(self, request_id: str, response: Dict[str, Any]):
         """Cache response for future use"""
         # Simple in-memory caching (would use Redis in production)
         cache_key = f"response:{request_id}"
         # Implementation would store in Redis or similar
         logger.info(f"Cached response for request {request_id}")
-    
+
     def get_health_status(self) -> Dict[str, Any]:
         """Get ContextForge health status"""
         return {
@@ -537,7 +550,7 @@ class ContextForge:
             "supported_models": [m.value for m in ModelType],
             "memory_usage": self.get_memory_usage()
         }
-    
+
     def get_memory_usage(self) -> Dict[str, Any]:
         """Get memory usage statistics"""
         return {
@@ -545,6 +558,7 @@ class ContextForge:
             "active_sessions": len(self.active_sessions),
             "protocol_registry_size": len(self.protocol_registry)
         }
+
 
 # Global ContextForge instance
 contextforge = ContextForge()
@@ -566,10 +580,11 @@ if __name__ == "__main__":
         project_scope="NoxPanel.Security.Auth",
         prompt="Refactor the authentication handlers to use modern security practices"
     )
-    
+
     print("🚀 ContextForge - Model Context Protocol Server")
     print("=" * 50)
     print(f"Request ID: {test_request.metadata['request_id']}")
-    print(f"Compatibility Score: {test_request.metadata['compatibility_score']}")
+    print(
+        f"Compatibility Score: {test_request.metadata['compatibility_score']}")
     print(f"Protocol Version: {test_request.protocol_version}")
     print(f"Health Status: {contextforge.get_health_status()}")

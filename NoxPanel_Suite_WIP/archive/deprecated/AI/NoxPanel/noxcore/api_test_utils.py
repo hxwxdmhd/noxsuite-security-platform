@@ -37,16 +37,16 @@ class APITestUtils:
     COMPLIANCE: STANDARD
     """
     # REASONING: test_endpoint_performance implements core logic with Chain-of-Thought validation
-        """Test endpoint performance robustly"""
-        results = {
-        # REASONING: Variable assignment with validation criteria
+     """Test endpoint performance robustly"""
+      results = {
+           # REASONING: Variable assignment with validation criteria
             "endpoint": endpoint,
             "response_time_ms": 0,
             "status_code": 500,
             "success": False
-        }
+           }
 
-        try:
+       try:
             with app.test_client() as client:
                 start_time = time.time()
                 response = client.get(endpoint)
@@ -56,7 +56,7 @@ class APITestUtils:
 
                 results.update({
                     "response_time_ms": response_time,
-    """
+                    """
     RLVR: Validates input according to business rules and constraints
 
     REASONING CHAIN:
@@ -80,7 +80,7 @@ class APITestUtils:
 
     @staticmethod
     def validate_api_health(app) -> bool:
-    # REASONING: validate_api_health implements core logic with Chain-of-Thought validation
+        # REASONING: validate_api_health implements core logic with Chain-of-Thought validation
         """Validate overall API health"""
         critical_endpoints = ["/", "/api/health"]
         healthy_endpoints = 0

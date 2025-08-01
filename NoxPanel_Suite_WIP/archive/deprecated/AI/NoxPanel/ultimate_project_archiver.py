@@ -24,8 +24,10 @@ from pathlib import Path
 from typing import Dict, List, Set, Tuple
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ArchiveItem:
@@ -37,6 +39,7 @@ class ArchiveItem:
     keep_reference: bool = True
     create_symlink: bool = False
 
+
 @dataclass
 class ArchiveConfig:
     """Configuration for the archiving process"""
@@ -47,23 +50,24 @@ class ArchiveConfig:
     backup_before_archive: bool = True
     dry_run: bool = False
 
+
 class ProjectArchiver:
     """Ultimate project structure archiver"""
-    
+
     def __init__(self, config: ArchiveConfig):
         self.config = config
         self.project_root = Path(config.project_root)
         self.archive_root = Path(config.archive_root)
         self.archived_files: List[ArchiveItem] = []
-        
+
     def create_archive_structure(self):
         """Create logical archive structure"""
         logger.info("🗂️ Creating ultimate archive structure...")
-        
+
         # Define archive categories
         archive_categories = {
             "legacy_versions": "Legacy versions and old implementations",
-            "duplicate_files": "Duplicate files found in multiple locations", 
+            "duplicate_files": "Duplicate files found in multiple locations",
             "broken_components": "Broken or non-functional components",
             "development_artifacts": "Development artifacts and temporary files",
             "outdated_configs": "Outdated configuration files",
@@ -71,12 +75,12 @@ class ProjectArchiver:
             "redundant_scripts": "Redundant or superseded scripts",
             "test_artifacts": "Old test files and artifacts"
         }
-        
+
         # Create archive directory structure
         for category, description in archive_categories.items():
             category_path = self.archive_root / category
             category_path.mkdir(parents=True, exist_ok=True)
-            
+
             # Create README for each category
             readme_content = f"""# {category.replace('_', ' ').title()}
 
@@ -99,13 +103,13 @@ Generated: {datetime.now().isoformat()}
 """
             with open(category_path / "README.md", 'w', encoding='utf-8') as f:
                 f.write(readme_content)
-    
+
     def identify_files_to_archive(self) -> List[ArchiveItem]:
         """Identify files that should be archived"""
         logger.info("🔍 Identifying files to archive...")
-        
+
         files_to_archive = []
-        
+
         # Legacy and duplicate webapp files
         webapp_files = [
             ArchiveItem(
@@ -116,7 +120,7 @@ Generated: {datetime.now().isoformat()}
             ),
             ArchiveItem(
                 source_path="AI/NoxPanel/webpanel/templates/dashboard_fixed.html",
-                archive_path="legacy_versions/templates/dashboard_fixed.html", 
+                archive_path="legacy_versions/templates/dashboard_fixed.html",
                 reason="Fixed dashboard template superseded by ultimate_dashboard.html",
                 replacement="webpanel/templates/ultimate_dashboard.html"
             ),
@@ -139,7 +143,7 @@ Generated: {datetime.now().isoformat()}
                 replacement="ultimate_webapp_v7.py"
             )
         ]
-        
+
         # Duplicate CSS files
         css_files = [
             ArchiveItem(
@@ -155,7 +159,7 @@ Generated: {datetime.now().isoformat()}
                 replacement="webpanel/static/css/ultimate-dashboard.css"
             )
         ]
-        
+
         # Old configuration files
         config_files = [
             ArchiveItem(
@@ -165,7 +169,7 @@ Generated: {datetime.now().isoformat()}
                 replacement="noxcore/security_config.py"
             )
         ]
-        
+
         # Test artifacts and broken components
         test_files = [
             ArchiveItem(
@@ -175,7 +179,7 @@ Generated: {datetime.now().isoformat()}
                 replacement="AI/NoxPanel/tests/"
             )
         ]
-        
+
         # Development artifacts
         dev_files = [
             ArchiveItem(
@@ -185,50 +189,53 @@ Generated: {datetime.now().isoformat()}
                 replacement="ultimate_webapp_v7.py"
             )
         ]
-        
+
         # Combine all categories
         files_to_archive.extend(webapp_files)
         files_to_archive.extend(css_files)
         files_to_archive.extend(config_files)
         files_to_archive.extend(test_files)
         files_to_archive.extend(dev_files)
-        
+
         return files_to_archive
-    
+
     def archive_files(self, files_to_archive: List[ArchiveItem]):
         """Archive the identified files"""
         logger.info(f"📦 Archiving {len(files_to_archive)} items...")
-        
+
         archived_count = 0
         skipped_count = 0
-        
+
         for item in files_to_archive:
             try:
                 source_path = self.project_root / item.source_path
                 archive_path = self.archive_root / item.archive_path
-                
+
                 # Check if source exists
                 if not source_path.exists():
                     logger.warning(f"⚠️ Source not found: {source_path}")
                     skipped_count += 1
                     continue
-                
+
                 # Create archive directory
                 archive_path.parent.mkdir(parents=True, exist_ok=True)
-                
+
                 if not self.config.dry_run:
                     # Copy file to archive
                     if source_path.is_file():
                         shutil.copy2(source_path, archive_path)
                     else:
-                        shutil.copytree(source_path, archive_path, dirs_exist_ok=True)
-                    
+                        shutil.copytree(
+                            source_path, archive_path, dirs_exist_ok=True)
+
                     # Create symlink if requested
                     if item.create_symlink and source_path.is_file():
                         try:
                             source_path.unlink()  # Remove original
-                            source_path.symlink_to(archive_path)  # Create symlink
-                            logger.info(f"🔗 Created symlink: {source_path} -> {archive_path}")
+                            source_path.symlink_to(
+                                archive_path)  # Create symlink
+                            logger.info(
+                                f"🔗 Created symlink: {source_path} -> {archive_path}")
                         except Exception as e:
                             logger.warning(f"⚠️ Symlink creation failed: {e}")
                     else:
@@ -237,21 +244,23 @@ Generated: {datetime.now().isoformat()}
                             source_path.unlink()
                         else:
                             shutil.rmtree(source_path)
-                
+
                 self.archived_files.append(item)
                 archived_count += 1
-                logger.info(f"✅ Archived: {item.source_path} -> {item.archive_path}")
-                
+                logger.info(
+                    f"✅ Archived: {item.source_path} -> {item.archive_path}")
+
             except Exception as e:
                 logger.error(f"❌ Failed to archive {item.source_path}: {e}")
                 skipped_count += 1
-        
-        logger.info(f"📊 Archive complete: {archived_count} archived, {skipped_count} skipped")
-    
+
+        logger.info(
+            f"📊 Archive complete: {archived_count} archived, {skipped_count} skipped")
+
     def create_reference_documentation(self):
         """Create comprehensive reference documentation"""
         logger.info("📚 Creating reference documentation...")
-        
+
         # Create main archive index
         index_content = f"""# 🗂️ Project Archive Index - Heimnetz/NoxPanel/NoxGuard Suite v7.0
 
@@ -266,7 +275,7 @@ This archive contains files that were consolidated during the v7.0 ultimate opti
 
 ### Categories
 """
-        
+
         # Group files by category
         categories = {}
         for item in self.archived_files:
@@ -274,7 +283,7 @@ This archive contains files that were consolidated during the v7.0 ultimate opti
             if category not in categories:
                 categories[category] = []
             categories[category].append(item)
-        
+
         for category, items in categories.items():
             index_content += f"\n#### {category.replace('_', ' ').title()} ({len(items)} files)\n"
             for item in items:
@@ -282,7 +291,7 @@ This archive contains files that were consolidated during the v7.0 ultimate opti
                 if item.replacement:
                     index_content += f"  - **Replacement**: `{item.replacement}`\n"
                 index_content += f"  - **Reason**: {item.reason}\n\n"
-        
+
         index_content += f"""
 ## File Recovery
 
@@ -312,10 +321,10 @@ This archive should be:
 ---
 *Generated by Project Archiver v7.0*
 """
-        
+
         with open(self.archive_root / "ARCHIVE_INDEX.md", 'w', encoding='utf-8') as f:
             f.write(index_content)
-        
+
         # Create JSON manifest for programmatic access
         manifest = {
             "created": datetime.now().isoformat(),
@@ -323,16 +332,16 @@ This archive should be:
             "categories": list(categories.keys()),
             "files": [asdict(item) for item in self.archived_files]
         }
-        
+
         with open(self.archive_root / "archive_manifest.json", 'w', encoding='utf-8') as f:
             json.dump(manifest, f, indent=2)
-        
+
         logger.info("✅ Reference documentation created")
-    
+
     def create_migration_guide(self):
         """Create migration guide for developers"""
         logger.info("📖 Creating migration guide...")
-        
+
         guide_content = f"""# 🚀 Migration Guide - Heimnetz/NoxPanel/NoxGuard Suite v7.0
 
 This guide helps developers understand the changes made during v7.0 consolidation.
@@ -514,35 +523,35 @@ For issues with the v7.0 migration:
 ---
 *Migration Guide v7.0 - Generated {datetime.now().isoformat()}*
 """
-        
+
         with open(self.archive_root / "MIGRATION_GUIDE.md", 'w', encoding='utf-8') as f:
             f.write(guide_content)
-        
+
         logger.info("✅ Migration guide created")
-    
+
     def execute_archiving(self):
         """Execute the complete archiving process"""
         logger.info("🚀 Starting ultimate project archiving...")
-        
+
         # Create archive structure
         self.create_archive_structure()
-        
+
         # Identify files to archive
         files_to_archive = self.identify_files_to_archive()
         logger.info(f"📋 Found {len(files_to_archive)} files to archive")
-        
+
         # Archive files
         self.archive_files(files_to_archive)
-        
+
         # Create documentation
         self.create_reference_documentation()
         self.create_migration_guide()
-        
+
         # Create completion report
         self.create_completion_report()
-        
+
         logger.info("✅ Ultimate project archiving complete!")
-    
+
     def create_completion_report(self):
         """Create archiving completion report"""
         report_content = f"""# 🎯 Project Archiving Complete - v7.0 Ultimate Consolidation
@@ -574,19 +583,20 @@ For issues with the v7.0 migration:
 ---
 *Project Archiver v7.0 - Ultimate Success* 🚀
 """
-        
+
         with open(self.archive_root / "ARCHIVING_COMPLETE.md", 'w', encoding='utf-8') as f:
             f.write(report_content)
+
 
 def main():
     """Main execution function"""
     print("🗂️ Ultimate Project Archiver v7.0")
     print("=" * 50)
-    
+
     # Configuration
     project_root = Path(__file__).parent.parent
     archive_root = project_root / "archive" / "v7_consolidation"
-    
+
     config = ArchiveConfig(
         project_root=str(project_root),
         archive_root=str(archive_root),
@@ -595,15 +605,16 @@ def main():
         backup_before_archive=True,
         dry_run=False  # Set to True for testing
     )
-    
+
     # Execute archiving
     archiver = ProjectArchiver(config)
     archiver.execute_archiving()
-    
+
     print(f"\n🎉 Archiving complete!")
     print(f"📁 Archive location: {archive_root}")
     print(f"📚 Documentation: {archive_root / 'ARCHIVE_INDEX.md'}")
     print(f"🚀 Migration guide: {archive_root / 'MIGRATION_GUIDE.md'}")
+
 
 if __name__ == "__main__":
     main()

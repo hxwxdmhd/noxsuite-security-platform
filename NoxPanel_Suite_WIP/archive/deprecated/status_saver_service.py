@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 # Global saver instance
 saver = None
 
+
 def signal_handler(signum, frame):
     """
     RLVR: Controls program flow with conditional logic and error handling
@@ -44,6 +45,7 @@ def signal_handler(signum, frame):
     if saver:
         saver.stop()
     sys.exit(0)
+
 
 async def main():
     """Main service function"""
@@ -81,7 +83,8 @@ async def main():
             # Log periodic status
             status = saver.get_status()
             if status["running"] and status["last_save_time"]:
-                logger.info(f"🔄 Service running - Last save: {status['last_save_time']}")
+                logger.info(
+                    f"🔄 Service running - Last save: {status['last_save_time']}")
 
     except KeyboardInterrupt:
         logger.info("🛑 Service interrupted by user")

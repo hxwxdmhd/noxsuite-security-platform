@@ -44,7 +44,8 @@ class AuthManager:
 
     def __init__(self):
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-        self.secret_key = os.getenv("JWT_SECRET_KEY", self._generate_secret_key())
+        self.secret_key = os.getenv(
+            "JWT_SECRET_KEY", self._generate_secret_key())
         self.algorithm = "HS256"
         self.access_token_expire_minutes = 30
         self.refresh_token_expire_days = 7
@@ -120,7 +121,8 @@ class AuthManager:
 
         except Exception as e:
             self.logger.error(f"Token creation error: {e}")
-            raise HTTPException(status_code=500, detail="Token creation failed")
+            raise HTTPException(
+                status_code=500, detail="Token creation failed")
 
     def create_refresh_token(self, data: Dict[str, Any]) -> str:
         """Create a JWT refresh token"""
@@ -138,12 +140,14 @@ class AuthManager:
 
         except Exception as e:
             self.logger.error(f"Refresh token creation error: {e}")
-            raise HTTPException(status_code=500, detail="Refresh token creation failed")
+            raise HTTPException(
+                status_code=500, detail="Refresh token creation failed")
 
     def verify_token(self, token: str) -> Optional[Dict[str, Any]]:
         """Verify and decode a JWT token"""
         try:
-            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+            payload = jwt.decode(token, self.secret_key,
+                                 algorithms=[self.algorithm])
 
             # Check token type
             if payload.get("type") not in ["access", "refresh"]:

@@ -23,6 +23,7 @@ from flask import Flask, jsonify, request
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class Region:
     """Geographic region definition"""
@@ -35,6 +36,7 @@ class Region:
     capacity: int
     load: float
 
+
 @dataclass
 class EdgeNode:
     """Edge computing node definition"""
@@ -46,9 +48,10 @@ class EdgeNode:
     health_score: float
     last_seen: datetime
 
+
 class GlobalLoadBalancer:
     """Global load balancer for multi-region deployment"""
-    
+
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.regions = {}
@@ -56,7 +59,7 @@ class GlobalLoadBalancer:
         self.routing_table = {}
         self.health_checks = {}
         self.initialize_regions()
-        
+
     def initialize_regions(self):
         """Initialize global regions"""
         regions_config = [
@@ -111,7 +114,7 @@ class GlobalLoadBalancer:
                 'load': 0.55
             }
         ]
-        
+
         for region_config in regions_config:
             region = Region(
                 name=region_config['name'],
@@ -124,26 +127,26 @@ class GlobalLoadBalancer:
                 load=region_config['load']
             )
             self.regions[region.code] = region
-            
+
         logger.info(f"Initialized {len(self.regions)} global regions")
-    
+
     def get_optimal_region(self, client_location: str = None) -> Region:
         """Get optimal region based on client location and load"""
         if client_location:
             # Simple geographic routing
             if 'us' in client_location.lower():
-                return min([r for r in self.regions.values() if 'us' in r.code], 
-                          key=lambda r: r.load)
+                return min([r for r in self.regions.values() if 'us' in r.code],
+                           key=lambda r: r.load)
             elif 'eu' in client_location.lower():
-                return min([r for r in self.regions.values() if 'eu' in r.code], 
-                          key=lambda r: r.load)
+                return min([r for r in self.regions.values() if 'eu' in r.code],
+                           key=lambda r: r.load)
             elif 'asia' in client_location.lower() or 'ap' in client_location.lower():
-                return min([r for r in self.regions.values() if 'ap' in r.code], 
-                          key=lambda r: r.load)
-        
+                return min([r for r in self.regions.values() if 'ap' in r.code],
+                           key=lambda r: r.load)
+
         # Default to least loaded region
         return min(self.regions.values(), key=lambda r: r.load)
-    
+
     def update_region_health(self, region_code: str, health_data: Dict[str, Any]):
         """Update region health metrics"""
         if region_code in self.regions:
@@ -153,15 +156,16 @@ class GlobalLoadBalancer:
             region.status = health_data.get('status', region.status)
             self.health_checks[region_code] = datetime.now()
 
+
 class EdgeComputingManager:
     """Edge computing node management"""
-    
+
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.edge_nodes = {}
         self.services = {}
         self.initialize_edge_nodes()
-        
+
     def initialize_edge_nodes(self):
         """Initialize edge computing nodes"""
         edge_configs = [
@@ -206,7 +210,7 @@ class EdgeComputingManager:
                 'health_score': 0.94
             }
         ]
-        
+
         for node_config in edge_configs:
             node = EdgeNode(
                 node_id=node_config['node_id'],
@@ -218,39 +222,40 @@ class EdgeComputingManager:
                 last_seen=datetime.now()
             )
             self.edge_nodes[node.node_id] = node
-            
+
         logger.info(f"Initialized {len(self.edge_nodes)} edge computing nodes")
-    
+
     def get_edge_node(self, region: str, service: str) -> Optional[EdgeNode]:
         """Get optimal edge node for service in region"""
         candidates = [
             node for node in self.edge_nodes.values()
             if node.region == region and service in node.services and node.status == 'active'
         ]
-        
+
         if candidates:
             return max(candidates, key=lambda n: n.health_score)
         return None
-    
+
     def update_node_health(self, node_id: str, health_score: float):
         """Update edge node health"""
         if node_id in self.edge_nodes:
             self.edge_nodes[node_id].health_score = health_score
             self.edge_nodes[node_id].last_seen = datetime.now()
 
+
 class GlobalDataReplication:
     """Global data replication and synchronization"""
-    
+
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.replication_targets = {}
         self.sync_status = {}
         self.conflicts = []
-        
+
     def setup_replication(self, primary_region: str, replica_regions: List[str]):
         """Setup data replication between regions"""
         self.replication_targets[primary_region] = replica_regions
-        
+
         for region in replica_regions:
             self.sync_status[f"{primary_region}->{region}"] = {
                 'status': 'active',
@@ -258,52 +263,59 @@ class GlobalDataReplication:
                 'lag_ms': 50 + (len(replica_regions) * 10),
                 'errors': 0
             }
-    
+
     async def replicate_data(self, data: Dict[str, Any], source_region: str):
         """Replicate data across regions"""
         if source_region not in self.replication_targets:
             return
-        
+
         target_regions = self.replication_targets[source_region]
-        
+
         for target_region in target_regions:
             try:
                 # Simulate replication delay
                 await asyncio.sleep(0.1)
-                
+
                 sync_key = f"{source_region}->{target_region}"
                 self.sync_status[sync_key]['last_sync'] = datetime.now()
-                self.sync_status[sync_key]['lag_ms'] = 45 + (len(target_regions) * 5)
-                
-                logger.info(f"Replicated data from {source_region} to {target_region}")
-                
+                self.sync_status[sync_key]['lag_ms'] = 45 + \
+                    (len(target_regions) * 5)
+
+                logger.info(
+                    f"Replicated data from {source_region} to {target_region}")
+
             except Exception as e:
-                logger.error(f"Replication failed: {source_region} -> {target_region}: {e}")
+                logger.error(
+                    f"Replication failed: {source_region} -> {target_region}: {e}")
                 self.sync_status[sync_key]['errors'] += 1
+
 
 class GlobalScalabilityOrchestrator:
     """Global scalability orchestration system"""
-    
+
     def __init__(self, workspace_path: str):
         self.workspace_path = workspace_path
         self.config = self.load_config()
-        
+
         # Initialize components
-        self.load_balancer = GlobalLoadBalancer(self.config.get('load_balancer', {}))
-        self.edge_manager = EdgeComputingManager(self.config.get('edge_computing', {}))
-        self.data_replication = GlobalDataReplication(self.config.get('data_replication', {}))
-        
+        self.load_balancer = GlobalLoadBalancer(
+            self.config.get('load_balancer', {}))
+        self.edge_manager = EdgeComputingManager(
+            self.config.get('edge_computing', {}))
+        self.data_replication = GlobalDataReplication(
+            self.config.get('data_replication', {}))
+
         # Setup replication
         self.setup_global_replication()
-        
+
     def load_config(self) -> Dict[str, Any]:
         """Load global scaling configuration"""
         config_path = Path(self.workspace_path) / "global_config.json"
-        
+
         if config_path.exists():
             with open(config_path, 'r') as f:
                 return json.load(f)
-        
+
         # Default configuration
         config = {
             "load_balancer": {
@@ -330,36 +342,36 @@ class GlobalScalabilityOrchestrator:
                 }
             }
         }
-        
+
         with open(config_path, 'w') as f:
             json.dump(config, f, indent=2)
-            
+
         return config
-    
+
     def setup_global_replication(self):
         """Setup global data replication"""
         # Primary regions and their replicas
         self.data_replication.setup_replication(
-            'us-east-1', 
+            'us-east-1',
             ['us-west-1', 'eu-central-1']
         )
         self.data_replication.setup_replication(
-            'eu-central-1', 
+            'eu-central-1',
             ['eu-west-1', 'us-east-1']
         )
         self.data_replication.setup_replication(
-            'ap-southeast-1', 
+            'ap-southeast-1',
             ['us-west-1', 'eu-central-1']
         )
-    
+
     def get_service_endpoint(self, service: str, client_location: str = None) -> Dict[str, Any]:
         """Get optimal service endpoint for client"""
         # Get optimal region
         region = self.load_balancer.get_optimal_region(client_location)
-        
+
         # Get edge node if available
         edge_node = self.edge_manager.get_edge_node(region.code, service)
-        
+
         if edge_node:
             endpoint = f"https://{edge_node.node_id}.heimnetz.com/{service}"
             return {
@@ -379,17 +391,18 @@ class GlobalScalabilityOrchestrator:
                 'cache_enabled': False
             }
 
+
 class GlobalScalabilityInterface:
     """Web interface for global scalability management"""
-    
+
     def __init__(self, orchestrator: GlobalScalabilityOrchestrator):
         self.orchestrator = orchestrator
         self.app = Flask(__name__)
         self.setup_routes()
-        
+
     def setup_routes(self):
         """Setup Flask routes for global scalability interface"""
-        
+
         @self.app.route('/global/dashboard')
         def global_dashboard():
             """Global scalability dashboard"""
@@ -552,17 +565,19 @@ class GlobalScalabilityInterface:
 </body>
 </html>
             '''
-            
+
             from jinja2 import Template
             return Template(template).render(
                 region_count=len(self.orchestrator.load_balancer.regions),
                 edge_count=len(self.orchestrator.edge_manager.edge_nodes),
-                avg_latency=sum(r.latency for r in self.orchestrator.load_balancer.regions.values()) / len(self.orchestrator.load_balancer.regions),
-                replication_targets=len(self.orchestrator.data_replication.replication_targets),
+                avg_latency=sum(r.latency for r in self.orchestrator.load_balancer.regions.values(
+                )) / len(self.orchestrator.load_balancer.regions),
+                replication_targets=len(
+                    self.orchestrator.data_replication.replication_targets),
                 regions=self.orchestrator.load_balancer.regions,
                 edge_nodes=self.orchestrator.edge_manager.edge_nodes
             )
-        
+
         @self.app.route('/global/api/regions')
         def api_regions():
             """Get global regions info"""
@@ -578,9 +593,9 @@ class GlobalScalabilityInterface:
                     'capacity': region.capacity,
                     'load': region.load
                 })
-            
+
             return jsonify({'regions': regions})
-        
+
         @self.app.route('/global/api/edge-nodes')
         def api_edge_nodes():
             """Get edge nodes info"""
@@ -595,9 +610,9 @@ class GlobalScalabilityInterface:
                     'health_score': node.health_score,
                     'last_seen': node.last_seen.isoformat()
                 })
-            
+
             return jsonify({'edge_nodes': nodes})
-        
+
         @self.app.route('/global/api/replication')
         def api_replication():
             """Get data replication status"""
@@ -613,35 +628,38 @@ class GlobalScalabilityInterface:
                     for k, v in self.orchestrator.data_replication.sync_status.items()
                 }
             })
-        
+
         @self.app.route('/global/api/endpoint', methods=['POST'])
         def api_endpoint():
             """Get optimal endpoint for service"""
             data = request.get_json()
             service = data.get('service', 'api')
             client_location = data.get('client_location', 'us')
-            
-            endpoint_info = self.orchestrator.get_service_endpoint(service, client_location)
+
+            endpoint_info = self.orchestrator.get_service_endpoint(
+                service, client_location)
             return jsonify(endpoint_info)
+
 
 def main():
     """Main global scalability demo"""
     workspace = Path(__file__).parent
-    
+
     logger.info("Starting Heimnetz Global Scalability")
     logger.info("=" * 60)
     logger.info("Phase 3: Global Scalability - STARTING")
-    
+
     # Initialize orchestrator
     orchestrator = GlobalScalabilityOrchestrator(str(workspace))
-    
+
     # Initialize web interface
     web_interface = GlobalScalabilityInterface(orchestrator)
-    
+
     logger.info("Global Infrastructure Initialized:")
     logger.info(f"- Regions: {len(orchestrator.load_balancer.regions)}")
     logger.info(f"- Edge Nodes: {len(orchestrator.edge_manager.edge_nodes)}")
-    logger.info(f"- Replication Streams: {len(orchestrator.data_replication.replication_targets)}")
+    logger.info(
+        f"- Replication Streams: {len(orchestrator.data_replication.replication_targets)}")
     logger.info("- Load Balancer: Active")
     logger.info("- Edge Computing: Active")
     logger.info("- Data Replication: Active")
@@ -653,11 +671,12 @@ def main():
     logger.info("- Replication: GET /global/api/replication")
     logger.info("- Service Endpoint: POST /global/api/endpoint")
     logger.info("=" * 60)
-    
+
     try:
         web_interface.app.run(host='0.0.0.0', port=5002, debug=False)
     except KeyboardInterrupt:
         logger.info("Global scalability stopped by user")
+
 
 if __name__ == "__main__":
     main()

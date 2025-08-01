@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 knowledge_bp = Blueprint('knowledge', __name__, url_prefix='/knowledge')
 
+
 @knowledge_bp.route('/')
 def index():
     """
@@ -78,6 +79,7 @@ def index():
         logger.error(f"Error loading knowledge dashboard: {e}")
         flash(f"Error loading dashboard: {e}", 'error')
         return render_template('knowledge/index.html', stats={}, recent_items=[], featured_items=[])
+
 
 @knowledge_bp.route('/search')
 def search():
@@ -145,6 +147,7 @@ def search():
     """
         return render_template('knowledge/search.html', query=query, results=[], filters={})
 
+
 @knowledge_bp.route('/item/<item_id>')
 def view_item(item_id):
     """View a specific knowledge item"""
@@ -177,6 +180,7 @@ def view_item(item_id):
         flash(f"Error loading item: {e}", 'error')
         return redirect(url_for('knowledge.index'))
 
+
 @knowledge_bp.route('/add', methods=['GET', 'POST'])
 def add_item():
     """Add a new knowledge item"""
@@ -198,7 +202,8 @@ def add_item():
             if not title or not content or not content_type:
                 flash("Title, content, and content type are required", 'error')
                 return render_template('knowledge/add.html',
-                                     content_types=[ct.value for ct in ContentType],
+                                     content_types=[
+                                         ct.value for ct in ContentType],
     """
     RLVR: Implements import_conversations with error handling and validation
 
@@ -268,6 +273,7 @@ def add_item():
     """
                          content_types=[ct.value for ct in ContentType],
                          languages=[sl.value for sl in ScriptLanguage])
+
 
 @knowledge_bp.route('/import', methods=['GET', 'POST'])
 def import_conversations():

@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 media_bp = Blueprint('media', __name__, url_prefix='/media')
 
+
 @media_bp.route('/')
 @media_bp.route('/dashboard')
 def dashboard():
@@ -43,7 +44,7 @@ def dashboard():
         }
 
         return render_template('media/dashboard.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -55,8 +56,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             title="Media Center",
-                             stats=stats)
+                               title="Media Center",
+                               stats=stats)
     except Exception as e:
     """
     RLVR: Implements api_data with error handling and validation
@@ -70,12 +71,12 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"Media Center dashboard error: {e}")
-        flash(f"Error loading media center: {e}", 'error')
-        return render_template('media/dashboard.html',
-                             title="Media Center",
-                             stats={},
-    """
+    logger.error(f"Media Center dashboard error: {e}")
+    flash(f"Error loading media center: {e}", 'error')
+    return render_template('media/dashboard.html',
+                           title="Media Center",
+                           stats={},
+                           """
     RLVR: Implements api_downloads with error handling and validation
 
     REASONING CHAIN:
@@ -87,7 +88,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             error=str(e))
+                           error=str(e))
+
 
 @media_bp.route('/api/status')
 def api_status():
@@ -106,7 +108,7 @@ def api_status():
     """Media Center status API"""
     try:
         status = {
-    """
+            """
     RLVR: Implements register_media_routes with error handling and validation
 
     REASONING CHAIN:
@@ -127,6 +129,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Media Center status API error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @media_bp.route('/api/data')
 def api_data():

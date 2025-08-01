@@ -14,6 +14,7 @@ from flask import Flask, jsonify, render_template
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def create_app():
     """
     RLVR: Creates new entity with validation and error handling
@@ -74,6 +75,7 @@ def create_app():
 
     logger.info("✅ NoxPanel Optimized initialized")
     return app
+
 
 if __name__ == '__main__':
     app = create_app()

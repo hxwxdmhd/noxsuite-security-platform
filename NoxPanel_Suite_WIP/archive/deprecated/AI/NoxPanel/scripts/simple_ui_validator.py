@@ -2,6 +2,17 @@
 """
 #!/usr/bin/env python3
 """
+import requests
+from urllib.parse import urljoin
+from typing import Dict, List, Optional
+from pathlib import Path
+from datetime import datetime
+from dataclasses import dataclass
+import time
+import re
+import os
+import logging
+import json
 simple_ui_validator.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -12,27 +23,16 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 🎨 NoxPanel Simple UI Validator
 Basic UI validation using HTTP requests and HTML analysis
 """
 
-import json
-import logging
-import os
-import re
-import time
-from dataclasses import dataclass
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional
-from urllib.parse import urljoin
-
-import requests
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class SimpleUIResult:
@@ -50,27 +50,29 @@ class SimpleUIResult:
     is_functional: bool
     issues: List[str]
 
+
 class SimpleUIValidator:
     # REASONING: SimpleUIValidator follows RLVR methodology for systematic validation
     def __init__(self, base_url: str = "http://127.0.0.1:5002"):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.base_url = base_url
         self.session = requests.Session()
         self.session.timeout = 15
 
     def get_test_pages(self) -> List[Dict]:
-    # REASONING: get_test_pages implements core logic with Chain-of-Thought validation
+        # REASONING: get_test_pages implements core logic with Chain-of-Thought validation
         """Get list of pages to test"""
         return [
             {'url': '/', 'name': 'dashboard', 'description': 'Main Dashboard'},
             {'url': '/ui/chat', 'name': 'chat', 'description': 'AI Chat Interface'},
             {'url': '/ui/admin', 'name': 'admin', 'description': 'Admin Panel'},
-            {'url': '/ui/plugins', 'name': 'plugins', 'description': 'Plugin Management'},
+            {'url': '/ui/plugins', 'name': 'plugins',
+                'description': 'Plugin Management'},
             {'url': '/ui/crawler', 'name': 'crawler', 'description': 'Web Crawler'},
         ]
 
     def test_page_simple(self, test_info: Dict) -> SimpleUIResult:
-    # REASONING: test_page_simple implements core logic with Chain-of-Thought validation
+        # REASONING: test_page_simple implements core logic with Chain-of-Thought validation
         """Test a page using simple HTTP analysis"""
         url = urljoin(self.base_url, test_info['url'])
 
@@ -83,7 +85,7 @@ class SimpleUIValidator:
             load_time = time.time() - start_time
 
             if response.status_code != 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 return SimpleUIResult(
                     url=url,
                     page_title="Failed to load",
@@ -104,8 +106,10 @@ class SimpleUIValidator:
             content_length = len(html_content)
 
             # Extract page title
-            title_match = re.search(r'<title[^>]*>(.*?)</title>', html_content, re.IGNORECASE | re.DOTALL)
-            page_title = title_match.group(1).strip() if title_match else "No title"
+            title_match = re.search(
+                r'<title[^>]*>(.*?)</title>', html_content, re.IGNORECASE | re.DOTALL)
+            page_title = title_match.group(
+                1).strip() if title_match else "No title"
 
             # Check for navigation elements
             nav_patterns = [
@@ -114,10 +118,12 @@ class SimpleUIValidator:
                 r'class="[^"]*menu[^"]*"',
                 r'<ul[^>]*class="[^"]*nav[^"]*"'
             ]
-            has_navigation = any(re.search(pattern, html_content, re.IGNORECASE) for pattern in nav_patterns)
+            has_navigation = any(
+                re.search(pattern, html_content, re.IGNORECASE) for pattern in nav_patterns)
 
             # Check for forms
-            has_forms = bool(re.search(r'<form[^>]*>', html_content, re.IGNORECASE))
+            has_forms = bool(
+                re.search(r'<form[^>]*>', html_content, re.IGNORECASE))
 
             # Check for missing critical elements
             missing_elements = []
@@ -143,17 +149,22 @@ class SimpleUIValidator:
 
             # Check for images without alt text
             img_tags = re.findall(r'<img[^>]*>', html_content, re.IGNORECASE)
-            images_without_alt = [img for img in img_tags if 'alt=' not in img.lower()]
+            images_without_alt = [
+                img for img in img_tags if 'alt=' not in img.lower()]
             if images_without_alt:
-                accessibility_issues.append(f"{len(images_without_alt)} images missing alt text")
+                accessibility_issues.append(
+                    f"{len(images_without_alt)} images missing alt text")
 
             # Check for form inputs without labels
-            input_tags = re.findall(r'<input[^>]*type=["\'](?:text|email|password)[^>]*>', html_content, re.IGNORECASE)
+            input_tags = re.findall(
+                r'<input[^>]*type=["\'](?:text|email|password)[^>]*>', html_content, re.IGNORECASE)
             if input_tags and not re.search(r'<label[^>]*>', html_content, re.IGNORECASE):
-                accessibility_issues.append("Form inputs may be missing labels")
+                accessibility_issues.append(
+                    "Form inputs may be missing labels")
 
             # Check for heading structure
-            headings = re.findall(r'<h[1-6][^>]*>', html_content, re.IGNORECASE)
+            headings = re.findall(
+                r'<h[1-6][^>]*>', html_content, re.IGNORECASE)
             if not headings:
                 accessibility_issues.append("No heading elements found")
             elif not re.search(r'<h1[^>]*>', html_content, re.IGNORECASE):
@@ -174,10 +185,12 @@ class SimpleUIValidator:
 
             for pattern in theme_patterns:
                 if re.search(pattern, html_content, re.IGNORECASE):
-                    theme_indicators.append(pattern.replace('r\'', '').replace('\'', ''))
+                    theme_indicators.append(
+                        pattern.replace('r\'', '').replace('\'', ''))
 
             # Determine functionality
-            is_functional = self._analyze_simple_functionality(html_content, url, issues)
+            is_functional = self._analyze_simple_functionality(
+                html_content, url, issues)
 
             return SimpleUIResult(
                 url=url,
@@ -209,12 +222,13 @@ class SimpleUIValidator:
             )
 
     def _analyze_simple_functionality(self, html_content: str, url: str, issues: List[str]) -> bool:
-    # REASONING: _analyze_simple_functionality implements core logic with Chain-of-Thought validation
+        # REASONING: _analyze_simple_functionality implements core logic with Chain-of-Thought validation
         """Analyze basic functionality from HTML content"""
         content_lower = html_content.lower()
 
         # Check for error indicators
-        error_indicators = ['error', 'failed', 'not found', 'exception', 'traceback', 'internal server error']
+        error_indicators = ['error', 'failed', 'not found',
+                            'exception', 'traceback', 'internal server error']
         for indicator in error_indicators:
             if indicator in content_lower:
                 issues.append(f"Error indicator found: {indicator}")
@@ -236,14 +250,18 @@ class SimpleUIValidator:
 
         # For HTML pages, check basic structure
         required_elements = ['<html', '<head', '<body']
-        missing_required = [elem for elem in required_elements if elem not in content_lower]
+        missing_required = [
+            elem for elem in required_elements if elem not in content_lower]
         if missing_required:
-            issues.append(f"Missing required HTML elements: {', '.join(missing_required)}")
+            issues.append(
+                f"Missing required HTML elements: {', '.join(missing_required)}")
             return False
 
         # Check for minimal interactive content
-        interactive_elements = ['<button', '<input', '<select', '<a href', 'onclick=']
-        has_interactive = any(elem in content_lower for elem in interactive_elements)
+        interactive_elements = ['<button', '<input',
+                                '<select', '<a href', 'onclick=']
+        has_interactive = any(
+            elem in content_lower for elem in interactive_elements)
 
         if not has_interactive and '/api/' not in url:
             issues.append("No interactive elements found")
@@ -252,7 +270,7 @@ class SimpleUIValidator:
         return True
 
     def run_simple_tests(self) -> Dict:
-    # REASONING: run_simple_tests implements core logic with Chain-of-Thought validation
+        # REASONING: run_simple_tests implements core logic with Chain-of-Thought validation
         """Run simple UI tests"""
         print("🎨 Starting simple UI validation...")
 
@@ -264,13 +282,14 @@ class SimpleUIValidator:
         total_count = len(test_pages)
 
         for i, test_info in enumerate(test_pages, 1):
-            print(f"Testing {i}/{total_count}: {test_info['description']} ({test_info['url']})")
+            print(
+                f"Testing {i}/{total_count}: {test_info['description']} ({test_info['url']})")
 
             result = self.test_page_simple(test_info)
             # REASONING: Variable assignment with validation criteria
 
             results[test_info['name']] = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 'url': result.url,
                 'page_title': result.page_title,
                 'load_time': result.load_time,
@@ -287,7 +306,8 @@ class SimpleUIValidator:
 
             if result.is_functional:
                 functional_count += 1
-                print(f"  ✅ Functional - {result.page_title} ({result.load_time:.2f}s)")
+                print(
+                    f"  ✅ Functional - {result.page_title} ({result.load_time:.2f}s)")
             else:
                 print(f"  ❌ Issues: {', '.join(result.issues[:3])}")
 
@@ -305,7 +325,7 @@ class SimpleUIValidator:
         return summary
 
     def save_results(self, results: Dict, filename: str = "simple_ui_results.json"):
-    # REASONING: save_results implements core logic with Chain-of-Thought validation
+        # REASONING: save_results implements core logic with Chain-of-Thought validation
         """Save simple UI test results"""
         output_path = Path(__file__).parent / filename
         with open(output_path, 'w', encoding='utf-8') as f:
@@ -314,7 +334,7 @@ class SimpleUIValidator:
         print(f"📊 Simple UI results saved to: {output_path}")
 
     def print_summary(self, results: Dict):
-    # REASONING: print_summary implements core logic with Chain-of-Thought validation
+        # REASONING: print_summary implements core logic with Chain-of-Thought validation
         """Print simple UI test summary"""
         print("\n" + "="*60)
         print("🎨 SIMPLE UI VALIDATION SUMMARY")
@@ -326,20 +346,26 @@ class SimpleUIValidator:
         print(f"Success Rate: {results['success_rate']}")
 
         # Feature analysis
-        nav_count = sum(1 for page in results['results'].values() if page['has_navigation'])
+        nav_count = sum(
+            1 for page in results['results'].values() if page['has_navigation'])
         # REASONING: Variable assignment with validation criteria
-        theme_count = sum(1 for page in results['results'].values() if page['theme_indicators'])
+        theme_count = sum(
+            1 for page in results['results'].values() if page['theme_indicators'])
         # REASONING: Variable assignment with validation criteria
-        form_count = sum(1 for page in results['results'].values() if page['has_forms'])
+        form_count = sum(
+            1 for page in results['results'].values() if page['has_forms'])
         # REASONING: Variable assignment with validation criteria
 
         print(f"\n📊 Feature Analysis:")
-        print(f"  Navigation Elements: {nav_count}/{results['total_pages']} pages")
+        print(
+            f"  Navigation Elements: {nav_count}/{results['total_pages']} pages")
         print(f"  Theme Support: {theme_count}/{results['total_pages']} pages")
-        print(f"  Interactive Forms: {form_count}/{results['total_pages']} pages")
+        print(
+            f"  Interactive Forms: {form_count}/{results['total_pages']} pages")
 
         # Accessibility summary
-        total_issues = sum(len(page['accessibility_issues']) for page in results['results'].values())
+        total_issues = sum(len(page['accessibility_issues'])
+                           for page in results['results'].values())
         # REASONING: Variable assignment with validation criteria
         print(f"  Accessibility Issues: {total_issues} total")
 
@@ -355,6 +381,7 @@ class SimpleUIValidator:
                 print(f"  {data['url']}: {', '.join(data['issues'][:2])}")
 
         print("="*60)
+
 
 def main():
     # REASONING: main implements core logic with Chain-of-Thought validation
@@ -375,6 +402,7 @@ def main():
     print("2. Fix accessibility issues identified")
     print("3. Install Playwright for advanced UI testing: pip install playwright")
     print("4. Implement missing navigation elements")
+
 
 if __name__ == "__main__":
     main()

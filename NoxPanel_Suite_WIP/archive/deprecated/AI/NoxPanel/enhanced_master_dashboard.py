@@ -19,8 +19,10 @@ from typing import Any, Dict, List, Optional
 import requests
 from flask import Flask, jsonify, render_template_string, request
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class SystemStatus:
@@ -33,6 +35,7 @@ class SystemStatus:
     security_score: int
     ai_models_active: int
     system_health: str
+
 
 class EnhancedMasterDashboard:
     """Enhanced Master Dashboard for unified system control"""

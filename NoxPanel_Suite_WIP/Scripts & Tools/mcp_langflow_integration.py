@@ -1,3 +1,18 @@
+import requests
+import psutil
+from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+from enum import Enum, auto
+from datetime import datetime
+from dataclasses import asdict, dataclass
+import uuid
+import time
+import sys
+import subprocess
+import shutil
+import logging
+import json
+import asyncio
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -19,22 +34,6 @@ KB_REF: mcp/knowledgebase/langflow_integration.json#adaptive_agent_v1
 ENHANCED: 2025-07-29 - Autonomous integration orchestrator
 """
 
-import asyncio
-import json
-import logging
-import shutil
-import subprocess
-import sys
-import time
-import uuid
-from dataclasses import asdict, dataclass
-from datetime import datetime
-from enum import Enum, auto
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
-
-import psutil
-import requests
 
 # Enhanced logging configuration
 logging.basicConfig(
@@ -185,9 +184,11 @@ class MCPLangflowIntegrationAgent:
                     )
                     self.agent_configs.append(agent_config)
 
-                logger.info(f"🧠 Loaded {len(self.agent_configs)} agent configurations")
+                logger.info(
+                    f"🧠 Loaded {len(self.agent_configs)} agent configurations")
             else:
-                logger.warning("📄 No MCP config found - creating default agents")
+                logger.warning(
+                    "📄 No MCP config found - creating default agents")
                 self._create_default_agent_configs()
 
         except Exception as e:
@@ -229,10 +230,12 @@ class MCPLangflowIntegrationAgent:
         ]
 
         for agent_data in default_agents:
-            agent_config = AgentConfig(tools=[], prompts=[], metadata={}, **agent_data)
+            agent_config = AgentConfig(
+                tools=[], prompts=[], metadata={}, **agent_data)
             self.agent_configs.append(agent_config)
 
-        logger.info(f"🔧 Created {len(default_agents)} default agent configurations")
+        logger.info(
+            f"🔧 Created {len(default_agents)} default agent configurations")
 
     async def check_langflow_health(self) -> LangflowStatus:
         """
@@ -262,7 +265,8 @@ class MCPLangflowIntegrationAgent:
 
             # Attempt health endpoint check
             try:
-                response = requests.get(self.langflow_status.health_endpoint, timeout=5)
+                response = requests.get(
+                    self.langflow_status.health_endpoint, timeout=5)
 
                 self.langflow_status.response_time_ms = (
                     time.time() - start_time
@@ -287,7 +291,8 @@ class MCPLangflowIntegrationAgent:
                 elif response.status_code in [500, 502, 503]:
                     self.langflow_status.state = LangflowState.DEGRADED
                     self.langflow_status.error_message = f"HTTP {response.status_code}"
-                    logger.warning(f"⚠️ Langflow DEGRADED - HTTP {response.status_code}")
+                    logger.warning(
+                        f"⚠️ Langflow DEGRADED - HTTP {response.status_code}")
 
                 else:
                     self.langflow_status.state = LangflowState.UNREACHABLE
@@ -301,13 +306,15 @@ class MCPLangflowIntegrationAgent:
                     self.langflow_status.error_message = (
                         "Process running but API unreachable"
                     )
-                    logger.warning("⚠️ Langflow process detected but API unreachable")
+                    logger.warning(
+                        "⚠️ Langflow process detected but API unreachable")
                 else:
                     self.langflow_status.state = LangflowState.UNREACHABLE
                     self.langflow_status.error_message = (
                         "No process found and API unreachable"
                     )
-                    logger.warning("🔍 Langflow not detected - checking installation")
+                    logger.warning(
+                        "🔍 Langflow not detected - checking installation")
 
             except requests.exceptions.Timeout:
                 self.langflow_status.state = LangflowState.DEGRADED
@@ -369,7 +376,8 @@ class MCPLangflowIntegrationAgent:
                 # Attempt restart
                 try:
                     process = subprocess.Popen(
-                        ["langflow", "run", "--port", str(self.langflow_status.port)],
+                        ["langflow", "run", "--port",
+                            str(self.langflow_status.port)],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         creationflags=(
@@ -378,7 +386,8 @@ class MCPLangflowIntegrationAgent:
                             else 0
                         ),
                     )
-                    logger.info(f"🚀 Langflow restart initiated (PID: {process.pid})")
+                    logger.info(
+                        f"🚀 Langflow restart initiated (PID: {process.pid})")
 
                     # Wait for startup
                     await asyncio.sleep(10)
@@ -386,7 +395,8 @@ class MCPLangflowIntegrationAgent:
                     # Check if successful
                     status = await self.check_langflow_health()
                     if status.state == LangflowState.HEALTHY:
-                        logger.info("✅ Stage 1 repair successful - Langflow restarted")
+                        logger.info(
+                            "✅ Stage 1 repair successful - Langflow restarted")
                         return True
 
                 except FileNotFoundError:
@@ -402,7 +412,8 @@ class MCPLangflowIntegrationAgent:
 
                 repair_commands = [
                     ["pip", "install", "--upgrade", "pip"],
-                    ["pip", "install", "--upgrade", "langflow", "--force-reinstall"],
+                    ["pip", "install", "--upgrade",
+                        "langflow", "--force-reinstall"],
                     ["pip", "install", "--upgrade", "langflow[all]"],
                 ]
 
@@ -414,7 +425,8 @@ class MCPLangflowIntegrationAgent:
                         )
 
                         if result.returncode != 0:
-                            logger.warning(f"⚠️ Command failed: {result.stderr}")
+                            logger.warning(
+                                f"⚠️ Command failed: {result.stderr}")
                         else:
                             logger.info("✅ Command completed successfully")
 
@@ -426,7 +438,8 @@ class MCPLangflowIntegrationAgent:
                 # Attempt startup after reinstall
                 try:
                     process = subprocess.Popen(
-                        ["langflow", "run", "--port", str(self.langflow_status.port)],
+                        ["langflow", "run", "--port",
+                            str(self.langflow_status.port)],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         creationflags=(
@@ -454,7 +467,8 @@ class MCPLangflowIntegrationAgent:
 
             # Stage 3: Full environment reset
             elif self.langflow_status.repair_attempts >= 3:
-                logger.info("🔄 Stage 3: Full environment reset (deferred mode)")
+                logger.info(
+                    "🔄 Stage 3: Full environment reset (deferred mode)")
                 self.langflow_status.state = LangflowState.FAILED
                 return False
 
@@ -561,7 +575,8 @@ Langflow integration will resume automatically when Langflow becomes available.
 """
                 )
 
-            logger.info(f"📋 Deferred integration package created: {deferred_file}")
+            logger.info(
+                f"📋 Deferred integration package created: {deferred_file}")
             logger.info(f"📖 Status summary available: {summary_file}")
 
             return True
@@ -625,7 +640,8 @@ Langflow integration will resume automatically when Langflow becomes available.
             try:
                 response = requests.get(f"{api_base}/flows", timeout=10)
                 if response.status_code != 200:
-                    logger.warning(f"⚠️ Langflow API returned {response.status_code}")
+                    logger.warning(
+                        f"⚠️ Langflow API returned {response.status_code}")
                     return False
             except Exception as e:
                 logger.error(f"❌ API connectivity test failed: {e}")
@@ -652,7 +668,8 @@ Langflow integration will resume automatically when Langflow becomes available.
 
                     if response.status_code in [200, 201]:
                         successful_integrations += 1
-                        logger.info(f"✅ Successfully integrated agent: {agent.name}")
+                        logger.info(
+                            f"✅ Successfully integrated agent: {agent.name}")
                     else:
                         logger.warning(
                             f"⚠️ Failed to integrate {agent.name}: HTTP {response.status_code}"
@@ -732,7 +749,8 @@ Langflow integration will resume automatically when Langflow becomes available.
 
                     # Ensure integration is active
                     if self.integration_mode == IntegrationMode.DEFERRED:
-                        logger.info("🔄 Langflow recovered - attempting re-integration")
+                        logger.info(
+                            "🔄 Langflow recovered - attempting re-integration")
                         if await self.attempt_direct_integration():
                             logger.info("✅ Re-integration successful")
                         else:
@@ -805,7 +823,8 @@ Langflow integration will resume automatically when Langflow becomes available.
             logger.info("🎯 Phase 2: Integration Strategy Selection")
 
             if status.state == LangflowState.HEALTHY:
-                logger.info("✅ Langflow healthy - attempting direct integration")
+                logger.info(
+                    "✅ Langflow healthy - attempting direct integration")
                 if await self.attempt_direct_integration():
                     results["integration_mode"] = "DIRECT_API"
                     results["success"] = True
@@ -861,7 +880,8 @@ Langflow integration will resume automatically when Langflow becomes available.
             # Phase 3: Status Reporting
             logger.info("📊 Phase 3: Final Status Reporting")
 
-            workflow_duration = (datetime.now() - workflow_start).total_seconds()
+            workflow_duration = (
+                datetime.now() - workflow_start).total_seconds()
             results["workflow_duration_seconds"] = workflow_duration
             results["completion_time"] = datetime.now().isoformat()
 
@@ -952,7 +972,8 @@ The MCP Server and Langflow ecosystem are aligned, enabling intelligent agent or
 async def main():
     """Main entry point for MCP-Langflow integration"""
 
-    logger.info("🎯 NoxSuite MCP-Langflow Autonomous Integration Agent Starting...")
+    logger.info(
+        "🎯 NoxSuite MCP-Langflow Autonomous Integration Agent Starting...")
 
     # Initialize integration agent
     agent = MCPLangflowIntegrationAgent()
@@ -966,7 +987,8 @@ async def main():
     logger.info("=" * 60)
     logger.info(f"✅ Workflow ID: {results['workflow_id']}")
     logger.info(f"📊 Langflow Status: {results['langflow_status']['state']}")
-    logger.info(f"🔗 Integration Mode: {results.get('integration_mode', 'UNKNOWN')}")
+    logger.info(
+        f"🔗 Integration Mode: {results.get('integration_mode', 'UNKNOWN')}")
     logger.info(f"🤖 Agents Ready: {results['agents_configured']}")
     logger.info(
         f"🎉 Success: {'YES' if results['success'] else 'PARTIAL (with fallbacks)'}"
@@ -980,10 +1002,13 @@ async def main():
         logger.info("📋 READY: MCP system operational with deferred integration")
         logger.info("📖 Check mcp/LANGFLOW_INTEGRATION_REPORT.md for next steps")
 
-    logger.info("\n🎯 NoxSuite MCP Autonomous Development System — FULLY OPERATIONAL")
-    logger.info("✅ Enterprise-grade reliability with adaptive Langflow integration")
+    logger.info(
+        "\n🎯 NoxSuite MCP Autonomous Development System — FULLY OPERATIONAL")
+    logger.info(
+        "✅ Enterprise-grade reliability with adaptive Langflow integration")
     logger.info("✅ Robust fallback strategies to handle Langflow instability")
-    logger.info("✅ Clear, actionable feedback for continued operational excellence")
+    logger.info(
+        "✅ Clear, actionable feedback for continued operational excellence")
     logger.info("\n🎉 Mission accomplished!")
 
 

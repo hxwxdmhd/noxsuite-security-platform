@@ -17,18 +17,18 @@ from pathlib import Path
 def validate_system_status():
     """Validate current system status"""
     workspace_root = Path(r"k:\Project Heimnetz")
-    
+
     print("🔍 NoxPanel Recovery and Optimization Status")
     print("=" * 50)
-    
+
     # Check workspace files
     workspace_files = [
         "NoxPanel-Core.code-workspace",
-        "NoxPanel-AI.code-workspace", 
+        "NoxPanel-AI.code-workspace",
         "NoxPanel-Plugins.code-workspace",
         "NoxPanel-DevOps.code-workspace"
     ]
-    
+
     workspaces_ready = 0
     for ws_file in workspace_files:
         ws_path = workspace_root / ws_file
@@ -37,18 +37,18 @@ def validate_system_status():
             print(f"✅ {ws_file} - Ready")
         else:
             print(f"❌ {ws_file} - Missing")
-    
+
     print(f"\n📊 Workspace Status: {workspaces_ready}/4 workspaces ready")
-    
+
     # Check FRITZWATCHER plugin integrity
     fritzwatcher_files = [
         "plugins/fritzwatcher_plugin.py",
         "plugins/router_registry.py",
-        "plugins/roaming_tracker.py", 
+        "plugins/roaming_tracker.py",
         "plugins/keepass_helper.py",
         "plugins/fritzwatcher_web.py"
     ]
-    
+
     plugins_ready = 0
     for plugin_file in fritzwatcher_files:
         plugin_path = workspace_root / plugin_file
@@ -57,16 +57,16 @@ def validate_system_status():
             print(f"✅ {plugin_file} - Ready")
         else:
             print(f"❌ {plugin_file} - Missing")
-    
+
     print(f"\n🔌 FRITZWATCHER Status: {plugins_ready}/5 plugin files ready")
-    
+
     # Check performance optimization files
     optimization_files = [
         "strategic_performance_analyzer.py",
         "launch_workspace.py",
         "validate_performance_improvements.py"
     ]
-    
+
     optimization_ready = 0
     for opt_file in optimization_files:
         opt_path = workspace_root / opt_file
@@ -75,26 +75,27 @@ def validate_system_status():
             print(f"✅ {opt_file} - Ready")
         else:
             print(f"❌ {opt_file} - Missing")
-    
+
     print(f"\n⚡ Optimization Tools: {optimization_ready}/3 tools ready")
-    
+
     # Overall status
     total_ready = workspaces_ready + plugins_ready + optimization_ready
     total_expected = 4 + 5 + 3
-    
+
     recovery_percentage = (total_ready / total_expected) * 100
-    
-    print(f"\n🎯 Overall Recovery Status: {recovery_percentage:.1f}% ({total_ready}/{total_expected})")
-    
+
+    print(
+        f"\n🎯 Overall Recovery Status: {recovery_percentage:.1f}% ({total_ready}/{total_expected})")
+
     if recovery_percentage >= 90:
         status = "🟢 EXCELLENT - System Fully Recovered"
     elif recovery_percentage >= 75:
         status = "🟡 GOOD - Minor Recovery Needed"
     else:
         status = "🔴 CRITICAL - Major Recovery Required"
-        
+
     print(f"🏥 Recovery Assessment: {status}")
-    
+
     return {
         'recovery_percentage': recovery_percentage,
         'workspaces_ready': workspaces_ready,
@@ -103,18 +104,19 @@ def validate_system_status():
         'status': status
     }
 
+
 def implement_quick_optimizations():
     """Implement quick optimization fixes"""
     workspace_root = Path(r"k:\Project Heimnetz")
-    
+
     print("\n🔧 Implementing Quick Optimizations...")
-    
+
     # Update .vscode/settings.json with performance optimizations
     vscode_dir = workspace_root / ".vscode"
     vscode_dir.mkdir(exist_ok=True)
-    
+
     settings_file = vscode_dir / "settings.json"
-    
+
     performance_settings = {
         "files.exclude": {
             "**/.git": True,
@@ -147,7 +149,7 @@ def implement_quick_optimizations():
         "extensions.autoCheckUpdates": False,
         "telemetry.telemetryLevel": "off"
     }
-    
+
     # Merge with existing settings if any
     if settings_file.exists():
         try:
@@ -157,12 +159,12 @@ def implement_quick_optimizations():
             performance_settings = existing_settings
         except:
             pass  # Use new settings if existing file is corrupted
-    
+
     with open(settings_file, 'w') as f:
         json.dump(performance_settings, f, indent=2)
-    
+
     print("✅ VS Code performance settings updated")
-    
+
     # Create quick launch script
     launch_script = workspace_root / "quick_launch_optimized.bat"
     launch_content = '''@echo off
@@ -203,36 +205,37 @@ if "%choice%"=="1" (
 
 pause
 '''
-    
+
     with open(launch_script, 'w') as f:
         f.write(launch_content)
-    
+
     print("✅ Quick launch script created")
-    
+
     return True
+
 
 def run_fritzwatcher_validation():
     """Run FRITZWATCHER plugin validation"""
     workspace_root = Path(r"k:\Project Heimnetz")
     test_script = workspace_root / "plugins" / "test_fritzwatcher_integration.py"
-    
+
     if not test_script.exists():
         print("❌ FRITZWATCHER test script not found")
         return False
-    
+
     print("\n🧪 Running FRITZWATCHER Validation...")
-    
+
     try:
         # Change to plugins directory and run test
         original_dir = os.getcwd()
         os.chdir(workspace_root / "plugins")
-        
+
         import subprocess
-        result = subprocess.run([sys.executable, "test_fritzwatcher_integration.py"], 
-                              capture_output=True, text=True, timeout=60)
-        
+        result = subprocess.run([sys.executable, "test_fritzwatcher_integration.py"],
+                                capture_output=True, text=True, timeout=60)
+
         os.chdir(original_dir)
-        
+
         if result.returncode == 0:
             print("✅ FRITZWATCHER validation completed successfully")
             return True
@@ -240,17 +243,18 @@ def run_fritzwatcher_validation():
             print(f"⚠️ FRITZWATCHER validation completed with warnings")
             print("Output:", result.stdout[-200:])  # Last 200 chars
             return True  # Still consider it successful if it ran
-            
+
     except Exception as e:
         print(f"❌ FRITZWATCHER validation failed: {e}")
         return False
     finally:
         os.chdir(original_dir)
 
+
 def generate_recovery_dashboard():
     """Generate recovery status dashboard"""
     workspace_root = Path(r"k:\Project Heimnetz")
-    
+
     dashboard_html = '''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -454,60 +458,64 @@ def generate_recovery_dashboard():
     </script>
 </body>
 </html>'''
-    
+
     dashboard_path = workspace_root / "RECOVERY_DASHBOARD.html"
     with open(dashboard_path, 'w') as f:
         f.write(dashboard_html)
-    
+
     print(f"✅ Recovery dashboard created: {dashboard_path}")
     return dashboard_path
+
 
 def main():
     """Main recovery process"""
     print("🔄 NoxPanel Recovery and Optimization Engine")
     print("=" * 60)
-    
+
     start_time = time.time()
-    
+
     # Phase 1: System Validation
     print("\n📋 Phase 1: System Status Validation")
     status = validate_system_status()
-    
+
     # Phase 2: Quick Optimizations
     print("\n🔧 Phase 2: Implementing Quick Optimizations")
     optimizations_ok = implement_quick_optimizations()
-    
+
     # Phase 3: FRITZWATCHER Validation
     print("\n🔌 Phase 3: FRITZWATCHER Plugin Validation")
     fritzwatcher_ok = run_fritzwatcher_validation()
-    
+
     # Phase 4: Recovery Dashboard
     print("\n📊 Phase 4: Generating Recovery Dashboard")
     dashboard_path = generate_recovery_dashboard()
-    
+
     # Final Summary
     elapsed_time = time.time() - start_time
-    
+
     print(f"\n🎉 Recovery Process Completed in {elapsed_time:.1f} seconds")
     print("=" * 60)
     print(f"📊 System Recovery: {status['recovery_percentage']:.1f}%")
     print(f"🏗️ Workspaces Ready: {status['workspaces_ready']}/4")
-    print(f"🔌 FRITZWATCHER: {'✅ VALIDATED' if fritzwatcher_ok else '⚠️ PARTIAL'}")
-    print(f"⚡ Optimizations: {'✅ APPLIED' if optimizations_ok else '❌ FAILED'}")
-    
+    print(
+        f"🔌 FRITZWATCHER: {'✅ VALIDATED' if fritzwatcher_ok else '⚠️ PARTIAL'}")
+    print(
+        f"⚡ Optimizations: {'✅ APPLIED' if optimizations_ok else '❌ FAILED'}")
+
     print(f"\n🌐 Recovery Dashboard: {dashboard_path}")
     print("\n🚀 RECOMMENDED NEXT ACTIONS:")
     print("   1. Launch optimized workspace: code NoxPanel-Core.code-workspace")
     print("   2. Run performance validation: python validate_performance_improvements.py")
     print("   3. Test FRITZWATCHER: cd plugins && python test_fritzwatcher_integration.py")
     print("   4. Start web application: python main.py --web")
-    
+
     return {
         'success': True,
         'recovery_percentage': status['recovery_percentage'],
         'elapsed_time': elapsed_time,
         'dashboard_path': str(dashboard_path)
     }
+
 
 if __name__ == "__main__":
     main()

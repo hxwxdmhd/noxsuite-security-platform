@@ -45,6 +45,7 @@ def setup_logging():
     )
     return logging.getLogger(__name__)
 
+
 def validate_sample_plugin():
     """Validate sample plugin exists and works"""
     logger = setup_logging()
@@ -90,7 +91,8 @@ def validate_sample_plugin():
 
     COMPLIANCE: STANDARD
     """
-            logger.info(f"Sample plugin validation: PASS ({metadata['name']} v{metadata['version']})")
+            logger.info(
+                f"Sample plugin validation: PASS ({metadata['name']} v{metadata['version']})")
             return True
         else:
             logger.error(f"Sample plugin self-test failed: {self_test}")

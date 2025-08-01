@@ -122,7 +122,7 @@ class PowerShellTemplates:
     """
     Collection of PowerShell script templates for common administrative tasks.
     """
-    
+
     @staticmethod
     def get_system_information() -> str:
         """Comprehensive Windows system information script"""
@@ -238,7 +238,7 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "           Report Complete              " -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 '''
-    
+
     @staticmethod
     def cleanup_system() -> str:
         """System cleanup and optimization script"""
@@ -366,7 +366,7 @@ Write-Host "         Cleanup Complete               " -ForegroundColor Green
 Write-Host "   Total Cleaned: $([math]::Round($totalCleaned, 2)) MB" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Green
 '''
-    
+
     @staticmethod
     def service_management() -> str:
         """Windows service management script"""
@@ -522,7 +522,7 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "     Service Management Complete        " -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 '''
-    
+
     @staticmethod
     def performance_monitoring() -> str:
         """Windows performance monitoring script"""
@@ -693,30 +693,31 @@ class PowerShellIntegration:
     """
     Advanced PowerShell integration for Windows system administration.
     """
-    
+
     def __init__(self, base_copilot: SysAdminCopilot):
         self.base_copilot = base_copilot
         self.logger = logging.getLogger("PowerShellIntegration")
         self.templates = PowerShellTemplates()
-        
+
         # Check if running on Windows
         self.is_windows = platform.system() == "Windows"
         if not self.is_windows:
-            self.logger.warning("PowerShell integration initialized on non-Windows system")
-    
-    async def execute_powershell_script(self, script_content: str, 
-                                      profile: PowerShellProfile = None) -> Dict[str, Any]:
+            self.logger.warning(
+                "PowerShell integration initialized on non-Windows system")
+
+    async def execute_powershell_script(self, script_content: str,
+                                        profile: PowerShellProfile = None) -> Dict[str, Any]:
         """
         Execute PowerShell script with advanced options and safety controls.
-        
+
         Args:
             script_content: PowerShell script to execute
             profile: Execution profile with settings
-            
+
         Returns:
             Execution results dictionary
         """
-        
+
         if not self.is_windows:
             return {
                 "success": False,
@@ -724,13 +725,13 @@ class PowerShellIntegration:
                 "output": "",
                 "exit_code": -1
             }
-        
+
         if profile is None:
             profile = PowerShellProfile()
-        
+
         try:
             self.logger.info("Executing PowerShell script")
-            
+
             # Create temporary script file
             with tempfile.NamedTemporaryFile(mode='w', suffix='.ps1', delete=False) as f:
                 # Add variable definitions if specified
@@ -738,30 +739,32 @@ class PowerShellIntegration:
                     for var_name, var_value in profile.variables.items():
                         f.write(f'${var_name} = "{var_value}"\n')
                     f.write('\n')
-                
+
                 # Add module imports if specified
                 if profile.modules_to_import:
                     for module in profile.modules_to_import:
-                        f.write(f'Import-Module {module} -ErrorAction SilentlyContinue\n')
+                        f.write(
+                            f'Import-Module {module} -ErrorAction SilentlyContinue\n')
                     f.write('\n')
-                
+
                 # Add main script content
                 f.write(script_content)
                 script_path = f.name
-            
+
             try:
                 # Build PowerShell command
-                cmd = ["powershell", "-ExecutionPolicy", profile.execution_policy.value]
-                
+                cmd = ["powershell", "-ExecutionPolicy",
+                       profile.execution_policy.value]
+
                 if profile.use_elevated_privileges:
                     # Note: This would require UAC prompt in interactive mode
                     cmd.extend(["-Verb", "RunAs"])
-                
+
                 cmd.extend(["-File", script_path])
-                
+
                 # Set working directory
                 cwd = profile.working_directory or Path.cwd()
-                
+
                 # Execute script
                 start_time = datetime.now()
                 result = subprocess.run(
@@ -772,9 +775,9 @@ class PowerShellIntegration:
                     cwd=cwd
                 )
                 end_time = datetime.now()
-                
+
                 execution_time = (end_time - start_time).total_seconds()
-                
+
                 return {
                     "success": result.returncode == 0,
                     "output": result.stdout,
@@ -784,14 +787,14 @@ class PowerShellIntegration:
                     "script_path": script_path,
                     "command": ' '.join(cmd)
                 }
-                
+
             finally:
                 # Clean up temporary file
                 try:
                     Path(script_path).unlink()
                 except Exception:
                     pass
-            
+
         except subprocess.TimeoutExpired:
             return {
                 "success": False,
@@ -800,7 +803,7 @@ class PowerShellIntegration:
                 "exit_code": -1,
                 "execution_time_seconds": profile.timeout_seconds
             }
-            
+
         except Exception as e:
             self.logger.error(f"Error executing PowerShell script: {e}")
             return {
@@ -810,13 +813,14 @@ class PowerShellIntegration:
                 "exit_code": -1,
                 "execution_time_seconds": 0.0
             }
-    
+
     async def get_windows_system_info(self) -> WindowsSystemInfo:
         """Get comprehensive Windows system information"""
-        
+
         if not self.is_windows:
-            raise RuntimeError("Windows system information requires Windows OS")
-        
+            raise RuntimeError(
+                "Windows system information requires Windows OS")
+
         try:
             script_content = '''
             $info = Get-ComputerInfo
@@ -879,12 +883,12 @@ class PowerShellIntegration:
             # Output as JSON
             $output | ConvertTo-Json
             '''
-            
+
             result = await self.execute_powershell_script(script_content)
-            
+
             if result["success"]:
                 data = json.loads(result["output"])
-                
+
                 return WindowsSystemInfo(
                     windows_version=data.get("WindowsVersion", "Unknown"),
                     build_number=data.get("BuildNumber", "Unknown"),
@@ -894,7 +898,8 @@ class PowerShellIntegration:
                     domain_name=data.get("DomainName", ""),
                     computer_name=data.get("ComputerName", ""),
                     last_boot_time=datetime.now(),  # Simplified
-                    windows_update_status=data.get("WindowsUpdateStatus", "Unknown"),
+                    windows_update_status=data.get(
+                        "WindowsUpdateStatus", "Unknown"),
                     defender_status=data.get("DefenderStatus", "Unknown"),
                     firewall_status=data.get("FirewallStatus", "Unknown"),
                     pending_reboot=data.get("PendingReboot", False),
@@ -903,11 +908,12 @@ class PowerShellIntegration:
                     stopped_services_count=data.get("StoppedServicesCount", 0)
                 )
             else:
-                raise RuntimeError(f"Failed to get system info: {result['error']}")
-                
+                raise RuntimeError(
+                    f"Failed to get system info: {result['error']}")
+
         except Exception as e:
             self.logger.error(f"Error getting Windows system info: {e}")
-            
+
             # Return minimal info
             return WindowsSystemInfo(
                 windows_version="Unknown",
@@ -926,35 +932,35 @@ class PowerShellIntegration:
                 running_services_count=0,
                 stopped_services_count=0
             )
-    
+
     async def manage_windows_service(self, service_name: str, action: str) -> Dict[str, Any]:
         """
         Manage Windows services with PowerShell.
-        
+
         Args:
             service_name: Name of the Windows service
             action: Action to perform (status, start, stop, restart)
-            
+
         Returns:
             Operation result dictionary
         """
-        
+
         if not self.is_windows:
             return {"success": False, "error": "Windows service management requires Windows OS"}
-        
+
         try:
             # Create service management script
             script_content = self.templates.service_management()
-            
+
             # Set up execution profile with parameters
             profile = PowerShellProfile()
             profile.variables = {
                 "Action": action,
                 "ServiceName": service_name
             }
-            
+
             result = await self.execute_powershell_script(script_content, profile)
-            
+
             return {
                 "success": result["success"],
                 "service_name": service_name,
@@ -963,7 +969,7 @@ class PowerShellIntegration:
                 "error": result.get("error", ""),
                 "execution_time": result["execution_time_seconds"]
             }
-            
+
         except Exception as e:
             self.logger.error(f"Error managing Windows service: {e}")
             return {
@@ -972,16 +978,17 @@ class PowerShellIntegration:
                 "action": action,
                 "error": str(e)
             }
-    
+
     async def create_system_cleanup_task(self) -> Task:
         """Create a comprehensive system cleanup task"""
-        
+
         import hashlib
 
         from sysadmin_copilot import ScriptType, Task, TaskPriority, TaskType
-        
+
         task = Task(
-            id=hashlib.md5(f"windows_cleanup_{datetime.now()}".encode()).hexdigest()[:8],
+            id=hashlib.md5(
+                f"windows_cleanup_{datetime.now()}".encode()).hexdigest()[:8],
             name="Windows System Cleanup",
             description="Comprehensive Windows system cleanup including temp files, cache, and optimization",
             task_type=TaskType.MAINTENANCE,
@@ -993,21 +1000,22 @@ class PowerShellIntegration:
             ai_confidence=0.9,
             ai_reasoning="Comprehensive cleanup using proven PowerShell techniques"
         )
-        
+
         return task
-    
+
     async def create_performance_monitoring_task(self, duration: int = 60) -> Task:
         """Create a performance monitoring task"""
-        
+
         import hashlib
 
         from sysadmin_copilot import ScriptType, Task, TaskPriority, TaskType
 
         # Create script with duration parameter
         script_content = self.templates.performance_monitoring()
-        
+
         task = Task(
-            id=hashlib.md5(f"performance_monitor_{datetime.now()}".encode()).hexdigest()[:8],
+            id=hashlib.md5(
+                f"performance_monitor_{datetime.now()}".encode()).hexdigest()[:8],
             name="Windows Performance Monitoring",
             description=f"Monitor Windows system performance for {duration} seconds with detailed analysis",
             task_type=TaskType.MONITORING,
@@ -1019,21 +1027,22 @@ class PowerShellIntegration:
             ai_confidence=0.9,
             ai_reasoning="Real-time performance monitoring using Windows performance counters"
         )
-        
+
         # Add duration as a variable
         task.prerequisites = [f"duration:{duration}"]
-        
+
         return task
-    
+
     async def create_system_info_task(self) -> Task:
         """Create comprehensive system information task"""
-        
+
         import hashlib
 
         from sysadmin_copilot import ScriptType, Task, TaskPriority, TaskType
-        
+
         task = Task(
-            id=hashlib.md5(f"windows_sysinfo_{datetime.now()}".encode()).hexdigest()[:8],
+            id=hashlib.md5(
+                f"windows_sysinfo_{datetime.now()}".encode()).hexdigest()[:8],
             name="Windows System Information",
             description="Comprehensive Windows system information including security status, updates, and performance",
             task_type=TaskType.MONITORING,
@@ -1045,7 +1054,7 @@ class PowerShellIntegration:
             ai_confidence=0.95,
             ai_reasoning="Comprehensive system information gathering using Windows Management Instrumentation"
         )
-        
+
         return task
 
 
@@ -1057,64 +1066,69 @@ class EnhancedSysAdminCopilot(SysAdminCopilot):
     """
     Enhanced SysAdmin Copilot with deep PowerShell integration for Windows environments.
     """
-    
+
     def __init__(self):
         super().__init__()
         self.powershell = PowerShellIntegration(self)
         self.logger = logging.getLogger("EnhancedSysAdminCopilot")
-        
+
         if platform.system() == "Windows":
-            self.logger.info("Enhanced SysAdmin Copilot initialized with PowerShell integration")
+            self.logger.info(
+                "Enhanced SysAdmin Copilot initialized with PowerShell integration")
         else:
-            self.logger.info("Enhanced SysAdmin Copilot initialized (PowerShell features limited on non-Windows)")
-    
+            self.logger.info(
+                "Enhanced SysAdmin Copilot initialized (PowerShell features limited on non-Windows)")
+
     async def suggest_tasks(self, context_description: str = "") -> List[Task]:
         """Enhanced task suggestions with Windows-specific tasks"""
-        
+
         # Get base suggestions
         base_suggestions = await super().suggest_tasks(context_description)
-        
+
         # Add Windows-specific suggestions if on Windows
         if platform.system() == "Windows":
             try:
                 # Add Windows cleanup task
                 cleanup_task = await self.powershell.create_system_cleanup_task()
                 base_suggestions.append(cleanup_task)
-                
+
                 # Add system info task
                 sysinfo_task = await self.powershell.create_system_info_task()
                 base_suggestions.append(sysinfo_task)
-                
+
                 # Add performance monitoring if system seems loaded
                 context = await self.context_manager.get_system_context()
                 health_metrics = await self.health_monitor.collect_metrics()
-                
-                if (health_metrics.cpu_usage_percent > 70 or 
-                    health_metrics.memory_usage_percent > 80):
-                    
-                    perf_task = await self.powershell.create_performance_monitoring_task(120)  # 2-minute monitoring
+
+                if (health_metrics.cpu_usage_percent > 70 or
+                        health_metrics.memory_usage_percent > 80):
+
+                    # 2-minute monitoring
+                    perf_task = await self.powershell.create_performance_monitoring_task(120)
                     perf_task.priority = TaskPriority.HIGH
                     perf_task.ai_reasoning = "High resource usage detected - detailed monitoring recommended"
                     base_suggestions.append(perf_task)
-                
-                self.logger.info(f"Added {len(base_suggestions) - len(base_suggestions)} Windows-specific task suggestions")
-                
+
+                self.logger.info(
+                    f"Added {len(base_suggestions) - len(base_suggestions)} Windows-specific task suggestions")
+
             except Exception as e:
-                self.logger.error(f"Error adding Windows-specific suggestions: {e}")
-        
+                self.logger.error(
+                    f"Error adding Windows-specific suggestions: {e}")
+
         return base_suggestions
-    
+
     async def get_system_health(self) -> Dict[str, Any]:
         """Enhanced system health with Windows-specific information"""
-        
+
         # Get base health information
         base_health = await super().get_system_health()
-        
+
         # Add Windows-specific health information if on Windows
         if platform.system() == "Windows":
             try:
                 windows_info = await self.powershell.get_windows_system_info()
-                
+
                 # Add Windows-specific health data
                 base_health["windows_info"] = {
                     "version": windows_info.windows_version,
@@ -1129,42 +1143,48 @@ class EnhancedSysAdminCopilot(SysAdminCopilot):
                         "stopped": windows_info.stopped_services_count
                     }
                 }
-                
+
                 # Add Windows-specific recommendations
                 if windows_info.pending_reboot:
-                    base_health["recommendations"].append("System reboot required - schedule maintenance window")
-                
+                    base_health["recommendations"].append(
+                        "System reboot required - schedule maintenance window")
+
                 if "pending" in windows_info.windows_update_status.lower():
-                    base_health["recommendations"].append("Windows updates are pending - consider installing")
-                
+                    base_health["recommendations"].append(
+                        "Windows updates are pending - consider installing")
+
                 if "disabled" in windows_info.defender_status.lower():
-                    base_health["issues"].append("Windows Defender is disabled")
-                    base_health["recommendations"].append("Enable Windows Defender for security protection")
-                
-                self.logger.info("Enhanced system health with Windows-specific information")
-                
+                    base_health["issues"].append(
+                        "Windows Defender is disabled")
+                    base_health["recommendations"].append(
+                        "Enable Windows Defender for security protection")
+
+                self.logger.info(
+                    "Enhanced system health with Windows-specific information")
+
             except Exception as e:
-                self.logger.error(f"Error getting Windows-specific health info: {e}")
+                self.logger.error(
+                    f"Error getting Windows-specific health info: {e}")
                 base_health["windows_info"] = {"error": str(e)}
-        
+
         return base_health
-    
-    async def execute_powershell_command(self, command: str, 
-                                       elevated: bool = False) -> Dict[str, Any]:
+
+    async def execute_powershell_command(self, command: str,
+                                         elevated: bool = False) -> Dict[str, Any]:
         """
         Execute a single PowerShell command with enhanced error handling.
-        
+
         Args:
             command: PowerShell command to execute
             elevated: Whether to run with elevated privileges
-            
+
         Returns:
             Execution result dictionary
         """
-        
+
         profile = PowerShellProfile()
         profile.use_elevated_privileges = elevated
-        
+
         return await self.powershell.execute_powershell_script(command, profile)
 
 
@@ -1174,22 +1194,22 @@ class EnhancedSysAdminCopilot(SysAdminCopilot):
 
 async def main():
     """Example usage of the Enhanced SysAdmin Copilot with PowerShell integration"""
-    
+
     print("🚀 Enhanced SysAdmin Copilot - PowerShell Integration")
     print("=" * 80)
-    
+
     if platform.system() != "Windows":
         print("⚠️  PowerShell integration features are limited on non-Windows systems")
         print("Running basic demonstration...")
-    
+
     # Initialize enhanced copilot
     copilot = EnhancedSysAdminCopilot()
-    
+
     # Get enhanced system health
     print("\n📊 Enhanced System Health Analysis:")
     health = await copilot.get_system_health()
     print(f"Health Score: {health['health_score']:.1f}/100")
-    
+
     if "windows_info" in health and "error" not in health["windows_info"]:
         win_info = health["windows_info"]
         print(f"Windows Version: {win_info['version']}")
@@ -1197,12 +1217,13 @@ async def main():
         print(f"Pending Reboot: {win_info['pending_reboot']}")
         print(f"Update Status: {win_info['windows_update_status']}")
         print(f"Defender Status: {win_info['defender_status']}")
-        print(f"Services: {win_info['services']['running']} running, {win_info['services']['stopped']} stopped")
-    
+        print(
+            f"Services: {win_info['services']['running']} running, {win_info['services']['stopped']} stopped")
+
     # Get enhanced task suggestions
     print(f"\n🎯 Enhanced Task Suggestions:")
     suggestions = await copilot.suggest_tasks("Windows maintenance and optimization")
-    
+
     for i, task in enumerate(suggestions[:4], 1):
         print(f"{i}. {task.name}")
         print(f"   Type: {task.task_type.value}")
@@ -1210,29 +1231,30 @@ async def main():
         print(f"   Requires Admin: {task.requires_admin}")
         print(f"   AI Confidence: {task.ai_confidence:.1f}")
         print()
-    
+
     # Execute a PowerShell command if on Windows
     if platform.system() == "Windows":
         print("🔧 PowerShell Command Execution Example:")
         result = await copilot.execute_powershell_command("Get-Process | Select-Object -First 5 Name, CPU")
-        
+
         if result["success"]:
             print("✅ Command executed successfully!")
             print("Output preview:")
-            print(result["output"][:200] + "..." if len(result["output"]) > 200 else result["output"])
+            print(result["output"][:200] +
+                  "..." if len(result["output"]) > 200 else result["output"])
         else:
             print("❌ Command failed")
             print(f"Error: {result['error']}")
-    
+
     # Execute a Windows-specific task if available
     windows_tasks = [t for t in suggestions if "Windows" in t.name]
     if windows_tasks and platform.system() == "Windows":
         task = windows_tasks[0]
         print(f"\n⚡ Executing Windows Task: {task.name}")
-        
+
         # Execute without confirmation for demo (normally would require confirmation)
         result = await copilot.execute_task(task, confirm=False)
-        
+
         print(f"Status: {result.status.value}")
         if result.success:
             print("✅ Windows task completed successfully!")
@@ -1240,10 +1262,9 @@ async def main():
             print("❌ Windows task failed")
             if result.error_message:
                 print(f"Error: {result.error_message}")
-    
+
     print(f"\n🎉 Enhanced SysAdmin Copilot demonstration complete!")
 
 
 if __name__ == "__main__":
     asyncio.run(main())
-

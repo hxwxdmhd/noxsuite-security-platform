@@ -50,7 +50,8 @@ def validate_core_dependencies():
         import torch
         cuda_available = torch.cuda.is_available()
         device_count = torch.cuda.device_count()
-        print(f"✅ PyTorch {torch.__version__} - CUDA: {cuda_available} ({device_count} devices)")
+        print(
+            f"✅ PyTorch {torch.__version__} - CUDA: {cuda_available} ({device_count} devices)")
         results["validation_results"]["pytorch"] = True
         results["validation_results"]["cuda"] = cuda_available
         results["validation_results"]["gpu_count"] = device_count
@@ -119,12 +120,14 @@ def validate_core_dependencies():
     target_achieved = load_time < 100
 
     print(f"\n🚀 FRAMEWORK LOAD TIME: {load_time:.1f}ms")
-    print(f"🎯 TARGET ACHIEVED: {'YES' if target_achieved else 'NEEDS OPTIMIZATION'} (<100ms)")
+    print(
+        f"🎯 TARGET ACHIEVED: {'YES' if target_achieved else 'NEEDS OPTIMIZATION'} (<100ms)")
 
     results["performance_metrics"]["framework_load_ms"] = load_time
     results["performance_metrics"]["target_achieved"] = target_achieved
 
     return results
+
 
 def test_gpu_performance():
     """Test GPU performance for AI inference"""

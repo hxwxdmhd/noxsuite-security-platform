@@ -18,8 +18,8 @@ AI_CONFIG = {
         "neural-chat:7b",    # Natural conversations
         "starcode:7b",       # Code understanding
         "wizardcoder:7b",    # Programming assistance
-        "phind-codellama:34b", # Advanced code help
-        "deepseek-coder:6.7b", # Code analysis
+        "phind-codellama:34b",  # Advanced code help
+        "deepseek-coder:6.7b",  # Code analysis
         "magicoder:7b"       # Multi-language coding
     ],
     "conversation_history_limit": 20,

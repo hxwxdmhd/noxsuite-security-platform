@@ -2,35 +2,7 @@
 """
 #!/usr/bin/env python3
 """
-enhanced_gateway.py - RLVR Enhanced Component
-
-REASONING: Component implementation following RLVR methodology v4.0+
-
-Chain-of-Thought Implementation:
-1. Problem Analysis: System component requires systematic validation approach
-2. Solution Design: RLVR-enhanced implementation with Chain-of-Thought validation
-3. Logic Validation: Chain-of-Thought reasoning with evidence backing
-4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
-
-Compliance: RLVR Methodology v4.0+ Applied
-"""
-
-NoxPanel Enhanced Gateway Platform v6.0
-Comprehensive multi-platform management system with health monitoring and plugin integration
-"""
-
-import json
-import logging
-import os
-import secrets
-import subprocess
-import sys
-import time
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-import psutil
+from flask_cors import CORS
 from flask import (
     Flask,
     flash,
@@ -41,7 +13,34 @@ from flask import (
     session,
     url_for,
 )
-from flask_cors import CORS
+import psutil
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime, timedelta
+import time
+import sys
+import subprocess
+import secrets
+import os
+import logging
+import json
+enhanced_gateway.py - RLVR Enhanced Component
+
+REASONING: Component implementation following RLVR methodology v4.0+
+
+Chain-of-Thought Implementation:
+1. Problem Analysis: System component requires systematic validation approach
+2. Solution Design: RLVR-enhanced implementation with Chain-of-Thought validation
+3. Logic Validation: Chain-of-Thought reasoning with evidence backing
+4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
+
+Compliance: RLVR Methodology v4.0 + Applied
+"""
+
+NoxPanel Enhanced Gateway Platform v6.0
+Comprehensive multi-platform management system with health monitoring and plugin integration
+"""
+
 
 # Setup logging
 logging.basicConfig(
@@ -50,12 +49,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class PlatformGateway:
     # REASONING: PlatformGateway follows RLVR methodology for systematic validation
     """Enhanced gateway platform for unified system management"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.app = None
         self.start_time = time.time()
         self.base_path = Path(__file__).parent
@@ -113,13 +113,13 @@ class PlatformGateway:
         }
 
     def create_app(self) -> Flask:
-    # REASONING: create_app implements core logic with Chain-of-Thought validation
+        # REASONING: create_app implements core logic with Chain-of-Thought validation
         """Create and configure the enhanced Flask application"""
         logger.info("🚀 Starting NoxPanel Enhanced Gateway Platform v6.0")
 
         self.app = Flask(__name__,
-                        template_folder="templates",
-                        static_folder="static")
+                         template_folder="templates",
+                         static_folder="static")
 
         # Configure app
         self.app.config.update({
@@ -140,18 +140,18 @@ class PlatformGateway:
         return self.app
 
     def _register_routes(self):
-    # REASONING: _register_routes implements core logic with Chain-of-Thought validation
+        # REASONING: _register_routes implements core logic with Chain-of-Thought validation
         """Register all application routes"""
 
         @self.app.route('/')
         def gateway_dashboard():
-    # REASONING: gateway_dashboard implements core logic with Chain-of-Thought validation
+            # REASONING: gateway_dashboard implements core logic with Chain-of-Thought validation
             """Main gateway dashboard with platform switcher"""
             return render_template_string(self._get_gateway_template())
 
         @self.app.route('/api/health')
         def health_check():
-    # REASONING: health_check implements core logic with Chain-of-Thought validation
+            # REASONING: health_check implements core logic with Chain-of-Thought validation
             """Comprehensive system health check"""
             try:
                 # System metrics
@@ -167,7 +167,7 @@ class PlatformGateway:
                 plugin_status = self._get_plugin_status()
 
                 health_data = {
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     'timestamp': datetime.now().isoformat(),
                     'uptime': uptime,
                     'system': {
@@ -202,25 +202,25 @@ class PlatformGateway:
 
         @self.app.route('/api/platforms')
         def get_platforms():
-    # REASONING: get_platforms implements core logic with Chain-of-Thought validation
+            # REASONING: get_platforms implements core logic with Chain-of-Thought validation
             """Get platform configurations"""
             return jsonify(self.platforms)
 
         @self.app.route('/api/platforms/status')
         def platform_status():
-    # REASONING: platform_status implements core logic with Chain-of-Thought validation
+            # REASONING: platform_status implements core logic with Chain-of-Thought validation
             """Get detailed platform status"""
             return jsonify(self._check_platform_status())
 
         @self.app.route('/api/plugins')
         def get_plugins():
-    # REASONING: get_plugins implements core logic with Chain-of-Thought validation
+            # REASONING: get_plugins implements core logic with Chain-of-Thought validation
             """Get plugin information"""
             return jsonify(self._get_plugin_status())
 
         @self.app.route('/api/plugins/<plugin_name>/toggle', methods=['POST'])
         def toggle_plugin(plugin_name):
-    # REASONING: toggle_plugin implements core logic with Chain-of-Thought validation
+            # REASONING: toggle_plugin implements core logic with Chain-of-Thought validation
             """Toggle plugin enable/disable status"""
             try:
                 # Implementation for plugin toggle
@@ -235,7 +235,7 @@ class PlatformGateway:
 
         @self.app.route('/api/plugins/<plugin_name>/update', methods=['POST'])
         def update_plugin(plugin_name):
-    # REASONING: update_plugin implements core logic with Chain-of-Thought validation
+            # REASONING: update_plugin implements core logic with Chain-of-Thought validation
             """Update plugin from Git repository"""
             try:
                 # Implementation for plugin update
@@ -250,7 +250,7 @@ class PlatformGateway:
 
         @self.app.route('/platform/<platform_id>')
         def platform_redirect(platform_id):
-    # REASONING: platform_redirect implements core logic with Chain-of-Thought validation
+            # REASONING: platform_redirect implements core logic with Chain-of-Thought validation
             """Redirect to specific platform"""
             if platform_id in self.platforms:
                 platform = self.platforms[platform_id]
@@ -261,23 +261,23 @@ class PlatformGateway:
 
         @self.app.route('/tools')
         def tools_dashboard():
-    # REASONING: tools_dashboard implements core logic with Chain-of-Thought validation
+            # REASONING: tools_dashboard implements core logic with Chain-of-Thought validation
             """System tools dashboard"""
             return render_template_string(self._get_tools_template())
 
         # Add error handlers
         @self.app.errorhandler(404)
         def not_found(error):
-    # REASONING: not_found implements core logic with Chain-of-Thought validation
+            # REASONING: not_found implements core logic with Chain-of-Thought validation
             return jsonify({'error': 'Not found'}), 404
 
         @self.app.errorhandler(500)
         def internal_error(error):
-    # REASONING: internal_error implements core logic with Chain-of-Thought validation
+            # REASONING: internal_error implements core logic with Chain-of-Thought validation
             return jsonify({'error': 'Internal server error'}), 500
 
     def _check_platform_status(self) -> Dict[str, Any]:
-    # REASONING: _check_platform_status implements core logic with Chain-of-Thought validation
+        # REASONING: _check_platform_status implements core logic with Chain-of-Thought validation
         """Check status of all platforms"""
         status = {}
 
@@ -288,7 +288,8 @@ class PlatformGateway:
                     # Extract port and check if service is running
                     port = self._extract_port(platform['url'])
                     if port:
-                        status[platform_id] = 'online' if self._check_port(port) else 'offline'
+                        status[platform_id] = 'online' if self._check_port(
+                            port) else 'offline'
                     else:
                         status[platform_id] = 'unknown'
                 else:
@@ -300,7 +301,7 @@ class PlatformGateway:
         return status
 
     def _get_plugin_status(self) -> List[Dict[str, Any]]:
-    # REASONING: _get_plugin_status implements core logic with Chain-of-Thought validation
+        # REASONING: _get_plugin_status implements core logic with Chain-of-Thought validation
         """Get status of all plugins"""
         plugins = []
 
@@ -345,14 +346,15 @@ class PlatformGateway:
         return plugins
 
     def _calculate_overall_status(self, platform_status: Dict, cpu_percent: float, memory_percent: float) -> str:
-    # REASONING: _calculate_overall_status implements core logic with Chain-of-Thought validation
+        # REASONING: _calculate_overall_status implements core logic with Chain-of-Thought validation
         """Calculate overall system status"""
         # Critical thresholds
         if cpu_percent > 90 or memory_percent > 95:
             return 'critical'
 
         # Check platform statuses
-        offline_platforms = sum(1 for status in platform_status.values() if status == 'offline')
+        offline_platforms = sum(
+            1 for status in platform_status.values() if status == 'offline')
         total_platforms = len(platform_status)
 
         if offline_platforms > total_platforms / 2:
@@ -365,7 +367,7 @@ class PlatformGateway:
         return 'healthy'
 
     def _extract_port(self, url: str) -> Optional[int]:
-    # REASONING: _extract_port implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_port implements core logic with Chain-of-Thought validation
         """Extract port number from URL"""
         try:
             import re
@@ -375,7 +377,7 @@ class PlatformGateway:
             return None
 
     def _check_port(self, port: int) -> bool:
-    # REASONING: _check_port implements core logic with Chain-of-Thought validation
+        # REASONING: _check_port implements core logic with Chain-of-Thought validation
         """Check if a port is responding"""
         try:
             import socket
@@ -389,21 +391,21 @@ class PlatformGateway:
             return False
 
     def _toggle_plugin(self, plugin_name: str) -> bool:
-    # REASONING: _toggle_plugin implements core logic with Chain-of-Thought validation
+        # REASONING: _toggle_plugin implements core logic with Chain-of-Thought validation
         """Toggle plugin enabled/disabled status"""
         # Implementation for plugin toggle
         logger.info(f"Toggling plugin: {plugin_name}")
         return True  # Placeholder
 
     def _update_plugin(self, plugin_name: str) -> bool:
-    # REASONING: _update_plugin implements core logic with Chain-of-Thought validation
+        # REASONING: _update_plugin implements core logic with Chain-of-Thought validation
         """Update plugin from repository"""
         # Implementation for plugin update
         logger.info(f"Updating plugin: {plugin_name}")
         return True  # Placeholder
 
     def _get_gateway_template(self) -> str:
-    # REASONING: _get_gateway_template implements core logic with Chain-of-Thought validation
+        # REASONING: _get_gateway_template implements core logic with Chain-of-Thought validation
         """Get the main gateway dashboard template"""
         return '''
 <!DOCTYPE html>
@@ -953,7 +955,7 @@ class PlatformGateway:
         '''
 
     def _get_tools_template(self) -> str:
-    # REASONING: _get_tools_template implements core logic with Chain-of-Thought validation
+        # REASONING: _get_tools_template implements core logic with Chain-of-Thought validation
         """Get the system tools dashboard template"""
         return '''
 <!DOCTYPE html>
@@ -1108,10 +1110,12 @@ class PlatformGateway:
 </html>
         '''
 
+
 def render_template_string(template_str):
     # REASONING: render_template_string implements core logic with Chain-of-Thought validation
     """Render a template string"""
     return template_str
+
 
 def start_gateway():
     # REASONING: start_gateway implements core logic with Chain-of-Thought validation
@@ -1120,7 +1124,8 @@ def start_gateway():
         gateway = PlatformGateway()
         app = gateway.create_app()
 
-        logger.info("🚀 Starting Enhanced Gateway Platform on http://127.0.0.1:5100")
+        logger.info(
+            "🚀 Starting Enhanced Gateway Platform on http://127.0.0.1:5100")
         app.run(
             host='127.0.0.1',
             port=5100,
@@ -1131,6 +1136,7 @@ def start_gateway():
     except Exception as e:
         logger.error(f"❌ Failed to start gateway platform: {e}")
         sys.exit(1)
+
 
 if __name__ == '__main__':
     start_gateway()

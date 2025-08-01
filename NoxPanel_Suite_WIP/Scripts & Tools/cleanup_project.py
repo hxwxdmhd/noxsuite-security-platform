@@ -17,7 +17,8 @@ from NoxPanel.noxcore.utils.logging_config import get_logger
 logger = get_logger(__name__)
 
 
-EXCLUDE_DIRS = {".git", "node_modules", "__pycache__", "venv", "env", "build", "dist"}
+EXCLUDE_DIRS = {".git", "node_modules",
+                "__pycache__", "venv", "env", "build", "dist"}
 TARGET_EXTS = {
     ".py",
     ".js",
@@ -120,7 +121,8 @@ def parse_imports(filepath):
                 m = re.match(r'\s*require\(["\"]([\w\-/\.]+)["\"]\)', line)
                 if m:
                     imports.add(m.group(1))
-                m = re.match(r'\s*import\s+.*from\s+["\"]([\w\-/\.]+)["\"]', line)
+                m = re.match(
+                    r'\s*import\s+.*from\s+["\"]([\w\-/\.]+)["\"]', line)
                 if m:
                     imports.add(m.group(1))
                 # HTML/CSS
@@ -302,13 +304,15 @@ def main():
 
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-    parser = argparse.ArgumentParser(description="Advanced NoxPanel Suite Cleanup Tool")
+    parser = argparse.ArgumentParser(
+        description="Advanced NoxPanel Suite Cleanup Tool")
     parser.add_argument(
         "--execute",
         action="store_true",
         help="Actually delete/archive files (default: dry-run)",
     )
-    parser.add_argument("--root", type=str, default=".", help="Project root directory")
+    parser.add_argument("--root", type=str, default=".",
+                        help="Project root directory")
     args = parser.parse_args()
     start_time = utc_now().timestamp()
     logger.info("\n=== NoxPanel Suite Cleanup ===\n")

@@ -45,6 +45,7 @@ class RLVRNoxPanelAIBridge:
             "Enhance compliance monitoring"
         ]
 
+
 if __name__ == "__main__":
     bridge = RLVRNoxPanelAIBridge()
     test_data = {"infrastructure": "test"}

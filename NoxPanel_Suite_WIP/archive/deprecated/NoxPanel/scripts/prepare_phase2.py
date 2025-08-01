@@ -82,6 +82,7 @@ class Phase2Preparation:
 
     COMPLIANCE: STANDARD
     """
+
     def check_phase1_completion(self) -> bool:
         """Verify Phase 1 is complete"""
         self.logger.info("🔍 Verifying Phase 1 completion...")
@@ -145,7 +146,8 @@ class Phase2Preparation:
         if meta_file.exists():
             with open(meta_file, 'r') as f:
                 meta = json.load(f)
-                phase1_status = meta.get("phases", {}).get("phase_1", {}).get("status", "")
+                phase1_status = meta.get("phases", {}).get(
+                    "phase_1", {}).get("status", "")
                 if "complete" not in phase1_status.lower():
                     self.logger.warning(f"⚠️ Phase 1 status: {phase1_status}")
 
@@ -173,7 +175,8 @@ class Phase2Preparation:
 
     COMPLIANCE: STANDARD
     """
-            self.logger.info("📦 Flask-SocketIO needs installation: pip install flask-socketio")
+            self.logger.info(
+                "📦 Flask-SocketIO needs installation: pip install flask-socketio")
 
         # Create WebSocket module structure
         websocket_dir = self.project_root / "noxcore" / "websocket"

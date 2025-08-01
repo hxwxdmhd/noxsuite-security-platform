@@ -18,6 +18,7 @@ admin_bp = Blueprint(
     static_folder='static'
 )
 
+
 @admin_bp.route('/')
 def dashboard():
     """
@@ -59,11 +60,12 @@ def dashboard():
     """
     try:
         return render_template('admin/dashboard.html',
-                             title='Admin Panel',
-                             timestamp=datetime.now())
+                               title='Admin Panel',
+                               timestamp=datetime.now())
     except Exception as e:
         logger.error(f"Error in Admin Panel dashboard: {e}")
         return render_template('error.html', error=str(e)), 500
+
 
 @admin_bp.route('/api/status')
 def api_status():
@@ -78,6 +80,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Error in Admin Panel API: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @admin_bp.route('/api/action', methods=['POST'])
 def api_action():

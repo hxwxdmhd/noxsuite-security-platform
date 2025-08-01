@@ -42,7 +42,8 @@ class NoxPanelFormatter(logging.Formatter):
 
         # Add context if available and requested
         if self.include_context and hasattr(record, "context"):
-            context_str = json.dumps(record.context, default=str, separators=(",", ":"))
+            context_str = json.dumps(
+                record.context, default=str, separators=(",", ":"))
             base_msg += f" | Context: {context_str}"
 
         # Add exception info if present
@@ -184,7 +185,8 @@ class LoggingConfig:
 
             # Set root logger level
             root_logger = logging.getLogger()
-            root_logger.setLevel(self._get_log_level(self.config.get("level", "INFO")))
+            root_logger.setLevel(self._get_log_level(
+                self.config.get("level", "INFO")))
 
             # Log successful setup
             logger = logging.getLogger("noxpanel.logging")
@@ -197,7 +199,8 @@ class LoggingConfig:
                 format=self.DEFAULT_FORMAT,
                 handlers=[logging.StreamHandler(sys.stdout)],
             )
-            logging.error(f"Failed to setup logging configuration, using fallback: {e}")
+            logging.error(
+                f"Failed to setup logging configuration, using fallback: {e}")
 
     def _clear_handlers(self) -> None:
         """Clear existing handlers."""
@@ -225,7 +228,8 @@ class LoggingConfig:
                 if handler:
                     self.handlers.append(handler)
             except Exception as e:
-                logging.error(f"Failed to create handler '{handler_name}': {e}")
+                logging.error(
+                    f"Failed to create handler '{handler_name}': {e}")
 
     def _create_handler(
         self, name: str, config: Dict[str, Any]

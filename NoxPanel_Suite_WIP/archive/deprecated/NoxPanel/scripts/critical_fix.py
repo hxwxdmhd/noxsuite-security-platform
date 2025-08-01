@@ -43,13 +43,15 @@ def setup_unicode_logging():
             format="%(asctime)s - [CRITICAL-FIX] - %(message)s",
             handlers=[
                 logging.StreamHandler(sys.stdout),
-                logging.FileHandler("data/logs/critical_fix.log", encoding='utf-8')
+                logging.FileHandler(
+                    "data/logs/critical_fix.log", encoding='utf-8')
             ]
         )
         return logging.getLogger(__name__)
     except Exception as e:
         print(f"Logging setup failed: {e}")
         return None
+
 
 def verify_module_structure():
     """Verify all required modules exist"""

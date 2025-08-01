@@ -1,3 +1,8 @@
+from pathlib import Path
+from datetime import datetime
+import sys
+import os
+import logging
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -9,11 +14,6 @@ Ultimate Suite v11.0 - Production Launch Script
 Simple standalone launcher for testing and deployment
 """
 
-import logging
-import os
-import sys
-from datetime import datetime
-from pathlib import Path
 
 # Add current directory to Python path
 sys.path.insert(0, str(Path(__file__).parent))
@@ -22,7 +22,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("heimnetz_server.log"), logging.StreamHandler()],
+    handlers=[logging.FileHandler(
+        "heimnetz_server.log"), logging.StreamHandler()],
 )
 
 logger = logging.getLogger(__name__)

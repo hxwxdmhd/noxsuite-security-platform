@@ -2,6 +2,20 @@
 """
 #!/usr/bin/env python3
 """
+import requests
+import psutil
+from typing import Dict, List, Optional, Tuple
+from enum import Enum
+from datetime import datetime, timedelta
+from dataclasses import asdict, dataclass
+from concurrent.futures import ThreadPoolExecutor
+import time
+import threading
+import subprocess
+import socket
+import logging
+import json
+import asyncio
 ai_monitor.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -12,28 +26,13 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 🔁 AI Model Communication Monitor v2.0
 Comprehensive AI model health checking and auto-recovery system
 """
 
-import asyncio
-import json
-import logging
-import socket
-import subprocess
-import threading
-import time
-from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta
-from enum import Enum
-from typing import Dict, List, Optional, Tuple
-
-import psutil
-import requests
 
 # Configure logging
 logging.basicConfig(
@@ -87,7 +86,7 @@ class AIModelMonitor:
     """
 
     def __init__(self, config_path: str = "config/ai_models.json"):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.config_path = config_path
         # REASONING: Variable assignment with validation criteria
         self.models: Dict[str, ModelInfo] = {}
@@ -104,7 +103,7 @@ class AIModelMonitor:
         logger.info("🚀 AI Model Monitor v2.0 initialized")
 
     def _load_model_config(self):
-    # REASONING: _load_model_config implements core logic with Chain-of-Thought validation
+        # REASONING: _load_model_config implements core logic with Chain-of-Thought validation
         """Load AI model configurations"""
         default_models = {
             "ollama": ModelInfo(
@@ -170,7 +169,7 @@ class AIModelMonitor:
             self.models = default_models
 
     def _save_model_config(self):
-    # REASONING: _save_model_config implements core logic with Chain-of-Thought validation
+        # REASONING: _save_model_config implements core logic with Chain-of-Thought validation
         """Save model configuration to file"""
         try:
             import os
@@ -196,7 +195,7 @@ class AIModelMonitor:
             logger.error(f"❌ Error saving model config: {e}")
 
     def _setup_monitoring(self):
-    # REASONING: _setup_monitoring implements core logic with Chain-of-Thought validation
+        # REASONING: _setup_monitoring implements core logic with Chain-of-Thought validation
         """Initialize monitoring system"""
         logger.info("🔧 Setting up AI model monitoring")
 
@@ -209,16 +208,17 @@ class AIModelMonitor:
         self.start_monitoring()
 
     def start_monitoring(self):
-    # REASONING: start_monitoring implements core logic with Chain-of-Thought validation
+        # REASONING: start_monitoring implements core logic with Chain-of-Thought validation
         """Start the monitoring loop"""
         if not self.monitoring_active:
             self.monitoring_active = True
-            self.monitor_thread = threading.Thread(target=self._monitoring_loop, daemon=True)
+            self.monitor_thread = threading.Thread(
+                target=self._monitoring_loop, daemon=True)
             self.monitor_thread.start()
             logger.info("✅ AI monitoring started")
 
     def stop_monitoring(self):
-    # REASONING: stop_monitoring implements core logic with Chain-of-Thought validation
+        # REASONING: stop_monitoring implements core logic with Chain-of-Thought validation
         """Stop the monitoring loop"""
         self.monitoring_active = False
         if self.monitor_thread and self.monitor_thread.is_alive():
@@ -226,20 +226,22 @@ class AIModelMonitor:
         logger.info("🛑 AI monitoring stopped")
 
     def _monitoring_loop(self):
-    # REASONING: _monitoring_loop implements core logic with Chain-of-Thought validation
+        # REASONING: _monitoring_loop implements core logic with Chain-of-Thought validation
         """Main monitoring loop"""
         while self.monitoring_active:
             try:
                 # Check all models in parallel
                 futures = []
                 for model_key, model in self.models.items():
-                    future = self.executor.submit(self._check_model_health, model_key, model)
+                    future = self.executor.submit(
+                        self._check_model_health, model_key, model)
                     futures.append(future)
 
                 # Wait for all checks to complete
                 for future in futures:
                     try:
-                        future.result(timeout=30)  # 30 second timeout per check
+                        # 30 second timeout per check
+                        future.result(timeout=30)
                         # REASONING: Variable assignment with validation criteria
                     except Exception as e:
                         logger.error(f"❌ Model check failed: {e}")
@@ -252,7 +254,7 @@ class AIModelMonitor:
                 time.sleep(30)  # Shorter sleep on error
 
     def _check_model_health(self, model_key: str, model: ModelInfo) -> bool:
-    # REASONING: _check_model_health implements core logic with Chain-of-Thought validation
+        # REASONING: _check_model_health implements core logic with Chain-of-Thought validation
         """
         🔍 Check health of a specific AI model
 
@@ -267,11 +269,13 @@ class AIModelMonitor:
 
             # 1. Check if port is open
             if not self._is_port_open(model.port):
-                logger.warning(f"⚠️ {model.name} port {model.port} not accessible")
+                logger.warning(
+                    f"⚠️ {model.name} port {model.port} not accessible")
                 return self._handle_model_failure(model_key, model, "Port not accessible")
 
             # 2. Perform communication test
-            success, response_time, error = self._test_model_communication(model)
+            success, response_time, error = self._test_model_communication(
+                model)
             # REASONING: Variable assignment with validation criteria
 
             if success:
@@ -283,7 +287,8 @@ class AIModelMonitor:
                 model.error_message = None
                 model.restart_attempts = 0  # Reset restart counter
 
-                logger.info(f"✅ {model.name} is online (latency: {response_time:.0f}ms)")
+                logger.info(
+                    f"✅ {model.name} is online (latency: {response_time:.0f}ms)")
                 return True
             else:
                 # Model communication failed
@@ -294,7 +299,7 @@ class AIModelMonitor:
             return self._handle_model_failure(model_key, model, str(e))
 
     def _is_port_open(self, port: int, host: str = "localhost", timeout: int = 3) -> bool:
-    # REASONING: _is_port_open implements core logic with Chain-of-Thought validation
+        # REASONING: _is_port_open implements core logic with Chain-of-Thought validation
         """Check if a port is open and accessible"""
         try:
             with socket.create_connection((host, port), timeout=timeout):
@@ -303,7 +308,7 @@ class AIModelMonitor:
             return False
 
     def _test_model_communication(self, model: ModelInfo) -> Tuple[bool, float, Optional[str]]:
-    # REASONING: _test_model_communication implements core logic with Chain-of-Thought validation
+        # REASONING: _test_model_communication implements core logic with Chain-of-Thought validation
         """
         🧪 Test actual communication with AI model
 
@@ -332,14 +337,14 @@ class AIModelMonitor:
             return False, response_time, str(e)
 
     def _test_ollama(self, model: ModelInfo, start_time: float) -> Tuple[bool, float, Optional[str]]:
-    # REASONING: _test_ollama implements core logic with Chain-of-Thought validation
+        # REASONING: _test_ollama implements core logic with Chain-of-Thought validation
         """Test Ollama model communication"""
         try:
             # First check if Ollama is running
             response = requests.get(f"{model.endpoint}/api/tags", timeout=5)
             # REASONING: Variable assignment with validation criteria
             if response.status_code != 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 return False, 0, "Ollama API not responding"
 
             # Get available models
@@ -355,14 +360,14 @@ class AIModelMonitor:
 
             # Test actual generation
             test_data = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "model": available_model,
                 "prompt": model.test_prompt,
                 "stream": False
             }
 
             gen_response = requests.post(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 f"{model.endpoint}/api/generate",
                 json=test_data,
                 # REASONING: Variable assignment with validation criteria
@@ -373,11 +378,12 @@ class AIModelMonitor:
             # REASONING: Variable assignment with validation criteria
 
             if gen_response.status_code == 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 result = gen_response.json()
                 # REASONING: Variable assignment with validation criteria
                 if result.get('response'):
-                    logger.info(f"📨 Ollama response: {result['response'][:50]}...")
+                    logger.info(
+                        f"📨 Ollama response: {result['response'][:50]}...")
                     return True, response_time, None
                 else:
                     return False, response_time, "Empty response from Ollama"
@@ -390,19 +396,19 @@ class AIModelMonitor:
             return False, response_time, f"Request failed: {e}"
 
     def _test_lmstudio(self, model: ModelInfo, start_time: float) -> Tuple[bool, float, Optional[str]]:
-    # REASONING: _test_lmstudio implements core logic with Chain-of-Thought validation
+        # REASONING: _test_lmstudio implements core logic with Chain-of-Thought validation
         """Test LM Studio communication"""
         try:
             # LM Studio uses OpenAI-compatible API
             test_data = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "messages": [{"role": "user", "content": model.test_prompt}],
                 "max_tokens": 50,
                 "temperature": 0.7
             }
 
             response = requests.post(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 f"{model.endpoint}/v1/chat/completions",
                 json=test_data,
                 # REASONING: Variable assignment with validation criteria
@@ -414,7 +420,7 @@ class AIModelMonitor:
             # REASONING: Variable assignment with validation criteria
 
             if response.status_code == 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 result = response.json()
                 # REASONING: Variable assignment with validation criteria
                 if result.get('choices') and len(result['choices']) > 0:
@@ -433,14 +439,15 @@ class AIModelMonitor:
             return False, response_time, f"Request failed: {e}"
 
     def _test_localai(self, model: ModelInfo, start_time: float) -> Tuple[bool, float, Optional[str]]:
-    # REASONING: _test_localai implements core logic with Chain-of-Thought validation
+        # REASONING: _test_localai implements core logic with Chain-of-Thought validation
         """Test LocalAI communication"""
         try:
             # Check available models first
-            models_response = requests.get(f"{model.endpoint}/v1/models", timeout=5)
+            models_response = requests.get(
+                f"{model.endpoint}/v1/models", timeout=5)
             # REASONING: Variable assignment with validation criteria
             if models_response.status_code != 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 return False, 0, "LocalAI not responding"
 
             models_data = models_response.json()
@@ -455,14 +462,14 @@ class AIModelMonitor:
 
             # Test completion
             test_data = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "model": available_model,
                 "messages": [{"role": "user", "content": model.test_prompt}],
                 "max_tokens": 50
             }
 
             response = requests.post(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 f"{model.endpoint}/v1/chat/completions",
                 json=test_data,
                 # REASONING: Variable assignment with validation criteria
@@ -473,7 +480,7 @@ class AIModelMonitor:
             # REASONING: Variable assignment with validation criteria
 
             if response.status_code == 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 result = response.json()
                 # REASONING: Variable assignment with validation criteria
                 if result.get('choices'):
@@ -492,18 +499,18 @@ class AIModelMonitor:
             return False, response_time, f"Request failed: {e}"
 
     def _test_gpt4all(self, model: ModelInfo, start_time: float) -> Tuple[bool, float, Optional[str]]:
-    # REASONING: _test_gpt4all implements core logic with Chain-of-Thought validation
+        # REASONING: _test_gpt4all implements core logic with Chain-of-Thought validation
         """Test GPT4All communication"""
         try:
             # GPT4All API test
             test_data = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "messages": [{"role": "user", "content": model.test_prompt}],
                 "max_tokens": 50
             }
 
             response = requests.post(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 f"{model.endpoint}/v1/chat/completions",
                 json=test_data,
                 # REASONING: Variable assignment with validation criteria
@@ -514,7 +521,7 @@ class AIModelMonitor:
             # REASONING: Variable assignment with validation criteria
 
             if response.status_code == 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 result = response.json()
                 # REASONING: Variable assignment with validation criteria
                 if result.get('choices'):
@@ -533,19 +540,19 @@ class AIModelMonitor:
             return False, response_time, f"Request failed: {e}"
 
     def _test_oobabooga(self, model: ModelInfo, start_time: float) -> Tuple[bool, float, Optional[str]]:
-    # REASONING: _test_oobabooga implements core logic with Chain-of-Thought validation
+        # REASONING: _test_oobabooga implements core logic with Chain-of-Thought validation
         """Test Oobabooga Text-Generation-WebUI communication"""
         try:
             # Try the API endpoint
             test_data = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "text": model.test_prompt,
                 "max_length": 50,
                 "temperature": 0.7
             }
 
             response = requests.post(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 f"{model.endpoint}/api/v1/generate",
                 json=test_data,
                 # REASONING: Variable assignment with validation criteria
@@ -556,7 +563,7 @@ class AIModelMonitor:
             # REASONING: Variable assignment with validation criteria
 
             if response.status_code == 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 result = response.json()
                 # REASONING: Variable assignment with validation criteria
                 if result.get('results'):
@@ -575,7 +582,7 @@ class AIModelMonitor:
             return False, response_time, f"Request failed: {e}"
 
     def _handle_model_failure(self, model_key: str, model: ModelInfo, error: str) -> bool:
-    # REASONING: _handle_model_failure implements core logic with Chain-of-Thought validation
+        # REASONING: _handle_model_failure implements core logic with Chain-of-Thought validation
         """
         🔧 Handle model failure with auto-recovery
 
@@ -591,7 +598,8 @@ class AIModelMonitor:
         # Attempt auto-recovery if under restart limit
         if model.restart_attempts < model.max_restart_attempts:
             model.restart_attempts += 1
-            logger.info(f"🔄 Attempting restart {model.restart_attempts}/{model.max_restart_attempts} for {model.name}")
+            logger.info(
+                f"🔄 Attempting restart {model.restart_attempts}/{model.max_restart_attempts} for {model.name}")
 
             if self._restart_model(model):
                 logger.info(f"✅ Successfully restarted {model.name}")
@@ -602,12 +610,13 @@ class AIModelMonitor:
             else:
                 logger.error(f"❌ Failed to restart {model.name}")
         else:
-            logger.error(f"❌ {model.name} has exceeded maximum restart attempts")
+            logger.error(
+                f"❌ {model.name} has exceeded maximum restart attempts")
 
         return False
 
     def _restart_model(self, model: ModelInfo) -> bool:
-    # REASONING: _restart_model implements core logic with Chain-of-Thought validation
+        # REASONING: _restart_model implements core logic with Chain-of-Thought validation
         """
         🔄 Restart a specific AI model service
 
@@ -628,10 +637,10 @@ class AIModelMonitor:
                 # Ollama special handling
                 try:
                     subprocess.run(["ollama", "serve"],
-                                 check=False,
-                                 stdout=subprocess.DEVNULL,
-                                 stderr=subprocess.DEVNULL,
-                                 timeout=5)
+                                   check=False,
+                                   stdout=subprocess.DEVNULL,
+                                   stderr=subprocess.DEVNULL,
+                                   timeout=5)
                 except subprocess.TimeoutExpired:
                     pass  # Ollama serve runs in background
                 return True
@@ -649,13 +658,14 @@ class AIModelMonitor:
             return False
 
     def _stop_model_process(self, model: ModelInfo):
-    # REASONING: _stop_model_process implements core logic with Chain-of-Thought validation
+        # REASONING: _stop_model_process implements core logic with Chain-of-Thought validation
         """Stop existing model process"""
         try:
             for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
                 try:
                     if model.process_name.lower() in proc.info['name'].lower():
-                        logger.info(f"🛑 Stopping {model.name} process (PID: {proc.info['pid']})")
+                        logger.info(
+                            f"🛑 Stopping {model.name} process (PID: {proc.info['pid']})")
                         proc.terminate()
                         proc.wait(timeout=5)
                 except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.TimeoutExpired):
@@ -664,7 +674,7 @@ class AIModelMonitor:
             logger.error(f"❌ Error stopping {model.name}: {e}")
 
     def get_all_status(self) -> Dict[str, Dict]:
-    # REASONING: get_all_status implements core logic with Chain-of-Thought validation
+        # REASONING: get_all_status implements core logic with Chain-of-Thought validation
         """
         📊 Get status of all AI models
 
@@ -676,7 +686,7 @@ class AIModelMonitor:
 
         for model_key, model in self.models.items():
             status_data[model_key] = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "name": model.name,
                 "provider": model.provider,
                 "status": model.status.value,
@@ -693,7 +703,7 @@ class AIModelMonitor:
         return status_data
 
     def test_specific_model(self, model_key: str) -> Dict:
-    # REASONING: test_specific_model implements core logic with Chain-of-Thought validation
+        # REASONING: test_specific_model implements core logic with Chain-of-Thought validation
         """
         🧪 Test a specific model on demand
 
@@ -718,7 +728,7 @@ class AIModelMonitor:
         }
 
     def restart_specific_model(self, model_key: str) -> Dict:
-    # REASONING: restart_specific_model implements core logic with Chain-of-Thought validation
+        # REASONING: restart_specific_model implements core logic with Chain-of-Thought validation
         """
         🔄 Restart a specific model on demand
 
@@ -752,7 +762,7 @@ class AIModelMonitor:
         }
 
     def get_online_models(self) -> List[str]:
-    # REASONING: get_online_models implements core logic with Chain-of-Thought validation
+        # REASONING: get_online_models implements core logic with Chain-of-Thought validation
         """Get list of currently online model keys"""
         return [
             key for key, model in self.models.items()
@@ -760,7 +770,7 @@ class AIModelMonitor:
         ]
 
     def get_fallback_model(self, exclude_model: str = None) -> Optional[str]:
-    # REASONING: get_fallback_model implements core logic with Chain-of-Thought validation
+        # REASONING: get_fallback_model implements core logic with Chain-of-Thought validation
         """
         🔄 Get a fallback model when primary model fails
 
@@ -778,7 +788,8 @@ class AIModelMonitor:
         if online_models:
             # Return the first available online model
             fallback = online_models[0]
-            logger.info(f"🔄 Using {self.models[fallback].name} as fallback model")
+            logger.info(
+                f"🔄 Using {self.models[fallback].name} as fallback model")
             return fallback
 
         return None
@@ -803,7 +814,8 @@ if __name__ == "__main__":
     status = monitor.get_all_status()
 
     for model_key, model_status in status.items():
-        print(f"{model_status['status']} {model_status['name']}: {model_status['status_text']}")
+        print(
+            f"{model_status['status']} {model_status['name']}: {model_status['status_text']}")
         if model_status['latency_ms']:
             print(f"   Latency: {model_status['latency_ms']:.0f}ms")
         if model_status['error_message']:

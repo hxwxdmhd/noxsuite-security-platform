@@ -19,6 +19,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
 def create_app():
     """
     RLVR: Creates new entity with validation and error handling

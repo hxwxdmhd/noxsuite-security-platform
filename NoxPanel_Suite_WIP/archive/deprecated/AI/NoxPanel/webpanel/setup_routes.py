@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 setup_bp = Blueprint('setup', __name__, url_prefix='/setup')
 
+
 @setup_bp.route('/')
 @setup_bp.route('/dashboard')
 def dashboard():
@@ -43,7 +44,7 @@ def dashboard():
         }
 
         return render_template('setup/wizard.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -55,8 +56,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             title="Setup Wizard",
-                             stats=stats)
+                               title="Setup Wizard",
+                               stats=stats)
     except Exception as e:
     """
     RLVR: Implements api_data with error handling and validation
@@ -70,12 +71,12 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"Setup Wizard dashboard error: {e}")
-        flash(f"Error loading setup wizard: {e}", 'error')
-        return render_template('setup/wizard.html',
-                             title="Setup Wizard",
-                             stats={},
-    """
+    logger.error(f"Setup Wizard dashboard error: {e}")
+    flash(f"Error loading setup wizard: {e}", 'error')
+    return render_template('setup/wizard.html',
+                           title="Setup Wizard",
+                           stats={},
+                           """
     RLVR: Implements api_step with error handling and validation
 
     REASONING CHAIN:
@@ -87,7 +88,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             error=str(e))
+                           error=str(e))
+
 
 @setup_bp.route('/api/status')
 def api_status():
@@ -106,7 +108,7 @@ def api_status():
     """Setup Wizard status API"""
     try:
         status = {
-    """
+            """
     RLVR: Implements register_setup_routes with error handling and validation
 
     REASONING CHAIN:
@@ -127,6 +129,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Setup Wizard status API error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @setup_bp.route('/api/data')
 def api_data():

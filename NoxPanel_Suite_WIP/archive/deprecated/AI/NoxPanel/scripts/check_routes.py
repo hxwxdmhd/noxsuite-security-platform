@@ -52,7 +52,8 @@ def main():
             status = "✅" if response.status_code < 400 else "❌"
             print(f"{status} {route}: {response.status_code}")
             if response.status_code in [301, 302]:
-                print(f"   → Redirects to: {response.headers.get('Location', 'Unknown')}")
+                print(
+                    f"   → Redirects to: {response.headers.get('Location', 'Unknown')}")
         except requests.RequestException as e:
             print(f"❌ {route}: Connection error")
 
@@ -70,6 +71,7 @@ def main():
                 break
         except:
             pass
+
 
 if __name__ == "__main__":
     main()

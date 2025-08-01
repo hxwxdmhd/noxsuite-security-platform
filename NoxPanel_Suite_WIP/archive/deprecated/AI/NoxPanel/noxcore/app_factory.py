@@ -48,16 +48,18 @@ def create_robust_app():
 
     COMPLIANCE: STANDARD
     """
-        sys.path.insert(0, str(noxpanel_root))
+    sys.path.insert(0, str(noxpanel_root))
 
-        from webpanel.app_v5 import create_app
-        return create_app()
+    from webpanel.app_v5 import create_app
+    return create_app()
     except Exception as e:
         print(f"App creation error: {e}")
         return None
 
+
 # Global app instance for testing
 _test_app = None
+
 
 def get_test_app():
     # REASONING: get_test_app implements core logic with Chain-of-Thought validation

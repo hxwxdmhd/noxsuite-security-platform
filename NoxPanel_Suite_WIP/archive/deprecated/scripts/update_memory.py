@@ -20,17 +20,17 @@ from typing import Any, Dict, List
 
 class AIMemorySynchronizer:
     """Synchronizes memory and state across AI agents"""
-    
+
     def __init__(self, project_root: str = None):
         self.project_root = Path(project_root or os.getcwd())
         self.project_state_file = self.project_root / "project_state.json"
         self.memory_file = self.project_root / "ai_memory.json"
         self.copilot_context_file = self.project_root / "copilot_context.json"
-        
+
         # Load current state
         self.project_state = self.load_json_file(self.project_state_file)
         self.ai_memory = self.load_json_file(self.memory_file)
-    
+
     def load_json_file(self, file_path: Path) -> Dict:
         """Load JSON file with error handling"""
         try:
@@ -42,7 +42,7 @@ class AIMemorySynchronizer:
         except Exception as e:
             print(f"⚠️  Warning: Could not load {file_path}: {e}")
             return {}
-    
+
     def save_json_file(self, file_path: Path, data: Dict):
         """Save JSON file with error handling"""
         try:
@@ -51,7 +51,7 @@ class AIMemorySynchronizer:
                 json.dump(data, f, indent=2)
         except Exception as e:
             print(f"⚠️  Warning: Could not save {file_path}: {e}")
-    
+
     def generate_ai_context(self) -> Dict:
         """Generate comprehensive AI context for all agents"""
         context = {
@@ -89,13 +89,13 @@ class AIMemorySynchronizer:
                 "reference": "Please refer to docs/audit_plan.md or run scripts/audit_status.py"
             }
         }
-        
+
         return context
-    
+
     def generate_copilot_context(self) -> Dict:
         """Generate specific context for GitHub Copilot"""
         ai_context = self.generate_ai_context()
-        
+
         copilot_context = {
             "timestamp": datetime.now().isoformat(),
             "copilot_mode": "COMPLIANCE_ENFORCED",
@@ -131,9 +131,9 @@ class AIMemorySynchronizer:
                 "architectural_violations"
             ]
         }
-        
+
         return copilot_context
-    
+
     def update_ai_memory(self):
         """Update AI memory with current project state"""
         memory_data = {
@@ -164,20 +164,20 @@ class AIMemorySynchronizer:
                 "Maintain compliance above 95%"
             ]
         }
-        
+
         self.save_json_file(self.memory_file, memory_data)
         return memory_data
-    
+
     def update_copilot_context(self):
         """Update Copilot-specific context"""
         copilot_context = self.generate_copilot_context()
         self.save_json_file(self.copilot_context_file, copilot_context)
         return copilot_context
-    
+
     def generate_prompt_injection(self) -> str:
         """Generate prompt injection for AI agents"""
         context = self.generate_ai_context()
-        
+
         prompt = f"""
 [U.A.C.M.S. SYSTEM ACTIVE]
 Current Phase: {context['current_state']['phase']}
@@ -201,26 +201,26 @@ ARCHITECTURAL RULES:
 - No competing implementations allowed
 - All changes must comply with merge proposal plan
 """
-        
+
         return prompt
-    
+
     def synchronize_all_agents(self) -> Dict:
         """Synchronize memory across all AI agents"""
         print("🧠 U.A.C.M.S. AI Memory Synchronization")
         print("=" * 50)
-        
+
         # Update AI memory
         memory_data = self.update_ai_memory()
         print("✅ AI Memory updated")
-        
+
         # Update Copilot context
         copilot_context = self.update_copilot_context()
         print("✅ Copilot Context updated")
-        
+
         # Generate prompt injection
         prompt_injection = self.generate_prompt_injection()
         print("✅ Prompt Injection generated")
-        
+
         # Create synchronization report
         sync_report = {
             "timestamp": datetime.now().isoformat(),
@@ -234,16 +234,16 @@ ARCHITECTURAL RULES:
             "prompt_injection_available": True,
             "compliance_validation": True
         }
-        
+
         # Save synchronization report
         sync_report_file = self.project_root / "sync_report.json"
         self.save_json_file(sync_report_file, sync_report)
-        
+
         print(f"✅ Synchronization report saved to: {sync_report_file}")
         print("\n🎯 AI MEMORY SYNCHRONIZATION: COMPLETED")
-        
+
         return sync_report
-    
+
     def validate_agent_sync(self) -> Dict:
         """Validate that all agents are synchronized"""
         validation_report = {
@@ -252,75 +252,84 @@ ARCHITECTURAL RULES:
             "checks_performed": [],
             "issues_found": []
         }
-        
+
         # Check if required files exist
         required_files = [
             self.project_state_file,
             self.memory_file,
             self.copilot_context_file
         ]
-        
+
         for file_path in required_files:
-            validation_report["checks_performed"].append(f"file_exists_{file_path.name}")
+            validation_report["checks_performed"].append(
+                f"file_exists_{file_path.name}")
             if not file_path.exists():
-                validation_report["issues_found"].append(f"Missing file: {file_path.name}")
+                validation_report["issues_found"].append(
+                    f"Missing file: {file_path.name}")
                 validation_report["validation_status"] = "FAILED"
-        
+
         # Check if project state is valid
         if self.project_state:
             validation_report["checks_performed"].append("project_state_valid")
             if "current_phase" not in self.project_state:
-                validation_report["issues_found"].append("Missing current_phase in project state")
+                validation_report["issues_found"].append(
+                    "Missing current_phase in project state")
                 validation_report["validation_status"] = "FAILED"
-        
+
         return validation_report
-    
+
     def display_sync_status(self):
         """Display current synchronization status"""
         print("📊 U.A.C.M.S. AI Agent Synchronization Status")
         print("=" * 50)
-        
+
         validation = self.validate_agent_sync()
-        
+
         print(f"Validation Status: {validation['validation_status']}")
         print(f"Checks Performed: {len(validation['checks_performed'])}")
-        
+
         if validation["issues_found"]:
             print(f"Issues Found: {len(validation['issues_found'])}")
             for issue in validation["issues_found"]:
                 print(f"  ❌ {issue}")
         else:
             print("✅ All agents synchronized successfully")
-        
+
         # Display current context
         context = self.generate_ai_context()
         print(f"\nCurrent Phase: {context['current_state']['phase']}")
-        print(f"Compliance Score: {context['current_state']['compliance_score']}%")
+        print(
+            f"Compliance Score: {context['current_state']['compliance_score']}%")
         print(f"Violations: {context['current_state']['violations']}")
-        
+
         print(f"\nLocked Features: {len(context['locked_features'])}")
         for feature, info in context['locked_features'].items():
             print(f"  🔒 {feature}: {info.get('reason', 'No reason provided')}")
-        
+
         print(f"\nUnlocked Features: {len(context['unlocked_features'])}")
         for feature, status in context['unlocked_features'].items():
             print(f"  ✅ {feature}: {status}")
 
+
 def main():
     """Main entry point"""
     import argparse
-    
-    parser = argparse.ArgumentParser(description="U.A.C.M.S. AI Memory Synchronization System")
+
+    parser = argparse.ArgumentParser(
+        description="U.A.C.M.S. AI Memory Synchronization System")
     parser.add_argument("--project-root", help="Project root directory")
-    parser.add_argument("--sync", action="store_true", help="Synchronize all AI agents")
-    parser.add_argument("--status", action="store_true", help="Show synchronization status")
-    parser.add_argument("--validate", action="store_true", help="Validate agent synchronization")
-    
+    parser.add_argument("--sync", action="store_true",
+                        help="Synchronize all AI agents")
+    parser.add_argument("--status", action="store_true",
+                        help="Show synchronization status")
+    parser.add_argument("--validate", action="store_true",
+                        help="Validate agent synchronization")
+
     args = parser.parse_args()
-    
+
     # Create synchronizer
     synchronizer = AIMemorySynchronizer(args.project_root)
-    
+
     if args.sync:
         synchronizer.synchronize_all_agents()
     elif args.status:
@@ -334,6 +343,7 @@ def main():
         sys.exit(0 if validation["validation_status"] == "PASSED" else 1)
     else:
         synchronizer.display_sync_status()
+
 
 if __name__ == "__main__":
     main()

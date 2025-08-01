@@ -1,3 +1,23 @@
+from typing import Any, Callable, Dict, List, Optional, Set, Type, Union
+from pathlib import Path
+from enum import Enum
+from datetime import datetime, timedelta, timezone
+from dataclasses import dataclass, field
+from abc import ABC, abstractmethod
+import weakref
+import uuid
+import traceback
+import time
+import threading
+import sys
+import os
+import logging
+import json
+import inspect
+import importlib.util
+import importlib
+import hashlib
+import gc
 from datetime import datetime, timezone
 
 from NoxPanel.noxcore.utils.logging_config import get_logger
@@ -23,26 +43,6 @@ Version: 11.0.0
 Status: PRODUCTION READY
 """
 
-import gc
-import hashlib
-import importlib
-import importlib.util
-import inspect
-import json
-import logging
-import os
-import sys
-import threading
-import time
-import traceback
-import uuid
-import weakref
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
-from enum import Enum
-from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set, Type, Union
 
 # Plugin system dependencies
 try:
@@ -140,8 +140,10 @@ class PluginMetadata:
     auto_enable: bool = True
 
     # Timestamps
-    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = field(
+        default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = field(
+        default_factory=lambda: datetime.now(timezone.utc))
 
     def __post_init__(self):
         """Post-initialization processing"""
@@ -332,7 +334,8 @@ class CorePlugin(PluginInterface):
             self.status = PluginStatus.ACTIVE
 
             # Record performance
-            self.performance_stats["init_time"] = utc_now().timestamp() - start_time
+            self.performance_stats["init_time"] = utc_now(
+            ).timestamp() - start_time
 
             self.logger.info(f"Plugin {self.name} initialized successfully")
             return True
@@ -609,7 +612,8 @@ class PluginLoader:
                         )
 
             except Exception as e:
-                self.logger.error(f"Error discovering plugins in {search_path}: {e}")
+                self.logger.error(
+                    f"Error discovering plugins in {search_path}: {e}")
 
         self.discovered_plugins = discovered
         return discovered
@@ -623,7 +627,8 @@ class PluginLoader:
                 file_hash = hashlib.sha256(content).hexdigest()
 
             # Load module
-            spec = importlib.util.spec_from_file_location(file_path.stem, file_path)
+            spec = importlib.util.spec_from_file_location(
+                file_path.stem, file_path)
             if not spec or not spec.loader:
                 return None
 
@@ -672,7 +677,8 @@ class PluginLoader:
                 return metadata
 
         except Exception as e:
-            self.logger.error(f"Failed to extract metadata from {file_path}: {e}")
+            self.logger.error(
+                f"Failed to extract metadata from {file_path}: {e}")
 
         return None
 
@@ -743,7 +749,8 @@ class PluginLoader:
         # Check conflicts
         for conflict in metadata.conflicts:
             if conflict in available_plugins:
-                self.logger.error(f"Plugin {plugin_name} conflicts with: {conflict}")
+                self.logger.error(
+                    f"Plugin {plugin_name} conflicts with: {conflict}")
                 return False
 
         return True
@@ -897,7 +904,8 @@ class UnifiedPluginManager:
                 )
 
                 # Register with hook system
-                self.hook_system.register_plugin(plugin_name, container.plugin_instance)
+                self.hook_system.register_plugin(
+                    plugin_name, container.plugin_instance)
 
                 self.logger.info(f"Plugin {plugin_name} loaded successfully")
                 return True
@@ -928,7 +936,8 @@ class UnifiedPluginManager:
                     if container.status == PluginStatus.ACTIVE:
                         self.stats["active_plugins"] -= 1
 
-                    self.logger.info(f"Plugin {plugin_name} unloaded successfully")
+                    self.logger.info(
+                        f"Plugin {plugin_name} unloaded successfully")
                     return True
                 else:
                     self.logger.error(f"Failed to unload plugin {plugin_name}")
@@ -989,7 +998,8 @@ class UnifiedPluginManager:
                     results[plugin_name] = self.load_plugin(plugin_name)
 
                 except Exception as e:
-                    self.logger.error(f"Failed to load plugin {plugin_name}: {e}")
+                    self.logger.error(
+                        f"Failed to load plugin {plugin_name}: {e}")
                     results[plugin_name] = False
 
             load_time = utc_now().timestamp() - start_time
@@ -1122,7 +1132,8 @@ class PluginEventSystem:
             try:
                 handler(data)
             except Exception as e:
-                self.logger.error(f"Event handler failed in plugin {plugin_name}: {e}")
+                self.logger.error(
+                    f"Event handler failed in plugin {plugin_name}: {e}")
 
     def cleanup(self):
         """Clean up event system"""
@@ -1181,7 +1192,8 @@ class PluginHookSystem:
             try:
                 result = handler(result) or result
             except Exception as e:
-                self.logger.error(f"Hook handler failed in plugin {plugin_name}: {e}")
+                self.logger.error(
+                    f"Hook handler failed in plugin {plugin_name}: {e}")
 
         return result
 

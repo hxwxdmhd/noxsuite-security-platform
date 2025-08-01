@@ -37,6 +37,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class RLVRAnnotation:
     """RLVR method annotation structure"""
@@ -48,6 +49,7 @@ class RLVRAnnotation:
     test_cases: List[Dict]
     complexity_score: float
     compliance_level: str
+
 
 @dataclass
 class RLVRComplianceMetrics:
@@ -62,6 +64,7 @@ class RLVRComplianceMetrics:
     validation_score: float
     reasoning_quality: float
     auto_remediation_count: int
+
 
 class RLVRPhase2Enhancer:
     """Comprehensive RLVR enhancement system for Phase 2"""

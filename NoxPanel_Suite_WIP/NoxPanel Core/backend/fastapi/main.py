@@ -193,7 +193,8 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # Trusted hosts (security)
 app.add_middleware(
-    TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "*.noxsuite.local"]
+    TrustedHostMiddleware, allowed_hosts=[
+        "localhost", "127.0.0.1", "*.noxsuite.local"]
 )
 
 # Custom metrics middleware

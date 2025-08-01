@@ -114,8 +114,10 @@ class MCPServerLauncher:
                 name="noxsuite-orchestrator",
                 script_path="Scripts & Tools/mcp_autonomous_orchestrator.py",
                 description="Autonomous Development Orchestrator",
-                capabilities=["workspace_audit", "self_healing", "code_analysis"],
-                env_vars={"MCP_SERVER_MODE": "true", "ENABLE_AUTO_HEALING": "true"},
+                capabilities=["workspace_audit",
+                              "self_healing", "code_analysis"],
+                env_vars={"MCP_SERVER_MODE": "true",
+                          "ENABLE_AUTO_HEALING": "true"},
             ),
             MCPServerConfig(
                 name="noxsuite-knowledge",
@@ -140,7 +142,8 @@ class MCPServerLauncher:
                     "rlvr_injection",
                     "docstring_generation",
                 ],
-                env_vars={"MCP_SERVER_MODE": "true", "ANNOTATION_MODE": "enhanced"},
+                env_vars={"MCP_SERVER_MODE": "true",
+                          "ANNOTATION_MODE": "enhanced"},
             ),
             MCPServerConfig(
                 name="noxsuite-installer",
@@ -151,14 +154,17 @@ class MCPServerLauncher:
                     "auto_installation",
                     "error_recovery",
                 ],
-                env_vars={"MCP_SERVER_MODE": "true", "INSTALLER_MODE": "autonomous"},
+                env_vars={"MCP_SERVER_MODE": "true",
+                          "INSTALLER_MODE": "autonomous"},
             ),
             MCPServerConfig(
                 name="noxsuite-cicd",
                 script_path="Scripts & Tools/mcp_cicd_monitor.py",
                 description="CI/CD Continuous Monitor",
-                capabilities=["cicd_monitoring", "drift_detection", "auto_fixing"],
-                env_vars={"MCP_SERVER_MODE": "true", "MONITORING_ENABLED": "true"},
+                capabilities=["cicd_monitoring",
+                              "drift_detection", "auto_fixing"],
+                env_vars={"MCP_SERVER_MODE": "true",
+                          "MONITORING_ENABLED": "true"},
             ),
         ]
 
@@ -168,7 +174,8 @@ class MCPServerLauncher:
 
     def _signal_handler(self, signum, frame):
         """Handle shutdown signals gracefully"""
-        logger.info(f"Received signal {signum}, initiating graceful shutdown...")
+        logger.info(
+            f"Received signal {signum}, initiating graceful shutdown...")
         self.running = False
 
     async def start_server(self, server_name: str) -> bool:
@@ -206,7 +213,8 @@ class MCPServerLauncher:
             # Build command
             script_path = self.workspace_root / server_config.script_path
             if not script_path.exists():
-                raise FileNotFoundError(f"Server script not found: {script_path}")
+                raise FileNotFoundError(
+                    f"Server script not found: {script_path}")
 
             cmd = [sys.executable, str(script_path), "--server-mode"]
 
@@ -321,9 +329,11 @@ class MCPServerLauncher:
                     status.memory_usage = proc.memory_info().rss / 1024 / 1024  # MB
                     status.cpu_usage = proc.cpu_percent()
                 except psutil.NoSuchProcess:
-                    logger.warning(f"Process {server_name} not found in psutil")
+                    logger.warning(
+                        f"Process {server_name} not found in psutil")
                 except Exception as e:
-                    logger.debug(f"Resource monitoring error for {server_name}: {e}")
+                    logger.debug(
+                        f"Resource monitoring error for {server_name}: {e}")
             else:
                 # Basic monitoring without psutil
                 status.memory_usage = 0.0
@@ -347,7 +357,8 @@ class MCPServerLauncher:
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
         success_count = sum(1 for r in results if r is True)
-        logger.info(f"Started {success_count}/{len(self.servers)} servers successfully")
+        logger.info(
+            f"Started {success_count}/{len(self.servers)} servers successfully")
 
     async def stop_all_servers(self):
         """Stop all running MCP servers"""
@@ -409,7 +420,8 @@ class MCPServerLauncher:
 
     def get_status_summary(self) -> Dict[str, Any]:
         """Get comprehensive status summary"""
-        running_count = sum(1 for s in self.status.values() if s.status == "running")
+        running_count = sum(1 for s in self.status.values()
+                            if s.status == "running")
         total_memory = sum(s.memory_usage for s in self.status.values())
         total_cpu = sum(s.cpu_usage for s in self.status.values())
 

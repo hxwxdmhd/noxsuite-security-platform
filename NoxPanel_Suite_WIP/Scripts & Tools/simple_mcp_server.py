@@ -1,3 +1,7 @@
+from datetime import datetime
+import sys
+import logging
+import asyncio
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -15,10 +19,6 @@ REASONING CHAIN:
 4. Validation: Server runs without crashes and responds to signals
 """
 
-import asyncio
-import logging
-import sys
-from datetime import datetime
 
 # Configure logging
 logging.basicConfig(
@@ -43,7 +43,8 @@ class SimpleMCPServer:
             while self.running:
                 await asyncio.sleep(10)  # 10 second heartbeat
                 heartbeat_count += 1
-                logger.info(f"💓 {self.server_name} heartbeat #{heartbeat_count}")
+                logger.info(
+                    f"💓 {self.server_name} heartbeat #{heartbeat_count}")
 
                 # Stop after 6 heartbeats (1 minute) for testing
                 if heartbeat_count >= 6:

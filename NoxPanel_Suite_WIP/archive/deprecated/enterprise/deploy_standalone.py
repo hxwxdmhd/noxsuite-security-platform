@@ -28,9 +28,10 @@ logging.basicConfig(
     ]
 )
 
+
 class StandaloneEnterpriseDeployment:
     """Complete standalone enterprise deployment manager"""
-    
+
     def __init__(self, workspace_path: str = None):
         self.workspace_path = workspace_path or os.getcwd()
         self.deployment_id = f"standalone-{int(time.time())}"
@@ -44,11 +45,11 @@ class StandaloneEnterpriseDeployment:
             'monitoring': 8006
         }
         self.config = self._load_config()
-        
+
     def _load_config(self) -> Dict:
         """Load or create enterprise configuration"""
         config_path = Path(self.workspace_path) / 'enterprise_config.json'
-        
+
         if config_path.exists():
             with open(config_path, 'r') as f:
                 config = json.load(f)
@@ -80,22 +81,23 @@ class StandaloneEnterpriseDeployment:
                     "mode": "standalone"
                 }
             }
-            
+
             with open(config_path, 'w') as f:
                 json.dump(config, f, indent=2)
-                
+
         return config
-    
+
     def initialize_database(self):
         """Initialize SQLite database for multi-tenant architecture"""
         logging.info("Initializing enterprise database...")
-        
-        db_path = Path(self.workspace_path) / self.config.get('database', {}).get('path', 'enterprise_data.db')
-        
+
+        db_path = Path(self.workspace_path) / self.config.get('database',
+                                                              {}).get('path', 'enterprise_data.db')
+
         # Create database and tables
         conn = pymysql.connect(str(db_path))
         cursor = conn.cursor()
-        
+
         # Tenants table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS tenants (
@@ -110,7 +112,7 @@ class StandaloneEnterpriseDeployment:
                 resource_limits TEXT DEFAULT '{"cpu": 1.0, "memory": "512MB", "storage": "1GB"}'
             )
         ''')
-        
+
         # Users table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
@@ -127,7 +129,7 @@ class StandaloneEnterpriseDeployment:
                 UNIQUE(tenant_id, username)
             )
         ''')
-        
+
         # API Keys table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS api_keys (
@@ -144,7 +146,7 @@ class StandaloneEnterpriseDeployment:
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
         ''')
-        
+
         # Resource usage table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS resource_usage (
@@ -156,7 +158,7 @@ class StandaloneEnterpriseDeployment:
                 FOREIGN KEY (tenant_id) REFERENCES tenants (id)
             )
         ''')
-        
+
         # Sessions table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS sessions (
@@ -170,28 +172,28 @@ class StandaloneEnterpriseDeployment:
                 FOREIGN KEY (user_id) REFERENCES users (id)
             )
         ''')
-        
+
         # Create demo tenant
         cursor.execute('''
             INSERT OR IGNORE INTO tenants (name, subdomain, plan, status) 
             VALUES ('Demo Tenant', 'demo', 'enterprise', 'active')
         ''')
-        
+
         # Create demo admin user
         cursor.execute('''
             INSERT OR IGNORE INTO users (tenant_id, username, email, password_hash, role) 
             VALUES (1, 'admin', 'admin@demo.com', 'hashed_password_placeholder', 'admin')
         ''')
-        
+
         conn.commit()
         conn.close()
-        
+
         logging.info("Database initialized successfully")
-    
+
     def create_service_launcher(self, service_name: str, port: int) -> str:
         """Create a service launcher script"""
         launcher_path = Path(self.workspace_path) / f"launch_{service_name}.py"
-        
+
         launcher_content = f'''#!/usr/bin/env python3
 """
 {service_name.title()} Service Launcher
@@ -247,38 +249,39 @@ def main():
 if __name__ == "__main__":
     main()
 '''
-        
+
         with open(launcher_path, 'w') as f:
             f.write(launcher_content)
-            
+
         return str(launcher_path)
-    
+
     def start_service(self, service_name: str, port: int):
         """Start a service in a separate process"""
         launcher_path = self.create_service_launcher(service_name, port)
-        
+
         try:
             # Start the service as a background process
             process = subprocess.Popen([
                 sys.executable, launcher_path
             ], cwd=self.workspace_path)
-            
+
             self.processes.append({
                 'name': service_name,
                 'process': process,
                 'port': port,
                 'started_at': time.time()
             })
-            
-            logging.info(f"Service {service_name.title()} started on port {port} (PID: {process.pid})")
-            
+
+            logging.info(
+                f"Service {service_name.title()} started on port {port} (PID: {process.pid})")
+
         except Exception as e:
             logging.error(f"Failed to start {service_name}: {e}")
-    
+
     def create_monitoring_dashboard(self):
         """Create a simple monitoring dashboard"""
         dashboard_path = Path(self.workspace_path) / "monitoring_dashboard.py"
-        
+
         dashboard_content = '''#!/usr/bin/env python3
 """
 Enterprise Monitoring Dashboard
@@ -424,87 +427,97 @@ def metrics():
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8006, debug=False)
 '''
-        
+
         with open(dashboard_path, 'w') as f:
             f.write(dashboard_content)
-            
+
         logging.info("Monitoring dashboard created")
-    
+
     def deploy(self):
         """Execute complete standalone deployment"""
         logging.info("STARTING STANDALONE ENTERPRISE DEPLOYMENT")
         logging.info("=" * 80)
-        
+
         try:
             # Phase 1: Initialize database
             logging.info("Phase 1: Database Initialization")
             self.initialize_database()
-            
+
             # Phase 2: Create monitoring dashboard
             logging.info("Phase 2: Monitoring Setup")
             self.create_monitoring_dashboard()
-            
+
             # Phase 3: Start core services
             logging.info("Phase 3: Core Services Deployment")
-            
+
             services = [
                 'tenant_manager',
-                'auth_manager', 
+                'auth_manager',
                 'resource_monitor',
                 'api_gateway',
                 'web_interface'
             ]
-            
+
             for service in services:
                 port = self.ports[service]
                 self.start_service(service, port)
                 time.sleep(2)  # Give each service time to start
-            
+
             # Phase 4: Start monitoring
             logging.info("Phase 4: Monitoring Dashboard")
             self.start_service('monitoring', self.ports['monitoring'])
-            
+
             # Phase 5: Health check
             logging.info("Phase 5: Health Check")
             time.sleep(5)  # Wait for services to fully start
-            
+
             # Check process status
             active_services = 0
             for proc_info in self.processes:
                 if proc_info['process'].poll() is None:
                     active_services += 1
-                    logging.info(f"Service {proc_info['name']} running on port {proc_info['port']}")
+                    logging.info(
+                        f"Service {proc_info['name']} running on port {proc_info['port']}")
                 else:
-                    logging.warning(f"Service {proc_info['name']} may have failed to start")
-            
+                    logging.warning(
+                        f"Service {proc_info['name']} may have failed to start")
+
             # Display deployment summary
             logging.info("=" * 80)
             logging.info("STANDALONE DEPLOYMENT COMPLETED!")
             logging.info("=" * 80)
             logging.info(f"Database: enterprise_data.db")
-            logging.info(f"Active Services: {active_services}/{len(services) + 1}")
+            logging.info(
+                f"Active Services: {active_services}/{len(services) + 1}")
             logging.info(f"Deployment ID: {self.deployment_id}")
             logging.info("")
             logging.info("Service Endpoints:")
-            logging.info(f"   • Tenant Manager:    http://localhost:{self.ports['tenant_manager']}")
-            logging.info(f"   • Auth Manager:      http://localhost:{self.ports['auth_manager']}")
-            logging.info(f"   • Resource Monitor:  http://localhost:{self.ports['resource_monitor']}")
-            logging.info(f"   • API Gateway:       http://localhost:{self.ports['api_gateway']}")
-            logging.info(f"   • Web Interface:     http://localhost:{self.ports['web_interface']}")
-            logging.info(f"   • Monitoring:        http://localhost:{self.ports['monitoring']}")
+            logging.info(
+                f"   • Tenant Manager:    http://localhost:{self.ports['tenant_manager']}")
+            logging.info(
+                f"   • Auth Manager:      http://localhost:{self.ports['auth_manager']}")
+            logging.info(
+                f"   • Resource Monitor:  http://localhost:{self.ports['resource_monitor']}")
+            logging.info(
+                f"   • API Gateway:       http://localhost:{self.ports['api_gateway']}")
+            logging.info(
+                f"   • Web Interface:     http://localhost:{self.ports['web_interface']}")
+            logging.info(
+                f"   • Monitoring:        http://localhost:{self.ports['monitoring']}")
             logging.info("")
             logging.info("Management Commands:")
             logging.info("   • View Logs: tail -f enterprise_standalone.log")
             logging.info("   • Stop Services: Use Ctrl+C in terminal")
             logging.info("")
-            logging.info("Multi-tenant enterprise architecture is now running!")
-            
+            logging.info(
+                "Multi-tenant enterprise architecture is now running!")
+
             return True
-            
+
         except Exception as e:
             logging.error(f"Deployment failed: {e}")
             return False
-    
+
     def cleanup(self):
         """Clean up running processes"""
         logging.info("Cleaning up processes...")
@@ -518,21 +531,22 @@ if __name__ == '__main__':
                 except:
                     pass
 
+
 def main():
     """Main deployment function"""
     workspace = Path(__file__).parent
-    
+
     print("Heimnetz Enterprise Standalone Deployment")
     print("=" * 50)
-    
+
     deployment = StandaloneEnterpriseDeployment(str(workspace))
-    
+
     try:
         success = deployment.deploy()
-        
+
         if success:
             print("\nDeployment successful! Press Ctrl+C to stop all services.")
-            
+
             # Keep the main process running
             try:
                 while True:
@@ -544,7 +558,7 @@ def main():
         else:
             print("\nDeployment failed. Check logs for details.")
             return 1
-            
+
     except KeyboardInterrupt:
         print("\nDeployment interrupted by user")
         deployment.cleanup()
@@ -553,8 +567,9 @@ def main():
         print(f"\nUnexpected error: {e}")
         deployment.cleanup()
         return 1
-    
+
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

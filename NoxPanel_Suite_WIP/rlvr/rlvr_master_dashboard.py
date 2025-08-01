@@ -1,3 +1,5 @@
+import json
+import asyncio
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -16,18 +18,16 @@ DASHBOARD CHAIN:
 5. Validation: Real-time compliance tracking with automated remediation
 """
 
-import asyncio
-import json
 
-impo        // Add real-time log updates
+impo // Add real-time log updates
         function addLogEntry(level, message) {{
             const logContainer = document.getElementById('systemLog');
             const timestamp = new Date().toLocaleTimeString();
             const entry = document.createElement('div');
             entry.className = 'log-entry';
             entry.innerHTML = `
-                <span class="log-timestamp">[${{timestamp}}]</span>
-                <span class="log-level-${{level}}"">[${{level.toUpperCase()}}]</span>
+                < span class = "log-timestamp" > [${{timestamp}}] < /span >
+                < span class = "log-level-${{level}}"">[${{level.toUpperCase()}}]</span>
                 ${{message}}
             `;
             logContainer.appendChild(entry);

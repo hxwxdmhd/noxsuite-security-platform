@@ -28,6 +28,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+
 class NetworkScanner:
     """Network device discovery and import"""
 
@@ -129,7 +130,8 @@ class NetworkScanner:
 
             if result.returncode == 0:
                 # Parse ARP output for MAC address
-                match = re.search(r'([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}', result.stdout)
+                match = re.search(
+                    r'([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}', result.stdout)
                 if match:
                     return match.group().replace('-', ':').lower()
         except:

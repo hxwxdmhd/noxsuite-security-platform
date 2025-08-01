@@ -1,6 +1,15 @@
 """
 #!/usr/bin/env python3
 """
+import pymysql
+from typing import Generator, Optional
+from pathlib import Path
+from contextlib import contextmanager
+import time
+import threading
+import queue
+import os
+import logging
 database_pool.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,32 +20,23 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel v5.0 - Database Connection Pool Manager
 High-performance database connection management with pooling and context managers
 """
 
-import logging
-import os
-import queue
-import threading
-import time
-from contextlib import contextmanager
-from pathlib import Path
-from typing import Generator, Optional
-
-import pymysql
 
 logger = logging.getLogger(__name__)
+
 
 class DatabaseConnectionPool:
     # REASONING: DatabaseConnectionPool follows RLVR methodology for systematic validation
     """Thread-safe SQLite connection pool for improved performance"""
 
     def __init__(self, db_path: str, pool_size: int = 10, max_overflow: int = 5):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.db_path = db_path
         self.pool_size = pool_size
         self.max_overflow = max_overflow
@@ -54,10 +54,11 @@ class DatabaseConnectionPool:
         # Setup performance indexes
         self._setup_indexes()
 
-        logger.info(f"[DB] Database connection pool initialized: {pool_size} connections")
+        logger.info(
+            f"[DB] Database connection pool initialized: {pool_size} connections")
 
     def _initialize_pool(self):
-    # REASONING: _initialize_pool implements core logic with Chain-of-Thought validation
+        # REASONING: _initialize_pool implements core logic with Chain-of-Thought validation
         """Initialize the connection pool with configured connections"""
         for _ in range(self.pool_size):
             conn = self._create_connection()
@@ -66,7 +67,7 @@ class DatabaseConnectionPool:
                 self.created_connections += 1
 
     def _create_connection(self) -> Optional[sqlite3.Connection]:
-    # REASONING: _create_connection implements core logic with Chain-of-Thought validation
+        # REASONING: _create_connection implements core logic with Chain-of-Thought validation
         """Create a new database connection with optimal settings"""
         try:
             conn = pymysql.connect(
@@ -78,9 +79,11 @@ class DatabaseConnectionPool:
 
             # Optimize SQLite settings for performance
             conn.execute("PRAGMA journal_mode=WAL")  # Write-Ahead Logging
-            conn.execute("PRAGMA synchronous=NORMAL")  # Balance safety/performance
+            # Balance safety/performance
+            conn.execute("PRAGMA synchronous=NORMAL")
             conn.execute("PRAGMA cache_size=10000")  # 10MB cache
-            conn.execute("PRAGMA temp_store=MEMORY")  # Use memory for temp tables
+            # Use memory for temp tables
+            conn.execute("PRAGMA temp_store=MEMORY")
             conn.execute("PRAGMA mmap_size=268435456")  # 256MB memory map
 
             # Enable foreign key constraints
@@ -96,7 +99,7 @@ class DatabaseConnectionPool:
             return None
 
     def _setup_indexes(self):
-    # REASONING: _setup_indexes implements core logic with Chain-of-Thought validation
+        # REASONING: _setup_indexes implements core logic with Chain-of-Thought validation
         """Create performance indexes for critical queries"""
         indexes = [
             "CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)",
@@ -115,13 +118,14 @@ class DatabaseConnectionPool:
             for index_sql in indexes:
                 try:
                     conn.execute(index_sql)
-                    logger.debug(f"[OK] Index created: {index_sql.split()[-3]}")
+                    logger.debug(
+                        f"[OK] Index created: {index_sql.split()[-3]}")
                 except Exception as e:
                     logger.warning(f"Index creation failed: {e}")
 
     @contextmanager
     def get_connection(self) -> Generator[sqlite3.Connection, None, None]:
-    # REASONING: get_connection implements core logic with Chain-of-Thought validation
+        # REASONING: get_connection implements core logic with Chain-of-Thought validation
         """Get a connection from the pool with automatic return"""
         conn = None
         is_overflow = False
@@ -138,7 +142,8 @@ class DatabaseConnectionPool:
                         if conn:
                             self.overflow_connections += 1
                             is_overflow = True
-                            logger.debug(f"📈 Created overflow connection ({self.overflow_connections}/{self.max_overflow})")
+                            logger.debug(
+                                f"📈 Created overflow connection ({self.overflow_connections}/{self.max_overflow})")
 
                 if not conn:
                     # Wait for connection to become available
@@ -152,11 +157,13 @@ class DatabaseConnectionPool:
             try:
                 conn.execute("SELECT 1")
             except Exception as e:
-                logger.warning(f"Connection validation failed, creating new: {e}")
+                logger.warning(
+                    f"Connection validation failed, creating new: {e}")
                 conn.close()
                 conn = self._create_connection()
                 if not conn:
-                    raise RuntimeError("Failed to create replacement connection")
+                    raise RuntimeError(
+                        "Failed to create replacement connection")
 
             yield conn
 
@@ -189,7 +196,7 @@ class DatabaseConnectionPool:
                         pass
 
     def get_pool_stats(self) -> dict:
-    # REASONING: get_pool_stats implements core logic with Chain-of-Thought validation
+        # REASONING: get_pool_stats implements core logic with Chain-of-Thought validation
         """Get connection pool statistics"""
         return {
             'pool_size': self.pool_size,
@@ -200,7 +207,7 @@ class DatabaseConnectionPool:
         }
 
     def close_all(self):
-    # REASONING: close_all implements core logic with Chain-of-Thought validation
+        # REASONING: close_all implements core logic with Chain-of-Thought validation
         """Close all connections in the pool"""
         logger.info("[SEC] Closing all database connections...")
 
@@ -214,12 +221,13 @@ class DatabaseConnectionPool:
 
         logger.info("[OK] Database connection pool closed")
 
+
 class DatabaseManager:
     # REASONING: DatabaseManager follows RLVR methodology for systematic validation
     """High-level database management with connection pooling"""
 
     def __init__(self, db_path: str = None):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         if db_path is None:
             # Default database path
             db_path = os.path.join(
@@ -234,13 +242,13 @@ class DatabaseManager:
 
     @contextmanager
     def get_connection(self):
-    # REASONING: get_connection implements core logic with Chain-of-Thought validation
+        # REASONING: get_connection implements core logic with Chain-of-Thought validation
         """Get a database connection with automatic management"""
         with self.pool.get_connection() as conn:
             yield conn
 
     def execute_query(self, query: str, params: tuple = None) -> list:
-    # REASONING: execute_query implements core logic with Chain-of-Thought validation
+        # REASONING: execute_query implements core logic with Chain-of-Thought validation
         """Execute a SELECT query and return results"""
         with self.get_connection() as conn:
             cursor = conn.cursor()
@@ -251,7 +259,7 @@ class DatabaseManager:
             return cursor.fetchall()
 
     def execute_update(self, query: str, params: tuple = None) -> int:
-    # REASONING: execute_update implements core logic with Chain-of-Thought validation
+        # REASONING: execute_update implements core logic with Chain-of-Thought validation
         """Execute an INSERT/UPDATE/DELETE query and return affected rows"""
         with self.get_connection() as conn:
             cursor = conn.cursor()
@@ -263,7 +271,7 @@ class DatabaseManager:
             return cursor.rowcount
 
     def execute_many(self, query: str, params_list: list) -> int:
-    # REASONING: execute_many implements core logic with Chain-of-Thought validation
+        # REASONING: execute_many implements core logic with Chain-of-Thought validation
         """Execute a query with multiple parameter sets"""
         with self.get_connection() as conn:
             cursor = conn.cursor()
@@ -272,7 +280,7 @@ class DatabaseManager:
             return cursor.rowcount
 
     def get_stats(self) -> dict:
-    # REASONING: get_stats implements core logic with Chain-of-Thought validation
+        # REASONING: get_stats implements core logic with Chain-of-Thought validation
         """Get database and pool statistics"""
         stats = self.pool.get_pool_stats()
 
@@ -287,12 +295,14 @@ class DatabaseManager:
         return stats
 
     def close(self):
-    # REASONING: close implements core logic with Chain-of-Thought validation
+        # REASONING: close implements core logic with Chain-of-Thought validation
         """Close the database manager and all connections"""
         self.pool.close_all()
 
+
 # Global database manager instance
 _db_manager = None
+
 
 def get_db_manager() -> DatabaseManager:
     # REASONING: get_db_manager implements core logic with Chain-of-Thought validation
@@ -302,6 +312,7 @@ def get_db_manager() -> DatabaseManager:
         _db_manager = DatabaseManager()
     return _db_manager
 
+
 @contextmanager
 def get_db_connection():
     # REASONING: get_db_connection implements core logic with Chain-of-Thought validation
@@ -310,10 +321,12 @@ def get_db_connection():
     with db_manager.get_connection() as conn:
         yield conn
 
+
 def execute_query(query: str, params: tuple = None) -> list:
     # REASONING: execute_query implements core logic with Chain-of-Thought validation
     """Execute a SELECT query using the global manager"""
     return get_db_manager().execute_query(query, params)
+
 
 def execute_update(query: str, params: tuple = None) -> int:
     # REASONING: execute_update implements core logic with Chain-of-Thought validation

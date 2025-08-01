@@ -10,6 +10,7 @@ from flask import jsonify, request
 
 logger = logging.getLogger(__name__)
 
+
 def register_ai_monitor_direct_routes(app):
     """
     RLVR: Implements register_ai_monitor_direct_routes with error handling and validation

@@ -28,9 +28,10 @@ try:
     PLUGIN_FRAMEWORK_AVAILABLE = True
 except ImportError:
     PLUGIN_FRAMEWORK_AVAILABLE = False
-    logging.warning("Plugin Framework v2.0 not available - running in standalone mode")
+    logging.warning(
+        "Plugin Framework v2.0 not available - running in standalone mode")
 
-# Import original SysAdmin Copilot components  
+# Import original SysAdmin Copilot components
 try:
     import psutil
     PSUTIL_AVAILABLE = True
@@ -39,11 +40,14 @@ except ImportError:
     logging.warning("psutil not available - some features may be limited")
 
 # Define minimal required classes if original not available
+
+
 class TaskPriority:
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
+
 
 class TaskStatus:
     PENDING = "pending"
@@ -51,16 +55,19 @@ class TaskStatus:
     COMPLETED = "completed"
     FAILED = "failed"
 
+
 class ScriptType:
     PYTHON = "python"
     POWERSHELL = "powershell"
     BASH = "bash"
+
 
 ORIGINAL_COPILOT_AVAILABLE = False
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class CopilotPlugin:
@@ -72,13 +79,15 @@ class CopilotPlugin:
     version: str = "1.0.0"
     author: str = "NoxPanel Team"
     requires_admin: bool = False
-    supported_platforms: List[str] = field(default_factory=lambda: ["windows", "linux", "macos"])
+    supported_platforms: List[str] = field(
+        default_factory=lambda: ["windows", "linux", "macos"])
     security_level: SecurityLevel = SecurityLevel.MEDIUM
     script_content: str = ""
     script_type: str = "python"
     tags: List[str] = field(default_factory=list)
     execution_time_estimate: str = "1-5 minutes"
     created_at: datetime = field(default_factory=datetime.now)
+
 
 class AdminTaskCategory:
     """Administrative task categories for better organization"""
@@ -91,58 +100,62 @@ class AdminTaskCategory:
     MONITORING_SETUP = "monitoring_setup"
     BACKUP_RECOVERY = "backup_recovery"
 
+
 class SysAdminCopilotV2:
     """Next-generation SysAdmin Copilot with Plugin Framework v2.0 integration"""
-    
+
     def __init__(self, plugin_directory: str = None):
         self.version = "2.0.0"
         self.plugin_directory = Path(plugin_directory or "plugins/sysadmin")
         self.copilot_plugins: Dict[str, CopilotPlugin] = {}
         self.task_history: List[Dict[str, Any]] = []
-        
+
         # Initialize plugin framework if available
         if PLUGIN_FRAMEWORK_AVAILABLE:
-            self.plugin_framework = PluginFrameworkV2(str(self.plugin_directory))
+            self.plugin_framework = PluginFrameworkV2(
+                str(self.plugin_directory))
             logger.info("✅ Plugin Framework v2.0 integrated successfully")
         else:
             self.plugin_framework = None
             logger.warning("⚠️ Plugin Framework v2.0 not available")
-            
+
         # Initialize original copilot if available (disabled for now)
         self.original_copilot = None
         logger.info("ℹ️ SysAdmin Copilot v2.0 running in standalone mode")
-        
+
         # Initialize enhanced components
         self._initialize_enhanced_components()
         self._load_builtin_plugins()
-    
+
     def _initialize_enhanced_components(self):
         """Initialize enhanced SysAdmin components"""
         # Create plugin directory structure
         self.plugin_directory.mkdir(parents=True, exist_ok=True)
-        
+
         # Create subdirectories for different plugin categories
         categories = [
-            "maintenance", "security", "performance", "network", 
+            "maintenance", "security", "performance", "network",
             "monitoring", "backup", "user-mgmt", "service-mgmt"
         ]
-        
+
         for category in categories:
             category_dir = self.plugin_directory / category
             category_dir.mkdir(exist_ok=True)
-        
-        logger.info(f"📁 SysAdmin plugin directories initialized: {self.plugin_directory}")
-    
+
+        logger.info(
+            f"📁 SysAdmin plugin directories initialized: {self.plugin_directory}")
+
     def _load_builtin_plugins(self):
         """Load built-in administrative plugins"""
         builtin_plugins = self._get_builtin_plugins()
-        
+
         for plugin_data in builtin_plugins:
             plugin = CopilotPlugin(**plugin_data)
             self.copilot_plugins[plugin.id] = plugin
-            
-        logger.info(f"🔌 Loaded {len(builtin_plugins)} built-in SysAdmin plugins")
-    
+
+        logger.info(
+            f"🔌 Loaded {len(builtin_plugins)} built-in SysAdmin plugins")
+
     def _get_builtin_plugins(self) -> List[Dict[str, Any]]:
         """Define built-in administrative plugins"""
         return [
@@ -848,7 +861,7 @@ def main(config=None):
 '''
             }
         ]
-    
+
     async def get_system_health_comprehensive(self) -> Dict[str, Any]:
         """Get comprehensive system health using both original and enhanced methods"""
         health_data = {
@@ -856,7 +869,7 @@ def main(config=None):
             "copilot_version": self.version,
             "sources": []
         }
-        
+
         # Try to get health from original copilot
         if self.original_copilot:
             try:
@@ -865,7 +878,7 @@ def main(config=None):
                 health_data["sources"].append("original_copilot")
             except Exception as e:
                 health_data["original_copilot_error"] = str(e)
-        
+
         # Get enhanced health analysis
         try:
             enhanced_health = await self._run_plugin("system_health_analyzer")
@@ -873,23 +886,26 @@ def main(config=None):
             health_data["sources"].append("enhanced_analysis")
         except Exception as e:
             health_data["enhanced_analysis_error"] = str(e)
-        
+
         # Combine and normalize results
         if "original_copilot" in health_data and "enhanced_analysis" in health_data:
             # Combine scores
-            original_score = health_data["original_copilot"].get("overall_score", 50)
-            enhanced_score = health_data["enhanced_analysis"].get("analysis", {}).get("health_score", 50)
-            health_data["combined_score"] = round((original_score + enhanced_score) / 2, 1)
-        
+            original_score = health_data["original_copilot"].get(
+                "overall_score", 50)
+            enhanced_score = health_data["enhanced_analysis"].get(
+                "analysis", {}).get("health_score", 50)
+            health_data["combined_score"] = round(
+                (original_score + enhanced_score) / 2, 1)
+
         return health_data
-    
+
     async def run_administrative_task(self, task_id: str, config: Dict[str, Any] = None) -> Dict[str, Any]:
         """Run an administrative task using plugin system"""
         if task_id not in self.copilot_plugins:
             return {"error": f"Administrative task '{task_id}' not found"}
-        
+
         plugin = self.copilot_plugins[task_id]
-        
+
         # Log task execution
         task_record = {
             "task_id": task_id,
@@ -898,52 +914,52 @@ def main(config=None):
             "config": config or {},
             "user": "system"  # In production, this would be the actual user
         }
-        
+
         try:
             result = await self._run_plugin(task_id, config)
             task_record["completed_at"] = datetime.now().isoformat()
             task_record["success"] = True
             task_record["result"] = result
-            
+
             self.task_history.append(task_record)
-            
+
             return {
                 "success": True,
                 "task_id": task_id,
                 "result": result,
                 "execution_time": (
-                    datetime.fromisoformat(task_record["completed_at"]) - 
+                    datetime.fromisoformat(task_record["completed_at"]) -
                     datetime.fromisoformat(task_record["started_at"])
                 ).total_seconds()
             }
-            
+
         except Exception as e:
             task_record["completed_at"] = datetime.now().isoformat()
             task_record["success"] = False
             task_record["error"] = str(e)
-            
+
             self.task_history.append(task_record)
-            
+
             return {
                 "success": False,
                 "task_id": task_id,
                 "error": str(e)
             }
-    
+
     async def _run_plugin(self, plugin_id: str, config: Dict[str, Any] = None) -> Any:
         """Execute a plugin in the appropriate sandbox"""
         if plugin_id not in self.copilot_plugins:
             raise ValueError(f"Plugin '{plugin_id}' not found")
-        
+
         plugin = self.copilot_plugins[plugin_id]
         config = config or {}
-        
+
         # If plugin framework is available, use sandboxed execution
         if self.plugin_framework:
             # Create temporary plugin file
             plugin_dir = self.plugin_directory / "temp" / plugin_id
             plugin_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Create plugin.json metadata
             plugin_metadata = {
                 "name": plugin.name,
@@ -963,23 +979,23 @@ def main(config=None):
                     }
                 }
             }
-            
+
             with open(plugin_dir / "plugin.json", 'w') as f:
                 json.dump(plugin_metadata, f, indent=2)
-            
+
             # Create main.py with plugin code
             with open(plugin_dir / "main.py", 'w') as f:
                 f.write(plugin.script_content)
-            
+
             # Move to approved directory for loading
             approved_dir = self.plugin_framework.plugin_directory / "approved" / plugin_id
             if approved_dir.exists():
                 import shutil
                 shutil.rmtree(approved_dir)
-            
+
             import shutil
             shutil.move(str(plugin_dir), str(approved_dir))
-            
+
             # Load and execute plugin
             try:
                 discovered = self.plugin_framework.discover_plugins()
@@ -997,35 +1013,37 @@ def main(config=None):
                 if approved_dir.exists():
                     import shutil
                     shutil.rmtree(approved_dir)
-        
+
         else:
             # Fallback: direct execution (less secure)
-            logger.warning("⚠️ Running plugin without sandbox - Plugin Framework v2.0 not available")
-            
+            logger.warning(
+                "⚠️ Running plugin without sandbox - Plugin Framework v2.0 not available")
+
             # Create a temporary module and execute
             import importlib.util
             import tempfile
-            
+
             with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
                 f.write(plugin.script_content)
                 plugin_path = f.name
-            
+
             try:
-                spec = importlib.util.spec_from_file_location(f"temp_plugin_{plugin_id}", plugin_path)
+                spec = importlib.util.spec_from_file_location(
+                    f"temp_plugin_{plugin_id}", plugin_path)
                 plugin_module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(plugin_module)
-                
+
                 if hasattr(plugin_module, 'main'):
                     return plugin_module.main(config)
                 else:
                     raise Exception("Plugin does not have a 'main' function")
             finally:
                 os.unlink(plugin_path)
-    
+
     def list_available_tasks(self, category: str = None) -> List[Dict[str, Any]]:
         """List all available administrative tasks"""
         tasks = []
-        
+
         for plugin_id, plugin in self.copilot_plugins.items():
             if category is None or plugin.category == category:
                 tasks.append({
@@ -1039,13 +1057,13 @@ def main(config=None):
                     "tags": plugin.tags,
                     "estimated_time": plugin.execution_time_estimate
                 })
-        
+
         return sorted(tasks, key=lambda x: (x["category"], x["name"]))
-    
+
     def get_task_categories(self) -> List[Dict[str, Any]]:
         """Get available task categories with counts"""
         categories = {}
-        
+
         for plugin in self.copilot_plugins.values():
             if plugin.category not in categories:
                 categories[plugin.category] = {
@@ -1054,34 +1072,34 @@ def main(config=None):
                     "count": 0,
                     "tasks": []
                 }
-            
+
             categories[plugin.category]["count"] += 1
             categories[plugin.category]["tasks"].append({
                 "id": plugin.id,
                 "name": plugin.name,
                 "requires_admin": plugin.requires_admin
             })
-        
+
         return list(categories.values())
-    
+
     def get_task_history(self, limit: int = 50) -> List[Dict[str, Any]]:
         """Get recent task execution history"""
         return self.task_history[-limit:] if self.task_history else []
-    
+
     async def suggest_maintenance_tasks(self) -> List[Dict[str, Any]]:
         """Get intelligent maintenance task suggestions"""
         suggestions = []
-        
+
         try:
             # Get system health
             health_data = await self.get_system_health_comprehensive()
-            
+
             # Analyze health data for suggestions
             if "enhanced_analysis" in health_data:
                 analysis = health_data["enhanced_analysis"].get("analysis", {})
                 health_score = analysis.get("health_score", 100)
                 recommendations = analysis.get("recommendations", [])
-                
+
                 # Convert health recommendations to task suggestions
                 for recommendation in recommendations:
                     if "disk" in recommendation.lower():
@@ -1098,7 +1116,7 @@ def main(config=None):
                             "reason": recommendation,
                             "estimated_impact": "Improve system responsiveness"
                         })
-            
+
             # Always suggest regular maintenance
             suggestions.extend([
                 {
@@ -1114,12 +1132,12 @@ def main(config=None):
                     "estimated_impact": "Identify security vulnerabilities"
                 }
             ])
-            
+
         except Exception as e:
             logger.error(f"Failed to generate maintenance suggestions: {e}")
-        
+
         return suggestions
-    
+
     async def generate_system_report(self) -> Dict[str, Any]:
         """Generate comprehensive system administration report"""
         report = {
@@ -1127,55 +1145,58 @@ def main(config=None):
             "copilot_version": self.version,
             "report_id": hashlib.md5(f"{datetime.now().isoformat()}".encode()).hexdigest()[:8]
         }
-        
+
         try:
             # System health
             report["system_health"] = await self.get_system_health_comprehensive()
-            
+
             # Available tasks
             report["available_tasks"] = {
                 "total_count": len(self.copilot_plugins),
                 "categories": self.get_task_categories(),
                 "recent_executions": len(self.task_history)
             }
-            
+
             # Maintenance suggestions
             report["maintenance_suggestions"] = await self.suggest_maintenance_tasks()
-            
+
             # Plugin framework status
             report["plugin_framework_status"] = {
                 "available": PLUGIN_FRAMEWORK_AVAILABLE,
                 "integrated": self.plugin_framework is not None,
                 "plugin_count": len(self.plugin_framework.loaded_plugins) if self.plugin_framework else 0
             }
-            
+
             # Task execution statistics
             if self.task_history:
-                successful_tasks = len([t for t in self.task_history if t.get("success", False)])
+                successful_tasks = len(
+                    [t for t in self.task_history if t.get("success", False)])
                 report["execution_statistics"] = {
                     "total_tasks_executed": len(self.task_history),
                     "successful_tasks": successful_tasks,
                     "success_rate_percent": round((successful_tasks / len(self.task_history)) * 100, 1),
                     "most_recent_task": self.task_history[-1]["started_at"]
                 }
-            
+
         except Exception as e:
             report["generation_error"] = str(e)
-        
+
         return report
+
 
 # Global instance for easy access
 sysadmin_copilot_v2 = SysAdminCopilotV2()
 
+
 async def main():
     """Example usage of SysAdmin Copilot v2.0"""
     logging.basicConfig(level=logging.INFO)
-    
+
     copilot = SysAdminCopilotV2()
-    
+
     print("🤖 SysAdmin Copilot v2.0 - Enhanced AI-Powered Administration")
     print("=" * 60)
-    
+
     # List available tasks
     print("\n📋 Available Administrative Tasks:")
     categories = copilot.get_task_categories()
@@ -1184,7 +1205,7 @@ async def main():
         for task in category['tasks'][:2]:  # Show first 2 tasks per category
             admin_req = " [ADMIN]" if task['requires_admin'] else ""
             print(f"    • {task['name']}{admin_req}")
-    
+
     # Run system health analysis
     print("\n🏥 System Health Analysis:")
     health_result = await copilot.get_system_health_comprehensive()
@@ -1193,13 +1214,14 @@ async def main():
         print(f"  Health Score: {analysis['health_score']}/100")
         print(f"  Status: {analysis['status'].title()}")
         print(f"  Recommendations: {len(analysis['recommendations'])}")
-    
+
     # Show maintenance suggestions
     print("\n💡 Maintenance Suggestions:")
     suggestions = await copilot.suggest_maintenance_tasks()
     for i, suggestion in enumerate(suggestions[:3], 1):
-        print(f"  {i}. {suggestion['reason']} (Priority: {suggestion['priority']})")
-    
+        print(
+            f"  {i}. {suggestion['reason']} (Priority: {suggestion['priority']})")
+
     # Example task execution
     print("\n⚡ Running System Health Analyzer...")
     task_result = await copilot.run_administrative_task("system_health_analyzer")

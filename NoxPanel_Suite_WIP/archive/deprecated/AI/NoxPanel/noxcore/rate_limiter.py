@@ -1,6 +1,16 @@
 """
 #!/usr/bin/env python3
 """
+from flask import g, jsonify, request
+from typing import Any, Dict, List, Optional, Tuple
+from functools import wraps
+from dataclasses import dataclass, field
+from collections import defaultdict, deque
+import time
+import threading
+import logging
+import json
+import hashlib
 rate_limiter.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,26 +21,16 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel v5.0 - Rate Limiting System
 Advanced rate limiting with Redis-like memory backend and intelligent throttling
 """
 
-import hashlib
-import json
-import logging
-import threading
-import time
-from collections import defaultdict, deque
-from dataclasses import dataclass, field
-from functools import wraps
-from typing import Any, Dict, List, Optional, Tuple
-
-from flask import g, jsonify, request
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class RateLimitRule:
@@ -45,6 +45,7 @@ class RateLimitRule:
     whitelist_ips: List[str] = field(default_factory=list)
     blacklist_ips: List[str] = field(default_factory=list)
 
+
 @dataclass
 class ClientStats:
     # REASONING: ClientStats follows RLVR methodology for systematic validation
@@ -56,19 +57,20 @@ class ClientStats:
     first_seen: float = field(default_factory=time.time)
     request_history: deque = field(default_factory=lambda: deque(maxlen=1000))
 
+
 class MemoryRateLimitBackend:
     # REASONING: MemoryRateLimitBackend follows RLVR methodology for systematic validation
     """In-memory rate limiting backend with Redis-like operations"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.data: Dict[str, Any] = {}
         # REASONING: Variable assignment with validation criteria
         self.expiry: Dict[str, float] = {}
         self.lock = threading.RLock()
 
     def _cleanup_expired(self):
-    # REASONING: _cleanup_expired implements core logic with Chain-of-Thought validation
+        # REASONING: _cleanup_expired implements core logic with Chain-of-Thought validation
         """Remove expired keys"""
         current_time = time.time()
         expired_keys = [
@@ -81,14 +83,14 @@ class MemoryRateLimitBackend:
             self.expiry.pop(key, None)
 
     def get(self, key: str) -> Optional[Any]:
-    # REASONING: get implements core logic with Chain-of-Thought validation
+        # REASONING: get implements core logic with Chain-of-Thought validation
         """Get value by key"""
         with self.lock:
             self._cleanup_expired()
             return self.data.get(key)
 
     def set(self, key: str, value: Any, ttl_seconds: Optional[int] = None):
-    # REASONING: set implements core logic with Chain-of-Thought validation
+        # REASONING: set implements core logic with Chain-of-Thought validation
         """Set value with optional TTL"""
         with self.lock:
             self.data[key] = value
@@ -97,7 +99,7 @@ class MemoryRateLimitBackend:
                 self.expiry[key] = time.time() + ttl_seconds
 
     def incr(self, key: str, amount: int = 1) -> int:
-    # REASONING: incr implements core logic with Chain-of-Thought validation
+        # REASONING: incr implements core logic with Chain-of-Thought validation
         """Increment counter"""
         with self.lock:
             current = self.data.get(key, 0)
@@ -108,7 +110,7 @@ class MemoryRateLimitBackend:
             return new_value
 
     def zadd(self, key: str, score: float, member: str):
-    # REASONING: zadd implements core logic with Chain-of-Thought validation
+        # REASONING: zadd implements core logic with Chain-of-Thought validation
         """Add to sorted set (simplified)"""
         with self.lock:
             if key not in self.data:
@@ -120,42 +122,43 @@ class MemoryRateLimitBackend:
             # REASONING: Variable assignment with validation criteria
 
     def zremrangebyscore(self, key: str, min_score: float, max_score: float):
-    # REASONING: zremrangebyscore implements core logic with Chain-of-Thought validation
+        # REASONING: zremrangebyscore implements core logic with Chain-of-Thought validation
         """Remove elements by score range"""
         with self.lock:
             if key in self.data:
                 self.data[key] = [
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     (score, member) for score, member in self.data[key]
                     if not (min_score <= score <= max_score)
                 ]
 
     def zcard(self, key: str) -> int:
-    # REASONING: zcard implements core logic with Chain-of-Thought validation
+        # REASONING: zcard implements core logic with Chain-of-Thought validation
         """Get sorted set size"""
         with self.lock:
             return len(self.data.get(key, []))
 
     def delete(self, key: str):
-    # REASONING: delete implements core logic with Chain-of-Thought validation
+        # REASONING: delete implements core logic with Chain-of-Thought validation
         """Delete key"""
         with self.lock:
             self.data.pop(key, None)
             self.expiry.pop(key, None)
 
     def exists(self, key: str) -> bool:
-    # REASONING: exists implements core logic with Chain-of-Thought validation
+        # REASONING: exists implements core logic with Chain-of-Thought validation
         """Check if key exists"""
         with self.lock:
             self._cleanup_expired()
             return key in self.data
+
 
 class AdvancedRateLimiter:
     # REASONING: AdvancedRateLimiter follows RLVR methodology for systematic validation
     """Advanced rate limiter with multiple algorithms"""
 
     def __init__(self, backend: MemoryRateLimitBackend = None):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.backend = backend or MemoryRateLimitBackend()
         self.client_stats: Dict[str, ClientStats] = defaultdict(ClientStats)
         self.rules: Dict[str, RateLimitRule] = {}
@@ -163,12 +166,15 @@ class AdvancedRateLimiter:
 
         # Default rules
         self.rules['default'] = RateLimitRule()
-        self.rules['api'] = RateLimitRule(requests_per_minute=120, requests_per_hour=2000)
-        self.rules['admin'] = RateLimitRule(requests_per_minute=200, requests_per_hour=5000)
-        self.rules['auth'] = RateLimitRule(requests_per_minute=10, requests_per_hour=100, burst_limit=3)
+        self.rules['api'] = RateLimitRule(
+            requests_per_minute=120, requests_per_hour=2000)
+        self.rules['admin'] = RateLimitRule(
+            requests_per_minute=200, requests_per_hour=5000)
+        self.rules['auth'] = RateLimitRule(
+            requests_per_minute=10, requests_per_hour=100, burst_limit=3)
 
     def get_client_identifier(self, request) -> str:
-    # REASONING: get_client_identifier implements core logic with Chain-of-Thought validation
+        # REASONING: get_client_identifier implements core logic with Chain-of-Thought validation
         """Generate unique client identifier"""
         # Use X-Forwarded-For if behind proxy
         if 'X-Forwarded-For' in request.headers:
@@ -184,17 +190,17 @@ class AdvancedRateLimiter:
         return hashlib.sha256(identifier.encode()).hexdigest()[:16]
 
     def is_ip_whitelisted(self, ip: str, rule: RateLimitRule) -> bool:
-    # REASONING: is_ip_whitelisted implements core logic with Chain-of-Thought validation
+        # REASONING: is_ip_whitelisted implements core logic with Chain-of-Thought validation
         """Check if IP is whitelisted"""
         return ip in rule.whitelist_ips
 
     def is_ip_blacklisted(self, ip: str, rule: RateLimitRule) -> bool:
-    # REASONING: is_ip_blacklisted implements core logic with Chain-of-Thought validation
+        # REASONING: is_ip_blacklisted implements core logic with Chain-of-Thought validation
         """Check if IP is blacklisted"""
         return ip in rule.blacklist_ips
 
     def sliding_window_check(self, client_id: str, rule: RateLimitRule) -> Tuple[bool, Dict[str, Any]]:
-    # REASONING: sliding_window_check implements core logic with Chain-of-Thought validation
+        # REASONING: sliding_window_check implements core logic with Chain-of-Thought validation
         """Sliding window rate limiting algorithm"""
         current_time = time.time()
 
@@ -257,14 +263,14 @@ class AdvancedRateLimiter:
         }
 
     def burst_protection_check(self, client_id: str, rule: RateLimitRule) -> Tuple[bool, Dict[str, Any]]:
-    # REASONING: burst_protection_check implements core logic with Chain-of-Thought validation
+        # REASONING: burst_protection_check implements core logic with Chain-of-Thought validation
         """Burst protection using token bucket algorithm"""
         current_time = time.time()
         burst_key = f"burst:{client_id}"
 
         # Get or initialize burst data
         burst_data = self.backend.get(burst_key) or {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             'tokens': rule.burst_limit,
             'last_refill': current_time
         }
@@ -275,15 +281,17 @@ class AdvancedRateLimiter:
         tokens_to_add = int(time_passed / rule.burst_window_seconds)
 
         if tokens_to_add > 0:
-            burst_data['tokens'] = min(rule.burst_limit, burst_data['tokens'] + tokens_to_add)
+            burst_data['tokens'] = min(
+                rule.burst_limit, burst_data['tokens'] + tokens_to_add)
             # REASONING: Variable assignment with validation criteria
             burst_data['last_refill'] = current_time
             # REASONING: Variable assignment with validation criteria
 
         # Check if we have tokens available
         if burst_data['tokens'] <= 0:
-        # REASONING: Variable assignment with validation criteria
-            self.backend.set(burst_key, burst_data, ttl_seconds=rule.burst_window_seconds * 2)
+            # REASONING: Variable assignment with validation criteria
+            self.backend.set(burst_key, burst_data,
+                             ttl_seconds=rule.burst_window_seconds * 2)
             # REASONING: Variable assignment with validation criteria
             return False, {
                 'limit_type': 'burst',
@@ -294,7 +302,8 @@ class AdvancedRateLimiter:
         # Consume token
         burst_data['tokens'] -= 1
         # REASONING: Variable assignment with validation criteria
-        self.backend.set(burst_key, burst_data, ttl_seconds=rule.burst_window_seconds * 2)
+        self.backend.set(burst_key, burst_data,
+                         ttl_seconds=rule.burst_window_seconds * 2)
         # REASONING: Variable assignment with validation criteria
 
         return True, {
@@ -303,7 +312,7 @@ class AdvancedRateLimiter:
         }
 
     def check_rate_limit(self, request, rule_name: str = 'default') -> Tuple[bool, Dict[str, Any]]:
-    # REASONING: check_rate_limit implements core logic with Chain-of-Thought validation
+        # REASONING: check_rate_limit implements core logic with Chain-of-Thought validation
         """Main rate limiting check"""
         rule = self.rules.get(rule_name, self.rules['default'])
 
@@ -343,7 +352,8 @@ class AdvancedRateLimiter:
             }
 
         # Burst protection check
-        burst_allowed, burst_info = self.burst_protection_check(client_id, rule)
+        burst_allowed, burst_info = self.burst_protection_check(
+            client_id, rule)
         if not burst_allowed:
             stats.blocked_requests += 1
             return False, {
@@ -354,7 +364,8 @@ class AdvancedRateLimiter:
             }
 
         # Sliding window check
-        window_allowed, window_info = self.sliding_window_check(client_id, rule)
+        window_allowed, window_info = self.sliding_window_check(
+            client_id, rule)
         if not window_allowed:
             stats.blocked_requests += 1
             return False, {
@@ -374,16 +385,18 @@ class AdvancedRateLimiter:
         }
 
     def get_client_stats(self, client_id: str) -> Optional[ClientStats]:
-    # REASONING: get_client_stats implements core logic with Chain-of-Thought validation
+        # REASONING: get_client_stats implements core logic with Chain-of-Thought validation
         """Get statistics for a client"""
         return self.client_stats.get(client_id)
 
     def get_all_stats(self) -> Dict[str, Any]:
-    # REASONING: get_all_stats implements core logic with Chain-of-Thought validation
+        # REASONING: get_all_stats implements core logic with Chain-of-Thought validation
         """Get overall rate limiting statistics"""
         total_clients = len(self.client_stats)
-        total_requests = sum(stats.total_requests for stats in self.client_stats.values())
-        total_blocked = sum(stats.blocked_requests for stats in self.client_stats.values())
+        total_requests = sum(
+            stats.total_requests for stats in self.client_stats.values())
+        total_blocked = sum(
+            stats.blocked_requests for stats in self.client_stats.values())
 
         return {
             'total_clients': total_clients,
@@ -395,13 +408,13 @@ class AdvancedRateLimiter:
         }
 
     def add_rule(self, name: str, rule: RateLimitRule):
-    # REASONING: add_rule implements core logic with Chain-of-Thought validation
+        # REASONING: add_rule implements core logic with Chain-of-Thought validation
         """Add or update a rate limiting rule"""
         self.rules[name] = rule
         logger.info(f"Rate limit rule added/updated: {name}")
 
     def remove_rule(self, name: str) -> bool:
-    # REASONING: remove_rule implements core logic with Chain-of-Thought validation
+        # REASONING: remove_rule implements core logic with Chain-of-Thought validation
         """Remove a rate limiting rule"""
         if name in self.rules and name != 'default':
             del self.rules[name]
@@ -409,22 +422,24 @@ class AdvancedRateLimiter:
             return True
         return False
 
+
 # Global rate limiter instance
 rate_limiter = AdvancedRateLimiter()
+
 
 def rate_limit(rule_name: str = 'default'):
     # REASONING: rate_limit implements core logic with Chain-of-Thought validation
     """Decorator for rate limiting endpoints"""
     def decorator(f):
-    # REASONING: decorator implements core logic with Chain-of-Thought validation
+        # REASONING: decorator implements core logic with Chain-of-Thought validation
         @wraps(f)
         def decorated_function(*args, **kwargs):
-    # REASONING: decorated_function implements core logic with Chain-of-Thought validation
+            # REASONING: decorated_function implements core logic with Chain-of-Thought validation
             allowed, info = rate_limiter.check_rate_limit(request, rule_name)
 
             if not allowed:
                 response = {
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     'error': 'Rate limit exceeded',
                     'message': f"Too many requests. Limit type: {info.get('reason', 'unknown')}",
                     'retry_after': info.get('reset_time', time.time() + 60) - time.time(),
@@ -447,6 +462,7 @@ def rate_limit(rule_name: str = 'default'):
         return decorated_function
     return decorator
 
+
 def add_rate_limit_headers(response):
     # REASONING: add_rate_limit_headers implements core logic with Chain-of-Thought validation
     """Add rate limit headers to response"""
@@ -454,18 +470,22 @@ def add_rate_limit_headers(response):
         info = g.rate_limit_info
 
         if 'minute_count' in info:
-            response.headers['X-RateLimit-Limit-Minute'] = str(rate_limiter.rules['default'].requests_per_minute)
+            response.headers['X-RateLimit-Limit-Minute'] = str(
+                rate_limiter.rules['default'].requests_per_minute)
             # REASONING: Variable assignment with validation criteria
             response.headers['X-RateLimit-Remaining-Minute'] = str(
-            # REASONING: Variable assignment with validation criteria
-                rate_limiter.rules['default'].requests_per_minute - info['minute_count']
+                # REASONING: Variable assignment with validation criteria
+                rate_limiter.rules['default'].requests_per_minute -
+                info['minute_count']
             )
 
         if 'tokens_remaining' in info:
-            response.headers['X-RateLimit-Burst-Remaining'] = str(info['tokens_remaining'])
+            response.headers['X-RateLimit-Burst-Remaining'] = str(
+                info['tokens_remaining'])
             # REASONING: Variable assignment with validation criteria
 
     return response
+
 
 def get_rate_limiter() -> AdvancedRateLimiter:
     # REASONING: get_rate_limiter implements core logic with Chain-of-Thought validation

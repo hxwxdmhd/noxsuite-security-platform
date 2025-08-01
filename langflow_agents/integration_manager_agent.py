@@ -1,3 +1,13 @@
+import requests
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime
+import uuid
+import time
+import sys
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -9,17 +19,6 @@ Ensures MCP-Langflow API connectivity, manages agent definitions in Langflow,
 and handles VS Code Copilot agent integration and 128 tools limit management.
 """
 
-import json
-import logging
-import os
-import sys
-import time
-import uuid
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-import requests
 
 # Configure logging
 logging.basicConfig(
@@ -62,7 +61,8 @@ class IntegrationManagerAgent:
         self.langflow_components_dir = (
             Path(__file__).parent.parent / "langflow" / "components"
         )
-        self.langflow_flows_dir = Path(__file__).parent.parent / "langflow" / "flows"
+        self.langflow_flows_dir = Path(
+            __file__).parent.parent / "langflow" / "flows"
         os.makedirs(self.langflow_components_dir, exist_ok=True)
         os.makedirs(self.langflow_flows_dir, exist_ok=True)
 
@@ -99,7 +99,8 @@ class IntegrationManagerAgent:
 
         try:
             # Check MCP Server availability
-            mcp_response = self.session.get(f"{self.mcp_server_url}/health", timeout=5)
+            mcp_response = self.session.get(
+                f"{self.mcp_server_url}/health", timeout=5)
             results["mcp_available"] = mcp_response.status_code == 200
 
             # Check Langflow availability
@@ -120,7 +121,8 @@ class IntegrationManagerAgent:
                         mcp_connectivity.status_code == 200
                     )
                 except Exception as e:
-                    results["errors"].append(f"MCP connectivity test failed: {str(e)}")
+                    results["errors"].append(
+                        f"MCP connectivity test failed: {str(e)}")
 
             # Update integration status
             self.integration_status["mcp_langflow_connected"] = (
@@ -183,25 +185,29 @@ class IntegrationManagerAgent:
                 for agent_name, agent_def in agent_definitions.items():
                     # Create custom component for each agent
                     component_file = (
-                        self.langflow_components_dir / f"{agent_name}_component.py"
+                        self.langflow_components_dir /
+                        f"{agent_name}_component.py"
                     )
 
                     # Create component Python file
                     with open(component_file, "w") as f:
                         f.write(
-                            self._generate_agent_component_code(agent_name, agent_def)
+                            self._generate_agent_component_code(
+                                agent_name, agent_def)
                         )
 
                     results["components_created"] += 1
 
                     # Create flow for the agent if specified
                     if agent_def.get("create_flow", False):
-                        flow_file = self.langflow_flows_dir / f"{agent_name}_flow.json"
+                        flow_file = self.langflow_flows_dir / \
+                            f"{agent_name}_flow.json"
 
                         with open(flow_file, "w") as f:
                             f.write(
                                 json.dumps(
-                                    self._generate_agent_flow(agent_name, agent_def),
+                                    self._generate_agent_flow(
+                                        agent_name, agent_def),
                                     indent=2,
                                 )
                             )
@@ -479,9 +485,11 @@ class {agent_name.replace('_', '').title()}Component(CustomComponent):
         """
         try:
             # Create component Python file
-            component_file = self.langflow_components_dir / f"{agent_name}_component.py"
+            component_file = self.langflow_components_dir / \
+                f"{agent_name}_component.py"
             with open(component_file, "w") as f:
-                f.write(self._generate_agent_component_code(agent_name, agent_def))
+                f.write(self._generate_agent_component_code(
+                    agent_name, agent_def))
 
             # Create flow for the agent if specified
             if agent_def.get("create_flow", False):
@@ -530,7 +538,8 @@ class {agent_name.replace('_', '').title()}Component(CustomComponent):
             }
 
             # Check if throttling is needed
-            results["throttling_required"] = stats.get("usage_percentage", 0) > 70
+            results["throttling_required"] = stats.get(
+                "usage_percentage", 0) > 70
 
             if results["throttling_required"]:
                 logger.warning(
@@ -573,7 +582,8 @@ class {agent_name.replace('_', '').title()}Component(CustomComponent):
             self.integration_status["copilot_integration_active"] = True
 
         except ImportError:
-            results["errors"].append("CopilotToolsMonitor module not available")
+            results["errors"].append(
+                "CopilotToolsMonitor module not available")
             logger.error("Failed to import CopilotToolsMonitor")
         except Exception as e:
             error_msg = f"Error during Copilot tools monitoring: {str(e)}"
@@ -758,7 +768,8 @@ class {agent_name.replace('_', '').title()}Component(CustomComponent):
                     self.check_and_fix_issues()
 
                 if run_once:
-                    logger.info("Single integration check completed, exiting loop")
+                    logger.info(
+                        "Single integration check completed, exiting loop")
                     break
 
                 logger.info(

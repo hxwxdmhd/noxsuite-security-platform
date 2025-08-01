@@ -9,6 +9,7 @@ import requests
 
 logger = logging.getLogger(__name__)
 
+
 class OllamaClient:
     """Client for interacting with Ollama local LLM service"""
 

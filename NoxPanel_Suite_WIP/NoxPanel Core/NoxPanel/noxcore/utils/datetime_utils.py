@@ -19,7 +19,7 @@ class DateTimeUtils:
     2. Analysis: Class requires specific implementation patterns for DateTimeUtils functionality
     3. Solution: Implement DateTimeUtils with SOLID principles and enterprise patterns
     4. Validation: Test DateTimeUtils with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Centralized datetime utilities with timezone awareness and comprehensive formatting."""
@@ -30,7 +30,7 @@ class DateTimeUtils:
     DATE_FORMAT = "%Y-%m-%d"
     TIME_FORMAT = "%H:%M:%S"
     FILENAME_FORMAT = "%Y%m%d_%H%M%S"
-    
+
     @staticmethod
     def utc_now() -> datetime:
     """
@@ -39,16 +39,16 @@ class DateTimeUtils:
     2. Analysis: Implementation requires specific logic for utc_now operation
     3. Solution: Implement utc_now with enterprise-grade patterns and error handling
     4. Validation: Test utc_now with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Get current UTC datetime with timezone awareness.
-        
+      """Get current UTC datetime with timezone awareness.
+
         Returns:
             Current UTC datetime
         """
-        return datetime.now(timezone.utc)
-    
+       return datetime.now(timezone.utc)
+
     @staticmethod
     def utc_timestamp() -> float:
     """
@@ -57,16 +57,16 @@ class DateTimeUtils:
     2. Analysis: Implementation requires specific logic for utc_timestamp operation
     3. Solution: Implement utc_timestamp with enterprise-grade patterns and error handling
     4. Validation: Test utc_timestamp with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Get current UTC timestamp.
-        
+      """Get current UTC timestamp.
+
         Returns:
             Current UTC timestamp as float
         """
-        return utc_now().timestamp()
-    
+       return utc_now().timestamp()
+
     @staticmethod
     def from_timestamp(timestamp: Union[int, float], tz: Optional[timezone] = None) -> datetime:
     """
@@ -75,22 +75,22 @@ class DateTimeUtils:
     2. Analysis: Implementation requires specific logic for from_timestamp operation
     3. Solution: Implement from_timestamp with enterprise-grade patterns and error handling
     4. Validation: Test from_timestamp with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Convert timestamp to timezone-aware datetime.
-        
+      """Convert timestamp to timezone-aware datetime.
+
         Args:
             timestamp: Unix timestamp
             tz: Target timezone (defaults to UTC)
-            
+
         Returns:
             Timezone-aware datetime object
         """
-        if tz is None:
+       if tz is None:
             tz = timezone.utc
         return datetime.fromtimestamp(timestamp, tz=tz)
-    
+
     @staticmethod
     def to_timestamp(dt: datetime) -> float:
     """
@@ -102,16 +102,16 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Convert datetime to Unix timestamp.
-        
+      """Convert datetime to Unix timestamp.
+
         Args:
             dt: Datetime object
-            
+
         Returns:
             Unix timestamp as float
         """
-        return dt.timestamp()
-    
+       return dt.timestamp()
+
     @staticmethod
     def format_iso(dt: Optional[datetime] = None) -> str:
     """
@@ -123,25 +123,25 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Format datetime as ISO string with UTC timezone.
-        
+      """Format datetime as ISO string with UTC timezone.
+
         Args:
             dt: Datetime to format (defaults to current UTC time)
-            
+
         Returns:
             ISO formatted datetime string
         """
-        if dt is None:
+       if dt is None:
             dt = DateTimeUtils.utc_now()
-        
+
         # Ensure UTC timezone
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
         elif dt.tzinfo != timezone.utc:
             dt = dt.astimezone(timezone.utc)
-        
+
         return dt.strftime(DateTimeUtils.ISO_FORMAT)
-    
+
     @staticmethod
     def format_display(dt: Optional[datetime] = None) -> str:
     """
@@ -153,25 +153,25 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Format datetime for display purposes.
-        
+      """Format datetime for display purposes.
+
         Args:
             dt: Datetime to format (defaults to current UTC time)
-            
+
         Returns:
             Display-formatted datetime string
         """
-        if dt is None:
+       if dt is None:
             dt = DateTimeUtils.utc_now()
-        
+
         # Ensure UTC timezone
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
         elif dt.tzinfo != timezone.utc:
             dt = dt.astimezone(timezone.utc)
-        
+
         return dt.strftime(DateTimeUtils.DISPLAY_FORMAT)
-    
+
     @staticmethod
     def format_filename(dt: Optional[datetime] = None) -> str:
     """
@@ -183,25 +183,25 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Format datetime for use in filenames.
-        
+      """Format datetime for use in filenames.
+
         Args:
             dt: Datetime to format (defaults to current UTC time)
-            
+
         Returns:
             Filename-safe datetime string
         """
-        if dt is None:
+       if dt is None:
             dt = DateTimeUtils.utc_now()
-        
+
         # Ensure UTC timezone
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
         elif dt.tzinfo != timezone.utc:
             dt = dt.astimezone(timezone.utc)
-        
+
         return dt.strftime(DateTimeUtils.FILENAME_FORMAT)
-    
+
     @staticmethod
     def parse_iso(iso_string: str) -> datetime:
     """
@@ -213,18 +213,18 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Parse ISO datetime string to timezone-aware datetime.
-        
+      """Parse ISO datetime string to timezone-aware datetime.
+
         Args:
             iso_string: ISO formatted datetime string
-            
+
         Returns:
             Timezone-aware datetime object
-            
+
         Raises:
             ValueError: If string format is invalid
         """
-        try:
+       try:
             # Handle various ISO formats
             formats = [
                 "%Y-%m-%dT%H:%M:%S.%fZ",
@@ -234,7 +234,7 @@ class DateTimeUtils:
                 "%Y-%m-%d %H:%M:%S",
                 "%Y-%m-%d"
             ]
-            
+
             for fmt in formats:
                 try:
                     dt = datetime.strptime(iso_string, fmt)
@@ -244,17 +244,18 @@ class DateTimeUtils:
                     return dt
                 except ValueError:
                     continue
-            
+
             # Try fromisoformat as fallback
             dt = datetime.fromisoformat(iso_string.replace('Z', '+00:00'))
             if dt.tzinfo is None:
                 dt = dt.replace(tzinfo=timezone.utc)
             return dt
-            
+
         except Exception as e:
-            logger.error(f"Failed to parse datetime string '{iso_string}': {e}")
+            logger.error(
+                f"Failed to parse datetime string '{iso_string}': {e}")
             raise ValueError(f"Invalid datetime format: {iso_string}")
-    
+
     @staticmethod
     def ensure_timezone_aware(dt: datetime, default_tz: timezone = timezone.utc) -> datetime:
     """
@@ -266,19 +267,19 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Ensure datetime object is timezone-aware.
-        
+      """Ensure datetime object is timezone-aware.
+
         Args:
             dt: Datetime object
             default_tz: Default timezone if none specified
-            
+
         Returns:
             Timezone-aware datetime object
         """
-        if dt.tzinfo is None:
+       if dt.tzinfo is None:
             return dt.replace(tzinfo=default_tz)
         return dt
-    
+
     @staticmethod
     def time_ago(dt: datetime, precision: int = 2) -> str:
     """
@@ -290,19 +291,19 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Get human-readable time difference from now.
-        
+      """Get human-readable time difference from now.
+
         Args:
             dt: Target datetime
             precision: Number of units to show (e.g., "2 hours, 30 minutes")
-            
+
         Returns:
             Human-readable time difference string
         """
-        try:
+       try:
             now = DateTimeUtils.utc_now()
             dt = DateTimeUtils.ensure_timezone_aware(dt)
-            
+
             if dt > now:
                 delta = dt - now
                 prefix = "in "
@@ -311,12 +312,12 @@ class DateTimeUtils:
                 delta = now - dt
                 prefix = ""
                 suffix = " ago"
-            
+
             return prefix + DateTimeUtils._format_timedelta(delta, precision) + suffix
         except Exception as e:
             logger.error(f"Failed to calculate time ago for {dt}: {e}")
             return "unknown time"
-    
+
     @staticmethod
     def _format_timedelta(delta: timedelta, precision: int = 2) -> str:
     """
@@ -328,20 +329,20 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Format timedelta as human-readable string.
-        
+      """Format timedelta as human-readable string.
+
         Args:
             delta: Timedelta object
             precision: Number of units to show
-            
+
         Returns:
             Human-readable timedelta string
         """
-        total_seconds = int(delta.total_seconds())
-        
+       total_seconds = int(delta.total_seconds())
+
         if total_seconds == 0:
             return "just now"
-        
+
         units = [
             ('year', 31536000),
             ('month', 2592000),
@@ -351,31 +352,31 @@ class DateTimeUtils:
             ('minute', 60),
             ('second', 1)
         ]
-        
+
         parts = []
         for unit_name, unit_seconds in units:
             if total_seconds >= unit_seconds:
                 count = total_seconds // unit_seconds
                 total_seconds %= unit_seconds
-                
+
                 if count == 1:
                     parts.append(f"1 {unit_name}")
                 else:
                     parts.append(f"{count} {unit_name}s")
-                
+
                 if len(parts) >= precision:
                     break
-        
+
         if not parts:
             return "less than a second"
-        
+
         if len(parts) == 1:
             return parts[0]
         elif len(parts) == 2:
             return f"{parts[0]} and {parts[1]}"
         else:
             return ", ".join(parts[:-1]) + f", and {parts[-1]}"
-    
+
     @staticmethod
     def is_recent(dt: datetime, threshold_minutes: int = 5) -> bool:
     """
@@ -387,23 +388,23 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Check if datetime is within recent threshold.
-        
+      """Check if datetime is within recent threshold.
+
         Args:
             dt: Datetime to check
             threshold_minutes: Threshold in minutes
-            
+
         Returns:
             True if datetime is recent, False otherwise
         """
-        try:
+       try:
             now = DateTimeUtils.utc_now()
             dt = DateTimeUtils.ensure_timezone_aware(dt)
             delta = now - dt
             return delta.total_seconds() <= (threshold_minutes * 60)
         except Exception:
             return False
-    
+
     @staticmethod
     def business_hours_offset(hours: int = 8) -> datetime:
     """
@@ -415,16 +416,16 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Get datetime for business hours from now.
-        
+      """Get datetime for business hours from now.
+
         Args:
             hours: Business hours to add
-            
+
         Returns:
             Datetime offset by business hours
         """
-        return DateTimeUtils.utc_now() + timedelta(hours=hours)
-    
+       return DateTimeUtils.utc_now() + timedelta(hours=hours)
+
     @staticmethod
     def start_of_day(dt: Optional[datetime] = None) -> datetime:
     """
@@ -436,20 +437,20 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Get start of day (00:00:00) for given datetime.
-        
+      """Get start of day (00:00:00) for given datetime.
+
         Args:
             dt: Target datetime (defaults to current UTC time)
-            
+
         Returns:
             Start of day datetime
         """
-        if dt is None:
+       if dt is None:
             dt = DateTimeUtils.utc_now()
-        
+
         dt = DateTimeUtils.ensure_timezone_aware(dt)
         return dt.replace(hour=0, minute=0, second=0, microsecond=0)
-    
+
     @staticmethod
     def end_of_day(dt: Optional[datetime] = None) -> datetime:
     """
@@ -461,17 +462,17 @@ class DateTimeUtils:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Get end of day (23:59:59.999999) for given datetime.
-        
+      """Get end of day (23:59:59.999999) for given datetime.
+
         Args:
             dt: Target datetime (defaults to current UTC time)
-            
+
         Returns:
             End of day datetime
         """
-        if dt is None:
+       if dt is None:
             dt = DateTimeUtils.utc_now()
-        
+
         dt = DateTimeUtils.ensure_timezone_aware(dt)
         return dt.replace(hour=23, minute=59, second=59, microsecond=999999)
 
@@ -484,7 +485,7 @@ def utc_now() -> datetime:
     2. Analysis: Implementation requires specific logic for utc_now operation
     3. Solution: Implement utc_now with enterprise-grade patterns and error handling
     4. Validation: Test utc_now with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Get current UTC datetime - convenience function."""
@@ -498,7 +499,7 @@ def format_iso(dt: Optional[datetime] = None) -> str:
     2. Analysis: Implementation requires specific logic for format_iso operation
     3. Solution: Implement format_iso with enterprise-grade patterns and error handling
     4. Validation: Test format_iso with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Format datetime as ISO string - convenience function."""
@@ -512,7 +513,7 @@ def parse_iso(iso_string: str) -> datetime:
     2. Analysis: Parser function requires error-tolerant data processing
     3. Solution: Implement parse_iso with enterprise-grade patterns and error handling
     4. Validation: Test parse_iso with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Parse ISO datetime string - convenience function."""
@@ -526,7 +527,7 @@ def time_ago(dt: datetime) -> str:
     2. Analysis: Implementation requires specific logic for time_ago operation
     3. Solution: Implement time_ago with enterprise-grade patterns and error handling
     4. Validation: Test time_ago with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Get human-readable time ago - convenience function."""
@@ -536,8 +537,8 @@ def time_ago(dt: datetime) -> str:
 # Export main utilities
 __all__ = [
     'DateTimeUtils',
-    'utc_now', 
-    'format_iso', 
-    'parse_iso', 
+    'utc_now',
+    'format_iso',
+    'parse_iso',
     'time_ago'
 ]

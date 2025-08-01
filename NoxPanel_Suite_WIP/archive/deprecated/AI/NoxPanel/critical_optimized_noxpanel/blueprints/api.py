@@ -7,6 +7,7 @@ from flask import Blueprint, jsonify, request
 
 api_bp = Blueprint('api', __name__)
 
+
 @api_bp.route('/health')
 def health():
     """
@@ -76,6 +77,7 @@ def health():
         'api_version': '6.0.0'
     })
 
+
 @api_bp.route('/test')
 def test():
     """API test endpoint"""
@@ -84,6 +86,7 @@ def test():
         'message': 'API test successful',
         'optimization_level': 'critical'
     })
+
 
 @api_bp.route('/status')
 def api_status():
@@ -94,6 +97,7 @@ def api_status():
         'optimization': 'implemented'
     })
 
+
 @api_bp.route('/crawler/data')
 def crawler_data():
     """Crawler data endpoint"""
@@ -102,6 +106,7 @@ def crawler_data():
         'crawler': 'optimized',
         'data': []
     })
+
 
 @api_bp.route('/plugins/status')
 def plugins_status():

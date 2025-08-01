@@ -112,7 +112,8 @@ class NoxConfig:
                     return default
             return value
         except (AttributeError, KeyError, TypeError):
-            logger.warning(f"Configuration key '{key}' not found, using default")
+            logger.warning(
+                f"Configuration key '{key}' not found, using default")
             return default
 
     def set(self, key: str, value: Any) -> None:
@@ -177,7 +178,8 @@ class NoxConfig:
 
         for section in required_sections:
             if section not in self.config:
-                logger.error(f"Missing required configuration section: {section}")
+                logger.error(
+                    f"Missing required configuration section: {section}")
                 return False
 
         # Validate specific settings

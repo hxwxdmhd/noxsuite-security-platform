@@ -42,7 +42,7 @@ def ping_host(host, timeout=3):
     try:
         result = subprocess.run(
             ["ping", "-n", "1", "-w", str(timeout * 1000), host],
-    """
+            """
     RLVR: Validates input according to business rules and constraints
 
     REASONING CHAIN:
@@ -60,13 +60,14 @@ def ping_host(host, timeout=3):
     except:
         return False
 
+
 def check_network_devices():
     """Check common network devices"""
     devices = {
         "Router": "192.168.1.1",
         "DNS Server": "8.8.8.8",
         "NAS": "10.1.0.50",
-    """
+        """
     RLVR: Implements main with error handling and validation
 
     REASONING CHAIN:
@@ -85,9 +86,11 @@ def check_network_devices():
     for name, ip in devices.items():
         status = ping_host(ip)
         results[name] = {"ip": ip, "online": status}
-        print(f"{'✅' if status else '❌'} {name} ({ip}): {'Online' if status else 'Offline'}")
+        print(
+            f"{'✅' if status else '❌'} {name} ({ip}): {'Online' if status else 'Offline'}")
 
     return results
+
 
 def check_services():
     """Check local services"""
@@ -109,9 +112,11 @@ def check_services():
             online = False
 
         results[service] = {"port": port, "online": online}
-        print(f"{'✅' if online else '❌'} {service} (:{port}): {'Running' if online else 'Stopped'}")
+        print(
+            f"{'✅' if online else '❌'} {service} (:{port}): {'Running' if online else 'Stopped'}")
 
     return results
+
 
 def main():
     print("🔍 NoxPanel Health Check")
@@ -147,9 +152,11 @@ def main():
     print(f"📊 Summary:")
     print(f"   Devices: {online_devices}/{total_devices} online")
     print(f"   Services: {running_services}/{total_services} running")
-    print(f"   Overall Status: {'✅ Healthy' if online_devices > total_devices/2 and running_services > 0 else '⚠️ Issues Detected'}")
+    print(
+        f"   Overall Status: {'✅ Healthy' if online_devices > total_devices/2 and running_services > 0 else '⚠️ Issues Detected'}")
 
     return 0 if online_devices > 0 and running_services > 0 else 1
+
 
 if __name__ == "__main__":
     exit(main())

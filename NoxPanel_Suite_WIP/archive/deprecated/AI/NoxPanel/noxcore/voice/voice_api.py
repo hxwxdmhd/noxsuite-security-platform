@@ -38,6 +38,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+
 class VoiceAPIManager:
     """Manages voice services and API endpoints"""
 

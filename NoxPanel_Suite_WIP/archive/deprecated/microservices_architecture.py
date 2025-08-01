@@ -157,7 +157,7 @@ class InMemoryServiceRegistry(IServiceRegistry):
 
     COMPLIANCE: STANDARD
     """
-        self.services: Dict[str, ServiceInstance] = {}
+       self.services: Dict[str, ServiceInstance] = {}
         self.services_by_name: Dict[str, List[str]] = {}
         self.lock = asyncio.Lock()
 
@@ -167,7 +167,8 @@ class InMemoryServiceRegistry(IServiceRegistry):
 
             if service.service_name not in self.services_by_name:
                 self.services_by_name[service.service_name] = []
-            self.services_by_name[service.service_name].append(service.service_id)
+            self.services_by_name[service.service_name].append(
+                service.service_id)
 
             return True
 
@@ -178,7 +179,8 @@ class InMemoryServiceRegistry(IServiceRegistry):
                 del self.services[service_id]
 
                 if service.service_name in self.services_by_name:
-                    self.services_by_name[service.service_name].remove(service_id)
+                    self.services_by_name[service.service_name].remove(
+                        service_id)
                     if not self.services_by_name[service.service_name]:
                         del self.services_by_name[service.service_name]
 
@@ -194,7 +196,8 @@ class InMemoryServiceRegistry(IServiceRegistry):
         async with self.lock:
             result = {}
             for service_name, service_ids in self.services_by_name.items():
-                result[service_name] = [self.services[sid] for sid in service_ids if sid in self.services]
+                result[service_name] = [self.services[sid]
+                    for sid in service_ids if sid in self.services]
             return result
 
     async def update_service_health(self, service_id: str, status: ServiceStatus) -> bool:
@@ -318,7 +321,7 @@ class InMemoryServiceRegistry(IServiceRegistry):
     """
     COMPLIANCE: STANDARD
     """
-        async with self.lock:
+       async with self.lock:
             if service_id in self.services:
                 self.services[service_id].status = status
                 self.services[service_id].last_heartbeat = time.time()
@@ -382,11 +385,13 @@ class LoadBalancer:
 
     def select_instance(self, service_name: str, instances: List[ServiceInstance]) -> Optional[ServiceInstance]:
         """Select a service instance based on load balancing strategy"""
-        healthy_instances = [i for i in instances if i.status == ServiceStatus.HEALTHY]
+        healthy_instances = [
+            i for i in instances if i.status == ServiceStatus.HEALTHY]
 
         if not healthy_instances:
             # Fallback to any available instance
-            healthy_instances = [i for i in instances if i.status != ServiceStatus.STOPPED]
+            healthy_instances = [
+                i for i in instances if i.status != ServiceStatus.STOPPED]
 
         if not healthy_instances:
             return None
@@ -435,9 +440,12 @@ class ServiceMesh:
         self.logger = logging.getLogger("service_mesh")
 
         # Metrics
-        self.request_counter = Counter('service_requests_total', 'Total service requests', ['service', 'method', 'status'])
-        self.request_duration = Histogram('service_request_duration_seconds', 'Service request duration', ['service', 'method'])
-        self.circuit_breaker_state = Gauge('circuit_breaker_state', 'Circuit breaker state', ['service'])
+        self.request_counter = Counter('service_requests_total', 'Total service requests', [
+                                       'service', 'method', 'status'])
+        self.request_duration = Histogram(
+            'service_request_duration_seconds', 'Service request duration', ['service', 'method'])
+        self.circuit_breaker_state = Gauge(
+            'circuit_breaker_state', 'Circuit breaker state', ['service'])
 
     """
     RLVR: Implements __init__ with error handling and validation
@@ -451,6 +459,7 @@ class ServiceMesh:
 
     COMPLIANCE: STANDARD
     """
+
     async def initialize(self):
         """Initialize the service mesh"""
         timeout = ClientTimeout(total=30, connect=5)
@@ -473,6 +482,7 @@ class ServiceMesh:
 
     COMPLIANCE: STANDARD
     """
+
     async def call_service(self, request: ServiceRequest) -> ServiceResponse:
         """Make a service call through the mesh"""
         start_time = time.time()
@@ -491,7 +501,8 @@ class ServiceMesh:
                 return response
 
             # Select instance using load balancer
-            selected_instance = self.load_balancer.select_instance(request.service_name, instances)
+            selected_instance = self.load_balancer.select_instance(
+                request.service_name, instances)
             if not selected_instance:
                 response.error = f"No healthy instances for service: {request.service_name}"
                 return response
@@ -571,7 +582,8 @@ class ServiceMesh:
                         if request.circuit_breaker_enabled:
                             circuit_breaker.record_failure()
                     else:
-                        await asyncio.sleep(0.5 * (attempt + 1))  # Exponential backoff
+                        # Exponential backoff
+                        await asyncio.sleep(0.5 * (attempt + 1))
 
                 except Exception as e:
                     if attempt == request.retry_count:
@@ -623,10 +635,12 @@ class APIGateway:
 
         # Service discovery
         self.app.router.add_get('/services', self.list_services)
-        self.app.router.add_get('/services/{service_name}', self.get_service_info)
+        self.app.router.add_get(
+            '/services/{service_name}', self.get_service_info)
 
         # Proxy routes
-        self.app.router.add_route('*', '/api/{service_name}/{path:.*}', self.proxy_request)
+        self.app.router.add_route(
+            '*', '/api/{service_name}/{path:.*}', self.proxy_request)
 
     async def auth_middleware(self, request, handler):
         """Authentication middleware"""
@@ -661,17 +675,19 @@ class APIGateway:
 
     COMPLIANCE: STANDARD
     """
-        """Logging middleware"""
+       """Logging middleware"""
         start_time = time.time()
         request_id = str(uuid.uuid4())
         request['request_id'] = request_id
 
-        self.logger.info(f"Request {request_id}: {request.method} {request.path}")
+        self.logger.info(
+            f"Request {request_id}: {request.method} {request.path}")
 
         try:
             response = await handler(request)
             duration = time.time() - start_time
-            self.logger.info(f"Response {request_id}: {response.status} ({duration:.3f}s)")
+            self.logger.info(
+                f"Response {request_id}: {response.status} ({duration:.3f}s)")
             return response
         except Exception as e:
     """
@@ -686,9 +702,9 @@ class APIGateway:
 
     COMPLIANCE: STANDARD
     """
-            duration = time.time() - start_time
-            self.logger.error(f"Error {request_id}: {str(e)} ({duration:.3f}s)")
-            raise
+       duration = time.time() - start_time
+        self.logger.error(f"Error {request_id}: {str(e)} ({duration:.3f}s)")
+        raise
 
     async def cors_middleware(self, request, handler):
         """CORS middleware"""
@@ -798,7 +814,7 @@ class APIGateway:
 
         if response.error:
             return web.json_response({
-    """
+                """
     RLVR: Retrieves data with filtering and access control
 
     REASONING CHAIN:
@@ -826,8 +842,8 @@ class APIGateway:
 
     COMPLIANCE: STANDARD
     """
-        # Return response
-        if isinstance(response.payload, dict):
+       # Return response
+       if isinstance(response.payload, dict):
             return web.json_response(response.payload, status=response.status_code)
         else:
             return web.Response(text=str(response.payload), status=response.status_code)
@@ -871,7 +887,7 @@ class BaseMicroservice:
 
     COMPLIANCE: STANDARD
     """
-        self.app = web.Application(middlewares=[
+       self.app = web.Application(middlewares=[
             self.logging_middleware,
             self.metrics_middleware
         ])
@@ -883,8 +899,10 @@ class BaseMicroservice:
         self.dependencies_healthy = True
 
         # Metrics
-        self.request_counter = Counter('microservice_requests_total', 'Total requests', ['method', 'endpoint', 'status'])
-        self.response_time = Histogram('microservice_response_time_seconds', 'Response time', ['method', 'endpoint'])
+        self.request_counter = Counter('microservice_requests_total', 'Total requests', [
+                                       'method', 'endpoint', 'status'])
+        self.response_time = Histogram(
+            'microservice_response_time_seconds', 'Response time', ['method', 'endpoint'])
 
         # Setup base routes
         self._setup_base_routes()
@@ -900,16 +918,19 @@ class BaseMicroservice:
         start_time = time.time()
         request_id = str(uuid.uuid4())
 
-        self.logger.info(f"Request {request_id}: {request.method} {request.path}")
+        self.logger.info(
+            f"Request {request_id}: {request.method} {request.path}")
 
         try:
             response = await handler(request)
             duration = time.time() - start_time
-            self.logger.info(f"Response {request_id}: {response.status} ({duration:.3f}s)")
+            self.logger.info(
+                f"Response {request_id}: {response.status} ({duration:.3f}s)")
             return response
         except Exception as e:
             duration = time.time() - start_time
-            self.logger.error(f"Error {request_id}: {str(e)} ({duration:.3f}s)")
+            self.logger.error(
+                f"Error {request_id}: {str(e)} ({duration:.3f}s)")
             raise
 
     async def metrics_middleware(self, request, handler):
@@ -923,14 +944,18 @@ class BaseMicroservice:
             duration = time.time() - start_time
 
             status_label = 'success' if response.status < 400 else 'error'
-            self.request_counter.labels(method=method, endpoint=path, status=status_label).inc()
-            self.response_time.labels(method=method, endpoint=path).observe(duration)
+            self.request_counter.labels(
+                method=method, endpoint=path, status=status_label).inc()
+            self.response_time.labels(
+                method=method, endpoint=path).observe(duration)
 
             return response
         except Exception as e:
             duration = time.time() - start_time
-            self.request_counter.labels(method=method, endpoint=path, status='error').inc()
-            self.response_time.labels(method=method, endpoint=path).observe(duration)
+            self.request_counter.labels(
+                method=method, endpoint=path, status='error').inc()
+            self.response_time.labels(
+                method=method, endpoint=path).observe(duration)
             raise
 
     async def health_check(self, request):
@@ -980,7 +1005,8 @@ class BaseMicroservice:
             port=self.port,
             version=self.version,
             status=self.status,
-            endpoints=[route.resource.canonical for route in self.app.router.routes()],
+            endpoints=[
+                route.resource.canonical for route in self.app.router.routes()],
             metadata={'started_at': time.time()}
         )
 
@@ -1001,7 +1027,8 @@ class BaseMicroservice:
         if self.registry:
             await self.registry.update_service_health(self.service_id, self.status)
 
-        self.logger.info(f"Microservice '{self.service_name}' started on port {self.port}")
+        self.logger.info(
+            f"Microservice '{self.service_name}' started on port {self.port}")
 
     async def stop(self):
         """Stop the microservice"""
@@ -1153,10 +1180,12 @@ if __name__ == "__main__":
                     # Show health status
                     all_services = await registry.get_all_services()
                     healthy_count = sum(
-                        len([i for i in instances if i.status == ServiceStatus.HEALTHY])
+                        len([i for i in instances if i.status ==
+                            ServiceStatus.HEALTHY])
                         for instances in all_services.values()
                     )
-                    total_count = sum(len(instances) for instances in all_services.values())
+                    total_count = sum(len(instances)
+                                      for instances in all_services.values())
 
                     print(f"📊 Services: {healthy_count}/{total_count} healthy")
 

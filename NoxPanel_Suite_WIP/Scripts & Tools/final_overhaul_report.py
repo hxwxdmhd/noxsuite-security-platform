@@ -1,3 +1,8 @@
+from typing import Any, Dict, List
+from pathlib import Path
+from datetime import datetime, timezone
+import sys
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,12 +12,6 @@ logger = get_logger(__name__)
 Final Comprehensive Overhaul Report Generator
 Summarizes all improvements made during the full codebase overhaul
 """
-
-import json
-import sys
-from datetime import datetime, timezone
-from pathlib import Path
-from typing import Any, Dict, List
 
 
 def generate_final_report() -> Dict[str, Any]:
@@ -211,8 +210,10 @@ def main():
         logger.info(
             "\n✨ The Heimnetz/NoxGuard/NoxPanel codebase has been significantly improved!"
         )
-        logger.info("   All critical syntax errors fixed, deprecated patterns updated,")
-        logger.info("   and code quality tools enhanced for ongoing maintenance.")
+        logger.info(
+            "   All critical syntax errors fixed, deprecated patterns updated,")
+        logger.info(
+            "   and code quality tools enhanced for ongoing maintenance.")
 
         return 0
 

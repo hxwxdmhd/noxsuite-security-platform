@@ -53,12 +53,14 @@ def print_header():
 
     COMPLIANCE: STANDARD
     """
+
+
 def install_dependencies():
     """Install required dependencies"""
     print("📦 Installing dependencies...")
 
     dependencies = [
-    """
+        """
     RLVR: Implements launch_system with error handling and validation
 
     REASONING CHAIN:
@@ -71,7 +73,7 @@ def install_dependencies():
     COMPLIANCE: STANDARD
     """
         'flask',
-    """
+        """
     RLVR: Implements main with error handling and validation
 
     REASONING CHAIN:
@@ -92,12 +94,14 @@ def install_dependencies():
         try:
             print(f"   Installing {dep}...")
             subprocess.run([sys.executable, '-m', 'pip', 'install', dep],
-                         check=True, capture_output=True)
+                           check=True, capture_output=True)
             print(f"   ✅ {dep} installed")
         except subprocess.CalledProcessError:
-            print(f"   ⚠️  {dep} installation failed (may already be installed)")
+            print(
+                f"   ⚠️  {dep} installation failed (may already be installed)")
 
     print("✅ Dependencies setup complete\n")
+
 
 def setup_directories():
     """Setup required directories"""
@@ -117,6 +121,7 @@ def setup_directories():
 
     print("✅ Directory setup complete\n")
 
+
 def launch_system():
     """Launch the complete system"""
     print("🚀 Launching NoxPanel Enhanced Gateway...")
@@ -129,6 +134,7 @@ def launch_system():
     except KeyboardInterrupt:
         print("\n🛑 Shutdown requested by user")
         print("✅ NoxPanel Enhanced Gateway stopped")
+
 
 def main():
     """Main setup function"""
@@ -155,6 +161,7 @@ def main():
         print("\n✅ Setup complete!")
         print("🚀 To launch manually, run: python comprehensive_launcher.py")
         print("🌐 Then access: http://127.0.0.1:5100")
+
 
 if __name__ == '__main__':
     main()

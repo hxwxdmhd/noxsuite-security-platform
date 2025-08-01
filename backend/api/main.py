@@ -50,10 +50,13 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 
 # Initialize auth service
-JWT_SECRET = os.environ.get("JWT_SECRET", "your-super-secret-key-change-in-production")
-MFA_ENABLED = os.environ.get("MFA_ENABLED", "True").lower() in ("true", "1", "yes")
+JWT_SECRET = os.environ.get(
+    "JWT_SECRET", "your-super-secret-key-change-in-production")
+MFA_ENABLED = os.environ.get(
+    "MFA_ENABLED", "True").lower() in ("true", "1", "yes")
 TOKEN_EXPIRY = int(os.environ.get("TOKEN_EXPIRY", "3600"))
-REFRESH_TOKEN_EXPIRY = int(os.environ.get("REFRESH_TOKEN_EXPIRY", "604800"))  # 7 days
+REFRESH_TOKEN_EXPIRY = int(os.environ.get(
+    "REFRESH_TOKEN_EXPIRY", "604800"))  # 7 days
 
 auth_service = AuthIntegrationService(
     jwt_secret=JWT_SECRET,

@@ -1,3 +1,15 @@
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime, timedelta
+from dataclasses import dataclass, field
+import time
+import sys
+import subprocess
+import os
+import logging
+import json
+import hashlib
+import asyncio
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -19,18 +31,6 @@ KB_REF: mcp/knowledgebase/deployment.json#cicd_monitor
 ENHANCED: 2025-07-29 - Autonomous CI/CD orchestration
 """
 
-import asyncio
-import hashlib
-import json
-import logging
-import os
-import subprocess
-import sys
-import time
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -150,7 +150,8 @@ class MCPContinuousMonitor:
                 # Check for git changes
                 current_commit = await self._get_current_commit()
                 if current_commit != self.last_commit_hash:
-                    logger.info(f"📝 Detected commit change: {current_commit[:8]}")
+                    logger.info(
+                        f"📝 Detected commit change: {current_commit[:8]}")
 
                     # Run pipeline
                     pipeline_result = await self._run_pipeline()
@@ -181,7 +182,8 @@ class MCPContinuousMonitor:
 
                 # Wait before next cycle (or until next commit)
                 cycle_duration = time.time() - cycle_start
-                sleep_time = max(30 - cycle_duration, 5)  # Min 5s, target 30s cycles
+                # Min 5s, target 30s cycles
+                sleep_time = max(30 - cycle_duration, 5)
                 await asyncio.sleep(sleep_time)
 
         except KeyboardInterrupt:
@@ -229,10 +231,12 @@ class MCPContinuousMonitor:
 
             if step_result.success:
                 pipeline_result["passed_steps"].append(step.name)
-                logger.info(f"✅ {step.name} completed ({step_result.duration:.1f}s)")
+                logger.info(
+                    f"✅ {step.name} completed ({step_result.duration:.1f}s)")
             else:
                 pipeline_result["failed_steps"].append(step.name)
-                logger.error(f"❌ {step.name} failed ({step_result.duration:.1f}s)")
+                logger.error(
+                    f"❌ {step.name} failed ({step_result.duration:.1f}s)")
 
                 # Stop on critical failure
                 if step.critical:
@@ -253,7 +257,8 @@ class MCPContinuousMonitor:
             try:
                 start_time = time.time()
 
-                logger.debug(f"🔧 Executing: {step.name} (attempt {attempt + 1})")
+                logger.debug(
+                    f"🔧 Executing: {step.name} (attempt {attempt + 1})")
 
                 result = subprocess.run(
                     step.command,
@@ -339,7 +344,8 @@ class MCPContinuousMonitor:
             # Clean up docker
             if "no space left" in error.lower():
                 try:
-                    subprocess.run("docker system prune -f", shell=True, timeout=120)
+                    subprocess.run("docker system prune -f",
+                                   shell=True, timeout=120)
                     logger.info("✅ Cleaned up Docker space")
                     return True
                 except:
@@ -408,7 +414,8 @@ class MCPContinuousMonitor:
         # File permission fixes
         if "code_quality" in failed_steps:
             try:
-                subprocess.run("chmod -R 755 .", shell=True, cwd=self.workspace_root)
+                subprocess.run("chmod -R 755 .", shell=True,
+                               cwd=self.workspace_root)
                 fixes_applied.append("file_permissions")
             except:
                 pass

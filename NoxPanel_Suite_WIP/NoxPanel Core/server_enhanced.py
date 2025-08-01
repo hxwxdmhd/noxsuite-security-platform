@@ -64,6 +64,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class DockerNetworkDetector:
     """
     REASONING CHAIN:
@@ -71,27 +72,27 @@ class DockerNetworkDetector:
     2. Analysis: Class requires specific implementation patterns for DockerNetworkDetector functionality
     3. Solution: Implement DockerNetworkDetector with SOLID principles and enterprise patterns
     4. Validation: Test DockerNetworkDetector with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Detects Docker networking environment and Redis availability"""
-    
+
     def __init__(self):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.is_docker = self._detect_docker_environment()
         self.redis_configs = self._get_redis_configs()
         self.best_redis_config = None
-        
+
     def _detect_docker_environment(self) -> bool:
     """
     REASONING CHAIN:
@@ -99,17 +100,18 @@ class DockerNetworkDetector:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _detect_docker_environment with enterprise-grade patterns and error handling
     4. Validation: Test _detect_docker_environment with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Detect if running in Docker container"""
         indicators = [
             os.path.exists('/.dockerenv'),
             os.environ.get('HEIMNETZ_DOCKER') == 'true',
-            os.path.exists('/proc/self/cgroup') and 'docker' in open('/proc/self/cgroup').read()
+            os.path.exists(
+                '/proc/self/cgroup') and 'docker' in open('/proc/self/cgroup').read()
         ]
         return any(indicators)
-    
+
     def _get_redis_configs(self) -> List[Tuple[str, int, Optional[str]]]:
     """
     REASONING CHAIN:
@@ -117,12 +119,12 @@ class DockerNetworkDetector:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _get_redis_configs with enterprise-grade patterns and error handling
     4. Validation: Test _get_redis_configs with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Get possible Redis configurations based on environment"""
         configs = []
-        
+
         if self.is_docker:
             # Docker environment configs
             configs.extend([
@@ -140,9 +142,9 @@ class DockerNetworkDetector:
                 ('localhost', 6380, 'host_redis_password'),
                 ('127.0.0.1', 6380, 'host_redis_password')
             ])
-        
+
         return configs
-    
+
     def find_working_redis(self) -> Optional[Tuple[str, int, Optional[str]]]:
     """
     REASONING CHAIN:
@@ -150,14 +152,14 @@ class DockerNetworkDetector:
     2. Analysis: Implementation requires specific logic for find_working_redis operation
     3. Solution: Implement find_working_redis with enterprise-grade patterns and error handling
     4. Validation: Test find_working_redis with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Find working Redis configuration"""
         if not REDIS_AVAILABLE:
             logger.warning("Redis library not available, using fallback")
             return None
-        
+
         for host, port, password in self.redis_configs:
             try:
                 client = redis.Redis(
@@ -171,13 +173,14 @@ class DockerNetworkDetector:
                 self.best_redis_config = (host, port, password)
                 logger.info(f"✅ Redis connection successful: {host}:{port}")
                 return self.best_redis_config
-                
+
             except Exception as e:
                 logger.debug(f"Redis connection failed {host}:{port}: {e}")
                 continue
-        
+
         logger.warning("❌ No working Redis configuration found")
         return None
+
 
 class EnhancedCacheManager:
     """
@@ -186,21 +189,21 @@ class EnhancedCacheManager:
     2. Analysis: Manager class requires coordinated resource handling and lifecycle management
     3. Solution: Implement EnhancedCacheManager with SOLID principles and enterprise patterns
     4. Validation: Test EnhancedCacheManager with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Enhanced cache manager with Docker network awareness"""
-    
+
     def __init__(self):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.detector = DockerNetworkDetector()
@@ -208,10 +211,10 @@ class EnhancedCacheManager:
         self.memory_cache = {}
         self.cache_timestamps = {}
         self.lock = threading.Lock()
-        
+
         # Try to connect to Redis
         self._initialize_redis()
-    
+
     def _initialize_redis(self):
     """
     REASONING CHAIN:
@@ -219,12 +222,12 @@ class EnhancedCacheManager:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _initialize_redis with enterprise-grade patterns and error handling
     4. Validation: Test _initialize_redis with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Initialize Redis connection"""
         redis_config = self.detector.find_working_redis()
-        
+
         if redis_config and REDIS_AVAILABLE:
             try:
                 host, port, password = redis_config
@@ -239,9 +242,9 @@ class EnhancedCacheManager:
                 return
             except Exception as e:
                 logger.error(f"Redis initialization failed: {e}")
-        
+
         logger.info("📝 Using memory cache (Redis not available)")
-    
+
     def get(self, key: str, default=None):
     """
     REASONING CHAIN:
@@ -249,7 +252,7 @@ class EnhancedCacheManager:
     2. Analysis: Implementation requires specific logic for get operation
     3. Solution: Implement get with enterprise-grade patterns and error handling
     4. Validation: Test get with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Get value from cache"""
@@ -264,7 +267,7 @@ class EnhancedCacheManager:
                 return self._memory_get(key, default)
         else:
             return self._memory_get(key, default)
-    
+
     def set(self, key: str, value, ttl: int = 300):
     """
     REASONING CHAIN:
@@ -272,7 +275,7 @@ class EnhancedCacheManager:
     2. Analysis: Implementation requires specific logic for set operation
     3. Solution: Implement set with enterprise-grade patterns and error handling
     4. Validation: Test set with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Set value in cache"""
@@ -285,7 +288,7 @@ class EnhancedCacheManager:
                 return self._memory_set(key, value, ttl)
         else:
             return self._memory_set(key, value, ttl)
-    
+
     def _memory_get(self, key: str, default):
     """
     REASONING CHAIN:
@@ -293,7 +296,7 @@ class EnhancedCacheManager:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _memory_get with enterprise-grade patterns and error handling
     4. Validation: Test _memory_get with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Get from memory cache"""
@@ -306,7 +309,7 @@ class EnhancedCacheManager:
                     del self.memory_cache[key]
                     del self.cache_timestamps[key]
             return default
-    
+
     def _memory_set(self, key: str, value, ttl: int):
     """
     REASONING CHAIN:
@@ -314,7 +317,7 @@ class EnhancedCacheManager:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _memory_set with enterprise-grade patterns and error handling
     4. Validation: Test _memory_set with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Set in memory cache"""
@@ -323,6 +326,7 @@ class EnhancedCacheManager:
             self.cache_timestamps[key] = time.time()
             return True
 
+
 class EnhancedRateLimiter:
     """
     REASONING CHAIN:
@@ -330,27 +334,27 @@ class EnhancedRateLimiter:
     2. Analysis: Class requires specific implementation patterns for EnhancedRateLimiter functionality
     3. Solution: Implement EnhancedRateLimiter with SOLID principles and enterprise patterns
     4. Validation: Test EnhancedRateLimiter with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Rate limiter with Docker network awareness"""
-    
+
     def __init__(self, cache_manager: EnhancedCacheManager):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.cache_manager = cache_manager
         self.memory_limits = {}
         self.lock = threading.Lock()
-    
+
     def is_allowed(self, key: str, limit: int = 100, window: int = 60) -> bool:
     """
     REASONING CHAIN:
@@ -358,13 +362,13 @@ class EnhancedRateLimiter:
     2. Analysis: Implementation requires specific logic for is_allowed operation
     3. Solution: Implement is_allowed with enterprise-grade patterns and error handling
     4. Validation: Test is_allowed with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Check if request is allowed"""
         current_time = time.time()
         window_start = current_time - window
-        
+
         # Try Redis first
         if self.cache_manager.redis_client:
             try:
@@ -374,16 +378,16 @@ class EnhancedRateLimiter:
                 pipe.zadd(key, {str(current_time): current_time})
                 pipe.expire(key, window)
                 results = pipe.execute()
-                
+
                 current_requests = results[1]
                 return current_requests < limit
-                
+
             except Exception as e:
                 logger.error(f"Redis rate limit error: {e}")
                 return self._memory_rate_limit(key, limit, window, current_time)
         else:
             return self._memory_rate_limit(key, limit, window, current_time)
-    
+
     def _memory_rate_limit(self, key: str, limit: int, window: int, current_time: float) -> bool:
     """
     REASONING CHAIN:
@@ -391,27 +395,28 @@ class EnhancedRateLimiter:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _memory_rate_limit with enterprise-grade patterns and error handling
     4. Validation: Test _memory_rate_limit with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Memory-based rate limiting"""
         with self.lock:
             if key not in self.memory_limits:
                 self.memory_limits[key] = []
-            
+
             # Clean old entries
             window_start = current_time - window
             self.memory_limits[key] = [
                 t for t in self.memory_limits[key] if t > window_start
             ]
-            
+
             # Check limit
             if len(self.memory_limits[key]) >= limit:
                 return False
-            
+
             # Add current request
             self.memory_limits[key].append(current_time)
             return True
+
 
 class EnhancedServer:
     """
@@ -420,49 +425,51 @@ class EnhancedServer:
     2. Analysis: Class requires specific implementation patterns for EnhancedServer functionality
     3. Solution: Implement EnhancedServer with SOLID principles and enterprise patterns
     4. Validation: Test EnhancedServer with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Enhanced server with Docker network awareness"""
-    
+
     def __init__(self):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.app = Flask(__name__)
-        self.app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-        self.app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-change-in-production')
+        self.app.config['SECRET_KEY'] = os.environ.get(
+            'SECRET_KEY', 'dev-secret-key-change-in-production')
+        self.app.config['JWT_SECRET_KEY'] = os.environ.get(
+            'JWT_SECRET_KEY', 'jwt-secret-key-change-in-production')
         self.app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
-        
+
         # Initialize components
         self.detector = DockerNetworkDetector()
         self.cache_manager = EnhancedCacheManager()
         self.rate_limiter = EnhancedRateLimiter(self.cache_manager)
-        
+
         # Initialize Flask extensions
         self.jwt = JWTManager(self.app)
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")
         CORS(self.app)
-        
+
         # Initialize database
         self._init_database()
-        
+
         # Setup routes
         self._setup_routes()
-        
+
         # Start background tasks
         self._start_background_tasks()
-        
+
         logger.info("✅ Enhanced Server initialized successfully")
-    
+
     def _init_database(self):
     """
     REASONING CHAIN:
@@ -470,12 +477,12 @@ class EnhancedServer:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _init_database with enterprise-grade patterns and error handling
     4. Validation: Test _init_database with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Initialize SQLite database"""
         self.db_path = "heimnetz_enhanced.db"
-        
+
         with pymysql.connect(self.db_path) as conn:
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS users (
@@ -485,7 +492,7 @@ class EnhancedServer:
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             ''')
-            
+
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS api_keys (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -496,18 +503,18 @@ class EnhancedServer:
                     FOREIGN KEY (user_id) REFERENCES users (id)
                 )
             ''')
-            
+
             # Create default admin user
             admin_password_hash = generate_password_hash('admin123')
             conn.execute(
                 'INSERT OR IGNORE INTO users (username, password_hash) VALUES (?, ?)',
                 ('admin', admin_password_hash)
             )
-            
+
             conn.commit()
-        
+
         logger.info("✅ Database initialized successfully")
-    
+
     def _setup_routes(self):
     """
     REASONING CHAIN:
@@ -515,11 +522,11 @@ class EnhancedServer:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _setup_routes with enterprise-grade patterns and error handling
     4. Validation: Test _setup_routes with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Setup API routes"""
-        
+
         @self.app.route('/')
         def index():
     """
@@ -528,7 +535,7 @@ class EnhancedServer:
     2. Analysis: Implementation requires specific logic for index operation
     3. Solution: Implement index with enterprise-grade patterns and error handling
     4. Validation: Test index with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
             """Main dashboard"""
@@ -738,14 +745,14 @@ class EnhancedServer:
     </script>
 </body>
 </html>
-            ''', 
+            ''',
             docker_detected=self.detector.is_docker,
             redis_connected=self.cache_manager.redis_client is not None,
             redis_config=f"{self.detector.best_redis_config[0]}:{self.detector.best_redis_config[1]}" if self.detector.best_redis_config else None,
             uptime=self._get_uptime(),
             cache_hits=self.cache_manager.get('cache_hits', 0)
             )
-        
+
         @self.app.route('/api/health')
         def health_check():
     """

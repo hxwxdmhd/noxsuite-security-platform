@@ -454,9 +454,11 @@ async def restore_system_backup(
 
 @router.get("/logs", status_code=status.HTTP_200_OK)
 async def get_system_logs(
-    start_date: Optional[str] = Query(None, description="ISO format start date"),
+    start_date: Optional[str] = Query(
+        None, description="ISO format start date"),
     end_date: Optional[str] = Query(None, description="ISO format end date"),
-    level: Optional[str] = Query(None, description="Log level (info, warning, error)"),
+    level: Optional[str] = Query(
+        None, description="Log level (info, warning, error)"),
     limit: int = Query(100, ge=1, le=1000),
     current_user: Dict[str, Any] = Depends(
         auth_middleware.require_permission(Permission.SYSTEM_LOGS)

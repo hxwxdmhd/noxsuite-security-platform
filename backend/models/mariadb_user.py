@@ -91,8 +91,10 @@ def log_audit_event(db, user_id, action, category, details, request):
             action=action,
             category=category,
             details=details,
-            ip_address=getattr(request.client, "host", None) if request else None,
-            user_agent=request.headers.get("user-agent", "") if request else None,
+            ip_address=getattr(request.client, "host",
+                               None) if request else None,
+            user_agent=request.headers.get(
+                "user-agent", "") if request else None,
             timestamp=datetime.utcnow(),
         )
         db.add(audit_log)

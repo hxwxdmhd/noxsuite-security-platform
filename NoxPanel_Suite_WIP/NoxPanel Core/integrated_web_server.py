@@ -1,3 +1,8 @@
+from flask import Flask, jsonify, render_template_string, send_from_directory
+from pathlib import Path
+import time
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -10,12 +15,6 @@ Simple Flask server that serves the ADHD-friendly frontend
 with AI-enhanced backend integration.
 """
 
-import json
-import os
-import time
-from pathlib import Path
-
-from flask import Flask, jsonify, render_template_string, send_from_directory
 
 app = Flask(__name__)
 

@@ -1,3 +1,7 @@
+from typing import Dict, List, Tuple
+from pathlib import Path
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -8,11 +12,6 @@ Workspace Organization Validation Script
 =========================================
 Validates the new workspace organization and checks for any issues
 """
-
-import json
-import os
-from pathlib import Path
-from typing import Dict, List, Tuple
 
 
 def check_folder_organization() -> Dict[str, List[str]]:
@@ -227,7 +226,8 @@ def main():
     logger.info("✅ Validation Complete!")
 
     # Summary recommendations
-    working_servers = [k for k, v in server_results.items() if v["has_content"]]
+    working_servers = [k for k, v in server_results.items()
+                       if v["has_content"]]
     if working_servers:
         logger.info(f"\n💡 RECOMMENDED SERVER: {working_servers[0]}")
     else:

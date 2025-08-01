@@ -1,3 +1,13 @@
+import docker
+import requests
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime
+import time
+import subprocess
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -9,18 +19,6 @@ Continuously audits the NoxSuite ecosystem, MCP Server orchestration logs,
 Docker networking, and service health.
 """
 
-import json
-import logging
-import os
-import subprocess
-import time
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-import requests
-
-import docker
 
 # Configure logging
 logging.basicConfig(
@@ -56,7 +54,8 @@ class SystemAuditorAgent:
             langflow_url: URL of the Langflow interface
             audit_interval: Time between audits in seconds (default: 5 minutes)
         """
-        self.output_dir = output_dir or str(Path(__file__).parent / "audit_results")
+        self.output_dir = output_dir or str(
+            Path(__file__).parent / "audit_results")
         os.makedirs(self.output_dir, exist_ok=True)
 
         self.mcp_server_url = mcp_server_url
@@ -146,7 +145,8 @@ class SystemAuditorAgent:
                 results["networks"]["details"].append(network_info)
 
             # Check for NoxSuite network
-            nox_network_exists = any(n.name == "noxsuite-network" for n in networks)
+            nox_network_exists = any(
+                n.name == "noxsuite-network" for n in networks)
             results["networks"]["nox_network_exists"] = nox_network_exists
 
             # Audit volumes
@@ -178,7 +178,8 @@ class SystemAuditorAgent:
 
         try:
             # Check MCP Server health
-            health_response = requests.get(f"{self.mcp_server_url}/health", timeout=5)
+            health_response = requests.get(
+                f"{self.mcp_server_url}/health", timeout=5)
             results["health"] = health_response.status_code == 200
 
             if results["health"]:
@@ -231,7 +232,8 @@ class SystemAuditorAgent:
 
         try:
             # Check Langflow health
-            health_response = requests.get(f"{self.langflow_url}/health", timeout=5)
+            health_response = requests.get(
+                f"{self.langflow_url}/health", timeout=5)
             results["health"] = health_response.status_code == 200
 
             if results["health"]:
@@ -252,11 +254,13 @@ class SystemAuditorAgent:
                         )
                 except:
                     # Fallback to checking local files
-                    flows_dir = Path(__file__).parent.parent / "langflow" / "flows"
+                    flows_dir = Path(__file__).parent.parent / \
+                        "langflow" / "flows"
                     if flows_dir.exists():
                         flow_files = list(flows_dir.glob("*.json"))
                         results["flows"]["count"] = len(flow_files)
-                        results["flows"]["names"] = [f.stem for f in flow_files]
+                        results["flows"]["names"] = [
+                            f.stem for f in flow_files]
                     else:
                         results["flows"]["count"] = 0
                         results["flows"]["names"] = []
@@ -280,7 +284,8 @@ class SystemAuditorAgent:
                             f"Failed to retrieve components: {components_response.status_code}"
                         )
                 except Exception as e:
-                    results["errors"].append(f"Failed to process components: {str(e)}")
+                    results["errors"].append(
+                        f"Failed to process components: {str(e)}")
         except requests.RequestException as e:
             error_msg = f"Langflow connection error: {str(e)}"
             logger.error(error_msg)
@@ -332,7 +337,8 @@ class SystemAuditorAgent:
             if hasattr(monitor, "get_usage_trends"):
                 results["tool_usage"]["trends"] = monitor.get_usage_trends()
         except ImportError:
-            results["errors"].append("CopilotToolsMonitor module not available")
+            results["errors"].append(
+                "CopilotToolsMonitor module not available")
         except Exception as e:
             error_msg = f"Error during Copilot tools audit: {str(e)}"
             logger.error(error_msg)
@@ -368,8 +374,10 @@ class SystemAuditorAgent:
                 and "containers" in previous_audit["docker"]
             ):
 
-                prev_running = previous_audit["docker"]["containers"].get("running", 0)
-                curr_running = current_audit["docker"]["containers"].get("running", 0)
+                prev_running = previous_audit["docker"]["containers"].get(
+                    "running", 0)
+                curr_running = current_audit["docker"]["containers"].get(
+                    "running", 0)
 
                 if curr_running < prev_running:
                     regressions["detected"] = True
@@ -466,7 +474,8 @@ class SystemAuditorAgent:
 
                 # Check for missing flows
                 prev_flows = set(
-                    previous_audit["langflow"].get("flows", {}).get("names", [])
+                    previous_audit["langflow"].get(
+                        "flows", {}).get("names", [])
                 )
                 curr_flows = set(
                     current_audit["langflow"].get("flows", {}).get("names", [])
@@ -628,7 +637,8 @@ class SystemAuditorAgent:
         Args:
             run_once: If True, run only one audit and return
         """
-        logger.info(f"Starting {'single' if run_once else 'continuous'} audit process")
+        logger.info(
+            f"Starting {'single' if run_once else 'continuous'} audit process")
 
         try:
             while True:
