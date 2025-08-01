@@ -4,47 +4,20 @@ NoxSuite Enhanced TestSprite Integration Tests
 Real API endpoint and integration testing for 95%+ pass rate
 """
 
-import asyncio
-import json
-import logging
-import subprocess
-import sys
-import time
+            from backend.fastapi.main import app
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+import json
+import sys
 
-import httpx
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-class EnhancedTestSpriteRunner:
-    def __init__(self):
-        self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.test_results = {}
-        self.api_base_url = "http://localhost:8000"
-        self.test_server_process = None
-
-    async def start_test_server(self) -> bool:
-        """Start the FastAPI test server"""
-        try:
-            # Check if server is already running
-            async with httpx.AsyncClient() as client:
-                response = await client.get(f"{self.api_base_url}/health", timeout=2.0)
-                if response.status_code == 200:
-                    logger.info("✅ Test server already running")
-                    return True
-        except:
-            pass
-
-        # Start the server
-        try:
             import uvicorn
+from typing import Any, Dict, List, Optional
+import asyncio
+import httpx
+import logging
+import subprocess
+import time
 
-            from backend.fastapi.main import app
 
             # Run server in background
             server_config = uvicorn.Config(

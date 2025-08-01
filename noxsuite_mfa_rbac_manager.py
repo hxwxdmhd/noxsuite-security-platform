@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 NoxSuite Multi-Factor Authentication & Role-Based Access Control Manager
@@ -767,7 +768,7 @@ def main():
     result = security_manager.create_secure_user(
         username="admin",
         email="admin@noxsuite.com",
-        password="AdminPass123!",
+        password=os.getenv("NOXSUITE_DEFAULT_PASSWORD", "AdminPass123!"),
         role="admin",
         enable_mfa=True,
     )
@@ -788,7 +789,7 @@ def main():
     user_result = security_manager.create_secure_user(
         username="user",
         email="user@noxsuite.com",
-        password="UserPass123!",
+        password=os.getenv("NOXSUITE_DEFAULT_PASSWORD", "AdminPass123!"),
         role="user",
         enable_mfa=False,
     )

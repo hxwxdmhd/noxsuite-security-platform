@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 NoxSuite Development Integration Test
@@ -54,7 +55,7 @@ def test_user_model():
     # Test UserCredentials model
     try:
         credentials = UserCredentials(
-            username="testuser", password="password123")
+            username="testuser", password=os.getenv("NOXSUITE_DEFAULT_PASSWORD", "password123"))
         print(f"UserCredentials model: {credentials.model_dump()}")
         print("✅ UserCredentials model created successfully")
     except Exception as e:

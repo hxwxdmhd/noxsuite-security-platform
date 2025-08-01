@@ -4,14 +4,16 @@ NoxSuite Code + Installer Audit & Repair Agent
 Comprehensive codebase analysis and automated repair system
 """
 
-import json
-import logging
-import os
-import subprocess
-import time
 from datetime import datetime
 from pathlib import Path
+import json
+import os
+
 from typing import Any, Dict, List, Tuple
+import logging
+import subprocess
+import time
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

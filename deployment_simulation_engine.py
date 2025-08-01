@@ -4,217 +4,22 @@ NoxSuite Deployment Simulation Engine
 Comprehensive installation validation and containerization analysis
 """
 
-import asyncio
+from datetime import datetime
+from pathlib import Path
 import json
-import logging
 import os
+import sys
+
+                import shutil
+            import socket
+from typing import Any, Dict, List, Optional, Tuple
+import asyncio
+import logging
 import platform
 import shutil
 import subprocess
-import sys
 import time
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-class DeploymentSimulationEngine:
-    def __init__(self):
-        self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.simulation_dir = Path(f"deployment_simulation_{self.timestamp}")
-        self.logs_dir = self.simulation_dir / "logs"
-        self.reports_dir = self.simulation_dir / "reports"
-        self.docker_configs_dir = self.simulation_dir / "docker_configs"
-
-        # Create directories
-        for directory in [
-            self.simulation_dir,
-            self.logs_dir,
-            self.reports_dir,
-            self.docker_configs_dir,
-        ]:
-            directory.mkdir(parents=True, exist_ok=True)
-
-        self.installation_results = {}
-        self.containerization_analysis = {}
-        self.dependency_audit = {}
-
-    async def run_installation_simulation(self) -> Dict[str, Any]:
-        """Execute NoxSuite installer in controlled simulation"""
-        logger.info("🔧 Starting Installation Simulation")
-        logger.info("=" * 60)
-
-        # Phase 1: Pre-installation environment check
-        env_check = await self._check_installation_environment()
-
-        # Phase 2: Execute installer with logging
-        installer_results = await self._execute_installer_simulation()
-
-        # Phase 3: Post-installation validation
-        validation_results = await self._validate_installation()
-
-        # Phase 4: HTTPS and UI accessibility test
-        ui_test_results = await self._test_ui_accessibility()
-
-        installation_summary = {
-            "timestamp": self.timestamp,
-            "environment_check": env_check,
-            "installer_execution": installer_results,
-            "post_install_validation": validation_results,
-            "ui_accessibility": ui_test_results,
-            "overall_success": (
-                env_check.get("success", False)
-                and installer_results.get("success", False)
-                and validation_results.get("success", False)
-            ),
-        }
-
-        # Save results
-        with open(self.reports_dir / "installation_simulation_report.json", "w") as f:
-            json.dump(installation_summary, f, indent=2)
-
-        return installation_summary
-
-    async def _check_installation_environment(self) -> Dict[str, Any]:
-        """Check system environment for installation requirements"""
-        logger.info("🔍 Checking Installation Environment...")
-
-        env_results = {
-            "python_version": self._check_python_version(),
-            "pip_available": self._check_pip_available(),
-            "docker_available": self._check_docker_available(),
-            "git_available": self._check_git_available(),
-            "disk_space": self._check_disk_space(),
-            "network_connectivity": await self._check_network_connectivity(),
-            "permissions": self._check_permissions(),
-        }
-
-        success_count = sum(
-            1
-            for result in env_results.values()
-            if isinstance(result, dict) and result.get("status") == "OK"
-        )
-        total_checks = len(env_results)
-
-        env_results["summary"] = {
-            "checks_passed": success_count,
-            "total_checks": total_checks,
-            "success_rate": round((success_count / total_checks) * 100, 1),
-            "success": success_count >= total_checks - 1,  # Allow 1 failure
-        }
-
-        for check, result in env_results.items():
-            if check != "summary":
-                status = (
-                    result.get("status", "UNKNOWN")
-                    if isinstance(result, dict)
-                    else "UNKNOWN"
-                )
-                icon = "✅" if status == "OK" else "⚠️" if status == "WARNING" else "❌"
-                logger.info(f"   {icon} {check}: {status}")
-
-        return env_results
-
-    def _check_python_version(self) -> Dict[str, Any]:
-        """Check Python version compatibility"""
-        try:
-            version = sys.version_info
-            version_str = f"{version.major}.{version.minor}.{version.micro}"
-
-            if version.major == 3 and version.minor >= 8:
-                return {"status": "OK", "version": version_str, "compatible": True}
-            else:
-                return {
-                    "status": "ERROR",
-                    "version": version_str,
-                    "compatible": False,
-                    "message": "Python 3.8+ required",
-                }
-        except Exception as e:
-            return {"status": "ERROR", "message": str(e)}
-
-    def _check_pip_available(self) -> Dict[str, Any]:
-        """Check if pip is available"""
-        try:
-            result = subprocess.run(
-                [sys.executable, "-m", "pip", "--version"],
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
-            if result.returncode == 0:
-                return {"status": "OK", "version": result.stdout.strip()}
-            else:
-                return {"status": "ERROR", "message": "pip not available"}
-        except Exception as e:
-            return {"status": "ERROR", "message": str(e)}
-
-    def _check_docker_available(self) -> Dict[str, Any]:
-        """Check if Docker is available"""
-        try:
-            result = subprocess.run(
-                ["docker", "--version"], capture_output=True, text=True, timeout=10
-            )
-            if result.returncode == 0:
-                return {"status": "OK", "version": result.stdout.strip()}
-            else:
-                return {
-                    "status": "WARNING",
-                    "message": "Docker not available (optional)",
-                }
-        except FileNotFoundError:
-            return {"status": "WARNING", "message": "Docker not installed (optional)"}
-        except Exception as e:
-            return {"status": "WARNING", "message": f"Docker check failed: {e}"}
-
-    def _check_git_available(self) -> Dict[str, Any]:
-        """Check if Git is available"""
-        try:
-            result = subprocess.run(
-                ["git", "--version"], capture_output=True, text=True, timeout=10
-            )
-            if result.returncode == 0:
-                return {"status": "OK", "version": result.stdout.strip()}
-            else:
-                return {"status": "WARNING", "message": "Git not available"}
-        except FileNotFoundError:
-            return {"status": "WARNING", "message": "Git not installed"}
-        except Exception as e:
-            return {"status": "WARNING", "message": f"Git check failed: {e}"}
-
-    def _check_disk_space(self) -> Dict[str, Any]:
-        """Check available disk space"""
-        try:
-            if platform.system() == "Windows":
-                import shutil
-
-                total, used, free = shutil.disk_usage(".")
-            else:
-                statvfs = os.statvfs(".")
-                free = statvfs.f_frsize * statvfs.f_bavail
-                total = statvfs.f_frsize * statvfs.f_blocks
-
-            free_gb = free / (1024**3)
-
-            if free_gb >= 2.0:  # 2GB minimum
-                return {"status": "OK", "free_space_gb": round(free_gb, 1)}
-            else:
-                return {
-                    "status": "WARNING",
-                    "free_space_gb": round(free_gb, 1),
-                    "message": "Low disk space",
-                }
-        except Exception as e:
-            return {"status": "ERROR", "message": str(e)}
-
-    async def _check_network_connectivity(self) -> Dict[str, Any]:
-        """Check network connectivity"""
-        try:
-            import socket
 
             # Test connectivity to common services
             test_hosts = [("github.com", 443),

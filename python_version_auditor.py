@@ -5,13 +5,15 @@ Python Version Compatibility Auditor
 Comprehensive cross-version Python compatibility checker and standardizer
 """
 
+from datetime import datetime
+from pathlib import Path
 import json
-import logging
 import os
 import re
 import sys
-from datetime import datetime
-from pathlib import Path
+
+import logging
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

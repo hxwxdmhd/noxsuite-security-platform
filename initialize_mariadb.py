@@ -5,26 +5,14 @@ MariaDB Initializer for NoxSuite
 Creates and initializes MariaDB database with admin and test users
 """
 
-import logging
+from datetime import datetime
 import os
 import sys
-from datetime import datetime
 
-import bcrypt
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Add current directory to Python path
-sys.path.append(os.getcwd())
-
-
-def initialize_database():
-    """Initialize MariaDB database with initial users and roles"""
-    try:
-        # Import models
         from mariadb_dev_setup import Base, MariaDBDevSetup, Role, User, UserRole
+import bcrypt
+import logging
+
 
         # Create DB setup
         setup = MariaDBDevSetup()

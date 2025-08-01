@@ -6,25 +6,16 @@ Provides MariaDB-compatible interface for development when Docker is unavailable
 Uses SQLAlchemy with MariaDB-specific settings but falls back to file-based storage.
 """
 
-import logging
+from datetime import datetime
+from sqlalchemy.orm import relationship, sessionmaker
 import os
 import sys
-from datetime import datetime
 
-import bcrypt
 from sqlalchemy import (
-    JSON,
-    Boolean,
-    Column,
-    DateTime,
-    ForeignKey,
-    Integer,
-    String,
-    Text,
-    create_engine,
-)
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
+import bcrypt
+import logging
+
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)

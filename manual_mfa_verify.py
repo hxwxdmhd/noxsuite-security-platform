@@ -1,8 +1,10 @@
+
 import json
-import time
+import requests
 
 import pyotp
-import requests
+import time
+
 
 # Generate a TOTP code
 mfa_secret = "ABCDEFGHIJKLMNOP"

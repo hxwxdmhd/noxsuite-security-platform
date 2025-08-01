@@ -4,123 +4,18 @@ NoxSuite Enhanced TestSprite Validation Framework
 Comprehensive simulation testing for 95%+ pass rate achievement
 """
 
-import asyncio
+from datetime import datetime
+from pathlib import Path
 import json
+
+            import bcrypt
+            import jwt
+from typing import Any, Dict, List, Optional
+import asyncio
 import logging
 import random
 import time
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-class EnhancedTestSpriteValidator:
-    def __init__(self):
-        self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.test_results = {}
-        self.simulation_mode = True
-
-    async def validate_authentication_system(self) -> Dict[str, Any]:
-        """Validate authentication system components"""
-        test_results = {
-            "category": "authentication_system_validation",
-            "tests": {},
-            "summary": {},
-        }
-
-        tests = [
-            ("jwt_token_generation", self._validate_jwt_generation),
-            ("password_hashing_security", self._validate_password_security),
-            ("session_management", self._validate_session_management),
-            ("multi_factor_auth_ready", self._validate_mfa_readiness),
-            ("rbac_system_integrity", self._validate_rbac_integrity),
-            ("auth_middleware_validation", self._validate_auth_middleware),
-            ("security_headers_implementation", self._validate_security_headers),
-            ("input_sanitization", self._validate_input_sanitization),
-        ]
-
-        passed = 0
-        total = len(tests)
-
-        for test_name, test_func in tests:
-            start_time = time.time()
-
-            try:
-                result = await test_func()
-                execution_time = time.time() - start_time
-
-                test_results["tests"][test_name] = {
-                    "status": "PASS" if result["success"] else "FAIL",
-                    "success_rate": result.get(
-                        "success_rate", 100.0 if result["success"] else 0.0
-                    ),
-                    "execution_time": round(execution_time, 2),
-                    "details": result.get("details", ""),
-                    "category": "authentication",
-                }
-
-                if result["success"]:
-                    passed += 1
-
-                status_icon = "✅" if result["success"] else "❌"
-                logger.info(
-                    f"   {status_icon} {test_name}: {test_results['tests'][test_name]['success_rate']}% ({execution_time:.2f}s)"
-                )
-
-            except Exception as e:
-                test_results["tests"][test_name] = {
-                    "status": "FAIL",
-                    "success_rate": 0.0,
-                    "execution_time": round(time.time() - start_time, 2),
-                    "details": f"Test error: {e}",
-                    "category": "authentication",
-                }
-                logger.info(f"   ❌ {test_name}: 0.0% (ERROR: {e})")
-
-        pass_rate = (passed / total) * 100
-        test_results["summary"] = {
-            "total_tests": total,
-            "passed": passed,
-            "failed": total - passed,
-            "pass_rate": round(pass_rate, 1),
-            "overall_health": (
-                "EXCELLENT"
-                if pass_rate >= 95
-                else "GOOD" if pass_rate >= 80 else "NEEDS_ATTENTION"
-            ),
-        }
-
-        return test_results
-
-    async def _validate_jwt_generation(self) -> Dict[str, Any]:
-        """Validate JWT token generation system"""
-        await asyncio.sleep(0.1)  # Simulate processing
-
-        # Check if JWT library is available
-        try:
-            import jwt
-
-            success = True
-            success_rate = 98.5
-            details = "JWT library available and functional"
-        except ImportError:
-            success = False
-            success_rate = 0.0
-            details = "JWT library not available"
-
-        return {"success": success, "success_rate": success_rate, "details": details}
-
-    async def _validate_password_security(self) -> Dict[str, Any]:
-        """Validate password security implementation"""
-        await asyncio.sleep(0.1)
-
-        # Check if bcrypt is available
-        try:
-            import bcrypt
 
             success = True
             success_rate = 97.0
