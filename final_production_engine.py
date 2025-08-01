@@ -119,7 +119,7 @@ import yaml
                         "container_name": "noxguard-production-grafana",
                         "ports": ["3010:3000"],
                         "environment": [
-                            "GF_SECURITY_ADMIN_PASSWORD=noxguard_prod_2024",
+                            f"GF_SECURITY_ADMIN_PASSWORD={os.getenv('GRAFANA_ADMIN_PASSWORD', 'CHANGE_GRAFANA_PASSWORD')}",
                             "GF_SECURITY_ADMIN_USER=admin",
                         ],
                         "networks": ["noxguard-prod-net"],
