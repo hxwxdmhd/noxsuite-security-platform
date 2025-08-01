@@ -10,32 +10,48 @@ This server includes:
 - Production-ready configuration
 """
 
-import os
-import sys
+import hashlib
 import json
+import logging
+import os
+import secrets
+import sys
+import threading
 import time
 import uuid
-import secrets
-import hashlib
-import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-import pymysql
-import threading
 from contextlib import contextmanager
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
 from functools import wraps
+from typing import Any, Dict, List, Optional
+
+import bleach
+import pymysql
 
 # Flask and extensions
-from flask import Flask, request, jsonify, render_template_string, session, redirect, url_for, g
+from flask import (
+    Flask,
+    g,
+    jsonify,
+    redirect,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
 from flask_cors import CORS
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    get_jwt,
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.serving import make_server
-import bleach
 
 # Production imports with fallbacks
 try:
@@ -52,16 +68,17 @@ except ImportError:
 
 try:
     import prometheus_client
-    from prometheus_client import Counter, Histogram, Gauge, generate_latest
+    from prometheus_client import Counter, Gauge, Histogram, generate_latest
     PROMETHEUS_AVAILABLE = True
 except ImportError:
     PROMETHEUS_AVAILABLE = False
 
 try:
+    import base64
+    from io import BytesIO
+
     import pyotp
     import qrcode
-    from io import BytesIO
-    import base64
     MFA_AVAILABLE = True
 except ImportError:
     MFA_AVAILABLE = False
@@ -79,12 +96,19 @@ logger = logging.getLogger(__name__)
 
 # Production Metrics
 if PROMETHEUS_AVAILABLE:
-    REQUEST_COUNT = Counter('heimnetz_requests_total', 'Total requests', ['method', 'endpoint', 'status'])
-    REQUEST_DURATION = Histogram('heimnetz_request_duration_seconds', 'Request duration')
-    ACTIVE_CONNECTIONS = Gauge('heimnetz_active_connections', 'Active connections')
-    REDIS_OPERATIONS = Counter('heimnetz_redis_operations_total', 'Redis operations', ['operation'])
-    AUTH_ATTEMPTS = Counter('heimnetz_auth_attempts_total', 'Authentication attempts', ['result'])
-    MFA_OPERATIONS = Counter('heimnetz_mfa_operations_total', 'MFA operations', ['operation'])
+    REQUEST_COUNT = Counter('heimnetz_requests_total', 'Total requests', [
+                            'method', 'endpoint', 'status'])
+    REQUEST_DURATION = Histogram(
+        'heimnetz_request_duration_seconds', 'Request duration')
+    ACTIVE_CONNECTIONS = Gauge(
+        'heimnetz_active_connections', 'Active connections')
+    REDIS_OPERATIONS = Counter(
+        'heimnetz_redis_operations_total', 'Redis operations', ['operation'])
+    AUTH_ATTEMPTS = Counter('heimnetz_auth_attempts_total',
+                            'Authentication attempts', ['result'])
+    MFA_OPERATIONS = Counter(
+        'heimnetz_mfa_operations_total', 'MFA operations', ['operation'])
+
 
 @dataclass
 class UserSession:
@@ -94,7 +118,7 @@ class UserSession:
     2. Analysis: Class requires specific implementation patterns for UserSession functionality
     3. Solution: Implement UserSession with SOLID principles and enterprise patterns
     4. Validation: Test UserSession with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """User session information"""
@@ -107,6 +131,7 @@ class UserSession:
     ip_address: str
     user_agent: str
 
+
 @dataclass
 class SecurityEvent:
     """
@@ -115,7 +140,7 @@ class SecurityEvent:
     2. Analysis: Class requires specific implementation patterns for SecurityEvent functionality
     3. Solution: Implement SecurityEvent with SOLID principles and enterprise patterns
     4. Validation: Test SecurityEvent with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Security event logging"""
@@ -127,6 +152,7 @@ class SecurityEvent:
     timestamp: datetime
     details: Dict[str, Any]
 
+
 class ProductionAuthManager:
     """
     REASONING CHAIN:
@@ -134,21 +160,21 @@ class ProductionAuthManager:
     2. Analysis: Manager class requires coordinated resource handling and lifecycle management
     3. Solution: Implement ProductionAuthManager with SOLID principles and enterprise patterns
     4. Validation: Test ProductionAuthManager with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Advanced authentication manager with MFA and RBAC"""
-    
+
     def __init__(self, db_path: str = "production_auth.db"):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.db_path = db_path
@@ -160,7 +186,7 @@ class ProductionAuthManager:
             'viewer': ['read']
         }
         self._init_database()
-        
+
     def _init_database(self):
     """
     REASONING CHAIN:
@@ -168,7 +194,7 @@ class ProductionAuthManager:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _init_database with enterprise-grade patterns and error handling
     4. Validation: Test _init_database with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Initialize authentication database"""
@@ -190,7 +216,7 @@ class ProductionAuthManager:
                     is_active BOOLEAN DEFAULT TRUE
                 )
             ''')
-            
+
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS security_events (
                     id TEXT PRIMARY KEY,
@@ -202,7 +228,7 @@ class ProductionAuthManager:
                     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             ''')
-            
+
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS api_keys (
                     id TEXT PRIMARY KEY,
@@ -217,7 +243,7 @@ class ProductionAuthManager:
                     FOREIGN KEY (user_id) REFERENCES users (id)
                 )
             ''')
-            
+
             # Create default admin user
             admin_id = str(uuid.uuid4())
             admin_password = generate_password_hash('admin123')
@@ -225,11 +251,12 @@ class ProductionAuthManager:
                 INSERT OR IGNORE INTO users (id, username, email, password_hash, role)
                 VALUES (?, ?, ?, ?, ?)
             ''', (admin_id, 'admin', 'admin@heimnetz.local', admin_password, 'admin'))
-            
+
             conn.commit()
-        
-        logger.info("Production authentication database initialized successfully")
-    
+
+        logger.info(
+            "Production authentication database initialized successfully")
+
     def authenticate_user(self, username: str, password: str, ip_address: str, user_agent: str) -> Optional[Dict]:
     """
     REASONING CHAIN:
@@ -237,48 +264,50 @@ class ProductionAuthManager:
     2. Analysis: Implementation requires specific logic for authenticate_user operation
     3. Solution: Implement authenticate_user with enterprise-grade patterns and error handling
     4. Validation: Test authenticate_user with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Authenticate user with advanced security"""
         with pymysql.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
-            
+
             user = conn.execute(
                 'SELECT * FROM users WHERE username = ? AND is_active = 1',
                 (username,)
             ).fetchone()
-            
+
             if not user:
-                self._log_security_event('LOGIN_FAILED', None, ip_address, user_agent, {'reason': 'user_not_found'})
+                self._log_security_event('LOGIN_FAILED', None, ip_address, user_agent, {
+                                         'reason': 'user_not_found'})
                 if PROMETHEUS_AVAILABLE:
                     AUTH_ATTEMPTS.labels(result='failed').inc()
                 return None
-            
+
             # Check if account is locked
             if user['locked_until'] and datetime.fromisoformat(user['locked_until']) > datetime.now():
-                self._log_security_event('LOGIN_BLOCKED', user['id'], ip_address, user_agent, {'reason': 'account_locked'})
+                self._log_security_event('LOGIN_BLOCKED', user['id'], ip_address, user_agent, {
+                                         'reason': 'account_locked'})
                 if PROMETHEUS_AVAILABLE:
                     AUTH_ATTEMPTS.labels(result='blocked').inc()
                 return None
-            
+
             # Verify password
             if not check_password_hash(user['password_hash'], password):
                 # Increment failed attempts
                 failed_attempts = user['failed_login_attempts'] + 1
                 locked_until = None
-                
+
                 if failed_attempts >= 5:
                     locked_until = datetime.now() + timedelta(minutes=15)
-                
+
                 conn.execute('''
-                    UPDATE users 
+                    UPDATE users
                     SET failed_login_attempts = ?, locked_until = ?
                     WHERE id = ?
                 ''', (failed_attempts, locked_until, user['id']))
-                
+
                 conn.commit()
-                
+
                 self._log_security_event('LOGIN_FAILED', user['id'], ip_address, user_agent, {
                     'reason': 'invalid_password',
                     'failed_attempts': failed_attempts
@@ -286,19 +315,20 @@ class ProductionAuthManager:
                 if PROMETHEUS_AVAILABLE:
                     AUTH_ATTEMPTS.labels(result='failed').inc()
                 return None
-            
+
             # Reset failed attempts on successful login
             conn.execute('''
-                UPDATE users 
+                UPDATE users
                 SET failed_login_attempts = 0, locked_until = NULL, last_login = CURRENT_TIMESTAMP
                 WHERE id = ?
             ''', (user['id'],))
             conn.commit()
-            
-            self._log_security_event('LOGIN_SUCCESS', user['id'], ip_address, user_agent, {})
+
+            self._log_security_event(
+                'LOGIN_SUCCESS', user['id'], ip_address, user_agent, {})
             if PROMETHEUS_AVAILABLE:
                 AUTH_ATTEMPTS.labels(result='success').inc()
-            
+
             return {
                 'id': user['id'],
                 'username': user['username'],
@@ -306,7 +336,7 @@ class ProductionAuthManager:
                 'role': user['role'],
                 'mfa_enabled': bool(user['mfa_enabled'])
             }
-    
+
     def enable_mfa(self, user_id: str) -> Dict:
     """
     REASONING CHAIN:
@@ -314,24 +344,24 @@ class ProductionAuthManager:
     2. Analysis: Implementation requires specific logic for enable_mfa operation
     3. Solution: Implement enable_mfa with enterprise-grade patterns and error handling
     4. Validation: Test enable_mfa with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Enable MFA for user"""
         if not MFA_AVAILABLE:
             raise ValueError("MFA not available - pyotp not installed")
-        
+
         secret = pyotp.random_base32()
         backup_codes = [secrets.token_hex(4) for _ in range(8)]
-        
+
         with pymysql.connect(self.db_path) as conn:
             conn.execute('''
-                UPDATE users 
+                UPDATE users
                 SET mfa_enabled = 1, mfa_secret = ?, backup_codes = ?
                 WHERE id = ?
             ''', (secret, json.dumps(backup_codes), user_id))
             conn.commit()
-        
+
         # Generate QR code
         user = self.get_user(user_id)
         totp = pyotp.TOTP(secret)
@@ -339,16 +369,16 @@ class ProductionAuthManager:
             name=user['username'],
             issuer_name="Ultimate Suite v11.0"
         )
-        
+
         if PROMETHEUS_AVAILABLE:
             MFA_OPERATIONS.labels(operation='enable').inc()
-        
+
         return {
             'secret': secret,
             'backup_codes': backup_codes,
             'qr_url': qr_url
         }
-    
+
     def verify_mfa(self, user_id: str, token: str) -> bool:
     """
     REASONING CHAIN:
@@ -356,30 +386,30 @@ class ProductionAuthManager:
     2. Analysis: Implementation requires specific logic for verify_mfa operation
     3. Solution: Implement verify_mfa with enterprise-grade patterns and error handling
     4. Validation: Test verify_mfa with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Verify MFA token"""
         if not MFA_AVAILABLE:
             return False
-        
+
         with pymysql.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             user = conn.execute(
                 'SELECT mfa_secret, backup_codes FROM users WHERE id = ?',
                 (user_id,)
             ).fetchone()
-            
+
             if not user or not user['mfa_secret']:
                 return False
-            
+
             # Verify TOTP
             totp = pyotp.TOTP(user['mfa_secret'])
             if totp.verify(token, valid_window=2):
                 if PROMETHEUS_AVAILABLE:
                     MFA_OPERATIONS.labels(operation='verify_success').inc()
                 return True
-            
+
             # Check backup codes
             if user['backup_codes']:
                 backup_codes = json.loads(user['backup_codes'])
@@ -390,15 +420,16 @@ class ProductionAuthManager:
                         UPDATE users SET backup_codes = ? WHERE id = ?
                     ''', (json.dumps(backup_codes), user_id))
                     conn.commit()
-                    
+
                     if PROMETHEUS_AVAILABLE:
-                        MFA_OPERATIONS.labels(operation='backup_code_used').inc()
+                        MFA_OPERATIONS.labels(
+                            operation='backup_code_used').inc()
                     return True
-            
+
             if PROMETHEUS_AVAILABLE:
                 MFA_OPERATIONS.labels(operation='verify_failed').inc()
             return False
-    
+
     def check_permission(self, user_role: str, action: str) -> bool:
     """
     REASONING CHAIN:
@@ -406,12 +437,12 @@ class ProductionAuthManager:
     2. Analysis: Implementation requires specific logic for check_permission operation
     3. Solution: Implement check_permission with enterprise-grade patterns and error handling
     4. Validation: Test check_permission with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Check if user role has permission for action"""
         return action in self.roles.get(user_role, [])
-    
+
     def create_session(self, user_id: str, username: str, role: str, ip_address: str, user_agent: str) -> str:
     """
     REASONING CHAIN:
@@ -419,7 +450,7 @@ class ProductionAuthManager:
     2. Analysis: Implementation requires specific logic for create_session operation
     3. Solution: Implement create_session with enterprise-grade patterns and error handling
     4. Validation: Test create_session with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Create user session"""
@@ -436,7 +467,7 @@ class ProductionAuthManager:
         )
         self.sessions[session_id] = session
         return session_id
-    
+
     def get_session(self, session_id: str) -> Optional[UserSession]:
     """
     REASONING CHAIN:
@@ -444,7 +475,7 @@ class ProductionAuthManager:
     2. Analysis: Getter method requires consistent data access and error handling
     3. Solution: Implement get_session with enterprise-grade patterns and error handling
     4. Validation: Test get_session with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Get user session"""
@@ -454,7 +485,7 @@ class ProductionAuthManager:
             session.last_activity = datetime.now()
             return session
         return None
-    
+
     def get_user(self, user_id: str) -> Optional[Dict]:
     """
     REASONING CHAIN:
@@ -462,7 +493,7 @@ class ProductionAuthManager:
     2. Analysis: Getter method requires consistent data access and error handling
     3. Solution: Implement get_user with enterprise-grade patterns and error handling
     4. Validation: Test get_user with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Get user information"""
@@ -472,11 +503,11 @@ class ProductionAuthManager:
                 'SELECT id, username, email, role, mfa_enabled, created_at, last_login FROM users WHERE id = ?',
                 (user_id,)
             ).fetchone()
-            
+
             if user:
                 return dict(user)
             return None
-    
+
     def _log_security_event(self, event_type: str, user_id: Optional[str], ip_address: str, user_agent: str, details: Dict):
     """
     REASONING CHAIN:
@@ -484,7 +515,7 @@ class ProductionAuthManager:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _log_security_event with enterprise-grade patterns and error handling
     4. Validation: Test _log_security_event with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Log security event"""
@@ -498,7 +529,7 @@ class ProductionAuthManager:
             details=details
         )
         self.security_events.append(event)
-        
+
         # Store in database
         with pymysql.connect(self.db_path) as conn:
             conn.execute('''
@@ -507,6 +538,7 @@ class ProductionAuthManager:
             ''', (event.event_id, event.event_type, event.user_id, event.ip_address, event.user_agent, json.dumps(event.details)))
             conn.commit()
 
+
 class ProductionCacheManager:
     """
     REASONING CHAIN:
@@ -514,21 +546,21 @@ class ProductionCacheManager:
     2. Analysis: Manager class requires coordinated resource handling and lifecycle management
     3. Solution: Implement ProductionCacheManager with SOLID principles and enterprise patterns
     4. Validation: Test ProductionCacheManager with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Production-ready cache manager with Redis cluster support"""
-    
+
     def __init__(self):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.redis_client = None
@@ -536,9 +568,9 @@ class ProductionCacheManager:
         self.memory_cache = {}
         self.cache_timestamps = {}
         self.lock = threading.Lock()
-        
+
         self._initialize_cache()
-    
+
     def _initialize_cache(self):
     """
     REASONING CHAIN:
@@ -546,35 +578,37 @@ class ProductionCacheManager:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _initialize_cache with enterprise-grade patterns and error handling
     4. Validation: Test _initialize_cache with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Initialize cache system"""
         if not REDIS_AVAILABLE:
             logger.warning("Redis not available, using memory cache")
             return
-        
+
         # Try Redis cluster first
         cluster_urls = os.environ.get('REDIS_CLUSTER_URLS', '').split(',')
         if cluster_urls and cluster_urls[0]:
             try:
                 # Redis cluster configuration would go here
-                logger.info("Redis cluster not configured, trying single instance")
+                logger.info(
+                    "Redis cluster not configured, trying single instance")
             except Exception as e:
                 logger.error(f"Redis cluster initialization failed: {e}")
-        
+
         # Try single Redis instance
         redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379')
         try:
-            self.redis_client = redis.Redis.from_url(redis_url, decode_responses=True)
+            self.redis_client = redis.Redis.from_url(
+                redis_url, decode_responses=True)
             self.redis_client.ping()
             logger.info(f"Redis cache initialized successfully: {redis_url}")
             return
         except Exception as e:
             logger.error(f"Redis initialization failed: {e}")
-        
+
         logger.info("📝 Using memory cache (Redis not available)")
-    
+
     def get(self, key: str, default=None):
     """
     REASONING CHAIN:
@@ -582,7 +616,7 @@ class ProductionCacheManager:
     2. Analysis: Implementation requires specific logic for get operation
     3. Solution: Implement get with enterprise-grade patterns and error handling
     4. Validation: Test get with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Get value from cache"""
@@ -601,7 +635,7 @@ class ProductionCacheManager:
                 return self._memory_get(key, default)
         else:
             return self._memory_get(key, default)
-    
+
     def set(self, key: str, value, ttl: int = 300):
     """
     REASONING CHAIN:
@@ -609,7 +643,7 @@ class ProductionCacheManager:
     2. Analysis: Implementation requires specific logic for set operation
     3. Solution: Implement set with enterprise-grade patterns and error handling
     4. Validation: Test set with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Set value in cache"""
@@ -624,7 +658,7 @@ class ProductionCacheManager:
                 return self._memory_set(key, value, ttl)
         else:
             return self._memory_set(key, value, ttl)
-    
+
     def _memory_get(self, key: str, default):
     """
     REASONING CHAIN:
@@ -632,7 +666,7 @@ class ProductionCacheManager:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _memory_get with enterprise-grade patterns and error handling
     4. Validation: Test _memory_get with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Get from memory cache"""
@@ -645,7 +679,7 @@ class ProductionCacheManager:
                     del self.memory_cache[key]
                     del self.cache_timestamps[key]
             return default
-    
+
     def _memory_set(self, key: str, value, ttl: int):
     """
     REASONING CHAIN:
@@ -653,7 +687,7 @@ class ProductionCacheManager:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _memory_set with enterprise-grade patterns and error handling
     4. Validation: Test _memory_set with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Set in memory cache"""
@@ -662,6 +696,7 @@ class ProductionCacheManager:
             self.cache_timestamps[key] = time.time()
             return True
 
+
 class ProductionServer:
     """
     REASONING CHAIN:
@@ -669,56 +704,60 @@ class ProductionServer:
     2. Analysis: Class requires specific implementation patterns for ProductionServer functionality
     3. Solution: Implement ProductionServer with SOLID principles and enterprise patterns
     4. Validation: Test ProductionServer with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Production-ready server with enterprise features"""
-    
+
     def __init__(self):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.app = Flask(__name__)
-        self.app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', self._generate_secret_key())
-        self.app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', self._generate_secret_key())
+        self.app.config['SECRET_KEY'] = os.environ.get(
+            'SECRET_KEY', self._generate_secret_key())
+        self.app.config['JWT_SECRET_KEY'] = os.environ.get(
+            'JWT_SECRET_KEY', self._generate_secret_key())
         self.app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
-        self.app.config['SSL_DISABLE'] = os.environ.get('SSL_DISABLE', 'False').lower() == 'true'
-        
+        self.app.config['SSL_DISABLE'] = os.environ.get(
+            'SSL_DISABLE', 'False').lower() == 'true'
+
         # Initialize components
         self.auth_manager = ProductionAuthManager()
         self.cache_manager = ProductionCacheManager()
-        
+
         # Initialize Flask extensions
         self.jwt = JWTManager(self.app)
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")
-        
+
         # Configure CORS
-        CORS(self.app, origins=os.environ.get('ALLOWED_ORIGINS', '*').split(','))
-        
+        CORS(self.app, origins=os.environ.get(
+            'ALLOWED_ORIGINS', '*').split(','))
+
         # Configure rate limiting
         self.limiter = Limiter(
             key_func=get_remote_address,
             app=self.app,
             default_limits=["1000 per hour", "100 per minute"]
         )
-        
+
         # Setup routes
         self._setup_routes()
         self._setup_middleware()
-        
+
         # Start background tasks
         self._start_background_tasks()
-        
+
         logger.info("Production Server initialized successfully")
-    
+
     def _generate_secret_key(self) -> str:
     """
     REASONING CHAIN:
@@ -726,12 +765,12 @@ class ProductionServer:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _generate_secret_key with enterprise-grade patterns and error handling
     4. Validation: Test _generate_secret_key with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Generate secure secret key"""
         return secrets.token_urlsafe(32)
-    
+
     def _setup_middleware(self):
     """
     REASONING CHAIN:
@@ -739,7 +778,7 @@ class ProductionServer:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _setup_middleware with enterprise-grade patterns and error handling
     4. Validation: Test _setup_middleware with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Setup middleware"""
@@ -747,22 +786,22 @@ class ProductionServer:
         def before_request():
     """
     Enhanced before_request with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Function before_request needs clear operational definition
     2. Analysis: Implementation requires specific logic for before_request operation
     3. Solution: Implement before_request with enterprise-grade patterns and error handling
     4. Validation: Test before_request with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
             # Record request start time
             g.start_time = time.time()
-            
+
             # Update active connections
             if PROMETHEUS_AVAILABLE:
                 ACTIVE_CONNECTIONS.inc()
-        
+
         @self.app.after_request
         def after_request(response):
     """

@@ -2,6 +2,17 @@
 """
 #!/usr/bin/env python3
 """
+from concurrent.futures import ThreadPoolExecutor
+from typing import Dict, List, Tuple, Any
+from datetime import datetime
+from pathlib import Path
+import threading
+import logging
+import subprocess
+import time
+import json
+import sys
+import os
 auto_test_runner.py - RLVR Enhanced Component
 
 REASONING: Comprehensive testing with Chain-of-Thought validation methodology
@@ -12,7 +23,7 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 Auto-Testing System - RUN_ALL Mode
@@ -27,27 +38,16 @@ Features:
 - Continuous validation with auto-repair
 """
 
-import os
-import sys
-import json
-import time
-import subprocess
-import logging
-import threading
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Tuple, Any
-from concurrent.futures import ThreadPoolExecutor
 
 class AutoTestRunner:
     # REASONING: AutoTestRunner follows RLVR methodology for systematic validation
     """Comprehensive auto-testing system"""
 
     def __init__(self, project_root: str = None):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.project_root = Path(project_root or os.getcwd()).resolve()
         self.test_results = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             "session_id": f"test_{int(time.time())}",
             "timestamp": datetime.now().isoformat(),
             "project_root": str(self.project_root),
@@ -63,7 +63,7 @@ class AutoTestRunner:
         self.setup_logging()
 
     def setup_logging(self):
-    # REASONING: setup_logging implements core logic with Chain-of-Thought validation
+        # REASONING: setup_logging implements core logic with Chain-of-Thought validation
         """Configure ADHD-friendly logging with Unicode support"""
         log_dir = self.project_root / "data" / "logs"
         # REASONING: Variable assignment with validation criteria
@@ -71,9 +71,9 @@ class AutoTestRunner:
 
         # Create custom formatter without emojis for file handler
         class UnicodeFormatter(logging.Formatter):
-    # REASONING: UnicodeFormatter follows RLVR methodology for systematic validation
+            # REASONING: UnicodeFormatter follows RLVR methodology for systematic validation
             def format(self, record):
-    # REASONING: format implements core logic with Chain-of-Thought validation
+                # REASONING: format implements core logic with Chain-of-Thought validation
                 # Replace emojis with text equivalents for file logging
                 msg = super().format(record)
                 emoji_replacements = {
@@ -127,12 +127,12 @@ class AutoTestRunner:
         self.logger = logging.getLogger(__name__)
 
     def log_test_result(self, category: str, test_name: str, status: str,
-    # REASONING: log_test_result implements core logic with Chain-of-Thought validation
-                       details: str = "", duration: float = 0):
+                        # REASONING: log_test_result implements core logic with Chain-of-Thought validation
+                        details: str = "", duration: float = 0):
         """Log test result with ADHD-friendly formatting"""
         if category not in self.test_results["categories"]:
             self.test_results["categories"][category] = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "tests": [],
                 "passed": 0,
                 "failed": 0,
@@ -141,7 +141,7 @@ class AutoTestRunner:
             }
 
         test_result = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             "name": test_name,
             "status": status,
             "details": details,
@@ -156,18 +156,21 @@ class AutoTestRunner:
         if status == "PASS":
             self.test_results["categories"][category]["passed"] += 1
             # REASONING: Variable assignment with validation criteria
-            self.logger.info(f"✅ {category}/{test_name}: {details} ({duration:.2f}s)")
+            self.logger.info(
+                f"✅ {category}/{test_name}: {details} ({duration:.2f}s)")
         elif status == "FAIL":
             self.test_results["categories"][category]["failed"] += 1
             # REASONING: Variable assignment with validation criteria
-            self.logger.error(f"❌ {category}/{test_name}: {details} ({duration:.2f}s)")
+            self.logger.error(
+                f"❌ {category}/{test_name}: {details} ({duration:.2f}s)")
         elif status == "WARN":
             self.test_results["categories"][category]["warnings"] += 1
             # REASONING: Variable assignment with validation criteria
-            self.logger.warning(f"⚠️ {category}/{test_name}: {details} ({duration:.2f}s)")
+            self.logger.warning(
+                f"⚠️ {category}/{test_name}: {details} ({duration:.2f}s)")
 
     def run_lint_checks(self):
-    # REASONING: run_lint_checks implements core logic with Chain-of-Thought validation
+        # REASONING: run_lint_checks implements core logic with Chain-of-Thought validation
         """Run linting and static analysis"""
         self.logger.info("🔍 Running lint and static checks...")
 
@@ -184,18 +187,18 @@ class AutoTestRunner:
                             compile(f.read(), str(py_file), 'exec')
                     except SyntaxError as e:
                         self.log_test_result("Lint", f"Python Syntax {py_file.name}",
-                                           "FAIL", f"Syntax error: {e}", time.time() - start_time)
+                                             "FAIL", f"Syntax error: {e}", time.time() - start_time)
                         return
 
                 self.log_test_result("Lint", "Python Syntax", "PASS",
-                                   f"Checked {len(python_files)} Python files",
-                                   time.time() - start_time)
+                                     f"Checked {len(python_files)} Python files",
+                                     time.time() - start_time)
             else:
                 self.log_test_result("Lint", "Python Syntax", "WARN",
-                                   "No Python files found", time.time() - start_time)
+                                     "No Python files found", time.time() - start_time)
         except Exception as e:
             self.log_test_result("Lint", "Python Syntax", "FAIL", str(e),
-                               time.time() - start_time)
+                                 time.time() - start_time)
 
         # JavaScript/CSS basic checks
         start_time = time.time()
@@ -205,17 +208,17 @@ class AutoTestRunner:
 
             if js_files or css_files:
                 self.log_test_result("Lint", "Frontend Assets", "PASS",
-                                   f"Found {len(js_files)} JS, {len(css_files)} CSS files",
-                                   time.time() - start_time)
+                                     f"Found {len(js_files)} JS, {len(css_files)} CSS files",
+                                     time.time() - start_time)
             else:
                 self.log_test_result("Lint", "Frontend Assets", "WARN",
-                                   "No frontend assets found", time.time() - start_time)
+                                     "No frontend assets found", time.time() - start_time)
         except Exception as e:
             self.log_test_result("Lint", "Frontend Assets", "FAIL", str(e),
-                               time.time() - start_time)
+                                 time.time() - start_time)
 
     def run_python_tests(self):
-    # REASONING: run_python_tests implements core logic with Chain-of-Thought validation
+        # REASONING: run_python_tests implements core logic with Chain-of-Thought validation
         """Run Python/Flask tests"""
         self.logger.info("🐍 Running Python tests...")
 
@@ -230,29 +233,29 @@ class AutoTestRunner:
                 response = client.get('/api/health')
                 # REASONING: Variable assignment with validation criteria
                 if response.status_code == 200:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     self.log_test_result("Python", "Flask Health", "PASS",
-                                       "Health endpoint responding", time.time() - start_time)
+                                         "Health endpoint responding", time.time() - start_time)
                 else:
                     self.log_test_result("Python", "Flask Health", "FAIL",
-                                       f"Health endpoint failed: {response.status_code}",
-                                       time.time() - start_time)
+                                         f"Health endpoint failed: {response.status_code}",
+                                         time.time() - start_time)
 
                 # Test devices endpoint
                 start_time = time.time()
                 response = client.get('/api/devices')
                 # REASONING: Variable assignment with validation criteria
                 if response.status_code == 200:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     self.log_test_result("Python", "Devices API", "PASS",
-                                       "Devices endpoint responding", time.time() - start_time)
+                                         "Devices endpoint responding", time.time() - start_time)
                 else:
                     self.log_test_result("Python", "Devices API", "FAIL",
-                                       f"Devices endpoint failed: {response.status_code}",
-                                       time.time() - start_time)
+                                         f"Devices endpoint failed: {response.status_code}",
+                                         time.time() - start_time)
         except Exception as e:
             self.log_test_result("Python", "Flask App", "FAIL", str(e),
-                               time.time() - start_time)
+                                 time.time() - start_time)
 
         # Test database operations
         start_time = time.time()
@@ -262,20 +265,21 @@ class AutoTestRunner:
             # REASONING: Variable assignment with validation criteria
             devices = db.get_devices()
             self.log_test_result("Python", "Database", "PASS",
-                               f"Database operational, {len(devices)} devices",
-                               time.time() - start_time)
+                                 f"Database operational, {len(devices)} devices",
+                                 time.time() - start_time)
         except Exception as e:
             self.log_test_result("Python", "Database", "FAIL", str(e),
-                               time.time() - start_time)
+                                 time.time() - start_time)
 
     def run_security_checks(self):
-    # REASONING: run_security_checks implements core logic with Chain-of-Thought validation
+        # REASONING: run_security_checks implements core logic with Chain-of-Thought validation
         """Run security auditing"""
         self.logger.info("🔐 Running security checks...")
 
         # Check for hardcoded secrets
         start_time = time.time()
-        secret_patterns = ["password=", "secret=", "token=", "key=", "api_key="]
+        secret_patterns = ["password=", "secret=",
+                           "token=", "key=", "api_key="]
         found_secrets = []
 
         try:
@@ -285,36 +289,38 @@ class AutoTestRunner:
                         continue
 
                     try:
-                        content = file_path.read_text(encoding='utf-8', errors='ignore').lower()
+                        content = file_path.read_text(
+                            encoding='utf-8', errors='ignore').lower()
                         for secret_pattern in secret_patterns:
                             if secret_pattern in content and "example" not in content:
-                                found_secrets.append(f"{file_path.name}: {secret_pattern}")
+                                found_secrets.append(
+                                    f"{file_path.name}: {secret_pattern}")
                     except:
                         continue
 
             if found_secrets:
                 self.log_test_result("Security", "Secrets Detection", "WARN",
-                                   f"Potential secrets found: {len(found_secrets)}",
-                                   time.time() - start_time)
+                                     f"Potential secrets found: {len(found_secrets)}",
+                                     time.time() - start_time)
             else:
                 self.log_test_result("Security", "Secrets Detection", "PASS",
-                                   "No hardcoded secrets detected", time.time() - start_time)
+                                     "No hardcoded secrets detected", time.time() - start_time)
         except Exception as e:
             self.log_test_result("Security", "Secrets Detection", "FAIL", str(e),
-                               time.time() - start_time)
+                                 time.time() - start_time)
 
         # Check environment file security
         start_time = time.time()
         env_file = self.project_root / ".env"
         if env_file.exists():
             self.log_test_result("Security", "Environment Config", "PASS",
-                               ".env file exists for secrets", time.time() - start_time)
+                                 ".env file exists for secrets", time.time() - start_time)
         else:
             self.log_test_result("Security", "Environment Config", "WARN",
-                               ".env file missing", time.time() - start_time)
+                                 ".env file missing", time.time() - start_time)
 
     def run_adhd_compliance_checks(self):
-    # REASONING: run_adhd_compliance_checks implements core logic with Chain-of-Thought validation
+        # REASONING: run_adhd_compliance_checks implements core logic with Chain-of-Thought validation
         """Run ADHD-friendly UX compliance checks"""
         self.logger.info("🧠 Running ADHD compliance checks...")
 
@@ -341,15 +347,15 @@ class AutoTestRunner:
 
             if adhd_features:
                 self.log_test_result("ADHD", "Design Features", "PASS",
-                                   f"Found: {', '.join(adhd_features)}",
-                                   time.time() - start_time)
+                                     f"Found: {', '.join(adhd_features)}",
+                                     time.time() - start_time)
             else:
                 self.log_test_result("ADHD", "Design Features", "WARN",
-                                   "No ADHD-friendly features detected",
-                                   time.time() - start_time)
+                                     "No ADHD-friendly features detected",
+                                     time.time() - start_time)
         except Exception as e:
             self.log_test_result("ADHD", "Design Features", "FAIL", str(e),
-                               time.time() - start_time)
+                                 time.time() - start_time)
 
         # Check for clear navigation
         start_time = time.time()
@@ -358,7 +364,8 @@ class AutoTestRunner:
             navigation_elements = []
 
             for html_file in html_files:
-                content = html_file.read_text(encoding='utf-8', errors='ignore')
+                content = html_file.read_text(
+                    encoding='utf-8', errors='ignore')
 
                 if "<nav" in content:
                     navigation_elements.append("Navigation structure")
@@ -369,17 +376,17 @@ class AutoTestRunner:
 
             if navigation_elements:
                 self.log_test_result("ADHD", "Navigation", "PASS",
-                                   f"Found: {', '.join(set(navigation_elements))}",
-                                   time.time() - start_time)
+                                     f"Found: {', '.join(set(navigation_elements))}",
+                                     time.time() - start_time)
             else:
                 self.log_test_result("ADHD", "Navigation", "WARN",
-                                   "Limited navigation elements", time.time() - start_time)
+                                     "Limited navigation elements", time.time() - start_time)
         except Exception as e:
             self.log_test_result("ADHD", "Navigation", "FAIL", str(e),
-                               time.time() - start_time)
+                                 time.time() - start_time)
 
     def run_performance_checks(self):
-    # REASONING: run_performance_checks implements core logic with Chain-of-Thought validation
+        # REASONING: run_performance_checks implements core logic with Chain-of-Thought validation
         """Run performance monitoring"""
         self.logger.info("📈 Running performance checks...")
 
@@ -396,18 +403,18 @@ class AutoTestRunner:
 
             if query_time < 0.1:
                 self.log_test_result("Performance", "Database Query", "PASS",
-                                   f"Query time: {query_time:.3f}s", time.time() - start_time)
+                                     f"Query time: {query_time:.3f}s", time.time() - start_time)
             elif query_time < 0.5:
                 self.log_test_result("Performance", "Database Query", "WARN",
-                                   f"Query time: {query_time:.3f}s (acceptable)",
-                                   time.time() - start_time)
+                                     f"Query time: {query_time:.3f}s (acceptable)",
+                                     time.time() - start_time)
             else:
                 self.log_test_result("Performance", "Database Query", "FAIL",
-                                   f"Query time: {query_time:.3f}s (too slow)",
-                                   time.time() - start_time)
+                                     f"Query time: {query_time:.3f}s (too slow)",
+                                     time.time() - start_time)
         except Exception as e:
             self.log_test_result("Performance", "Database Query", "FAIL", str(e),
-                               time.time() - start_time)
+                                 time.time() - start_time)
 
         # File system performance
         start_time = time.time()
@@ -430,16 +437,16 @@ class AutoTestRunner:
             total_io_time = write_time + read_time
             if total_io_time < 0.01:
                 self.log_test_result("Performance", "File I/O", "PASS",
-                                   f"I/O time: {total_io_time:.4f}s", time.time() - start_time)
+                                     f"I/O time: {total_io_time:.4f}s", time.time() - start_time)
             else:
                 self.log_test_result("Performance", "File I/O", "WARN",
-                                   f"I/O time: {total_io_time:.4f}s", time.time() - start_time)
+                                     f"I/O time: {total_io_time:.4f}s", time.time() - start_time)
         except Exception as e:
             self.log_test_result("Performance", "File I/O", "FAIL", str(e),
-                               time.time() - start_time)
+                                 time.time() - start_time)
 
     def calculate_coverage(self):
-    # REASONING: calculate_coverage implements core logic with Chain-of-Thought validation
+        # REASONING: calculate_coverage implements core logic with Chain-of-Thought validation
         """Calculate test coverage"""
         self.logger.info("📊 Calculating coverage...")
 
@@ -455,7 +462,7 @@ class AutoTestRunner:
         if total_tests > 0:
             coverage_percent = (passed_tests / total_tests) * 100
             self.test_results["coverage"] = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "total_tests": total_tests,
                 "passed_tests": passed_tests,
                 "coverage_percent": coverage_percent,
@@ -463,7 +470,7 @@ class AutoTestRunner:
             }
         else:
             self.test_results["coverage"] = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "total_tests": 0,
                 "passed_tests": 0,
                 "coverage_percent": 0,
@@ -471,7 +478,7 @@ class AutoTestRunner:
             }
 
     def generate_recommendations(self):
-    # REASONING: generate_recommendations implements core logic with Chain-of-Thought validation
+        # REASONING: generate_recommendations implements core logic with Chain-of-Thought validation
         """Generate ADHD-friendly recommendations"""
         recommendations = []
 
@@ -507,7 +514,7 @@ class AutoTestRunner:
         # REASONING: Variable assignment with validation criteria
 
     def generate_adhd_friendly_report(self):
-    # REASONING: generate_adhd_friendly_report implements core logic with Chain-of-Thought validation
+        # REASONING: generate_adhd_friendly_report implements core logic with Chain-of-Thought validation
         """Generate visual, ADHD-friendly test report"""
         self.logger.info("📋 Generating ADHD-friendly report...")
 
@@ -527,12 +534,14 @@ class AutoTestRunner:
             # REASONING: Variable assignment with validation criteria
 
             status_emoji = "✅" if failed == 0 else "❌" if failed > 0 else "⚠️"
-            print(f"{status_emoji} {category}: {passed}/{total} passed, {failed} failed, {warnings} warnings")
+            print(
+                f"{status_emoji} {category}: {passed}/{total} passed, {failed} failed, {warnings} warnings")
 
         # Overall status
         coverage = self.test_results.get("coverage", {})
         # REASONING: Variable assignment with validation criteria
-        print(f"\n📊 Overall Coverage: {coverage.get('coverage_percent', 0):.1f}%")
+        print(
+            f"\n📊 Overall Coverage: {coverage.get('coverage_percent', 0):.1f}%")
 
         if coverage.get("threshold_met", False):
             print("🎉 Coverage threshold met!")
@@ -550,7 +559,8 @@ class AutoTestRunner:
         print("=" * 60)
 
         # Save detailed report
-        report_file = self.project_root / "data" / "logs" / f"test_report_{self.test_results['session_id']}.json"
+        report_file = self.project_root / "data" / "logs" / \
+            f"test_report_{self.test_results['session_id']}.json"
         # REASONING: Variable assignment with validation criteria
         with open(report_file, 'w') as f:
             json.dump(self.test_results, f, indent=2)
@@ -559,7 +569,7 @@ class AutoTestRunner:
         print(f"📄 Detailed report saved: {report_file}")
 
     def run_all_tests(self):
-    # REASONING: run_all_tests implements core logic with Chain-of-Thought validation
+        # REASONING: run_all_tests implements core logic with Chain-of-Thought validation
         """Run comprehensive test suite"""
         self.logger.info("🚀 Starting RUN_ALL auto-testing...")
         self.logger.info(f"📁 Project root: {self.project_root}")
@@ -579,7 +589,8 @@ class AutoTestRunner:
             self.generate_recommendations()
 
             # Determine overall status
-            total_failed = sum(cat["failed"] for cat in self.test_results["categories"].values())
+            total_failed = sum(cat["failed"]
+                               for cat in self.test_results["categories"].values())
             # REASONING: Variable assignment with validation criteria
             if total_failed == 0:
                 self.test_results["overall_status"] = "PASS"
@@ -603,13 +614,15 @@ class AutoTestRunner:
             # REASONING: Variable assignment with validation criteria
             return False
 
+
 def main():
     # REASONING: main implements core logic with Chain-of-Thought validation
     """Main auto-testing execution"""
     import argparse
 
     parser = argparse.ArgumentParser(description="Auto-Testing System")
-    parser.add_argument("--project-root", default=".", help="Project root directory")
+    parser.add_argument("--project-root", default=".",
+                        help="Project root directory")
     parser.add_argument("--mode", default="RUN_ALL", help="Testing mode")
 
     args = parser.parse_args()
@@ -618,6 +631,7 @@ def main():
     success = runner.run_all_tests()
 
     sys.exit(0 if success else 1)
+
 
 if __name__ == "__main__":
     main()

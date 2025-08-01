@@ -24,6 +24,7 @@ import uuid
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class AnalyticsMetric:
     """Analytics metric definition"""
@@ -33,6 +34,7 @@ class AnalyticsMetric:
     timestamp: datetime
     dimensions: Dict[str, str]
     metadata: Dict[str, Any]
+
 
 @dataclass
 class BusinessReport:
@@ -45,16 +47,17 @@ class BusinessReport:
     report_type: str
     filters: Dict[str, Any]
 
+
 class MetricsCollector:
     """Advanced metrics collection and aggregation"""
-    
+
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.metrics_buffer = []
         self.aggregated_metrics = {}
         self.collection_thread = None
         self.running = False
-        
+
     def start_collection(self):
         """Start metrics collection"""
         self.running = True
@@ -62,13 +65,13 @@ class MetricsCollector:
         self.collection_thread.daemon = True
         self.collection_thread.start()
         logger.info("Metrics collection started")
-    
+
     def stop_collection(self):
         """Stop metrics collection"""
         self.running = False
         if self.collection_thread:
             self.collection_thread.join()
-    
+
     def _collect_metrics(self):
         """Collect metrics continuously"""
         while self.running:
@@ -77,16 +80,16 @@ class MetricsCollector:
                 self._collect_system_metrics()
                 self._collect_business_metrics()
                 self._collect_user_metrics()
-                
+
                 # Aggregate metrics
                 self._aggregate_metrics()
-                
+
                 time.sleep(30)  # Collect every 30 seconds
-                
+
             except Exception as e:
                 logger.error(f"Metrics collection error: {e}")
                 time.sleep(10)
-    
+
     def _collect_system_metrics(self):
         """Collect system performance metrics"""
         metrics = [
@@ -123,9 +126,9 @@ class MetricsCollector:
                 metadata={"collector": "system"}
             )
         ]
-        
+
         self.metrics_buffer.extend(metrics)
-    
+
     def _collect_business_metrics(self):
         """Collect business intelligence metrics"""
         metrics = [
@@ -162,9 +165,9 @@ class MetricsCollector:
                 metadata={"collector": "business"}
             )
         ]
-        
+
         self.metrics_buffer.extend(metrics)
-    
+
     def _collect_user_metrics(self):
         """Collect user behavior metrics"""
         metrics = [
@@ -197,19 +200,20 @@ class MetricsCollector:
                 value=random.uniform(0.001, 0.05),
                 unit="ratio",
                 timestamp=datetime.now(),
-                dimensions={"error_type": "validation", "endpoint": "api/v1/tenants"},
+                dimensions={"error_type": "validation",
+                            "endpoint": "api/v1/tenants"},
                 metadata={"collector": "user"}
             )
         ]
-        
+
         self.metrics_buffer.extend(metrics)
-    
+
     def _aggregate_metrics(self):
         """Aggregate collected metrics"""
         # Group metrics by name and time window
         for metric in self.metrics_buffer:
             key = f"{metric.name}_{metric.timestamp.strftime('%Y%m%d_%H%M')}"
-            
+
             if key not in self.aggregated_metrics:
                 self.aggregated_metrics[key] = {
                     'name': metric.name,
@@ -222,37 +226,38 @@ class MetricsCollector:
                     'timestamp': metric.timestamp,
                     'dimensions': metric.dimensions
                 }
-            
+
             agg = self.aggregated_metrics[key]
             agg['count'] += 1
             agg['sum'] += metric.value
             agg['min'] = min(agg['min'], metric.value)
             agg['max'] = max(agg['max'], metric.value)
             agg['avg'] = agg['sum'] / agg['count']
-        
+
         # Clear buffer
         self.metrics_buffer = []
-    
+
     def get_metrics(self, metric_name: str = None, time_range: int = 3600) -> List[Dict[str, Any]]:
         """Get aggregated metrics"""
         cutoff_time = datetime.now() - timedelta(seconds=time_range)
-        
+
         metrics = []
         for key, metric in self.aggregated_metrics.items():
             if metric['timestamp'] >= cutoff_time:
                 if metric_name is None or metric['name'] == metric_name:
                     metrics.append(metric)
-        
+
         return sorted(metrics, key=lambda m: m['timestamp'], reverse=True)
+
 
 class BusinessIntelligence:
     """Business intelligence and reporting engine"""
-    
+
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.reports_cache = {}
         self.report_templates = self._load_report_templates()
-        
+
     def _load_report_templates(self) -> Dict[str, Dict[str, Any]]:
         """Load report templates"""
         return {
@@ -281,15 +286,15 @@ class BusinessIntelligence:
                 "time_range": 604800  # 7 days
             }
         }
-    
+
     def generate_report(self, report_type: str, filters: Dict[str, Any] = None) -> BusinessReport:
         """Generate business intelligence report"""
         if report_type not in self.report_templates:
             raise ValueError(f"Unknown report type: {report_type}")
-        
+
         template = self.report_templates[report_type]
         report_id = str(uuid.uuid4())
-        
+
         # Simulate report generation
         report_data = {
             "summary": {
@@ -301,7 +306,7 @@ class BusinessIntelligence:
             "insights": [],
             "recommendations": []
         }
-        
+
         # Generate mock data for each metric
         for metric_name in template["metrics"]:
             report_data["metrics"][metric_name] = {
@@ -311,7 +316,7 @@ class BusinessIntelligence:
                 "trend": random.choice(["up", "down", "stable"]),
                 "status": random.choice(["good", "warning", "critical"])
             }
-        
+
         # Generate insights
         insights = [
             "User engagement increased by 15% compared to last period",
@@ -321,7 +326,7 @@ class BusinessIntelligence:
             "API response times improved by 8% after optimization"
         ]
         report_data["insights"] = random.sample(insights, 3)
-        
+
         # Generate recommendations
         recommendations = [
             "Consider scaling infrastructure in US-East region",
@@ -331,7 +336,7 @@ class BusinessIntelligence:
             "Enhance user onboarding flow to improve conversion"
         ]
         report_data["recommendations"] = random.sample(recommendations, 2)
-        
+
         report = BusinessReport(
             report_id=report_id,
             title=template["title"],
@@ -341,16 +346,16 @@ class BusinessIntelligence:
             report_type=report_type,
             filters=filters or {}
         )
-        
+
         # Cache the report
         self.reports_cache[report_id] = report
-        
+
         return report
-    
+
     def get_report(self, report_id: str) -> Optional[BusinessReport]:
         """Get cached report"""
         return self.reports_cache.get(report_id)
-    
+
     def list_reports(self) -> List[Dict[str, Any]]:
         """List all cached reports"""
         return [
@@ -363,13 +368,14 @@ class BusinessIntelligence:
             for report in self.reports_cache.values()
         ]
 
+
 class GraphQLAPI:
     """GraphQL API interface (simulated)"""
-    
+
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.schema = self._build_schema()
-        
+
     def _build_schema(self) -> Dict[str, Any]:
         """Build GraphQL schema"""
         return {
@@ -422,7 +428,7 @@ class GraphQLAPI:
                 }
             }
         }
-    
+
     def execute_query(self, query: str, variables: Dict[str, Any] = None) -> Dict[str, Any]:
         """Execute GraphQL query (simulated)"""
         # This is a simplified simulation
@@ -457,29 +463,32 @@ class GraphQLAPI:
         else:
             return {"data": {}, "errors": [{"message": "Unknown query"}]}
 
+
 class AdvancedAnalyticsOrchestrator:
     """Advanced analytics orchestration system"""
-    
+
     def __init__(self, workspace_path: str):
         self.workspace_path = workspace_path
         self.config = self.load_config()
-        
+
         # Initialize components
-        self.metrics_collector = MetricsCollector(self.config.get('metrics', {}))
-        self.business_intelligence = BusinessIntelligence(self.config.get('bi', {}))
+        self.metrics_collector = MetricsCollector(
+            self.config.get('metrics', {}))
+        self.business_intelligence = BusinessIntelligence(
+            self.config.get('bi', {}))
         self.graphql_api = GraphQLAPI(self.config.get('graphql', {}))
-        
+
         # Start metrics collection
         self.metrics_collector.start_collection()
-        
+
     def load_config(self) -> Dict[str, Any]:
         """Load analytics configuration"""
         config_path = Path(self.workspace_path) / "analytics_config.json"
-        
+
         if config_path.exists():
             with open(config_path, 'r') as f:
                 return json.load(f)
-        
+
         # Default configuration
         config = {
             "metrics": {
@@ -503,27 +512,28 @@ class AdvancedAnalyticsOrchestrator:
                 "predictive_analytics": True
             }
         }
-        
+
         with open(config_path, 'w') as f:
             json.dump(config, f, indent=2)
-            
+
         return config
-    
+
     def cleanup(self):
         """Cleanup resources"""
         self.metrics_collector.stop_collection()
 
+
 class AdvancedAnalyticsInterface:
     """Web interface for advanced analytics"""
-    
+
     def __init__(self, orchestrator: AdvancedAnalyticsOrchestrator):
         self.orchestrator = orchestrator
         self.app = Flask(__name__)
         self.setup_routes()
-        
+
     def setup_routes(self):
         """Setup Flask routes for analytics interface"""
-        
+
         @self.app.route('/analytics/dashboard')
         def analytics_dashboard():
             """Advanced analytics dashboard"""
@@ -760,85 +770,92 @@ query {
 </body>
 </html>
             '''
-            
+
             from jinja2 import Template
             return Template(template).render(
-                metrics_count=len(self.orchestrator.metrics_collector.get_metrics()),
-                reports_count=len(self.orchestrator.business_intelligence.reports_cache),
+                metrics_count=len(
+                    self.orchestrator.metrics_collector.get_metrics()),
+                reports_count=len(
+                    self.orchestrator.business_intelligence.reports_cache),
                 api_queries=random.randint(100, 1000)
             )
-        
+
         @self.app.route('/analytics/api/metrics')
         def api_metrics():
             """Get analytics metrics"""
             metric_name = request.args.get('name')
             time_range = int(request.args.get('time_range', 3600))
-            
-            metrics = self.orchestrator.metrics_collector.get_metrics(metric_name, time_range)
+
+            metrics = self.orchestrator.metrics_collector.get_metrics(
+                metric_name, time_range)
             return jsonify({'metrics': metrics})
-        
+
         @self.app.route('/analytics/api/reports')
         def api_reports():
             """Get business reports"""
             reports = self.orchestrator.business_intelligence.list_reports()
             return jsonify({'reports': reports})
-        
+
         @self.app.route('/analytics/api/reports/<report_id>')
         def api_report_detail(report_id):
             """Get specific report"""
-            report = self.orchestrator.business_intelligence.get_report(report_id)
+            report = self.orchestrator.business_intelligence.get_report(
+                report_id)
             if report:
                 return jsonify(asdict(report))
             return jsonify({'error': 'Report not found'}), 404
-        
+
         @self.app.route('/analytics/api/generate-report', methods=['POST'])
         def api_generate_report():
             """Generate new report"""
             data = request.get_json()
             report_type = data.get('type', 'executive_summary')
             filters = data.get('filters', {})
-            
+
             try:
-                report = self.orchestrator.business_intelligence.generate_report(report_type, filters)
+                report = self.orchestrator.business_intelligence.generate_report(
+                    report_type, filters)
                 return jsonify(asdict(report))
             except ValueError as e:
                 return jsonify({'error': str(e)}), 400
-        
+
         @self.app.route('/analytics/api/graphql', methods=['POST'])
         def api_graphql():
             """GraphQL API endpoint"""
             data = request.get_json()
             query = data.get('query', '')
             variables = data.get('variables', {})
-            
+
             try:
-                result = self.orchestrator.graphql_api.execute_query(query, variables)
+                result = self.orchestrator.graphql_api.execute_query(
+                    query, variables)
                 return jsonify(result)
             except Exception as e:
                 return jsonify({
                     'data': None,
                     'errors': [{'message': str(e)}]
                 })
-        
+
         @self.app.route('/analytics/api/schema')
         def api_schema():
             """Get GraphQL schema"""
             return jsonify(self.orchestrator.graphql_api.schema)
 
+
 def main():
     """Main advanced analytics demo"""
     workspace = Path(__file__).parent
-    
+
     logger.info("Starting Heimnetz Advanced Analytics")
     logger.info("=" * 60)
     logger.info("Phase 4: Advanced Analytics - STARTING")
-    
+
     # Initialize orchestrator
     orchestrator = AdvancedAnalyticsOrchestrator(str(workspace))
-    
+
     # Initialize web interface
     web_interface = AdvancedAnalyticsInterface(orchestrator)
-    
+
     logger.info("Advanced Analytics Initialized:")
     logger.info("- Metrics Collector: Active")
     logger.info("- Business Intelligence: Ready")
@@ -854,12 +871,13 @@ def main():
     logger.info("- GraphQL: POST /analytics/api/graphql")
     logger.info("- Schema: GET /analytics/api/schema")
     logger.info("=" * 60)
-    
+
     try:
         web_interface.app.run(host='0.0.0.0', port=5003, debug=False)
     except KeyboardInterrupt:
         logger.info("Advanced analytics stopped by user")
         orchestrator.cleanup()
+
 
 if __name__ == "__main__":
     main()

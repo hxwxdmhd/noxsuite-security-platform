@@ -8,16 +8,16 @@ This module implements the Gate 6 progression system building on the
 successful completion of all three development phases and Gate 5 readiness.
 """
 
-import json
 import asyncio
-import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
 import hashlib
+import json
+import logging
 import secrets
-from pathlib import Path
 import threading
 import time
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(
@@ -25,6 +25,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
 
 class Gate6ProgressionSystem:
     """
@@ -264,7 +265,8 @@ class Gate6ProgressionSystem:
             for objective_data in self.objectives.values():
                 total_progress += objective_data["progress"]
 
-            readiness_score = (total_progress / total_objectives) if total_objectives > 0 else 0
+            readiness_score = (
+                total_progress / total_objectives) if total_objectives > 0 else 0
             self.metrics["gate6_readiness"] = readiness_score
 
             logger.info(f"📊 Gate 6 readiness score: {readiness_score:.2f}/100")
@@ -320,7 +322,8 @@ class Gate6ProgressionSystem:
             # Update status based on progress
             if progress >= 100:
                 self.objectives[objective_name]["status"] = "COMPLETED"
-                self.objectives[objective_name]["completion_time"] = datetime.now().isoformat()
+                self.objectives[objective_name]["completion_time"] = datetime.now(
+                ).isoformat()
             elif progress >= 50:
                 self.objectives[objective_name]["status"] = "IN_PROGRESS"
             else:
@@ -329,7 +332,8 @@ class Gate6ProgressionSystem:
             # Recalculate readiness score
             self._calculate_readiness_score()
 
-            logger.info(f"📈 Objective {objective_name} progress updated: {progress}%")
+            logger.info(
+                f"📈 Objective {objective_name} progress updated: {progress}%")
 
             return {
                 "objective": objective_name,
@@ -365,6 +369,7 @@ class Gate6ProgressionSystem:
             logger.error(f"❌ Failed to get system status: {str(e)}")
             raise
 
+
 def main():
     """Main execution function"""
     try:
@@ -381,7 +386,8 @@ def main():
         print("\n✅ GATE 6 PROGRESSION INITIATED SUCCESSFULLY")
         print(f"System ID: {progression_report['system_info']['system_id']}")
         print(f"Status: {progression_report['system_info']['status']}")
-        print(f"Gate 6 Readiness: {progression_report['metrics']['gate6_readiness']:.2f}%")
+        print(
+            f"Gate 6 Readiness: {progression_report['metrics']['gate6_readiness']:.2f}%")
 
         print("\n🎯 OBJECTIVES:")
         for name, data in progression_report['objectives'].items():
@@ -407,6 +413,7 @@ def main():
     except Exception as e:
         print(f"❌ Error: {str(e)}")
         raise
+
 
 if __name__ == "__main__":
     main()

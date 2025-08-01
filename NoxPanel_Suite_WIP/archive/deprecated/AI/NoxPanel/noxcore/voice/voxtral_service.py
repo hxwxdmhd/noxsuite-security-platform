@@ -14,17 +14,17 @@ Features:
 """
 
 import asyncio
+import base64
+import io
 import json
 import logging
-import time
 import threading
-from datetime import datetime
-from typing import Dict, List, Optional, Union, Any
-from dataclasses import dataclass, asdict
-from pathlib import Path
+import time
 import wave
-import io
-import base64
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 # Try importing advanced audio processing libraries
 try:
@@ -51,6 +51,7 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class VoxtralConfig:
     """Configuration for Voxtral speech service"""
@@ -67,6 +68,7 @@ class VoxtralConfig:
     fallback_service: str = "whisper"
     timeout: float = 10.0
     enable_benchmarking: bool = True
+
 
 @dataclass
 class TranscriptionResult:
@@ -110,6 +112,7 @@ class TranscriptionResult:
         if self.timestamp is None:
             self.timestamp = datetime.now().isoformat()
 
+
 class VoxtralService:
     """Voxtral Speech-to-Text Service with Whisper fallback"""
 
@@ -136,7 +139,8 @@ class VoxtralService:
         """Initialize the Voxtral service and check health"""
         try:
             if not HTTP_CLIENTS_AVAILABLE:
-                logger.warning("HTTP clients not available - limited functionality")
+                logger.warning(
+                    "HTTP clients not available - limited functionality")
                 return False
 
             # Create HTTP session
@@ -168,7 +172,8 @@ class VoxtralService:
                     self.service_health["voxtral"] = True
                     logger.info("✅ Voxtral service is healthy")
                 else:
-                    logger.warning(f"⚠️ Voxtral service unhealthy: {response.status}")
+                    logger.warning(
+                        f"⚠️ Voxtral service unhealthy: {response.status}")
         except Exception as e:
             logger.warning(f"⚠️ Voxtral service unavailable: {e}")
             self.service_health["voxtral"] = False
@@ -269,7 +274,8 @@ class VoxtralService:
                     processing_time = time.time() - start_time
 
                     # Update stats
-                    self._update_performance_stats("voxtral", processing_time, success=True)
+                    self._update_performance_stats(
+                        "voxtral", processing_time, success=True)
 
                     return TranscriptionResult(
                         text=result_data.get('text', ''),
@@ -298,7 +304,8 @@ class VoxtralService:
         except Exception as e:
             processing_time = time.time() - start_time
             logger.error(f"Voxtral transcription error: {e}")
-            self._update_performance_stats("voxtral", processing_time, success=False)
+            self._update_performance_stats(
+                "voxtral", processing_time, success=False)
 
             return TranscriptionResult(
                 text="",
@@ -324,7 +331,8 @@ class VoxtralService:
             await asyncio.sleep(0.5)  # Simulate processing time
 
             processing_time = time.time() - start_time
-            self._update_performance_stats("whisper", processing_time, success=True)
+            self._update_performance_stats(
+                "whisper", processing_time, success=True)
 
     """
     RLVR: Modifies existing entity with validation

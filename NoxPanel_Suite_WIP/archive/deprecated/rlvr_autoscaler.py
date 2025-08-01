@@ -7,10 +7,12 @@ Each scaling decision includes reasoning validation
 
 import asyncio
 import logging
-import requests
-import psutil
 from datetime import datetime, timedelta
 from typing import Dict, List
+
+import psutil
+import requests
+
 
 class RLVRAutoScaler:
     # REASONING: RLVRAutoScaler follows RLVR methodology for systematic validation

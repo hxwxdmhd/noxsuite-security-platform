@@ -1,6 +1,15 @@
 """
 #!/usr/bin/env python3
 """
+from flask import Blueprint, current_app, jsonify, render_template, request
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime, timedelta
+from dataclasses import dataclass
+import os
+import logging
+import json
+import hashlib
 context_loader.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,34 +20,27 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel v6.0 - AI Context Loader Plugin
 Integrates gpt_dump_context.txt and training_data.jsonl for enhanced AI memory
 """
 
-import json
-import logging
-import os
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Optional, Any
-from flask import Blueprint, render_template, jsonify, request, current_app
-from dataclasses import dataclass
-import hashlib
 
 # Conditional import for scheduler
 try:
+    import atexit
+
     from apscheduler.schedulers.background import BackgroundScheduler
     from apscheduler.triggers.interval import IntervalTrigger
-    import atexit
     SCHEDULER_AVAILABLE = True
 except ImportError:
     SCHEDULER_AVAILABLE = False
     BackgroundScheduler = None
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ContextItem:
@@ -51,12 +53,13 @@ class ContextItem:
     tags: List[str]
     metadata: Dict[str, Any]
 
+
 class ChatContextLoader:
     # REASONING: ChatContextLoader follows RLVR methodology for systematic validation
     """Enhanced AI Context Loader with search, caching, and memory management"""
 
     def __init__(self, context_path: Optional[str] = None, jsonl_path: Optional[str] = None):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.context_path = context_path or "data/gpt_dump_context.txt"
         # REASONING: Variable assignment with validation criteria
         self.jsonl_path = jsonl_path or "data/training_data.jsonl"
@@ -78,29 +81,32 @@ class ChatContextLoader:
         self.load_context()
 
     def _generate_id(self, content: str) -> str:
-    # REASONING: _generate_id implements core logic with Chain-of-Thought validation
+        # REASONING: _generate_id implements core logic with Chain-of-Thought validation
         """Generate unique ID for content"""
         return hashlib.md5(content.encode()).hexdigest()[:12]
 
     def _extract_tags(self, content: str) -> List[str]:
-    # REASONING: _extract_tags implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_tags implements core logic with Chain-of-Thought validation
         """Extract relevant tags from content"""
         tags = []
 
         # Programming language detection
-        languages = ['python', 'javascript', 'powershell', 'bash', 'sql', 'html', 'css', 'json', 'yaml']
+        languages = ['python', 'javascript', 'powershell',
+                     'bash', 'sql', 'html', 'css', 'json', 'yaml']
         for lang in languages:
             if lang in content.lower():
                 tags.append(f"lang:{lang}")
 
         # Framework detection
-        frameworks = ['flask', 'react', 'node', 'ollama', 'openai', 'docker', 'kubernetes']
+        frameworks = ['flask', 'react', 'node',
+                      'ollama', 'openai', 'docker', 'kubernetes']
         for framework in frameworks:
             if framework in content.lower():
                 tags.append(f"tech:{framework}")
 
         # Topic detection
-        topics = ['automation', 'ai', 'security', 'deployment', 'monitoring', 'testing']
+        topics = ['automation', 'ai', 'security',
+                  'deployment', 'monitoring', 'testing']
         for topic in topics:
             if topic in content.lower():
                 tags.append(f"topic:{topic}")
@@ -108,7 +114,7 @@ class ChatContextLoader:
         return tags
 
     def load_context(self) -> bool:
-    # REASONING: load_context implements core logic with Chain-of-Thought validation
+        # REASONING: load_context implements core logic with Chain-of-Thought validation
         """Load context from both files"""
         try:
             current_time = datetime.now()
@@ -116,7 +122,7 @@ class ChatContextLoader:
             # Check if refresh is needed
             if (self.last_loaded and
                 current_time - self.last_loaded < self.refresh_interval and
-                self.context_items):
+                    self.context_items):
                 logger.debug("Context cache still valid, skipping reload")
                 return True
 
@@ -139,17 +145,20 @@ class ChatContextLoader:
                                 source='gpt_dump',
                                 timestamp=current_time,
                                 tags=self._extract_tags(section),
-                                metadata={'section': i, 'file': 'gpt_dump_context.txt'}
+                                metadata={'section': i,
+                                          'file': 'gpt_dump_context.txt'}
                                 # REASONING: Variable assignment with validation criteria
                             )
                             new_items.append(item)
 
-                    logger.info(f"✅ Loaded {len([i for i in new_items if i.source == 'gpt_dump'])} items from gpt_dump_context.txt")
+                    logger.info(
+                        f"✅ Loaded {len([i for i in new_items if i.source == 'gpt_dump'])} items from gpt_dump_context.txt")
 
                 except Exception as e:
                     logger.error(f"❌ Error reading gpt_dump_context.txt: {e}")
             else:
-                logger.warning(f"⚠️ Context file not found: {self.context_path}")
+                logger.warning(
+                    f"⚠️ Context file not found: {self.context_path}")
 
             # Load training_data.jsonl
             if os.path.exists(self.jsonl_path):
@@ -174,9 +183,10 @@ class ChatContextLoader:
                                         source='training_data',
                                         # REASONING: Variable assignment with validation criteria
                                         timestamp=current_time,
-                                        tags=self._extract_tags(combined_content),
+                                        tags=self._extract_tags(
+                                            combined_content),
                                         metadata={
-                                        # REASONING: Variable assignment with validation criteria
+                                            # REASONING: Variable assignment with validation criteria
                                             'line': line_num,
                                             'file': 'training_data.jsonl',
                                             'prompt': prompt,
@@ -186,21 +196,25 @@ class ChatContextLoader:
                                     new_items.append(item)
 
                                 except json.JSONDecodeError as e:
-                                    logger.warning(f"⚠️ Invalid JSON on line {line_num}: {e}")
+                                    logger.warning(
+                                        f"⚠️ Invalid JSON on line {line_num}: {e}")
 
-                    logger.info(f"✅ Loaded {len([i for i in new_items if i.source == 'training_data'])} items from training_data.jsonl")
+                    logger.info(
+                        f"✅ Loaded {len([i for i in new_items if i.source == 'training_data'])} items from training_data.jsonl")
                     # REASONING: Variable assignment with validation criteria
 
                 except Exception as e:
                     logger.error(f"❌ Error reading training_data.jsonl: {e}")
             else:
-                logger.warning(f"⚠️ Training data file not found: {self.jsonl_path}")
+                logger.warning(
+                    f"⚠️ Training data file not found: {self.jsonl_path}")
 
             # Update context items
             self.context_items = new_items
             self.last_loaded = current_time
 
-            logger.info(f"🧠 Total context items loaded: {len(self.context_items)}")
+            logger.info(
+                f"🧠 Total context items loaded: {len(self.context_items)}")
             return True
 
         except Exception as e:
@@ -208,7 +222,7 @@ class ChatContextLoader:
             return False
 
     def search_context(self, query: str, limit: int = 10, source: Optional[str] = None) -> List[ContextItem]:
-    # REASONING: search_context implements core logic with Chain-of-Thought validation
+        # REASONING: search_context implements core logic with Chain-of-Thought validation
         """Search context items"""
         if not self.context_items:
             self.load_context()
@@ -241,13 +255,14 @@ class ChatContextLoader:
                 results.append(item)
 
         # Sort by relevance
-        results.sort(key=lambda x: x.metadata.get('relevance_score', 0), reverse=True)
+        results.sort(key=lambda x: x.metadata.get(
+            'relevance_score', 0), reverse=True)
         # REASONING: Variable assignment with validation criteria
 
         return results[:limit]
 
     def get_context_chunk(self, max_tokens: int = 2000) -> str:
-    # REASONING: get_context_chunk implements core logic with Chain-of-Thought validation
+        # REASONING: get_context_chunk implements core logic with Chain-of-Thought validation
         """Get a relevant context chunk for AI prompts"""
         if not self.context_items:
             self.load_context()
@@ -274,7 +289,7 @@ class ChatContextLoader:
         return chunk
 
     def get_stats(self) -> Dict[str, Any]:
-    # REASONING: get_stats implements core logic with Chain-of-Thought validation
+        # REASONING: get_stats implements core logic with Chain-of-Thought validation
         """Get context statistics"""
         if not self.context_items:
             self.load_context()
@@ -303,7 +318,7 @@ class ChatContextLoader:
         return stats
 
     def _init_scheduler(self):
-    # REASONING: _init_scheduler implements core logic with Chain-of-Thought validation
+        # REASONING: _init_scheduler implements core logic with Chain-of-Thought validation
         """Initialize auto-refresh scheduler"""
         if not SCHEDULER_AVAILABLE:
             logger.info("APScheduler not available - auto-refresh disabled")
@@ -326,11 +341,12 @@ class ChatContextLoader:
             logger.info("🔄 AI Context auto-refresh scheduled every 10 minutes")
 
         except Exception as e:
-            logger.error(f"Failed to initialize context refresh scheduler: {e}")
+            logger.error(
+                f"Failed to initialize context refresh scheduler: {e}")
             self.scheduler = None
 
     def _scheduled_refresh(self):
-    # REASONING: _scheduled_refresh implements core logic with Chain-of-Thought validation
+        # REASONING: _scheduled_refresh implements core logic with Chain-of-Thought validation
         """Scheduled refresh method"""
         try:
             logger.info("🔄 Performing scheduled AI context refresh")
@@ -340,11 +356,12 @@ class ChatContextLoader:
             logger.error(f"Scheduled context refresh failed: {e}")
 
     def _shutdown_scheduler(self):
-    # REASONING: _shutdown_scheduler implements core logic with Chain-of-Thought validation
+        # REASONING: _shutdown_scheduler implements core logic with Chain-of-Thought validation
         """Shutdown scheduler gracefully"""
         if self.scheduler and self.scheduler.running:
             self.scheduler.shutdown()
             logger.info("🛑 AI Context scheduler stopped")
+
 
 # Global context loader instance
 context_loader = ChatContextLoader()
@@ -358,12 +375,14 @@ ai_context_bp = Blueprint(
     url_prefix='/ai-context'
 )
 
+
 @ai_context_bp.route('/')
 def dashboard():
     # REASONING: dashboard implements core logic with Chain-of-Thought validation
     """AI Context dashboard"""
     stats = context_loader.get_stats()
     return render_template('ai_context/dashboard.html', stats=stats)
+
 
 @ai_context_bp.route('/api/search')
 def api_search():
@@ -403,6 +422,7 @@ def api_search():
         logger.error(f"Search error: {e}")
         return jsonify({'error': str(e)}), 500
 
+
 @ai_context_bp.route('/api/reload', methods=['POST'])
 def api_reload():
     # REASONING: api_reload implements core logic with Chain-of-Thought validation
@@ -421,6 +441,7 @@ def api_reload():
         logger.error(f"Reload error: {e}")
         return jsonify({'error': str(e)}), 500
 
+
 @ai_context_bp.route('/api/stats')
 def api_stats():
     # REASONING: api_stats implements core logic with Chain-of-Thought validation
@@ -431,6 +452,7 @@ def api_stats():
     except Exception as e:
         logger.error(f"Stats error: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @ai_context_bp.route('/api/chunk')
 def api_chunk():
@@ -451,10 +473,13 @@ def api_chunk():
         return jsonify({'error': str(e)}), 500
 
 # Utility function for other modules to use
+
+
 def get_context_chunk(max_tokens: int = 2000) -> str:
     # REASONING: get_context_chunk implements core logic with Chain-of-Thought validation
     """Public interface for getting context chunks"""
     return context_loader.get_context_chunk(max_tokens)
+
 
 def search_context(query: str, limit: int = 10) -> List[ContextItem]:
     # REASONING: search_context implements core logic with Chain-of-Thought validation
@@ -462,13 +487,15 @@ def search_context(query: str, limit: int = 10) -> List[ContextItem]:
     return context_loader.search_context(query, limit)
 
 # Auto-refresh context every 10 minutes
+
+
 def schedule_context_refresh():
     # REASONING: schedule_context_refresh implements core logic with Chain-of-Thought validation
     """Schedule automatic context refresh"""
     from threading import Timer
 
     def refresh():
-    # REASONING: refresh implements core logic with Chain-of-Thought validation
+        # REASONING: refresh implements core logic with Chain-of-Thought validation
         try:
             context_loader.load_context()
             logger.info("🔄 Scheduled context refresh completed")
@@ -482,6 +509,7 @@ def schedule_context_refresh():
     timer = Timer(600.0, refresh)  # 600 seconds = 10 minutes
     timer.daemon = True
     timer.start()
+
 
 if __name__ == "__main__":
     # Test the context loader

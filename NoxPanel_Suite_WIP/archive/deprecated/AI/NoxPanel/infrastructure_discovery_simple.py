@@ -4,16 +4,17 @@ NoxPanel Infrastructure Discovery - Enhanced Edition with Plugin System
 Gate 4 Unlocked Capability - Revolutionary Infrastructure Intelligence
 """
 
-import os
-import sys
+import ipaddress
 import json
-import time
+import os
 import socket
 import subprocess
-import ipaddress
+import sys
 import threading
-from pathlib import Path
+import time
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
 from flask import Flask, jsonify, render_template_string, request
 
 # Import enhanced modules
@@ -26,7 +27,7 @@ except ImportError:
 
 # Import plugin system
 try:
-    from plugin_system import PluginManager, PluginAPI
+    from plugin_system import PluginAPI, PluginManager
     PLUGIN_SYSTEM_AVAILABLE = True
 except ImportError:
     print("Plugin system not available")
@@ -39,7 +40,8 @@ plugin_manager = None
 plugin_api = None
 
 if PLUGIN_SYSTEM_AVAILABLE:
-    plugin_manager = PluginManager(plugins_directory=os.path.join(os.path.dirname(__file__), "plugins"))
+    plugin_manager = PluginManager(plugins_directory=os.path.join(
+        os.path.dirname(__file__), "plugins"))
     plugin_api = PluginAPI(plugin_manager)
     print("🔌 Plugin System Initialized - Gate 4 Capability Unlocked!")
 else:
@@ -395,7 +397,8 @@ SIMPLE_DASHBOARD = """
         }
 
         async function startSecurityScan() {
-            logConsole('🛡️ Running comprehensive security assessment...', 'warning');
+            logConsole(
+                '🛡️ Running comprehensive security assessment...', 'warning');
             updateButton('security', 'Scanning...', true);
 
             try {
@@ -570,7 +573,8 @@ SIMPLE_DASHBOARD = """
 
                     resultsDiv.style.display = 'block';
                 } else {
-                    logConsole('📦 No plugins found - Use plugin_system.py to create example plugins', 'warning');
+                    logConsole(
+                        '📦 No plugins found - Use plugin_system.py to create example plugins', 'warning');
                 }
             } catch (error) {
                 logConsole(`❌ Plugin discovery failed: ${error.message}`, 'error');
@@ -654,7 +658,8 @@ SIMPLE_DASHBOARD = """
 
         // Initial status
         setTimeout(() => {
-            logConsole('✅ Infrastructure Discovery Dashboard loaded successfully', 'success');
+            logConsole(
+                '✅ Infrastructure Discovery Dashboard loaded successfully', 'success');
             if (typeof refreshPluginStatus === 'function') {
                 refreshPluginStatus();
             }
@@ -665,6 +670,8 @@ SIMPLE_DASHBOARD = """
 """
 
 # API Routes (same as before but simplified)
+
+
 @app.route('/')
 def dashboard():
     """
@@ -705,6 +712,7 @@ def dashboard():
     """
     return SIMPLE_DASHBOARD
 
+
 @app.route('/api/status')
 def api_status():
     return jsonify({
@@ -729,6 +737,8 @@ def api_status():
 
     COMPLIANCE: STANDARD
     """
+
+
 @app.route('/api/network-scan', methods=['POST'])
 def network_scan():
     try:

@@ -4,16 +4,17 @@ NoxPanel Infrastructure Discovery Mode
 Rapid deployment for infrastructure scanning and network analysis
 """
 
-import os
-import sys
+import ipaddress
 import json
-import time
+import os
 import socket
 import subprocess
-import ipaddress
+import sys
 import threading
-from pathlib import Path
+import time
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
 from flask import Flask, jsonify, render_template_string, request
 
 # Add parent directory to path
@@ -158,7 +159,8 @@ DASHBOARD_TEMPLATE = """
         }
 
         async function securityScan() {
-            showResult('🛡️ Running comprehensive security assessment...', 'red');
+            showResult(
+                '🛡️ Running comprehensive security assessment...', 'red');
             try {
                 const response = await fetch('/api/security-scan', { method: 'POST' });
                 const data = await response.json();
@@ -204,6 +206,7 @@ DASHBOARD_TEMPLATE = """
 </body>
 </html>
 """
+
 
 @app.route('/')
 def dashboard():
@@ -258,6 +261,7 @@ def dashboard():
     """Infrastructure Discovery Dashboard"""
     return render_template_string(DASHBOARD_TEMPLATE)
 
+
 @app.route('/api/status')
 def api_status():
     """API Status endpoint"""
@@ -270,6 +274,7 @@ def api_status():
         "plugin_system": "unlocked",
         "timestamp": time.time()
     })
+
 
 @app.route('/api/network-scan', methods=['POST'])
 def network_scan():

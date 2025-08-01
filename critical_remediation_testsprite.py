@@ -1,3 +1,11 @@
+from typing import Any, Dict, List
+from pathlib import Path
+import time
+import sys
+import random
+import logging
+import json
+import datetime
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -8,14 +16,6 @@ NoxSuite Simple TestSprite Runner (Fixed Unicode)
 Fixed encoding issues for critical remediation testing
 """
 
-import datetime
-import json
-import logging
-import random
-import sys
-import time
-from pathlib import Path
-from typing import Any, Dict, List
 
 # Configure logging with proper encoding
 logging.basicConfig(
@@ -221,7 +221,8 @@ class FixedTestSpriteRunner:
         total_passed = auth_summary["passed"] + rbac_summary["passed"]
         total_failed = auth_summary["failed"] + rbac_summary["failed"]
 
-        overall_pass_rate = (total_passed / total_tests) * 100 if total_tests > 0 else 0
+        overall_pass_rate = (total_passed / total_tests) * \
+            100 if total_tests > 0 else 0
         critical_issues = (
             auth_summary["critical_issues"] + rbac_summary["critical_issues"]
         )
@@ -343,7 +344,8 @@ class FixedTestSpriteRunner:
         print()  # Add spacing
 
         # Save and return results
-        combined_results = self.save_remediation_results(auth_results, rbac_results)
+        combined_results = self.save_remediation_results(
+            auth_results, rbac_results)
 
         logger.info("=" * 60)
         logger.info("🎉 CRITICAL REMEDIATION TESTING COMPLETE")

@@ -4,22 +4,24 @@ Heimnetz Enterprise Master Dashboard
 Complete overview of all Audit 5 implementations
 """
 
+import json
+import logging
 import os
 import sys
-import json
 import time
-import logging
 from datetime import datetime
 from pathlib import Path
+
 from flask import Flask, render_template_string
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class EnterpriseMasterDashboard:
     """Master dashboard for all enterprise services"""
-    
+
     def __init__(self):
         self.app = Flask(__name__)
         self.services = {
@@ -76,12 +78,12 @@ class EnterpriseMasterDashboard:
                 ]
             }
         }
-        
+
         self.setup_routes()
-        
+
     def setup_routes(self):
         """Setup Flask routes"""
-        
+
         @self.app.route('/')
         def master_dashboard():
             """Master enterprise dashboard"""
@@ -230,10 +232,10 @@ class EnterpriseMasterDashboard:
 </body>
 </html>
             '''
-            
+
             from jinja2 import Template
             return Template(template).render(services=self.services)
-        
+
         @self.app.route('/status')
         def status():
             """Get system status"""
@@ -243,7 +245,7 @@ class EnterpriseMasterDashboard:
                 'timestamp': datetime.now().isoformat(),
                 'audit': 'AUDIT_5_COMPLETE'
             }
-    
+
     def run(self):
         """Run the master dashboard"""
         logger.info("=" * 80)
@@ -261,9 +263,12 @@ class EnterpriseMasterDashboard:
         logger.info("🌐 Service Endpoints:")
         logger.info("   Master Dashboard:     http://localhost:5004")
         logger.info("   Multi-Tenant:         http://localhost:5000")
-        logger.info("   AI Integration:       http://localhost:5001/ai/dashboard")
-        logger.info("   Global Scalability:   http://localhost:5002/global/dashboard")
-        logger.info("   Advanced Analytics:   http://localhost:5003/analytics/dashboard")
+        logger.info(
+            "   AI Integration:       http://localhost:5001/ai/dashboard")
+        logger.info(
+            "   Global Scalability:   http://localhost:5002/global/dashboard")
+        logger.info(
+            "   Advanced Analytics:   http://localhost:5003/analytics/dashboard")
         logger.info("")
         logger.info("🔧 Enterprise Features:")
         logger.info("   • Complete multi-tenant SaaS architecture")
@@ -281,16 +286,18 @@ class EnterpriseMasterDashboard:
         logger.info("   • 100% System Health")
         logger.info("")
         logger.info("=" * 80)
-        
+
         try:
             self.app.run(host='0.0.0.0', port=5004, debug=False)
         except KeyboardInterrupt:
             logger.info("Master dashboard stopped by user")
 
+
 def main():
     """Main function"""
     dashboard = EnterpriseMasterDashboard()
     dashboard.run()
+
 
 if __name__ == "__main__":
     main()

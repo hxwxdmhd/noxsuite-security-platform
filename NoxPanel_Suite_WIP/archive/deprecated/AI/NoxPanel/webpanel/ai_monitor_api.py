@@ -3,15 +3,17 @@ NoxPanel v4.3 - AI Monitor Web API Integration
 REST endpoints for controlling and monitoring the AI healing system
 """
 
-from flask import Blueprint, jsonify, request
-from datetime import datetime
 import logging
+from datetime import datetime
+
+from flask import Blueprint, jsonify, request
 from noxcore.ai_monitor import get_monitor, heal_all_ai_models_now
 
 logger = logging.getLogger(__name__)
 
 # Create AI monitor blueprint
 ai_monitor_bp = Blueprint('ai_monitor', __name__, url_prefix='/api/ai-monitor')
+
 
 @ai_monitor_bp.route('/status', methods=['GET'])
 def get_monitor_status():
@@ -57,6 +59,7 @@ def get_monitor_status():
             'message': 'Failed to get monitor status',
             'error': str(e)
         }), 500
+
 
 @ai_monitor_bp.route('/start', methods=['POST'])
 def start_monitoring():

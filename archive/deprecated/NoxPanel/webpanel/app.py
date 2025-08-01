@@ -1,3 +1,4 @@
+from noxcore.security.auth_manager import NoxAuthManager, require_auth, require_role
 import os
 import logging
 from pathlib import Path
@@ -39,7 +40,8 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-SCRIPTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../scripts"))
+SCRIPTS_DIR = os.path.abspath(os.path.join(
+    os.path.dirname(__file__), "../scripts"))
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(32))
@@ -68,11 +70,11 @@ except Exception as e:
     db = None
 
 # Import security manager
-from noxcore.security.auth_manager import NoxAuthManager, require_auth, require_role
 
 # Initialize security manager
 auth_manager = NoxAuthManager(app)
 app.extensions['auth_manager'] = auth_manager
+
 
 @app.errorhandler(404)
 def not_found(error):
@@ -162,10 +164,12 @@ def not_found(error):
     """
     return jsonify({"status": "error", "message": "Endpoint not found"}), 404
 
+
 @app.errorhandler(500)
 def internal_error(error):
     logger.error(f"Internal server error: {error}")
     return jsonify({"status": "error", "message": "Internal server error"}), 500
+
 
 @app.route("/")
 def dashboard():
@@ -189,6 +193,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
+
+
 @app.route("/api/health")
 def health_check():
     """Health check endpoint"""
@@ -198,6 +204,7 @@ def health_check():
         "version": "1.0.0",
         "database": "connected" if db else "disconnected"
     })
+
 
 @app.route("/api/status")
 def system_status():
@@ -251,6 +258,7 @@ def system_status():
             "message": "System check failed"
         }), 500
 
+
 @app.route("/api/scripts")
 def list_scripts():
     """API endpoint to list available scripts"""
@@ -260,6 +268,7 @@ def list_scripts():
     except Exception as e:
         logger.error(f"Error listing scripts: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @app.route("/run/<script_name>", methods=["POST"])
     """
@@ -286,6 +295,8 @@ def list_scripts():
 
     COMPLIANCE: STANDARD
     """
+
+
 @auth_required
 def run_script_route(script_name):
     """Execute a script (requires authentication in production)"""
@@ -317,6 +328,7 @@ def run_script_route(script_name):
     except Exception as e:
         logger.error(f"Script execution error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @app.route("/api/auth/login", methods=["POST"])
 def login():

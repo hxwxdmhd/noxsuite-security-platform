@@ -3,16 +3,18 @@ NoxSuite Smart Installer - Utility Functions and Components
 Additional components for the smart installer system
 """
 
-import os
-import sys
-import json
-import subprocess
-import shutil
 import hashlib
-import yaml
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Union
+import json
+import os
+import shutil
+import subprocess
+import sys
 from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
+
+import yaml
+
 
 class ProgressTracker:
     """
@@ -21,21 +23,21 @@ class ProgressTracker:
     2. Analysis: Class requires specific implementation patterns for ProgressTracker functionality
     3. Solution: Implement ProgressTracker with SOLID principles and enterprise patterns
     4. Validation: Test ProgressTracker with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Enhanced progress tracking with ETA calculation"""
-    
+
     def __init__(self, total_steps: int, logger):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.total_steps = total_steps
@@ -44,7 +46,7 @@ class ProgressTracker:
         self.start_time = datetime.now()
         self.step_times = []
         self.step_names = []
-    
+
     def start_step(self, step_name: str):
     """
     REASONING CHAIN:
@@ -52,14 +54,14 @@ class ProgressTracker:
     2. Analysis: Implementation requires specific logic for start_step operation
     3. Solution: Implement start_step with enterprise-grade patterns and error handling
     4. Validation: Test start_step with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Start tracking a new step"""
         self.current_step += 1
         self.step_names.append(step_name)
         step_start_time = datetime.now()
-        
+
         # Calculate ETA
         if self.current_step > 1:
             avg_step_time = sum(self.step_times) / len(self.step_times)
@@ -68,12 +70,13 @@ class ProgressTracker:
             eta_str = self._format_duration(eta_seconds)
         else:
             eta_str = "calculating..."
-        
+
         progress_pct = (self.current_step - 1) / self.total_steps * 100
-        
-        self.logger.info(f"[{self.current_step}/{self.total_steps}] {step_name} ({progress_pct:.1f}% - ETA: {eta_str})")
+
+        self.logger.info(
+            f"[{self.current_step}/{self.total_steps}] {step_name} ({progress_pct:.1f}% - ETA: {eta_str})")
         return step_start_time
-    
+
     def complete_step(self, step_start_time: datetime):
     """
     REASONING CHAIN:
@@ -81,16 +84,16 @@ class ProgressTracker:
     2. Analysis: Implementation requires specific logic for complete_step operation
     3. Solution: Implement complete_step with enterprise-grade patterns and error handling
     4. Validation: Test complete_step with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Complete the current step and record timing"""
         step_duration = (datetime.now() - step_start_time).total_seconds()
         self.step_times.append(step_duration)
-        
+
         progress_pct = self.current_step / self.total_steps * 100
         self.logger.info(f"✅ Step completed ({progress_pct:.1f}% total)")
-    
+
     def _format_duration(self, seconds: float) -> str:
     """
     REASONING CHAIN:
@@ -98,7 +101,7 @@ class ProgressTracker:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _format_duration with enterprise-grade patterns and error handling
     4. Validation: Test _format_duration with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Format duration in human-readable format"""
@@ -111,6 +114,7 @@ class ProgressTracker:
             hours = seconds / 3600
             return f"{hours:.1f}h"
 
+
 class FileBackupManager:
     """
     REASONING CHAIN:
@@ -118,30 +122,30 @@ class FileBackupManager:
     2. Analysis: Manager class requires coordinated resource handling and lifecycle management
     3. Solution: Implement FileBackupManager with SOLID principles and enterprise patterns
     4. Validation: Test FileBackupManager with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Manages file and directory backups during installation"""
-    
+
     def __init__(self, backup_root: Path, logger):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.backup_root = backup_root
         self.logger = logger
         self.backups = []
-        
+
         # Ensure backup directory exists
         self.backup_root.mkdir(parents=True, exist_ok=True)
-    
+
     def backup_path(self, path: Path, backup_name: str = None) -> Optional[Path]:
     """
     REASONING CHAIN:
@@ -149,39 +153,39 @@ class FileBackupManager:
     2. Analysis: Implementation requires specific logic for backup_path operation
     3. Solution: Implement backup_path with enterprise-grade patterns and error handling
     4. Validation: Test backup_path with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Create backup of file or directory"""
         if not path.exists():
             return None
-        
+
         if not backup_name:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             backup_name = f"{path.name}_{timestamp}"
-        
+
         backup_path = self.backup_root / backup_name
-        
+
         try:
             if path.is_file():
                 shutil.copy2(path, backup_path)
             else:
                 shutil.copytree(path, backup_path, dirs_exist_ok=True)
-            
+
             self.backups.append({
                 'original': str(path),
                 'backup': str(backup_path),
                 'timestamp': datetime.now().isoformat(),
                 'size': self._get_size(backup_path)
             })
-            
+
             self.logger.debug(f"Backed up {path} to {backup_path}")
             return backup_path
-            
+
         except Exception as e:
             self.logger.warning(f"Failed to backup {path}: {e}")
             return None
-    
+
     def restore_backup(self, original_path: str) -> bool:
     """
     REASONING CHAIN:
@@ -189,7 +193,7 @@ class FileBackupManager:
     2. Analysis: Implementation requires specific logic for restore_backup operation
     3. Solution: Implement restore_backup with enterprise-grade patterns and error handling
     4. Validation: Test restore_backup with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Restore a specific backup"""
@@ -198,24 +202,25 @@ class FileBackupManager:
                 try:
                     backup_path = Path(backup_info['backup'])
                     original = Path(original_path)
-                    
+
                     if backup_path.is_file():
                         shutil.copy2(backup_path, original)
                     else:
                         if original.exists():
                             shutil.rmtree(original)
                         shutil.copytree(backup_path, original)
-                    
+
                     self.logger.info(f"Restored {original_path} from backup")
                     return True
-                    
+
                 except Exception as e:
-                    self.logger.error(f"Failed to restore {original_path}: {e}")
+                    self.logger.error(
+                        f"Failed to restore {original_path}: {e}")
                     return False
-        
+
         self.logger.warning(f"No backup found for {original_path}")
         return False
-    
+
     def cleanup_backups(self, max_age_days: int = 7):
     """
     REASONING CHAIN:
@@ -223,12 +228,12 @@ class FileBackupManager:
     2. Analysis: Implementation requires specific logic for cleanup_backups operation
     3. Solution: Implement cleanup_backups with enterprise-grade patterns and error handling
     4. Validation: Test cleanup_backups with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Clean up old backups"""
         cutoff_time = datetime.now() - timedelta(days=max_age_days)
-        
+
         for backup_info in self.backups[:]:
             backup_time = datetime.fromisoformat(backup_info['timestamp'])
             if backup_time < cutoff_time:
@@ -239,13 +244,14 @@ class FileBackupManager:
                             backup_path.unlink()
                         else:
                             shutil.rmtree(backup_path)
-                    
+
                     self.backups.remove(backup_info)
                     self.logger.debug(f"Cleaned up old backup: {backup_path}")
-                    
+
                 except Exception as e:
-                    self.logger.warning(f"Failed to cleanup backup {backup_path}: {e}")
-    
+                    self.logger.warning(
+                        f"Failed to cleanup backup {backup_path}: {e}")
+
     def _get_size(self, path: Path) -> int:
     """
     REASONING CHAIN:
@@ -253,7 +259,7 @@ class FileBackupManager:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _get_size with enterprise-grade patterns and error handling
     4. Validation: Test _get_size with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Get size of file or directory in bytes"""
@@ -270,6 +276,7 @@ class FileBackupManager:
                         pass
             return total
 
+
 class DockerManager:
     """
     REASONING CHAIN:
@@ -277,26 +284,26 @@ class DockerManager:
     2. Analysis: Manager class requires coordinated resource handling and lifecycle management
     3. Solution: Implement DockerManager with SOLID principles and enterprise patterns
     4. Validation: Test DockerManager with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Enhanced Docker management with health checks and image optimization"""
-    
+
     def __init__(self, logger):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.logger = logger
         self.docker_available = shutil.which("docker") is not None
-    
+
     def check_docker_health(self) -> Dict[str, Any]:
     """
     REASONING CHAIN:
@@ -304,15 +311,15 @@ class DockerManager:
     2. Analysis: Implementation requires specific logic for check_docker_health operation
     3. Solution: Implement check_docker_health with enterprise-grade patterns and error handling
     4. Validation: Test check_docker_health with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Comprehensive Docker health check"""
         if not self.docker_available:
             return {"status": "unavailable", "message": "Docker not found"}
-        
+
         health = {"status": "healthy", "issues": []}
-        
+
         # Check Docker daemon
         try:
             result = subprocess.run(
@@ -321,12 +328,12 @@ class DockerManager:
                 text=True,
                 timeout=30
             )
-            
+
             if result.returncode != 0:
                 health["status"] = "unhealthy"
                 health["issues"].append("Docker daemon not running")
                 return health
-            
+
         except subprocess.TimeoutExpired:
             health["status"] = "unhealthy"
             health["issues"].append("Docker daemon not responsive")
@@ -335,16 +342,16 @@ class DockerManager:
             health["status"] = "unhealthy"
             health["issues"].append(f"Docker check failed: {e}")
             return health
-        
+
         # Check Docker Compose
         compose_available = (
             shutil.which("docker-compose") is not None or
             self._check_docker_compose_plugin()
         )
-        
+
         if not compose_available:
             health["issues"].append("Docker Compose not available")
-        
+
         # Check available space
         try:
             result = subprocess.run(
@@ -353,7 +360,7 @@ class DockerManager:
                 text=True,
                 timeout=15
             )
-            
+
             if result.returncode == 0:
                 # Parse output for space information
                 lines = result.stdout.strip().split('\n')
@@ -363,9 +370,9 @@ class DockerManager:
                         pass
         except:
             pass
-        
+
         return health
-    
+
     def _check_docker_compose_plugin(self) -> bool:
     """
     REASONING CHAIN:
@@ -373,7 +380,7 @@ class DockerManager:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _check_docker_compose_plugin with enterprise-grade patterns and error handling
     4. Validation: Test _check_docker_compose_plugin with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Check if Docker Compose is available as a plugin"""
@@ -386,7 +393,7 @@ class DockerManager:
             return result.returncode == 0
         except:
             return False
-    
+
     def pull_images_with_progress(self, images: List[str]) -> bool:
     """
     REASONING CHAIN:
@@ -394,15 +401,15 @@ class DockerManager:
     2. Analysis: Implementation requires specific logic for pull_images_with_progress operation
     3. Solution: Implement pull_images_with_progress with enterprise-grade patterns and error handling
     4. Validation: Test pull_images_with_progress with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Pull Docker images with progress tracking"""
         self.logger.info(f"📦 Pulling {len(images)} Docker images...")
-        
+
         for i, image in enumerate(images, 1):
             self.logger.info(f"[{i}/{len(images)}] Pulling {image}...")
-            
+
             try:
                 # Use docker pull with progress
                 process = subprocess.Popen(
@@ -413,13 +420,13 @@ class DockerManager:
                     bufsize=1,
                     universal_newlines=True
                 )
-                
+
                 last_progress = ""
                 while True:
                     output = process.stdout.readline()
                     if output == '' and process.poll() is not None:
                         break
-                    
+
                     if output:
                         # Extract progress information
                         line = output.strip()
@@ -427,19 +434,19 @@ class DockerManager:
                             if line != last_progress:
                                 self.logger.debug(f"  {line}")
                                 last_progress = line
-                
+
                 if process.returncode != 0:
                     self.logger.error(f"Failed to pull {image}")
                     return False
                 else:
                     self.logger.info(f"✅ Pulled {image}")
-                    
+
             except Exception as e:
                 self.logger.error(f"Error pulling {image}: {e}")
                 return False
-        
+
         return True
-    
+
     def optimize_images(self) -> bool:
     """
     REASONING CHAIN:
@@ -447,12 +454,12 @@ class DockerManager:
     2. Analysis: Implementation requires specific logic for optimize_images operation
     3. Solution: Implement optimize_images with enterprise-grade patterns and error handling
     4. Validation: Test optimize_images with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Clean up unused Docker images and containers"""
         self.logger.info("🧹 Optimizing Docker images...")
-        
+
         try:
             # Remove dangling images
             subprocess.run(
@@ -460,20 +467,21 @@ class DockerManager:
                 capture_output=True,
                 timeout=60
             )
-            
+
             # Remove unused containers
             subprocess.run(
                 ["docker", "container", "prune", "-f"],
                 capture_output=True,
                 timeout=60
             )
-            
+
             self.logger.info("✅ Docker optimization completed")
             return True
-            
+
         except Exception as e:
             self.logger.warning(f"Docker optimization failed: {e}")
             return False
+
 
 class NetworkValidator:
     """
@@ -482,25 +490,25 @@ class NetworkValidator:
     2. Analysis: Class requires specific implementation patterns for NetworkValidator functionality
     3. Solution: Implement NetworkValidator with SOLID principles and enterprise patterns
     4. Validation: Test NetworkValidator with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Network connectivity and service validation"""
-    
+
     def __init__(self, logger):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.logger = logger
-    
+
     def check_connectivity(self, urls: List[str], timeout: int = 10) -> Dict[str, Any]:
     """
     REASONING CHAIN:
@@ -508,32 +516,34 @@ class NetworkValidator:
     2. Analysis: Implementation requires specific logic for check_connectivity operation
     3. Solution: Implement check_connectivity with enterprise-grade patterns and error handling
     4. Validation: Test check_connectivity with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Check connectivity to required services"""
-        results = {"reachable": [], "unreachable": [], "total_checked": len(urls)}
-        
+        results = {"reachable": [], "unreachable": [],
+            "total_checked": len(urls)}
+
         for url in urls:
             try:
                 import requests
-                response = requests.get(url, timeout=timeout, allow_redirects=True)
+                response = requests.get(
+                    url, timeout=timeout, allow_redirects=True)
                 if response.status_code < 400:
                     results["reachable"].append(url)
                     self.logger.debug(f"✅ {url} - OK ({response.status_code})")
                 else:
                     results["unreachable"].append(url)
                     self.logger.debug(f"❌ {url} - HTTP {response.status_code}")
-                    
+
             except Exception as e:
                 results["unreachable"].append(url)
                 self.logger.debug(f"❌ {url} - {type(e).__name__}: {e}")
-        
+
         success_rate = len(results["reachable"]) / len(urls) * 100
         results["success_rate"] = success_rate
-        
+
         return results
-    
+
     def check_ports(self, host: str, ports: List[int]) -> Dict[str, Any]:
     """
     REASONING CHAIN:
@@ -541,32 +551,34 @@ class NetworkValidator:
     2. Analysis: Implementation requires specific logic for check_ports operation
     3. Solution: Implement check_ports with enterprise-grade patterns and error handling
     4. Validation: Test check_ports with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Check if specific ports are available/in use"""
         import socket
-        
+
         results = {"available": [], "in_use": [], "total_checked": len(ports)}
-        
+
         for port in ports:
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                     sock.settimeout(2)
                     result = sock.connect_ex((host, port))
-                    
+
                     if result == 0:
                         results["in_use"].append(port)
                         self.logger.debug(f"Port {port}: In use")
                     else:
                         results["available"].append(port)
                         self.logger.debug(f"Port {port}: Available")
-                        
+
             except Exception as e:
                 self.logger.debug(f"Port {port}: Check failed - {e}")
-                results["available"].append(port)  # Assume available if check fails
-        
+                # Assume available if check fails
+                results["available"].append(port)
+
         return results
+
 
 class SystemResourceMonitor:
     """
@@ -575,27 +587,27 @@ class SystemResourceMonitor:
     2. Analysis: Class requires specific implementation patterns for SystemResourceMonitor functionality
     3. Solution: Implement SystemResourceMonitor with SOLID principles and enterprise patterns
     4. Validation: Test SystemResourceMonitor with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Monitor system resources during installation"""
-    
+
     def __init__(self, logger):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.logger = logger
         self.monitoring = False
         self.resource_history = []
-    
+
     def start_monitoring(self, interval: int = 30):
     """
     REASONING CHAIN:
@@ -603,25 +615,25 @@ class SystemResourceMonitor:
     2. Analysis: Implementation requires specific logic for start_monitoring operation
     3. Solution: Implement start_monitoring with enterprise-grade patterns and error handling
     4. Validation: Test start_monitoring with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Start resource monitoring in background"""
         if self.monitoring:
             return
-        
+
         self.monitoring = True
-        
+
         def monitor_loop():
     """
     Enhanced monitor_loop with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Function monitor_loop needs clear operational definition
     2. Analysis: Implementation requires specific logic for monitor_loop operation
     3. Solution: Implement monitor_loop with enterprise-grade patterns and error handling
     4. Validation: Test monitor_loop with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
             while self.monitoring:
@@ -631,19 +643,19 @@ class SystemResourceMonitor:
                         'timestamp': datetime.now().isoformat(),
                         'resources': resources
                     })
-                    
+
                     # Keep only last 100 entries
                     if len(self.resource_history) > 100:
                         self.resource_history.pop(0)
-                    
+
                     # Check for resource issues
                     self._check_resource_alerts(resources)
-                    
+
                 except Exception as e:
                     self.logger.debug(f"Resource monitoring error: {e}")
-                
+
                 time.sleep(interval)
-        
+
         import threading
         self.monitor_thread = threading.Thread(target=monitor_loop, daemon=True)
         self.monitor_thread.start()

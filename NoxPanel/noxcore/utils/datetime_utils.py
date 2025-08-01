@@ -173,7 +173,8 @@ class DateTimeUtils:
             return dt
 
         except Exception as e:
-            logger.error(f"Failed to parse datetime string '{iso_string}': {e}")
+            logger.error(
+                f"Failed to parse datetime string '{iso_string}': {e}")
             raise ValueError(f"Invalid datetime format: {iso_string}")
 
     @staticmethod

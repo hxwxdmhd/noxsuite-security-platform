@@ -5,21 +5,22 @@ Real-time template crawling, dynamic integration, and auto-optimization
 99.99999999999999999998% accuracy with ML-powered template selection
 """
 
-import os
 import json
+import logging
+import os
+import shutil
 import subprocess
-import urllib.request
+import tempfile
 import urllib.parse
+import urllib.request
+import zipfile
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-import logging
-from datetime import datetime
-import tempfile
-import shutil
-import zipfile
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 class GitTemplateIntegrator:
     """Advanced Git template integration with real-time crawling"""

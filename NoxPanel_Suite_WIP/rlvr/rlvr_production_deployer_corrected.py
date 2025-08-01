@@ -11,13 +11,14 @@ Solution: ASCII-only output while maintaining full reasoning validation
 """
 
 import asyncio
+import json
 import logging
 import sys
 import time
-import json
-import psutil
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
+import psutil
 
 # Configure Windows-compatible logging
 logging.basicConfig(
@@ -29,6 +30,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
 
 class RLVRProductionDeployer:
     # REASONING: RLVRProductionDeployer follows RLVR methodology for systematic validation
@@ -51,7 +53,7 @@ class RLVRProductionDeployer:
     COMPLIANCE: STANDARD
     """
     # REASONING: __init__ implements core logic with Chain-of-Thought validation
-        """
+     """
         REASONING: Initialize with clear architectural decisions
 
         Architecture Decision Chain:
@@ -60,14 +62,14 @@ class RLVRProductionDeployer:
         3. Prometheus monitoring -> Real-time performance metrics
         4. Auto-scaling service -> Reactive capacity management
         """
-        self.base_dir = Path(__file__).parent
-        self.services = {
+      self.base_dir = Path(__file__).parent
+       self.services = {
             'load_balancer': {'port': 80, 'status': 'stopped'},
             'fastapi_1': {'port': 8001, 'status': 'stopped'},
             'fastapi_2': {'port': 8002, 'status': 'stopped'},
             'fastapi_3': {'port': 8003, 'status': 'stopped'},
             'prometheus': {'port': 9090, 'status': 'stopped'},
-    """
+            """
     RLVR: Validates input according to business rules and constraints
 
     REASONING CHAIN:
@@ -91,7 +93,7 @@ class RLVRProductionDeployer:
         }
 
     def validate_reasoning_step(self, step_name: str, logic: str, evidence: str) -> bool:
-    # REASONING: validate_reasoning_step implements core logic with Chain-of-Thought validation
+        # REASONING: validate_reasoning_step implements core logic with Chain-of-Thought validation
         """
         REASONING VALIDATION: Verify each step follows logical progression
 
@@ -115,7 +117,8 @@ class RLVRProductionDeployer:
             "What evidence supports this decision?"
         ]
 
-        logger.info(f"   [VALIDATED] Reasoning step '{step_name}' passed validation")
+        logger.info(
+            f"   [VALIDATED] Reasoning step '{step_name}' passed validation")
         return True
 
     async def reason_architecture_design(self):
@@ -169,7 +172,8 @@ class RLVRProductionDeployer:
 
         if is_valid:
             self.reasoning_checks['architecture_validated'] = True
-            logger.info("[SUCCESS] Architecture reasoning validated - proceeding with implementation")
+            logger.info(
+                "[SUCCESS] Architecture reasoning validated - proceeding with implementation")
         else:
             raise Exception("[ERROR] Architecture reasoning failed validation")
 
@@ -204,7 +208,7 @@ class RLVRProductionDeployer:
 
     COMPLIANCE: STANDARD
     """
-        health_check_reasoning = """
+     health_check_reasoning = """
         Problem: How to detect failed service instances?
         -> Method: HTTP health endpoints (/health) every 10 seconds
         -> Logic: 3 consecutive failures = instance marked down
@@ -212,14 +216,14 @@ class RLVRProductionDeployer:
         -> Evidence: Standard practice (Kubernetes, Docker Swarm)
         """
 
-        # Validate load balancer reasoning
-        is_valid = self.validate_reasoning_step(
-            "Load Balancer Logic",
+      # Validate load balancer reasoning
+      is_valid = self.validate_reasoning_step(
+           "Load Balancer Logic",
             f"{traffic_reasoning}\n{health_check_reasoning}",
             "NGINX upstream module, industry-standard health checking"
-        )
+           )
 
-        if is_valid:
+       if is_valid:
             self.reasoning_checks['load_balancer_logic_verified'] = True
 
         # Create NGINX configuration with reasoning annotations (Windows-compatible)
@@ -228,7 +232,7 @@ class RLVRProductionDeployer:
         return nginx_config
 
     def create_nginx_config_with_reasoning(self) -> str:
-    # REASONING: create_nginx_config_with_reasoning implements core logic with Chain-of-Thought validation
+        # REASONING: create_nginx_config_with_reasoning implements core logic with Chain-of-Thought validation
         """Create NGINX config with embedded reasoning comments (ASCII-only)"""
         config = """
         # REASONING: Variable assignment with validation criteria
@@ -290,10 +294,11 @@ server {
         config_path = self.base_dir / "nginx_load_balancer.conf"
         # REASONING: Variable assignment with validation criteria
         with open(config_path, 'w', encoding='utf-8') as f:
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             f.write(config)
 
-        logger.info(f"[SUCCESS] NGINX configuration created with embedded reasoning: {config_path}")
+        logger.info(
+            f"[SUCCESS] NGINX configuration created with embedded reasoning: {config_path}")
         return str(config_path)
 
     async def reason_auto_scaling_logic(self):
@@ -315,9 +320,9 @@ server {
         REASONING CHAIN:
         Load Metrics -> Threshold Analysis -> Scaling Decision -> Action Execution
         """
-        logger.info("STEP 3: Auto-scaling Logic Reasoning")
+     logger.info("STEP 3: Auto-scaling Logic Reasoning")
 
-        scaling_reasoning = """
+      scaling_reasoning = """
         Trigger Question: When should we add/remove service instances?
 
         Scaling Up Logic:
@@ -335,8 +340,8 @@ server {
         Evidence: AWS Auto Scaling best practices, Google Cloud guidelines
         """
 
-        # Validate auto-scaling reasoning
-        is_valid = self.validate_reasoning_step(
+       # Validate auto-scaling reasoning
+       is_valid = self.validate_reasoning_step(
             "Auto-scaling Logic",
             scaling_reasoning,
             "Cloud provider best practices, prevents scaling oscillation"
@@ -348,7 +353,7 @@ server {
         return self.create_autoscaler_with_reasoning()
 
     def create_autoscaler_with_reasoning(self) -> str:
-    # REASONING: create_autoscaler_with_reasoning implements core logic with Chain-of-Thought validation
+        # REASONING: create_autoscaler_with_reasoning implements core logic with Chain-of-Thought validation
         """Create auto-scaling service with embedded reasoning (ASCII-compatible)"""
         autoscaler_code = '''
 """
@@ -517,7 +522,8 @@ if __name__ == "__main__":
         with open(autoscaler_path, 'w', encoding='utf-8') as f:
             f.write(autoscaler_code)
 
-        logger.info(f"[SUCCESS] Auto-scaler created with RLVR reasoning: {autoscaler_path}")
+        logger.info(
+            f"[SUCCESS] Auto-scaler created with RLVR reasoning: {autoscaler_path}")
         return str(autoscaler_path)
 
     async def deploy_with_reasoning_validation(self):
@@ -576,15 +582,18 @@ if __name__ == "__main__":
                 with open(summary_path, 'w', encoding='utf-8') as f:
                     json.dump(deployment_summary, f, indent=2)
 
-                logger.info("[SUCCESS] RLVR Production Deployment reasoning validation completed!")
+                logger.info(
+                    "[SUCCESS] RLVR Production Deployment reasoning validation completed!")
                 logger.info(f"Deployment summary: {summary_path}")
                 logger.info(f"NGINX config: {nginx_config}")
                 logger.info(f"Auto-scaler: {autoscaler_path}")
 
                 return deployment_summary
             else:
-                failed_checks = [k for k, v in self.reasoning_checks.items() if not v]
-                raise Exception(f"[ERROR] Reasoning validation failed: {failed_checks}")
+                failed_checks = [
+                    k for k, v in self.reasoning_checks.items() if not v]
+                raise Exception(
+                    f"[ERROR] Reasoning validation failed: {failed_checks}")
 
         except Exception as e:
             logger.error(f"[ERROR] RLVR Deployment failed: {e}")
@@ -627,6 +636,7 @@ if __name__ == "__main__":
         if is_valid:
             self.reasoning_checks['monitoring_logic_verified'] = True
             logger.info("[SUCCESS] Monitoring integration reasoning validated")
+
 
 async def main():
     """Main entry point for RLVR deployment demonstration"""

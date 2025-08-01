@@ -1,10 +1,20 @@
-from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for, flash
-from werkzeug.security import generate_password_hash, check_password_hash
-import pymysql
-import os
 import logging
-from functools import wraps
+import os
 from datetime import datetime
+from functools import wraps
+
+import pymysql
+from flask import (
+    Blueprint,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # Create blueprint
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -13,7 +23,9 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 logger = logging.getLogger(__name__)
 
 # Database path
-DB_PATH = os.path.join(os.path.dirname(__file__), '..', 'data', 'db', 'noxpanel.db')
+DB_PATH = os.path.join(os.path.dirname(__file__), '..',
+                       'data', 'db', 'noxpanel.db')
+
 
 def init_admin_db():
     """
@@ -102,13 +114,15 @@ def init_admin_db():
         # Insert default roles
         default_roles = [
             ('admin', 'Full system access', 'all'),
-            ('moderator', 'Moderate users and content', 'user_management,content_moderation'),
+            ('moderator', 'Moderate users and content',
+             'user_management,content_moderation'),
             ('user', 'Basic access', 'dashboard,profile'),
             ('viewer', 'Read-only access', 'dashboard_view')
         ]
 
         for role_name, description, permissions in default_roles:
-            cursor.execute('SELECT COUNT(*) FROM roles WHERE name = ?', (role_name,))
+            cursor.execute(
+                'SELECT COUNT(*) FROM roles WHERE name = ?', (role_name,))
             if cursor.fetchone()[0] == 0:
                 cursor.execute('''
                     INSERT INTO roles (name, description, permissions)
@@ -183,6 +197,7 @@ def init_admin_db():
         logger.error(f"Error initializing admin database: {e}")
         raise
 
+
 def require_admin(f):
     """Decorator to require admin access"""
     @wraps(f)
@@ -195,6 +210,7 @@ def require_admin(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 def require_login(f):
     """Decorator to require login"""
     @wraps(f)
@@ -205,6 +221,7 @@ def require_login(f):
             return redirect(url_for('admin.login'))
         return f(*args, **kwargs)
     return decorated_function
+
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():

@@ -5,29 +5,30 @@
 Dynamic template discovery, multi-protocol scanning, and ML-powered analysis
 """
 
-import os
-import re
-import json
-import socket
-import time
-import asyncio
-import aiohttp
-import subprocess
-import requests
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Set, Union
-import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta
-import yaml
-import toml
-import configparser
 import ast
-import psutil
-import platform
-import hashlib
+import asyncio
 import base64
+import configparser
+import hashlib
+import json
+import logging
+import os
+import platform
+import re
+import socket
+import subprocess
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Dict, List, Optional, Set, Tuple, Union
+
+import aiohttp
+import psutil
+import requests
+import toml
+import yaml
 
 # Configure advanced logging
 logging.basicConfig(
@@ -39,6 +40,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class PortAnalysis:
@@ -55,6 +57,7 @@ class PortAnalysis:
     security_level: str
     performance_metrics: Dict[str, float]
 
+
 @dataclass
 class GitTemplate:
     """Git template data structure"""
@@ -67,6 +70,7 @@ class GitTemplate:
     features: List[str]
     port_configurations: Dict[str, int]
 
+
 @dataclass
 class ArchitectureRecommendation:
     """Architecture recommendation with ML confidence"""
@@ -78,7 +82,10 @@ class ArchitectureRecommendation:
     implementation_steps: List[str]
     risk_assessment: Dict[str, str]
 
+
 class UltraAdvancedPortMapper:
+
+
 class UltraAdvancedPortMapper:
     """Ultra-advanced port mapper with 99.99999999999999999998% accuracy"""
 
@@ -86,7 +93,8 @@ class UltraAdvancedPortMapper:
         self.project_root = project_root
         self.port_analyses: Dict[int, PortAnalysis] = {}
         self.git_templates: List[GitTemplate] = []
-        self.architecture_recommendations: List[ArchitectureRecommendation] = []
+        self.architecture_recommendations: List[ArchitectureRecommendation] = [
+        ]
         self.scan_history: List[Dict] = []
         self.ml_confidence_threshold = 0.999999999999999999998
 
@@ -286,11 +294,14 @@ class UltraAdvancedPortMapper:
                 content = py_file.read_text(encoding='utf-8')
 
                 # Find @app.route patterns
-                app_routes = re.findall(r'@app\.route\(["\']([^"\']+)["\']', content)
+                app_routes = re.findall(
+                    r'@app\.route\(["\']([^"\']+)["\']', content)
                 # Find @blueprint.route patterns
-                bp_routes = re.findall(r'@\w+\.route\(["\']([^"\']+)["\']', content)
+                bp_routes = re.findall(
+                    r'@\w+\.route\(["\']([^"\']+)["\']', content)
                 # Find Blueprint definitions
-                bp_defs = re.findall(r'Blueprint\(["\'](\w+)["\'].*url_prefix=["\']([^"\']*)["\']', content)
+                bp_defs = re.findall(
+                    r'Blueprint\(["\'](\w+)["\'].*url_prefix=["\']([^"\']*)["\']', content)
 
                 if app_routes or bp_routes or bp_defs:
                     routes[str(py_file.relative_to(self.project_root))] = {
@@ -436,17 +447,20 @@ class UltraAdvancedPortMapper:
 
         print(f"\n🌐 ACTIVE PORTS: {analysis['active_ports']}")
 
-        print(f"\n🛣️  ROUTES DISCOVERED: {len(analysis['routes_discovered'])} files")
+        print(
+            f"\n🛣️  ROUTES DISCOVERED: {len(analysis['routes_discovered'])} files")
         total_routes = 0
         for file, routes in analysis['routes_discovered'].items():
-            route_count = len(routes['app_routes']) + len(routes['blueprint_routes'])
+            route_count = len(routes['app_routes']) + \
+                len(routes['blueprint_routes'])
             total_routes += route_count
             if route_count > 0:
                 print(f"   {file}: {route_count} routes")
 
         print(f"\n📊 TOTAL ROUTES: {total_routes}")
 
-        print(f"\n🔧 SERVICES IDENTIFIED: {len(analysis['services_identified'])}")
+        print(
+            f"\n🔧 SERVICES IDENTIFIED: {len(analysis['services_identified'])}")
         for name, service in analysis['services_identified'].items():
             print(f"   {name}: {service['type']} - {service['description']}")
 
@@ -455,6 +469,7 @@ class UltraAdvancedPortMapper:
             print(f"   {rec['priority']}: {rec['description']}")
 
         print("\n" + "="*60)
+
 
 if __name__ == "__main__":
     project_root = Path(__file__).parent

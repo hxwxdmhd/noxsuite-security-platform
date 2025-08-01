@@ -4,11 +4,19 @@
 Handles /ui/* routes for theme management, components, and frontend assets
 """
 
-import logging
 import json
+import logging
 from pathlib import Path
-from flask import Blueprint, render_template, request, jsonify, session, send_from_directory
-from flask_login import login_required, current_user
+
+from flask import (
+    Blueprint,
+    jsonify,
+    render_template,
+    request,
+    send_from_directory,
+    session,
+)
+from flask_login import current_user, login_required
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +79,7 @@ THEME_CONFIGS = {
     }
 }
 
+
 @ui_bp.route('/theme/config')
 @login_required
 def get_theme_config():
@@ -105,7 +114,7 @@ def get_theme_config():
     return jsonify({
         'success': True,
         'theme': current_theme,
-    """
+        """
     RLVR: Implements script_manager_component with error handling and validation
 
     REASONING CHAIN:
@@ -113,12 +122,12 @@ def get_theme_config():
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Implements script_manager_component with error handling and validation
     """
-    RLVR: Implements system_monitor_component with error handling and validation
+        RLVR: Implements system_monitor_component with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for system_monitor_component
-    2. Analysis: Function complexity 1.0/5.0
-    """
+        REASONING CHAIN:
+        1. Problem: Input parameters and business logic for system_monitor_component
+        2. Analysis: Function complexity 1.0/5.0
+        """
     RLVR: Implements theme_switcher_component with error handling and validation
 
     REASONING CHAIN:
@@ -127,27 +136,27 @@ def get_theme_config():
     3. Solution: Implements theme_switcher_component with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
     """
-    RLVR: Implements dynamic_theme_css with error handling and validation
+        RLVR: Implements dynamic_theme_css with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for dynamic_theme_css
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements dynamic_theme_css with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
+        REASONING CHAIN:
+        1. Problem: Input parameters and business logic for dynamic_theme_css
+        2. Analysis: Function complexity 1.0/5.0
+        3. Solution: Implements dynamic_theme_css with error handling and validation
+        4. Implementation: Chain-of-Thought validation with error handling
+        5. Validation: 3 test cases covering edge cases
+
+        COMPLIANCE: STANDARD
+        """
     5. Validation: 3 test cases covering edge cases
 
     COMPLIANCE: STANDARD
     """
-    5. Validation: 3 test cases covering edge cases
+        3. Solution: Implements system_monitor_component with error handling and validation
+        4. Implementation: Chain-of-Thought validation with error handling
+        5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
-    3. Solution: Implements system_monitor_component with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
-
-    COMPLIANCE: STANDARD
-    """
+        COMPLIANCE: STANDARD
+        """
     4. Implementation: Chain-of-Thought validation with error handling
     5. Validation: 3 test cases covering edge cases
 
@@ -156,6 +165,7 @@ def get_theme_config():
         'config': config,
         'available_themes': list(THEME_CONFIGS.keys())
     })
+
 
 @ui_bp.route('/theme/preview/<theme_name>')
 @login_required
@@ -174,12 +184,14 @@ def preview_theme(theme_name):
         'config': config
     })
 
+
 @ui_bp.route('/components/script-manager')
 @login_required
 def script_manager_component():
     """Render script manager component"""
     theme = session.get('theme', 'steady')
     return render_template('components/script_manager.html', theme=theme)
+
 
 @ui_bp.route('/components/system-monitor')
 @login_required
@@ -188,13 +200,15 @@ def system_monitor_component():
     theme = session.get('theme', 'steady')
     return render_template('components/system_monitor.html', theme=theme)
 
+
 @ui_bp.route('/components/theme-switcher')
 def theme_switcher_component():
     """Render theme switcher component"""
     current_theme = session.get('theme', 'steady')
     return render_template('components/theme_switcher.html',
-                         current_theme=current_theme,
-                         themes=THEME_CONFIGS)
+                           current_theme=current_theme,
+                           themes=THEME_CONFIGS)
+
 
 @ui_bp.route('/assets/css/theme.css')
 def dynamic_theme_css():
@@ -314,6 +328,7 @@ body {{
     from flask import Response
     return Response(css_content, mimetype='text/css')
 
+
 @ui_bp.route('/preferences')
 @login_required
 def preferences_page():
@@ -329,9 +344,10 @@ def preferences_page():
     })
 
     return render_template('preferences.html',
-                         theme=theme,
-                         preferences=preferences,
-                         theme_configs=THEME_CONFIGS)
+                           theme=theme,
+                           preferences=preferences,
+                           theme_configs=THEME_CONFIGS)
+
 
 @ui_bp.route('/preferences/update', methods=['POST'])
 @login_required
@@ -350,6 +366,7 @@ def update_preferences():
         'preferences': current_prefs,
         'message': 'Preferences updated successfully'
     })
+
 
 @ui_bp.route('/debug/theme-info')
 @login_required

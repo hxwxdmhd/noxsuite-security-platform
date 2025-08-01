@@ -12,11 +12,12 @@ Based on init_noxvalidator_advanced.py and NOXPANEL_COMPLETE_GUIDE.md principles
 """
 
 import os
-import sys
 import subprocess
+import sys
 import time
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
+
 
 # ADHD-friendly colors
 class Colors:
@@ -28,6 +29,7 @@ class Colors:
     BLUE = '\033[94m'
     CYAN = '\033[96m'
     BG_GREEN = '\033[102m'
+
 
 def print_banner():
     """
@@ -200,18 +202,24 @@ def print_banner():
 """
     print(banner)
 
+
 def print_step(step: int, total: int, description: str):
     percentage = int((step / total) * 100)
-    print(f"\n{Colors.CYAN}[{step}/{total}] {Colors.BOLD}{description}{Colors.RESET} ({percentage}%)")
+    print(
+        f"\n{Colors.CYAN}[{step}/{total}] {Colors.BOLD}{description}{Colors.RESET} ({percentage}%)")
+
 
 def print_success(message: str):
     print(f"{Colors.GREEN}✅ {message}{Colors.RESET}")
 
+
 def print_warning(message: str):
     print(f"{Colors.YELLOW}⚠️  {message}{Colors.RESET}")
 
+
 def print_error(message: str):
     print(f"{Colors.RED}❌ {message}{Colors.RESET}")
+
 
 def print_info(message: str):
     """
@@ -227,6 +235,7 @@ def print_info(message: str):
     COMPLIANCE: STANDARD
     """
     print(f"{Colors.CYAN}ℹ️  {message}{Colors.RESET}")
+
 
 class NoxPanelTestSetup:
     """Enhanced setup manager for NoxPanel test infrastructure."""
@@ -386,9 +395,11 @@ class NoxPanelTestSetup:
     """
         python_version = sys.version_info
         if python_version >= (3, 8):
-            print_success(f"Python {python_version.major}.{python_version.minor}.{python_version.micro}")
+            print_success(
+                f"Python {python_version.major}.{python_version.minor}.{python_version.micro}")
         else:
-            print_error(f"Python 3.8+ required, found {python_version.major}.{python_version.minor}")
+            print_error(
+                f"Python 3.8+ required, found {python_version.major}.{python_version.minor}")
             return False
 
         # Check if we're in the right directory
@@ -431,8 +442,10 @@ class NoxPanelTestSetup:
                 self._install_packages([package], f"optional ({description})")
                 print_success(f"Installed {package} for {description}")
             except:
-                print_warning(f"Skipped {package} - install manually if needed")
-                self.results['recommendations'].append(f"Consider installing {package} for {description}")
+                print_warning(
+                    f"Skipped {package} - install manually if needed")
+                self.results['recommendations'].append(
+                    f"Consider installing {package} for {description}")
 
         return True
 
@@ -448,7 +461,8 @@ class NoxPanelTestSetup:
                 if result.returncode == 0:
                     self.results['dependencies'].append(f"✅ {package}")
                 else:
-                    print_warning(f"Failed to install {package}: {result.stderr}")
+                    print_warning(
+                        f"Failed to install {package}: {result.stderr}")
                     self.results['dependencies'].append(f"❌ {package}")
 
             except subprocess.TimeoutExpired:
@@ -493,7 +507,7 @@ class NoxPanelTestSetup:
         """Validate conftest.py can be imported and used."""
         try:
             sys.path.insert(0, str(self.test_dir))
-            from conftest import TestConfig, DeviceFactory, UserFactory
+            from conftest import DeviceFactory, TestConfig, UserFactory
 
             # Test factory creation
             config = TestConfig()
@@ -591,10 +605,12 @@ class NoxPanelTestSetup:
                 ai_available = True
             else:
                 print_info(f"{service_name} not detected")
-                self.results['ai_setup'].append(f"ℹ️ {service_name} not available")
+                self.results['ai_setup'].append(
+                    f"ℹ️ {service_name} not available")
 
         if not ai_available:
-            print_warning("No AI services detected - AI features will use rule-based fallbacks")
+            print_warning(
+                "No AI services detected - AI features will use rule-based fallbacks")
             self.results['recommendations'].extend([
                 "Install Ollama for local AI: https://ollama.com/",
                 "Or install LM Studio: https://lmstudio.ai/",
@@ -607,7 +623,8 @@ class NoxPanelTestSetup:
         """Check if Ollama is running."""
         try:
             import requests
-            response = requests.get("http://localhost:11434/api/tags", timeout=3)
+            response = requests.get(
+                "http://localhost:11434/api/tags", timeout=3)
             return response.status_code == 200
         except:
             return False
@@ -616,7 +633,8 @@ class NoxPanelTestSetup:
         """Check if LM Studio is running."""
         try:
             import requests
-            response = requests.get("http://localhost:1234/v1/models", timeout=3)
+            response = requests.get(
+                "http://localhost:1234/v1/models", timeout=3)
             return response.status_code == 200
         except:
             return False

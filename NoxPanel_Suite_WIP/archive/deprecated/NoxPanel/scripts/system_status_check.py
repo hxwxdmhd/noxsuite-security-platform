@@ -4,12 +4,14 @@ System Status Check - Comprehensive Health Validation
 Validates all components and provides clear status report
 """
 
+import logging
 import os
 import sys
 import time
-import logging
-import requests
 from pathlib import Path
+
+import requests
+
 
 def setup_safe_logging():
     """
@@ -46,13 +48,14 @@ def setup_safe_logging():
     )
     return logging.getLogger(__name__)
 
+
 def check_system_files():
     """Check all required system files exist"""
     logger = setup_safe_logging()
 
     project_root = Path(__file__).parent.parent
     required_files = [
-    """
+        """
     RLVR: Validates input according to business rules and constraints
 
     REASONING CHAIN:
@@ -99,6 +102,7 @@ def check_system_files():
     logger.info("All required files present")
     return True
 
+
 def check_python_imports():
     """Check all critical imports work"""
     logger = setup_safe_logging()
@@ -109,9 +113,9 @@ def check_python_imports():
 
         # Test critical imports
         from noxcore.database import NoxDatabase
-        from noxcore.websocket.manager import WebSocketManager
-        from noxcore.tasks.manager import TaskManager
         from noxcore.plugins import PluginManager
+        from noxcore.tasks.manager import TaskManager
+        from noxcore.websocket.manager import WebSocketManager
 
     """
     RLVR: Validates input according to business rules and constraints
@@ -125,12 +129,13 @@ def check_python_imports():
 
     COMPLIANCE: STANDARD
     """
-        logger.info("All critical imports successful")
-        return True
+      logger.info("All critical imports successful")
+       return True
 
     except Exception as e:
         logger.error(f"Import test failed: {e}")
         return False
+
 
 def check_live_system():
     """Check if system is running and responsive"""
@@ -149,10 +154,11 @@ def check_live_system():
 
     COMPLIANCE: STANDARD
     """
-        response = requests.get('http://localhost:5000/api/health', timeout=3)
-        if response.status_code == 200:
+      response = requests.get('http://localhost:5000/api/health', timeout=3)
+       if response.status_code == 200:
             health_data = response.json()
-            logger.info(f"System is live and healthy: {health_data.get('status', 'unknown')}")
+            logger.info(
+                f"System is live and healthy: {health_data.get('status', 'unknown')}")
 
             # Test additional endpoints
             test_endpoints = [
@@ -164,7 +170,8 @@ def check_live_system():
             endpoint_results = []
             for endpoint in test_endpoints:
                 try:
-                    resp = requests.get(f'http://localhost:5000{endpoint}', timeout=2)
+                    resp = requests.get(
+                        f'http://localhost:5000{endpoint}', timeout=2)
                     endpoint_results.append(f"{endpoint}: {resp.status_code}")
                 except Exception as e:
                     endpoint_results.append(f"{endpoint}: ERROR - {e}")
@@ -173,15 +180,18 @@ def check_live_system():
             return True
 
         else:
-            logger.warning(f"System responding but unhealthy: {response.status_code}")
+            logger.warning(
+                f"System responding but unhealthy: {response.status_code}")
             return False
 
     except requests.exceptions.ConnectionError:
-        logger.info("System not currently running (this is normal if not started)")
+        logger.info(
+            "System not currently running (this is normal if not started)")
         return True
     except Exception as e:
         logger.warning(f"Live system check failed: {e}")
         return True
+
 
 def check_plugin_system():
     """Check plugin system functionality"""
@@ -198,7 +208,8 @@ def check_plugin_system():
         self_test = sample_plugin.run_self_test()
 
         if self_test.get('self_test') == 'PASS':
-            logger.info(f"Plugin system operational: {metadata['name']} v{metadata['version']}")
+            logger.info(
+                f"Plugin system operational: {metadata['name']} v{metadata['version']}")
             return True
         else:
             logger.error(f"Plugin self-test failed: {self_test}")
@@ -207,6 +218,7 @@ def check_plugin_system():
     except Exception as e:
         logger.error(f"Plugin system check failed: {e}")
         return False
+
 
 def run_comprehensive_status_check():
     """Run complete system status check"""
@@ -260,6 +272,7 @@ def run_comprehensive_status_check():
         print("WARNING: Some system checks failed")
         print("Review the individual check results above")
         return False
+
 
 if __name__ == "__main__":
     success = run_comprehensive_status_check()

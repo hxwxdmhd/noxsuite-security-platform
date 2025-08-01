@@ -4,15 +4,16 @@ NoxPanel Full System Diagnostic and Repair
 Comprehensive analysis and repair tool for all NoxPanel components
 """
 
-import os
-import sys
 import json
 import logging
+import os
 import subprocess
-import pymysql
-from pathlib import Path
-from typing import Dict, List, Any, Optional
+import sys
 import traceback
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import pymysql
 
 # Setup logging
 logging.basicConfig(
@@ -24,6 +25,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
 
 class NoxPanelDiagnostic:
     """Comprehensive diagnostic and repair system for NoxPanel"""
@@ -189,12 +191,15 @@ class NoxPanelDiagnostic:
         for dir_path in required_dirs:
             full_path = self.base_path / dir_path
             if not full_path.exists():
-                self.log_issue('WARNING', 'FileStructure', f"Missing directory: {dir_path}")
+                self.log_issue('WARNING', 'FileStructure',
+                               f"Missing directory: {dir_path}")
                 try:
                     full_path.mkdir(parents=True, exist_ok=True)
-                    self.log_repair('FileStructure', f'Created directory {dir_path}', 'SUCCESS')
+                    self.log_repair('FileStructure',
+                                    f'Created directory {dir_path}', 'SUCCESS')
                 except Exception as e:
-                    self.log_issue('CRITICAL', 'FileStructure', f"Failed to create {dir_path}: {e}")
+                    self.log_issue('CRITICAL', 'FileStructure',
+                                   f"Failed to create {dir_path}: {e}")
     """
     RLVR: Validates input according to business rules and constraints
 

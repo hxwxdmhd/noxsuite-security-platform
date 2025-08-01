@@ -2,19 +2,21 @@
 Simple Knowledge Base Setup - Creates basic knowledge items for NoxPanel
 """
 
+import json
+import logging
 import os
 import sys
-import json
-import pymysql
-import logging
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
+import pymysql
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 def create_simple_knowledge_db():
     """
@@ -70,8 +72,10 @@ def create_simple_knowledge_db():
     # Create indexes
     conn.execute("CREATE INDEX idx_knowledge_tags ON knowledge_items(tags)")
     conn.execute("CREATE INDEX idx_knowledge_topic ON knowledge_items(topic)")
-    conn.execute("CREATE INDEX idx_knowledge_category ON knowledge_items(category)")
-    conn.execute("CREATE INDEX idx_knowledge_type ON knowledge_items(content_type)")
+    conn.execute(
+        "CREATE INDEX idx_knowledge_category ON knowledge_items(category)")
+    conn.execute(
+        "CREATE INDEX idx_knowledge_type ON knowledge_items(content_type)")
 
     # Sample data
     sample_items = [
@@ -522,6 +526,7 @@ while ($true) {
     logger.info(f"📍 Database location: {db_path}")
 
     return True
+
 
 if __name__ == "__main__":
     print("🧠 NoxPanel Knowledge Base Setup (Simple)")

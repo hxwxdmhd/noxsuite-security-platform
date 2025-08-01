@@ -1,3 +1,8 @@
+from pathlib import Path
+from datetime import datetime
+import time
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -6,12 +11,6 @@ logger = get_logger(__name__)
 NoxSuite Custom Automation Scenarios - Demo Script
 Demonstrates advanced workflow automation scenarios with real examples
 """
-
-import json
-import os
-import time
-from datetime import datetime
-from pathlib import Path
 
 
 class NoxSuiteScenarioDemo:
@@ -284,7 +283,8 @@ def slow_function(data_list):
 
         logger.info(f"\n📁 Demo data available in: {self.demo_data_dir}")
         logger.info(f"🔧 Workflow configs in: {self.flows_dir}")
-        logger.info("\n🚀 Ready to import into Langflow at http://localhost:7860")
+        logger.info(
+            "\n🚀 Ready to import into Langflow at http://localhost:7860")
 
 
 def create_workflow_import_guide():

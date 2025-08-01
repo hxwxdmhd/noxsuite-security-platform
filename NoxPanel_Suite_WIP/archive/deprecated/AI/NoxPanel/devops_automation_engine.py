@@ -6,22 +6,25 @@ Advanced automation for infrastructure deployment, monitoring, and optimization
 Integrates with Ultimate Suite ecosystem for enhanced DevOps capabilities
 """
 
-import os
-import sys
 import json
-import time
+import logging
+import os
 import subprocess
+import sys
 import threading
+import time
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, asdict
-import logging
-import yaml
-import requests
+from typing import Any, Dict, List, Optional, Tuple
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+import requests
+import yaml
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class DeploymentTask:
@@ -35,6 +38,7 @@ class DeploymentTask:
     config: Dict[str, Any]
     output: List[str]
 
+
 @dataclass
 class InfrastructureMetrics:
     """Infrastructure monitoring metrics"""
@@ -45,6 +49,7 @@ class InfrastructureMetrics:
     network_io: Dict[str, float]
     container_count: int
     service_health: Dict[str, str]
+
 
 class DevOpsAutomationEngine:
     """Advanced DevOps automation and orchestration engine"""
@@ -86,12 +91,12 @@ class DevOpsAutomationEngine:
     """
     COMPLIANCE: STANDARD
     """
-        self.base_path = Path("k:/Project Heimnetz/AI/NoxPanel")
-        self.config_path = self.base_path / "config" / "devops_config.json"
-        self.deployment_queue: List[DeploymentTask] = []
-        self.metrics_history: List[InfrastructureMetrics] = []
-        self.active_deployments: Dict[str, threading.Thread] = {}
-        self.load_configuration()
+    self.base_path = Path("k:/Project Heimnetz/AI/NoxPanel")
+    self.config_path = self.base_path / "config" / "devops_config.json"
+    self.deployment_queue: List[DeploymentTask] = []
+    self.metrics_history: List[InfrastructureMetrics] = []
+    self.active_deployments: Dict[str, threading.Thread] = {}
+    self.load_configuration()
 
     def load_configuration(self):
         """Load DevOps configuration"""
@@ -128,7 +133,7 @@ class DevOpsAutomationEngine:
     """
     COMPLIANCE: STANDARD
     """
-            self.config = self.create_default_config()
+    self.config = self.create_default_config()
 
     def create_default_config(self) -> Dict[str, Any]:
         """Create default DevOps configuration"""
@@ -424,7 +429,7 @@ Write-Host "  - Ultimate Suite: http://localhost:5000" -ForegroundColor White
 Write-Host "  - Main Gateway: http://localhost" -ForegroundColor White
 """
 
-        return scripts
+    return scripts
 
     def create_kubernetes_manifests(self) -> Dict[str, str]:
         """Create Kubernetes deployment manifests"""
@@ -515,7 +520,7 @@ spec:
   type: ClusterIP
 """
 
-        manifests["ingress.yaml"] = """
+    manifests["ingress.yaml"] = """
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -556,7 +561,7 @@ spec:
               number: 80
 """
 
-        return manifests
+    return manifests
 
     def monitor_infrastructure(self) -> InfrastructureMetrics:
         """Monitor infrastructure metrics"""
@@ -581,9 +586,10 @@ spec:
             container_count = 0
             try:
                 result = subprocess.run(['docker', 'ps', '-q'],
-                                      capture_output=True, text=True, timeout=10)
+                                        capture_output=True, text=True, timeout=10)
                 if result.returncode == 0:
-                    container_count = len([line for line in result.stdout.strip().split('\n') if line])
+                    container_count = len(
+                        [line for line in result.stdout.strip().split('\n') if line])
             except:
                 pass
 
@@ -795,8 +801,10 @@ jobs:
             if datetime.fromisoformat(m.timestamp) > one_hour_ago
         ]
 
-        avg_cpu = sum(m.cpu_usage for m in recent_metrics) / len(recent_metrics) if recent_metrics else 0
-        avg_memory = sum(m.memory_usage for m in recent_metrics) / len(recent_metrics) if recent_metrics else 0
+        avg_cpu = sum(m.cpu_usage for m in recent_metrics) / \
+            len(recent_metrics) if recent_metrics else 0
+        avg_memory = sum(m.memory_usage for m in recent_metrics) / \
+            len(recent_metrics) if recent_metrics else 0
 
         report = {
             "generated_at": datetime.now().isoformat(),
@@ -821,24 +829,31 @@ jobs:
         recommendations = []
 
         if metrics.cpu_usage > 80:
-            recommendations.append("⚠️ High CPU usage detected. Consider scaling horizontally or optimizing workloads.")
+            recommendations.append(
+                "⚠️ High CPU usage detected. Consider scaling horizontally or optimizing workloads.")
 
         if metrics.memory_usage > 85:
-            recommendations.append("⚠️ High memory usage detected. Consider increasing memory limits or optimizing memory usage.")
+            recommendations.append(
+                "⚠️ High memory usage detected. Consider increasing memory limits or optimizing memory usage.")
 
         if metrics.disk_usage > 90:
-            recommendations.append("🚨 Critical disk usage! Clean up unnecessary files or expand storage.")
+            recommendations.append(
+                "🚨 Critical disk usage! Clean up unnecessary files or expand storage.")
 
         if metrics.container_count == 0:
-            recommendations.append("📦 No containers detected. Consider containerizing applications for better management.")
+            recommendations.append(
+                "📦 No containers detected. Consider containerizing applications for better management.")
 
         # Check service health
-        unhealthy_services = [name for name, status in metrics.service_health.items() if status != 'healthy']
+        unhealthy_services = [
+            name for name, status in metrics.service_health.items() if status != 'healthy']
         if unhealthy_services:
-            recommendations.append(f"🔧 Unhealthy services detected: {', '.join(unhealthy_services)}")
+            recommendations.append(
+                f"🔧 Unhealthy services detected: {', '.join(unhealthy_services)}")
 
         if not recommendations:
-            recommendations.append("✅ All systems operating within normal parameters.")
+            recommendations.append(
+                "✅ All systems operating within normal parameters.")
 
         return recommendations
 
@@ -879,6 +894,7 @@ jobs:
         except Exception as e:
             logger.error(f"Error exporting deployment artifacts: {e}")
             return None
+
 
 def main():
     """
@@ -921,6 +937,7 @@ def main():
         print(f"✅ Artifacts exported to: {artifacts_path}")
 
     print("\n🎯 DevOps Automation Engine ready for deployment!")
+
 
 if __name__ == "__main__":
     main()

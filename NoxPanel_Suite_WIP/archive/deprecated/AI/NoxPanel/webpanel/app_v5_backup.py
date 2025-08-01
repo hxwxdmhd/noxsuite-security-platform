@@ -3,24 +3,38 @@ NoxPanel v5.0 - Integrated Flask Application
 Main application with enhanced security, performance, and modular architecture
 """
 
-import os
-import sys
+from noxcore.security_headers import init_security_headers
+from noxcore.runner import run_script
+from noxcore.rate_limiter import (
+    RateLimitRule,
+    add_rate_limit_headers,
+    get_rate_limiter,
+    rate_limit,
+)
+from noxcore.plugin_sandbox import SecurePluginLoader
+from noxcore.connection_manager import init_connection_manager
+from noxcore.auth import auth_required, create_user, verify_user
+from noxcore.security_config import EnvironmentSecurityManager
+from noxcore.database_pool import DatabaseConnectionP
 import logging
+import os
+import secrets
+import sys
 import time
 from pathlib import Path
-from typing import Dict, Any, Optional
-from flask import Flask, render_template, request, jsonify, g, Response
-from flask_cors import CORS
+from typing import Any, Dict, Optional
+
 from dotenv import load_dotenv
-import secrets
+from flask import Flask, Response, g, jsonify, render_template, request
+from flask_cors import CORS
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+
 # Import new security and performance systems
-from noxcore.security_config import EnvironmentSecurityManager
-from noxcore.database_pool import DatabaseConnectionP
-    def _get_hostname(self, ip):
+
+   def _get_hostname(self, ip):
         """Get hostname for IP address"""
         try:
             import socket
@@ -44,6 +58,7 @@ from noxcore.database_pool import DatabaseConnectionP
         """Get local IP address"""
         try:
             import socket
+
             # Connect to a remote address to get local IP
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
                 s.connect(("8.8.8.8", 80))
@@ -109,17 +124,8 @@ from noxcore.database_pool import DatabaseConnectionP
         logger.info("=" * 60)
         logger.info(f"[BOT] NoxPanel v5.0 - System Status Summary")
         logger.info("=" * 60)from noxcore.blueprint_registry import BlueprintRegistry
-from noxcore.plugin_sandbox import SecurePluginLoader
-from noxcore.rate_limiter import (
-    get_rate_limiter, rate_limit, add_rate_limit_headers,
-    RateLimitRule
-)
-from noxcore.security_headers import init_security_headers
-from noxcore.connection_manager import init_connection_manager
 
 # Import existing core modules
-from noxcore.runner import run_script
-from noxcore.auth import auth_required, create_user, verify_user
 
 # Load environment variables
 load_dotenv()
@@ -144,6 +150,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
 class NoxPanelApp:
     """Enhanced NoxPanel Flask application with security and performance optimizations"""
 
@@ -162,8 +169,8 @@ class NoxPanelApp:
 
         # Create Flask app
         self.app = Flask(__name__,
-                        template_folder="templates",
-                        static_folder="static")
+                         template_folder="templates",
+                         static_folder="static")
 
         # Initialize core systems
         self._init_security()
@@ -195,7 +202,8 @@ class NoxPanelApp:
         """Initialize security management"""
         try:
             self.security_manager = EnvironmentSecurityManager()
-            security_config = self.security_manager.get_security_config(ENVIRONMENT)
+            security_config = self.security_manager.get_security_config(
+                ENVIRONMENT)
 
             # Set Flask app configuration from security config
             self.app.secret_key = security_config.secret_key
@@ -204,12 +212,14 @@ class NoxPanelApp:
             self.app.config['SESSION_COOKIE_SAMESITE'] = security_config.session_cookie_samesite
             self.app.config['PERMANENT_SESSION_LIFETIME'] = security_config.session_lifetime
 
-            logger.info(f"[SEC] Security initialized for {ENVIRONMENT} environment")
+            logger.info(
+                f"[SEC] Security initialized for {ENVIRONMENT} environment")
 
         except Exception as e:
             logger.error(f"[FAIL] Security initialization failed: {e}")
             # Fallback to basic configuration
-            self.app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(32))
+            self.app.secret_key = os.getenv(
+                "SECRET_KEY", secrets.token_hex(32))
 
     def _init_database(self):
         """Initialize database connection pool"""
@@ -251,7 +261,8 @@ class NoxPanelApp:
             logger.info("🧠 Knowledge management blueprint registered")
 
         except Exception as e:
-            logger.error(f"[FAIL] Blueprint registry initialization failed: {e}")
+            logger.error(
+                f"[FAIL] Blueprint registry initialization failed: {e}")
             self.blueprint_registry = None
 
     def _init_plugins(self):
@@ -268,9 +279,11 @@ class NoxPanelApp:
                         if self.plugin_loader.load_plugin_secure(plugin_dir.name, plugin_dir):
                             plugin_count += 1
 
-                logger.info(f"[PLUG] Plugin system initialized ({plugin_count} plugins loaded)")
+                logger.info(
+                    f"[PLUG] Plugin system initialized ({plugin_count} plugins loaded)")
             else:
-                logger.info("[PLUG] Plugin system initialized (no plugins directory)")
+                logger.info(
+                    "[PLUG] Plugin system initialized (no plugins directory)")
 
         except Exception as e:
             logger.error(f"[FAIL] Plugin system initialization failed: {e}")
@@ -313,14 +326,16 @@ class NoxPanelApp:
         try:
             if ENVIRONMENT == "development":
                 # Permissive CORS for development
-                CORS(self.app, origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5000"])
+                CORS(self.app, origins=[
+                     "http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5000"])
             else:
                 # Restrictive CORS for production
                 allowed_origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
                 if allowed_origins and allowed_origins[0]:
                     CORS(self.app, origins=allowed_origins)
                 else:
-                    logger.warning("⚠️ No CORS origins configured for production")
+                    logger.warning(
+                        "⚠️ No CORS origins configured for production")
 
             logger.info("[WEB] CORS configuration applied")
 
@@ -331,7 +346,8 @@ class NoxPanelApp:
         """Initialize custom error handlers"""
         @self.app.errorhandler(404)
         def not_found(error):
-            logger.warning(f"404 error for URL: {request.url} | Path: {request.path}")
+            logger.warning(
+                f"404 error for URL: {request.url} | Path: {request.path}")
             return jsonify({
                 "status": "error",
                 "message": "Endpoint not found",
@@ -382,31 +398,32 @@ class NoxPanelApp:
                 scripts_dir = Path("scripts")
                 scripts = []
                 if scripts_dir.exists():
-                    scripts = [f.name for f in scripts_dir.iterdir() if f.suffix == ".py"]
+                    scripts = [f.name for f in scripts_dir.iterdir()
+                                                                   if f.suffix == ".py"]
 
                 return render_template("dashboard.html",
-                                     scripts=scripts,
-                                     modules_status=self.modules_status,
-                                     environment=ENVIRONMENT)
+                                       scripts=scripts,
+                                       modules_status=self.modules_status,
+                                       environment=ENVIRONMENT)
             except Exception as e:
                 logger.error(f"Dashboard error: {e}")
                 return render_template("dashboard.html",
-                                     scripts=[],
-                                     error=str(e),
-                                     environment=ENVIRONMENT)
+                                       scripts=[],
+                                       error=str(e),
+                                       environment=ENVIRONMENT)
 
         @self.app.route("/chat")
         def chat():
             """AI Chat interface"""
             try:
                 return render_template("chat.html",
-                                     environment=ENVIRONMENT,
-                                     modules_status=self.modules_status)
+                                       environment=ENVIRONMENT,
+                                       modules_status=self.modules_status)
             except Exception as e:
                 logger.error(f"Chat interface error: {e}")
                 return render_template("dashboard.html",
-                                     error=f"Chat interface unavailable: {str(e)}",
-                                     environment=ENVIRONMENT)
+                                       error=f"Chat interface unavailable: {str(e)}",
+                                       environment=ENVIRONMENT)
 
         @self.app.route("/api/health")
         @rate_limit("api")
@@ -445,7 +462,8 @@ class NoxPanelApp:
                 scripts_dir = Path("scripts")
                 scripts = []
                 if scripts_dir.exists():
-                    scripts = [f.name for f in scripts_dir.iterdir() if f.suffix == ".py"]
+                    scripts = [f.name for f in scripts_dir.iterdir()
+                                                                   if f.suffix == ".py"]
 
                 return jsonify({"status": "ok", "scripts": scripts})
             except Exception as e:
@@ -469,7 +487,8 @@ class NoxPanelApp:
                 result = run_script(str(script_path))
                 execution_time = time.time() - start_time
 
-                logger.info(f"Script executed: {script_name} (took {execution_time:.2f}s)")
+                logger.info(
+                    f"Script executed: {script_name} (took {execution_time:.2f}s)")
 
                 return jsonify({
                     "status": "ok",
@@ -536,17 +555,17 @@ class NoxPanelApp:
         def heimnetz_redirect():
             """Redirect Heimnetz routes to integrated interface"""
             return render_template("dashboard.html",
-                                 mode="heimnetz",
-                                 environment=ENVIRONMENT,
-                                 modules_status=self.modules_status)
+                                   mode="heimnetz",
+                                   environment=ENVIRONMENT,
+                                   modules_status=self.modules_status)
 
         @self.app.route('/infrastructure/discovery')
         def infrastructure_discovery():
             """Infrastructure Discovery Dashboard"""
             return render_template("dashboard.html",
-                                 mode="infrastructure",
-                                 environment=ENVIRONMENT,
-                                 modules_status=self.modules_status)
+                                   mode="infrastructure",
+                                   environment=ENVIRONMENT,
+                                   modules_status=self.modules_status)
 
         @self.app.route('/legacy/<path:route>')
         def legacy_compatibility(route):
@@ -564,8 +583,8 @@ class NoxPanelApp:
         @auth_required
         def infrastructure_network_scan():
             """Discover network devices and topology"""
-            import subprocess
             import ipaddress
+            import subprocess
             import threading
             from concurrent.futures import ThreadPoolExecutor
 
@@ -573,7 +592,7 @@ class NoxPanelApp:
                 """Ping a single host"""
                 try:
                     result = subprocess.run(['ping', '-n', '1', '-w', '1000', str(ip)],
-                                          capture_output=True, text=True, timeout=2)
+                                            capture_output=True, text=True, timeout=2)
                     if result.returncode == 0:
                         return {
                             'ip': str(ip),
@@ -592,7 +611,8 @@ class NoxPanelApp:
 
                 # Use ThreadPoolExecutor for parallel pinging
                 with ThreadPoolExecutor(max_workers=50) as executor:
-                    futures = [executor.submit(ping_host, ip) for ip in network.hosts()]
+                    futures = [executor.submit(ping_host, ip)
+                                               for ip in network.hosts()]
                     for future in futures:
                         result = future.result()
                         if result:
@@ -619,7 +639,8 @@ class NoxPanelApp:
             import socket
             from concurrent.futures import ThreadPoolExecutor
 
-            common_ports = [21, 22, 23, 25, 53, 80, 110, 135, 139, 143, 443, 993, 995, 1723, 3389, 5432, 3306, 8080, 8443]
+            common_ports = [21, 22, 23, 25, 53, 80, 110, 135, 139,
+                143, 443, 993, 995, 1723, 3389, 5432, 3306, 8080, 8443]
 
             def scan_port(host, port):
                 """Scan a single port"""
@@ -650,7 +671,8 @@ class NoxPanelApp:
                     futures = []
                     for host in hosts_to_scan:
                         for port in common_ports:
-                            futures.append(executor.submit(scan_port, host, port))
+                            futures.append(executor.submit(
+                                scan_port, host, port))
 
                     for future in futures:
                         result = future.result()
@@ -705,8 +727,10 @@ class NoxPanelApp:
             try:
                 topology = {
                     "nodes": [
-                        {"id": "gateway", "label": "Gateway", "type": "router", "ip": "192.168.1.1"},
-                        {"id": "local", "label": "NoxPanel Host", "type": "server", "ip": self._get_local_ip()},
+                        {"id": "gateway", "label": "Gateway",
+                            "type": "router", "ip": "192.168.1.1"},
+                        {"id": "local", "label": "NoxPanel Host",
+                            "type": "server", "ip": self._get_local_ip()},
                     ],
                     "edges": [
                         {"from": "local", "to": "gateway", "type": "ethernet"}
@@ -734,7 +758,8 @@ class NoxPanelApp:
             ("Plugin Loader", "webpanel.plugin_loader", "plugin_bp"),
             ("Chatbot", "webpanel.chatbot", "register_chatbot_routes"),
             ("Models API", "webpanel.models_direct", "register_models_api"),
-            ("AI Monitor", "webpanel.ai_monitor_direct", "register_ai_monitor_direct_routes"),
+            ("AI Monitor", "webpanel.ai_monitor_direct",
+             "register_ai_monitor_direct_routes"),
             ("Knowledge Management", "webpanel.knowledge_routes", "knowledge_bp")
         ]
 
@@ -745,7 +770,8 @@ class NoxPanelApp:
 
                 if hasattr(component, 'name'):  # It's a blueprint
                     if self.blueprint_registry:
-                        self.blueprint_registry.register_core_blueprint(component)
+                        self.blueprint_registry.register_core_blueprint(
+                            component)
                     else:
                         self.app.register_blueprint(component)
                 else:  # It's a function
@@ -769,11 +795,16 @@ class NoxPanelApp:
 
         # Core systems
         logger.info("[SYS] Core Systems:")
-        logger.info(f"   • Security Manager: {'[OK] Active' if self.security_manager else '[FAIL] Failed'}")
-        logger.info(f"   • Database Pool: {'[OK] Active' if self.db_pool else '[FAIL] Failed'}")
-        logger.info(f"   • Blueprint Registry: {'[OK] Active' if self.blueprint_registry else '[FAIL] Failed'}")
-        logger.info(f"   • Plugin System: {'[OK] Active' if self.plugin_loader else '[FAIL] Failed'}")
-        logger.info(f"   • Rate Limiter: {'[OK] Active' if self.rate_limiter else '[FAIL] Failed'}")
+        logger.info(
+            f"   • Security Manager: {'[OK] Active' if self.security_manager else '[FAIL] Failed'}")
+        logger.info(
+            f"   • Database Pool: {'[OK] Active' if self.db_pool else '[FAIL] Failed'}")
+        logger.info(
+            f"   • Blueprint Registry: {'[OK] Active' if self.blueprint_registry else '[FAIL] Failed'}")
+        logger.info(
+            f"   • Plugin System: {'[OK] Active' if self.plugin_loader else '[FAIL] Failed'}")
+        logger.info(
+            f"   • Rate Limiter: {'[OK] Active' if self.rate_limiter else '[FAIL] Failed'}")
 
         # Modules
         logger.info("[MOD] Optional Modules:")
@@ -782,7 +813,8 @@ class NoxPanelApp:
 
         # Environment info
         logger.info(f"[ENV] Environment: {ENVIRONMENT}")
-        logger.info(f"[SEC] Security Mode: {'Production' if ENVIRONMENT == 'production' else 'Development'}")
+        logger.info(
+            f"[SEC] Security Mode: {'Production' if ENVIRONMENT == 'production' else 'Development'}")
 
         if self.plugin_loader:
             plugins = self.plugin_loader.get_loaded_plugins()
@@ -791,6 +823,7 @@ class NoxPanelApp:
                 logger.info(f"   • {plugin}")
 
         logger.info("=" * 60)
+
 
 def create_app() -> Flask:
     """Factory function to create NoxPanel application"""
@@ -801,6 +834,7 @@ def create_app() -> Flask:
     app.config['START_TIME'] = time.time()
 
     return app
+
 
 def start_webpanel():
     """Start the NoxPanel web application"""
@@ -821,6 +855,7 @@ def start_webpanel():
     except Exception as e:
         logger.error(f"[FAIL] Failed to start NoxPanel: {e}")
         raise
+
 
 if __name__ == "__main__":
     start_webpanel()

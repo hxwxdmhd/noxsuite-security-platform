@@ -1,3 +1,12 @@
+from emergency_copilot_fix import throttler
+import requests
+from typing import Any, Dict, List
+from pathlib import Path
+from datetime import datetime
+import time
+import subprocess
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -8,17 +17,6 @@ Comprehensive MCP Integration Validator
 Validates all MCP servers, Docker containers, and system health with TestSprite integration
 """
 
-import json
-import logging
-import subprocess
-import time
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List
-
-import requests
-
-from emergency_copilot_fix import throttler
 
 # Configure logging
 logging.basicConfig(
@@ -288,7 +286,8 @@ class ComprehensiveMCPValidator:
         def check_testsprite():
             try:
                 # Check if TestSprite simulation results exist
-                testsprite_logs = list(Path("logs/mcp_agent/testsprite").glob("*.json"))
+                testsprite_logs = list(
+                    Path("logs/mcp_agent/testsprite").glob("*.json"))
 
                 if not testsprite_logs:
                     return {
@@ -298,7 +297,8 @@ class ComprehensiveMCPValidator:
                     }
 
                 # Get latest test results
-                latest_log = max(testsprite_logs, key=lambda x: x.stat().st_mtime)
+                latest_log = max(
+                    testsprite_logs, key=lambda x: x.stat().st_mtime)
 
                 with open(latest_log, "r") as f:
                     test_results = json.load(f)
@@ -356,15 +356,18 @@ class ComprehensiveMCPValidator:
                     "all_required_running", False
                 )
                 langflow_ok = (
-                    self.validation_results["system_health"].get("overall_health")
+                    self.validation_results["system_health"].get(
+                        "overall_health")
                     == "healthy"
                 )
                 mcp_ok = (
-                    self.validation_results["mcp_servers"].get("mcp_communication")
+                    self.validation_results["mcp_servers"].get(
+                        "mcp_communication")
                     == "operational"
                 )
                 config_ok = (
-                    self.validation_results["mcp_servers"].get("servers_configured", 0)
+                    self.validation_results["mcp_servers"].get(
+                        "servers_configured", 0)
                     >= 2
                 )
 
@@ -436,11 +439,13 @@ class ComprehensiveMCPValidator:
 
                 # Add next actions based on issues
                 if not docker_ok:
-                    report["next_actions"].append("🚨 Check Docker container health")
+                    report["next_actions"].append(
+                        "🚨 Check Docker container health")
                 if not langflow_ok:
                     report["next_actions"].append("🔧 Restart Langflow service")
                 if not mcp_ok:
-                    report["next_actions"].append("🔗 Verify MCP endpoint connectivity")
+                    report["next_actions"].append(
+                        "🔗 Verify MCP endpoint connectivity")
                 if throttler.tool_count > 100:
                     report["next_actions"].append(
                         "⏳ Monitor tool usage - approaching limit"
@@ -496,7 +501,8 @@ class ComprehensiveMCPValidator:
 
             # Validation Phase 2: Langflow Health
             logger.info("🌊 Phase 2: Langflow Health Validation")
-            self.validation_results["system_health"] = self.validate_langflow_health()
+            self.validation_results["system_health"] = self.validate_langflow_health(
+            )
 
             # 30s cooldown
             logger.info("⏳ Cooldown: 30 seconds...")
@@ -600,9 +606,11 @@ def main():
 
     if validation_results["overall_status"] in ["success", "partial_success"]:
         logger.info("\n✅ TESTSPRITE MCP INTEGRATED AND VALIDATED")
-        logger.info("🎯 NoxSuite MCP stack is operational with TestSprite integration")
+        logger.info(
+            "🎯 NoxSuite MCP stack is operational with TestSprite integration")
     else:
-        logger.info("\n⚠️ Validation completed with issues - check detailed reports")
+        logger.info(
+            "\n⚠️ Validation completed with issues - check detailed reports")
 
     return results
 

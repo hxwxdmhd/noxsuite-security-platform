@@ -4,16 +4,18 @@
 Connects to local Ollama for code suggestions, template improvements, and automation advice
 """
 
-import os
 import json
 import logging
-import requests
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Optional, Any
+import os
 import re
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import requests
 
 logger = logging.getLogger(__name__)
+
 
 class AIAdvisor:
     """Enhanced AI advisor with specialized NoxPanel knowledge"""
@@ -31,7 +33,7 @@ class AIAdvisor:
 
     COMPLIANCE: STANDARD
     """
-        self.ollama_url = f"http://{ollama_host}:{ollama_port}/api/generate"
+       self.ollama_url = f"http://{ollama_host}:{ollama_port}/api/generate"
         self.conversation_history = []
         self.template_analysis_cache = {}
 
@@ -60,17 +62,17 @@ Focus on:
 - Security hardening
 - Monitoring and alerting
     """
-    RLVR: Implements analyze_template with error handling and validation
+            RLVR: Implements analyze_template with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for analyze_template
-    2. Analysis: Function complexity 2.2/5.0
-    3. Solution: Implements analyze_template with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for analyze_template
+            2. Analysis: Function complexity 2.2/5.0
+            3. Solution: Implements analyze_template with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+            COMPLIANCE: STANDARD
+            """
 - Cross-platform compatibility""",
 
             'ui_improvement': """You are a UX designer specializing in interfaces for neurodivergent users.
@@ -80,7 +82,7 @@ Focus on:
 - Clear visual hierarchy
 - Consistent interaction patterns
 - Customizable experiences"""
-        }
+    }
 
     def analyze_template(self, template_path: Path, content: str = None) -> Dict:
         """Analyze HTML template for ADHD-friendliness and improvements"""
@@ -140,7 +142,7 @@ Format your response as JSON with these keys:
 - code_suggestions
 """
 
-        try:
+       try:
             response = self._query_ollama(prompt, model="codellama")
 
             if response['success']:
@@ -167,8 +169,8 @@ Format your response as JSON with these keys:
 
     COMPLIANCE: STANDARD
     """
-            logger.error(f"Template analysis error: {e}")
-            return {'error': str(e)}
+       logger.error(f"Template analysis error: {e}")
+        return {'error': str(e)}
 
     def suggest_code_improvements(self, code: str, file_type: str = 'python') -> Dict:
         """Suggest improvements for Python/JavaScript code"""
@@ -202,7 +204,7 @@ Please provide:
 Format as JSON with keys: security, performance, quality, best_practices
 """
 
-        try:
+       try:
             response = self._query_ollama(prompt, model="codellama")
 
             if response['success']:
@@ -244,7 +246,7 @@ Please provide:
 Format as JSON with keys: approach, tools, security, steps, monitoring
 """
 
-        try:
+       try:
             response = self._query_ollama(prompt, model="llama2")
 
             if response['success']:
@@ -258,7 +260,8 @@ Format as JSON with keys: approach, tools, security, steps, monitoring
 
     def improve_ui_design(self, design_description: str, current_issues: List[str] = None) -> Dict:
         """Get UI/UX improvement suggestions"""
-        issues_text = "\n".join(current_issues) if current_issues else "No specific issues mentioned"
+        issues_text = "\n".join(
+            current_issues) if current_issues else "No specific issues mentioned"
 
         prompt = f"""
 {self.system_prompts['ui_improvement']}
@@ -288,7 +291,7 @@ Format as JSON with keys: hierarchy, colors, animations, layout, accessibility
 
     COMPLIANCE: STANDARD
     """
-        try:
+       try:
             response = self._query_ollama(prompt, model="llama2")
 
             if response['success']:
@@ -339,7 +342,7 @@ Format as JSON with keys: hierarchy, colors, animations, layout, accessibility
     COMPLIANCE: STANDARD
     """
     """
-        prompt = f"""
+       prompt = f"""
 You are an AI assistant for NoxPanel, a local automation and network management suite.
 
 Context: {context}
@@ -466,7 +469,7 @@ Please provide helpful, practical advice focused on:
 
 Response:"""
 
-        try:
+       try:
             response = self._query_ollama(prompt, model="llama2")
 
             if response['success']:
@@ -652,7 +655,8 @@ Response:"""
     def health_check(self) -> Dict:
         """Check if Ollama service is available"""
         try:
-            response = requests.get(f"http://10.1.0.99:11434/api/tags", timeout=5)
+            response = requests.get(
+                f"http://10.1.0.99:11434/api/tags", timeout=5)
             if response.status_code == 200:
                 models = response.json().get('models', [])
                 return {

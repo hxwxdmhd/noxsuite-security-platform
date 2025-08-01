@@ -16,15 +16,17 @@ Strategic Objectives:
 5. Zero Trust Architecture Implementation
 """
 
+import hashlib
 import json
 import os
 import sys
 import time
-import hashlib
-import requests
-from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import requests
+
 
 class RLVRNoxPanelGate5Integration:
     """RLVR-NoxPanel Gate 5 Integration System."""
@@ -47,8 +49,10 @@ class RLVRNoxPanelGate5Integration:
         self.integration_status = "INITIALIZING"
 
         print("RLVR-NoxPanel Gate 5 Integration System - ACTIVE")
-        print(f"Current Gate: {self.current_gate} (Security: {self.current_security_score}/100)")
-        print(f"Target Gate: {self.target_gate} (Security: {self.target_security_score}+/100)")
+        print(
+            f"Current Gate: {self.current_gate} (Security: {self.current_security_score}/100)")
+        print(
+            f"Target Gate: {self.target_gate} (Security: {self.target_security_score}+/100)")
         print(f"RLVR Compliance: {self.rlvr_compliance:.2f}%")
         print("Integration Status: INITIALIZING")
 
@@ -162,7 +166,8 @@ class RLVRNoxPanelGate5Integration:
             "implemented": datetime.now().isoformat()
         }
 
-        security_file = self.workspace_path / "integration" / "security" / "gate5_security_config.json"
+        security_file = self.workspace_path / "integration" / \
+            "security" / "gate5_security_config.json"
         with open(security_file, 'w', encoding='utf-8') as f:
             json.dump(security_config, f, indent=2)
 
@@ -254,7 +259,8 @@ if __name__ == "__main__":
     print(f"AI Analysis: {result}")
 '''
 
-        ai_bridge_file = self.workspace_path / "integration" / "ai_bridge" / "rlvr_noxpanel_ai_bridge.py"
+        ai_bridge_file = self.workspace_path / "integration" / \
+            "ai_bridge" / "rlvr_noxpanel_ai_bridge.py"
         ai_bridge_file.write_text(ai_bridge_content, encoding='utf-8')
 
         return {
@@ -294,7 +300,8 @@ if __name__ == "__main__":
             "risk_assessment": "CONTINUOUS"
         }
 
-        zero_trust_file = self.workspace_path / "integration" / "security" / "zero_trust_config.json"
+        zero_trust_file = self.workspace_path / "integration" / \
+            "security" / "zero_trust_config.json"
         with open(zero_trust_file, 'w', encoding='utf-8') as f:
             json.dump({
                 "zero_trust": zero_trust_config,
@@ -342,7 +349,8 @@ if __name__ == "__main__":
             }
         }
 
-        compliance_file = self.workspace_path / "integration" / "compliance" / "compliance_framework.json"
+        compliance_file = self.workspace_path / "integration" / \
+            "compliance" / "compliance_framework.json"
         with open(compliance_file, 'w', encoding='utf-8') as f:
             json.dump({
                 "standards": compliance_standards,
@@ -437,7 +445,8 @@ if __name__ == "__main__":
     print(f"System Status: {status}")
 '''
 
-        dashboard_file = self.workspace_path / "integration" / "monitoring" / "integrated_dashboard.py"
+        dashboard_file = self.workspace_path / "integration" / \
+            "monitoring" / "integrated_dashboard.py"
         dashboard_file.write_text(dashboard_content, encoding='utf-8')
 
         return {
@@ -451,7 +460,8 @@ if __name__ == "__main__":
     def calculate_security_score(self, implementations: List[Dict[str, Any]]) -> float:
         """Calculate new security score based on implementations."""
         base_score = self.current_security_score
-        total_improvement = sum(impl.get("score_improvement", 0) for impl in implementations)
+        total_improvement = sum(impl.get("score_improvement", 0)
+                                for impl in implementations)
 
         # Apply diminishing returns and cap at 100
         new_score = min(100, base_score + (total_improvement * 0.8))
@@ -520,10 +530,12 @@ Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 The RLVR-NoxPanel Gate 5 integration has been successfully completed, achieving enterprise-grade security and compliance standards while maintaining the advanced AI capabilities and infrastructure management features of both systems.
 '''
 
-        report_file = self.workspace_path / "integration" / "RLVR_NoxPanel_Gate5_Integration_Report.md"
+        report_file = self.workspace_path / "integration" / \
+            "RLVR_NoxPanel_Gate5_Integration_Report.md"
         report_file.write_text(report_content, encoding='utf-8')
 
         return str(report_file)
+
 
 def main():
     """Main execution function for RLVR-NoxPanel Gate 5 Integration."""
@@ -544,13 +556,16 @@ def main():
 
         print(f"Gate 5 Progression: {results['gate5_progression']}")
         print(f"Security Score: {results['security_score']['current']}/100")
-        print(f"Target Achieved: {'✅ YES' if results['security_score']['achieved'] else '❌ NO'}")
+        print(
+            f"Target Achieved: {'✅ YES' if results['security_score']['achieved'] else '❌ NO'}")
         print(f"RLVR Integration: {results['rlvr_integration']['status']}")
-        print(f"RLVR Compliance: {results['rlvr_integration']['compliance']:.2f}%")
+        print(
+            f"RLVR Compliance: {results['rlvr_integration']['compliance']:.2f}%")
 
         print(f"\nImplementation Phases:")
         for phase_name, phase_data in results['implementation_phases'].items():
-            print(f"  {phase_name}: {phase_data['status']} (+{phase_data['score_improvement']} points)")
+            print(
+                f"  {phase_name}: {phase_data['status']} (+{phase_data['score_improvement']} points)")
 
         print(f"\nIntegration Report: {report_file}")
 
@@ -571,6 +586,7 @@ def main():
 
     except Exception as e:
         print(f"Integration error: {str(e)}")
+
 
 if __name__ == "__main__":
     main()

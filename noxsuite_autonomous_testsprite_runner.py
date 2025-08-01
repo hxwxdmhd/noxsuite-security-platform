@@ -1,3 +1,12 @@
+import requests
+from pathlib import Path
+from datetime import datetime
+import time
+import sys
+import subprocess
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,17 +16,6 @@ logger = get_logger(__name__)
 🧪 NoxSuite Autonomous TestSprite Testing Orchestrator
 Comprehensive testing with TestSprite MCP, MCP Auditor, and ChatGPT cross-validation
 """
-
-import json
-import logging
-import os
-import subprocess
-import sys
-import time
-from datetime import datetime
-from pathlib import Path
-
-import requests
 
 
 class NoxSuiteTestSpriteRunner:
@@ -96,13 +94,15 @@ class NoxSuiteTestSpriteRunner:
                 config = json.load(f)
                 if "TestSprite" in config.get("mcpServers", {}):
                     prerequisites["mcp_config"] = True
-                    self.log_phase("MCP Config", "SUCCESS", "TestSprite MCP configured")
+                    self.log_phase("MCP Config", "SUCCESS",
+                                   "TestSprite MCP configured")
         except Exception as e:
             self.log_phase("MCP Config", "FAILED", str(e))
 
         # Check Langflow health
         try:
-            response = requests.get(f"{self.endpoints['langflow']}/health", timeout=10)
+            response = requests.get(
+                f"{self.endpoints['langflow']}/health", timeout=10)
             if response.status_code == 200:
                 prerequisites["langflow_health"] = True
                 self.log_phase(
@@ -352,7 +352,8 @@ class NoxSuiteTestSpriteRunner:
 
                         # Log individual test result
                         emoji = "✅" if status == "PASS" else "❌"
-                        self.logger.info(f"   {emoji} {test_case} ({duration:.2f}s)")
+                        self.logger.info(
+                            f"   {emoji} {test_case} ({duration:.2f}s)")
 
                         # Small delay to simulate real execution
                         time.sleep(0.1)
@@ -383,7 +384,8 @@ class NoxSuiteTestSpriteRunner:
                     }
 
         overall_pass_rate = (
-            round((passed_tests / total_tests) * 100, 1) if total_tests > 0 else 0
+            round((passed_tests / total_tests) *
+                  100, 1) if total_tests > 0 else 0
         )
 
         execution_summary = {
@@ -643,7 +645,8 @@ class NoxSuiteTestSpriteRunner:
         critical_tasks = len(
             [t for t in remediation_tasks if t["priority"] == "CRITICAL"]
         )
-        high_tasks = len([t for t in remediation_tasks if t["priority"] == "HIGH"])
+        high_tasks = len(
+            [t for t in remediation_tasks if t["priority"] == "HIGH"])
 
         # Determine overall health status
         pass_rate = execution_summary["pass_rate"]
@@ -788,7 +791,8 @@ class NoxSuiteTestSpriteRunner:
         }
 
         # Save comprehensive results
-        results_file = self.logs_dir / f"comprehensive_results_{self.timestamp}.json"
+        results_file = self.logs_dir / \
+            f"comprehensive_results_{self.timestamp}.json"
         with open(results_file, "w") as f:
             json.dump(comprehensive_results, f, indent=2)
 
@@ -797,7 +801,8 @@ class NoxSuiteTestSpriteRunner:
         with open(summary_file, "w") as f:
             f.write(self._generate_markdown_summary(adhd_report))
 
-        self.log_phase("Results Saving", "SUCCESS", f"Results saved to {results_file}")
+        self.log_phase("Results Saving", "SUCCESS",
+                       f"Results saved to {results_file}")
         return results_file
 
     def _generate_markdown_summary(self, adhd_report):
@@ -855,7 +860,8 @@ class NoxSuiteTestSpriteRunner:
             test_suites = self.generate_test_suites()
 
             # Phase 3: Cloud Test Execution
-            execution_results, execution_summary = self.execute_cloud_tests(test_suites)
+            execution_results, execution_summary = self.execute_cloud_tests(
+                test_suites)
 
             # Phase 4: Cross-Validation
             cross_validation = self.cross_validate_results(execution_results)

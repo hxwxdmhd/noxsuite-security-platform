@@ -6,6 +6,7 @@ Web interface components for voice features including Voxtral integration,
 real-time transcription, and ADHD-friendly voice controls.
 """
 
+
 def get_voice_interface_html() -> str:
     """
     RLVR: Retrieves data with filtering and access control
@@ -700,6 +701,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 '''
+
 
 def get_voice_chat_integration() -> str:
     """Generate voice integration for chat interface"""

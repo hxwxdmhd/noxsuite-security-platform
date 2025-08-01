@@ -13,6 +13,7 @@ from enum import Enum
 import json
 from datetime import datetime
 
+
 class MessageType(str, Enum):
     """MCP message types"""
     REQUEST = "request"
@@ -20,12 +21,14 @@ class MessageType(str, Enum):
     NOTIFICATION = "notification"
     ERROR = "error"
 
+
 class CapabilityLevel(str, Enum):
     """Protocol capability levels"""
     BASIC = "basic"
     STANDARD = "standard"
     ADVANCED = "advanced"
     ENTERPRISE = "enterprise"
+
 
 @dataclass
 class ProtocolCapability:
@@ -37,6 +40,7 @@ class ProtocolCapability:
     optional: bool = False
     parameters: Dict[str, Any] = field(default_factory=dict)
 
+
 @dataclass
 class MCPMessage:
     """Base MCP message structure"""
@@ -45,6 +49,7 @@ class MCPMessage:
     id: str
     timestamp: datetime = field(default_factory=datetime.now)
     metadata: Dict[str, Any] = field(default_factory=dict)
+
 
 @dataclass
 class MCPRequest:
@@ -58,6 +63,7 @@ class MCPRequest:
     params: Dict[str, Any] = field(default_factory=dict)
     context: Dict[str, Any] = field(default_factory=dict)
 
+
 @dataclass
 class MCPResponse:
     """MCP response message"""
@@ -70,30 +76,31 @@ class MCPResponse:
     error: Optional[Dict[str, Any]] = None
     context: Dict[str, Any] = field(default_factory=dict)
 
+
 class ProtocolSchema:
     """Base protocol schema class"""
-    
+
     def __init__(self, version: str):
         self.version = version
         self.capabilities: List[ProtocolCapability] = []
         self.methods: Dict[str, Dict[str, Any]] = {}
         self.message_formats: Dict[str, Dict[str, Any]] = {}
         self.validation_rules: Dict[str, Any] = {}
-        
+
     def add_capability(self, capability: ProtocolCapability):
         """Add a capability to the schema"""
         self.capabilities.append(capability)
-        
+
     def add_method(self, method_name: str, method_spec: Dict[str, Any]):
         """Add a method specification"""
         self.methods[method_name] = method_spec
-        
+
     def validate_message(self, message: Dict[str, Any]) -> bool:
         """Validate a message against the schema"""
         # Basic validation implementation
         required_fields = ["version", "message_type", "id"]
         return all(field in message for field in required_fields)
-        
+
     def get_schema_definition(self) -> Dict[str, Any]:
         """Get complete schema definition"""
         return {
@@ -113,16 +120,17 @@ class ProtocolSchema:
             "validation_rules": self.validation_rules
         }
 
+
 class MCPv1_0(ProtocolSchema):
     """MCP Protocol Version 1.0 - Basic functionality"""
-    
+
     def __init__(self):
         super().__init__("1.0")
         self.initialize_capabilities()
         self.initialize_methods()
         self.initialize_message_formats()
         self.initialize_validation_rules()
-    
+
     def initialize_capabilities(self):
         """Initialize v1.0 capabilities"""
         capabilities = [
@@ -148,10 +156,10 @@ class MCPv1_0(ProtocolSchema):
                 parameters={"embedding_size": 512}
             )
         ]
-        
+
         for cap in capabilities:
             self.add_capability(cap)
-    
+
     def initialize_methods(self):
         """Initialize v1.0 methods"""
         methods = {
@@ -190,10 +198,10 @@ class MCPv1_0(ProtocolSchema):
                 }
             }
         }
-        
+
         for method_name, method_spec in methods.items():
             self.add_method(method_name, method_spec)
-    
+
     def initialize_message_formats(self):
         """Initialize v1.0 message formats"""
         self.message_formats = {
@@ -214,7 +222,7 @@ class MCPv1_0(ProtocolSchema):
                 "timestamp": {"type": "string", "format": "iso8601"}
             }
         }
-    
+
     def initialize_validation_rules(self):
         """Initialize v1.0 validation rules"""
         self.validation_rules = {
@@ -225,16 +233,17 @@ class MCPv1_0(ProtocolSchema):
             "required_fields": ["version", "message_type", "id"]
         }
 
+
 class MCPv1_1(ProtocolSchema):
     """MCP Protocol Version 1.1 - Enhanced functionality"""
-    
+
     def __init__(self):
         super().__init__("1.1")
         self.initialize_capabilities()
         self.initialize_methods()
         self.initialize_message_formats()
         self.initialize_validation_rules()
-    
+
     def initialize_capabilities(self):
         """Initialize v1.1 capabilities"""
         capabilities = [
@@ -267,10 +276,10 @@ class MCPv1_1(ProtocolSchema):
                 parameters={"embedding_size": 1024, "metadata_support": True}
             )
         ]
-        
+
         for cap in capabilities:
             self.add_capability(cap)
-    
+
     def initialize_methods(self):
         """Initialize v1.1 methods"""
         methods = {
@@ -326,10 +335,10 @@ class MCPv1_1(ProtocolSchema):
                 }
             }
         }
-        
+
         for method_name, method_spec in methods.items():
             self.add_method(method_name, method_spec)
-    
+
     def initialize_message_formats(self):
         """Initialize v1.1 message formats"""
         self.message_formats = {
@@ -361,7 +370,7 @@ class MCPv1_1(ProtocolSchema):
                 "batch_options": {"type": "object", "required": False}
             }
         }
-    
+
     def initialize_validation_rules(self):
         """Initialize v1.1 validation rules"""
         self.validation_rules = {
@@ -373,16 +382,17 @@ class MCPv1_1(ProtocolSchema):
             "required_fields": ["version", "message_type", "id"]
         }
 
+
 class MCPv2_0(ProtocolSchema):
     """MCP Protocol Version 2.0 - Advanced functionality"""
-    
+
     def __init__(self):
         super().__init__("2.0")
         self.initialize_capabilities()
         self.initialize_methods()
         self.initialize_message_formats()
         self.initialize_validation_rules()
-    
+
     def initialize_capabilities(self):
         """Initialize v2.0 capabilities"""
         capabilities = [
@@ -391,7 +401,8 @@ class MCPv2_0(ProtocolSchema):
                 level=CapabilityLevel.ADVANCED,
                 description="Dynamic routing based on context and load",
                 required_version="2.0",
-                parameters={"routing_strategies": ["load_balanced", "failover", "adaptive"]}
+                parameters={"routing_strategies": [
+                    "load_balanced", "failover", "adaptive"]}
             ),
             ProtocolCapability(
                 name="streaming_processing",
@@ -405,14 +416,16 @@ class MCPv2_0(ProtocolSchema):
                 level=CapabilityLevel.ADVANCED,
                 description="Multi-modal context processing",
                 required_version="2.0",
-                parameters={"supported_types": ["text", "code", "image", "audio"]}
+                parameters={"supported_types": [
+                    "text", "code", "image", "audio"]}
             ),
             ProtocolCapability(
                 name="predictive_caching",
                 level=CapabilityLevel.ADVANCED,
                 description="Predictive caching with AI",
                 required_version="2.0",
-                parameters={"prediction_models": ["usage_pattern", "context_similarity"]}
+                parameters={"prediction_models": [
+                    "usage_pattern", "context_similarity"]}
             ),
             ProtocolCapability(
                 name="enterprise_security",
@@ -422,10 +435,10 @@ class MCPv2_0(ProtocolSchema):
                 parameters={"encryption": "AES-256", "audit_logging": True}
             )
         ]
-        
+
         for cap in capabilities:
             self.add_capability(cap)
-    
+
     def initialize_methods(self):
         """Initialize v2.0 methods"""
         methods = {
@@ -503,10 +516,10 @@ class MCPv2_0(ProtocolSchema):
                 }
             }
         }
-        
+
         for method_name, method_spec in methods.items():
             self.add_method(method_name, method_spec)
-    
+
     def initialize_message_formats(self):
         """Initialize v2.0 message formats"""
         self.message_formats = {
@@ -543,7 +556,7 @@ class MCPv2_0(ProtocolSchema):
                 "is_final": {"type": "boolean", "default": False}
             }
         }
-    
+
     def initialize_validation_rules(self):
         """Initialize v2.0 validation rules"""
         self.validation_rules = {
@@ -558,13 +571,14 @@ class MCPv2_0(ProtocolSchema):
             "audit_logging": True
         }
 
+
 class ProtocolRegistry:
     """Registry for all protocol versions"""
-    
+
     def __init__(self):
         self.protocols: Dict[str, ProtocolSchema] = {}
         self.initialize_protocols()
-    
+
     def initialize_protocols(self):
         """Initialize all protocol versions"""
         self.protocols = {
@@ -572,35 +586,35 @@ class ProtocolRegistry:
             "1.1": MCPv1_1(),
             "2.0": MCPv2_0()
         }
-    
+
     def get_protocol(self, version: str) -> Optional[ProtocolSchema]:
         """Get protocol schema by version"""
         return self.protocols.get(version)
-    
+
     def get_latest_protocol(self) -> ProtocolSchema:
         """Get the latest protocol version"""
         return self.protocols["2.0"]
-    
+
     def get_supported_versions(self) -> List[str]:
         """Get list of supported protocol versions"""
         return list(self.protocols.keys())
-    
+
     def validate_message(self, message: Dict[str, Any]) -> bool:
         """Validate message against appropriate protocol"""
         version = message.get("version", "2.0")
         protocol = self.get_protocol(version)
-        
+
         if not protocol:
             return False
-        
+
         return protocol.validate_message(message)
-    
+
     def get_capabilities(self, version: str) -> List[Dict[str, Any]]:
         """Get capabilities for a specific version"""
         protocol = self.get_protocol(version)
         if not protocol:
             return []
-        
+
         return [
             {
                 "name": cap.name,
@@ -609,18 +623,20 @@ class ProtocolRegistry:
                 "parameters": cap.parameters
             } for cap in protocol.capabilities
         ]
-    
+
     def export_schemas(self, output_path: str):
         """Export all schemas to JSON files"""
         from pathlib import Path
-        
+
         output_dir = Path(output_path)
         output_dir.mkdir(exist_ok=True)
-        
+
         for version, protocol in self.protocols.items():
             schema_file = output_dir / f"mcp_v{version.replace('.', '_')}.json"
             with open(schema_file, 'w') as f:
-                json.dump(protocol.get_schema_definition(), f, indent=2, default=str)
+                json.dump(protocol.get_schema_definition(),
+                          f, indent=2, default=str)
+
 
 # Global protocol registry
 protocol_registry = ProtocolRegistry()
@@ -629,7 +645,7 @@ protocol_registry = ProtocolRegistry()
 if __name__ == "__main__":
     print("🚀 ContextForge Protocol Schemas")
     print("=" * 40)
-    
+
     # Test all protocol versions
     for version in protocol_registry.get_supported_versions():
         protocol = protocol_registry.get_protocol(version)
@@ -637,10 +653,11 @@ if __name__ == "__main__":
         print(f"  Capabilities: {len(protocol.capabilities)}")
         print(f"  Methods: {len(protocol.methods)}")
         print(f"  Message Formats: {len(protocol.message_formats)}")
-        
+
         # Show sample capabilities
         for cap in protocol.capabilities[:2]:  # Show first 2
             print(f"  - {cap.name} ({cap.level}): {cap.description}")
-    
-    print(f"\n🎯 Latest Protocol: v{protocol_registry.get_latest_protocol().version}")
+
+    print(
+        f"\n🎯 Latest Protocol: v{protocol_registry.get_latest_protocol().version}")
     print(f"📊 Total Protocols: {len(protocol_registry.protocols)}")

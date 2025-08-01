@@ -23,6 +23,7 @@ from queue import Queue
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class CrawlResult:
     """Structure for crawled content"""
@@ -34,6 +35,7 @@ class CrawlResult:
     timestamp: str
     content_hash: str
     metadata: Dict[str, Any]
+
 
 class NoxCrawler:
     """Intelligent web crawler for NoxPanel knowledge base"""
@@ -137,7 +139,8 @@ class NoxCrawler:
                 return False
 
             # Avoid common non-content URLs
-            blocked_patterns = ['/login', '/register', '/cart', '/checkout', '/admin', '?login']
+            blocked_patterns = ['/login', '/register',
+                '/cart', '/checkout', '/admin', '?login']
             for pattern in blocked_patterns:
                 if pattern in url.lower():
                     return False

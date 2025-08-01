@@ -14,12 +14,14 @@ Compliance: RLVR Methodology v4.0+ Applied
 """
 
 import os
-import jwt
-import bcrypt
 import secrets
-from functools import wraps
-from flask import request, jsonify, current_app
 from datetime import datetime, timedelta
+from functools import wraps
+
+import bcrypt
+import jwt
+from flask import current_app, jsonify, request
+
 
 def hash_password(password):
     """
@@ -122,10 +124,12 @@ def hash_password(password):
     """Hash a password using bcrypt"""
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
+
 def verify_password(password, hashed):
     # REASONING: verify_password implements core logic with Chain-of-Thought validation
     """Verify a password against its hash"""
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+
 
 def generate_token(user_data):
     # REASONING: generate_token implements core logic with Chain-of-Thought validation
@@ -137,23 +141,26 @@ def generate_token(user_data):
     }
     return jwt.encode(payload, current_app.secret_key, algorithm='HS256')
 
+
 def verify_token(token):
     # REASONING: verify_token implements core logic with Chain-of-Thought validation
     """Verify JWT token"""
     try:
-        payload = jwt.decode(token, current_app.secret_key, algorithms=['HS256'])
+        payload = jwt.decode(token, current_app.secret_key,
+                             algorithms=['HS256'])
         return payload['user']
     except jwt.ExpiredSignatureError:
         return None
     except jwt.InvalidTokenError:
         return None
 
+
 def auth_required(f):
     # REASONING: auth_required implements core logic with Chain-of-Thought validation
     """Decorator to require authentication"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
-    # REASONING: decorated_function implements core logic with Chain-of-Thought validation
+        # REASONING: decorated_function implements core logic with Chain-of-Thought validation
         # SECURITY: Always require authentication in all environments
         # Development bypass removed for security compliance
 
@@ -172,11 +179,13 @@ def auth_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 def create_user(username, password, role='user'):
     # REASONING: create_user implements core logic with Chain-of-Thought validation
     """Create a new user (placeholder for database implementation)"""
     hashed_pw = hash_password(password)
     return {'username': username, 'password': hashed_pw, 'role': role}
+
 
 def verify_user(username, password):
     # REASONING: verify_user implements core logic with Chain-of-Thought validation

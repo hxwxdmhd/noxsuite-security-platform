@@ -3,6 +3,9 @@ NoxPanel v5.0 Knowledge Management Setup Script
 Initializes the knowledge base and creates sample data for testing
 """
 
+from noxcore.knowledge_manager import (
+    KnowledgeManager, KnowledgeItem, ContentType, ScriptLanguage
+)
 import os
 import sys
 import json
@@ -13,12 +16,10 @@ from datetime import datetime
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from noxcore.knowledge_manager import (
-    KnowledgeManager, KnowledgeItem, ContentType, ScriptLanguage
-)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 def create_sample_conversations_data():
     """
@@ -429,17 +430,17 @@ $principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -LogonType ServiceAccou
 $task = New-ScheduledTask -Action $action -Trigger $trigger -Principal $principal
 Register-ScheduledTask -TaskName "SystemMonitor" -InputObject $task
     """
-    RLVR: Creates new entity with validation and error handling
+                                                  RLVR: Creates new entity with validation and error handling
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for create_sample_knowledge_items
-    2. Analysis: Function complexity 1.2/5.0
-    3. Solution: Creates new entity with validation and error handling
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                                                  REASONING CHAIN:
+                                                  1. Problem: Input parameters and business logic for create_sample_knowledge_items
+                                                  2. Analysis: Function complexity 1.2/5.0
+                                                  3. Solution: Creates new entity with validation and error handling
+                                                  4. Implementation: Chain-of-Thought validation with error handling
+                                                  5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                                                  COMPLIANCE: STANDARD
+                                                  """
 ```
 """]}
                         }
@@ -450,6 +451,7 @@ Register-ScheduledTask -TaskName "SystemMonitor" -InputObject $task
     }
 
     return sample_conversations
+
 
 def create_sample_knowledge_items(km: KnowledgeManager):
     """Create sample knowledge items directly"""
@@ -573,17 +575,17 @@ def secure_endpoint():
 ## Commit Message Format
 
     """
-    RLVR: Implements setup_knowledge_base with error handling and validation
+            RLVR: Implements setup_knowledge_base with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for setup_knowledge_base
-    2. Analysis: Function complexity 1.5/5.0
-    3. Solution: Implements setup_knowledge_base with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for setup_knowledge_base
+            2. Analysis: Function complexity 1.5/5.0
+            3. Solution: Implements setup_knowledge_base with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+            COMPLIANCE: STANDARD
+            """
 ```
 type(scope): description
 
@@ -607,6 +609,7 @@ Types: feat, fix, docs, style, refactor, test, chore
 
     logger.info(f"✅ Created {len(sample_items)} sample knowledge items")
 
+
 def setup_knowledge_base():
     """Set up the knowledge base with sample data"""
     try:
@@ -625,7 +628,8 @@ def setup_knowledge_base():
 
         # Import conversations
         results = km.import_conversations(str(sample_file))
-        logger.info(f"📥 Imported conversations: {results['processed']} processed, {results['items_created']} items created")
+        logger.info(
+            f"📥 Imported conversations: {results['processed']} processed, {results['items_created']} items created")
 
         # Create additional sample items
         create_sample_knowledge_items(km)
@@ -644,6 +648,7 @@ def setup_knowledge_base():
     except Exception as e:
         logger.error(f"❌ Knowledge base setup failed: {e}")
         return False
+
 
 if __name__ == "__main__":
     print("🧠 NoxPanel Knowledge Management Setup")

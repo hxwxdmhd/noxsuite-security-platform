@@ -13,21 +13,23 @@ DASHBOARD CHAIN:
 """
 
 import asyncio
+import http.server
 import json
 import logging
-import webbrowser
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List
-from dataclasses import dataclass
-import http.server
 import socketserver
 import threading
 import time
+import webbrowser
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List
 
 # Configure dashboard logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - [RLVR-DASHBOARD] %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - [RLVR-DASHBOARD] %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class SystemMetrics:
@@ -40,6 +42,7 @@ class SystemMetrics:
     critical_issues: int
     test_coverage: float
     reasoning_quality: float
+
 
 class RLVRMasterDashboard:
     """Master dashboard for comprehensive RLVR system integrity monitoring"""
@@ -57,19 +60,19 @@ class RLVRMasterDashboard:
 
     COMPLIANCE: STANDARD
     """
-        self.workspace_path = Path(workspace_path)
-        self.port = port
-        self.server = None
-        self.is_running = False
+    self.workspace_path = Path(workspace_path)
+    self.port = port
+    self.server = None
+    self.is_running = False
 
-        # Create dashboard data directory
-        self.dashboard_dir = self.workspace_path / "dashboard"
-        self.dashboard_dir.mkdir(exist_ok=True)
+    # Create dashboard data directory
+    self.dashboard_dir = self.workspace_path / "dashboard"
+    self.dashboard_dir.mkdir(exist_ok=True)
 
-        # Initialize metrics
-        self.current_metrics = SystemMetrics(
-            timestamp=datetime.now().isoformat(),
-    """
+    # Initialize metrics
+    self.current_metrics = SystemMetrics(
+        timestamp=datetime.now().isoformat(),
+        """
     RLVR: Implements generate_dashboard_html with error handling and validation
 
     REASONING CHAIN:
@@ -81,16 +84,16 @@ class RLVRMasterDashboard:
 
     COMPLIANCE: STANDARD
     """
-            total_components=29218,
-            compliance_rate=0.000068,
-            validation_score=0.092,
-            remediated_files=150,
-            critical_issues=29068,
-            test_coverage=0.75,
-            reasoning_quality=0.092
-        )
+        total_components=29218,
+        compliance_rate=0.000068,
+        validation_score=0.092,
+        remediated_files=150,
+        critical_issues=29068,
+        test_coverage=0.75,
+        reasoning_quality=0.092
+    )
 
-        logger.info("RLVR Master Dashboard initialized")
+    logger.info("RLVR Master Dashboard initialized")
 
     def generate_dashboard_html(self) -> str:
         """Generate comprehensive dashboard HTML"""
@@ -603,6 +606,7 @@ class RLVRMasterDashboard:
 
     COMPLIANCE: STANDARD
     """
+
     def start_dashboard_server(self) -> None:
         """Start web server for master dashboard"""
         try:
@@ -625,8 +629,10 @@ class RLVRMasterDashboard:
             with socketserver.TCPServer(("", self.port), DashboardHandler) as httpd:
                 self.server = httpd
                 self.is_running = True
-                logger.info(f"RLVR Master Dashboard server started on port {self.port}")
-                logger.info(f"Access dashboard at: http://localhost:{self.port}")
+                logger.info(
+                    f"RLVR Master Dashboard server started on port {self.port}")
+                logger.info(
+                    f"Access dashboard at: http://localhost:{self.port}")
 
                 # Open browser
                 webbrowser.open(f"http://localhost:{self.port}")
@@ -639,7 +645,8 @@ class RLVRMasterDashboard:
 
     def start_async(self) -> None:
         """Start dashboard server in background thread"""
-        self.server_thread = threading.Thread(target=self.start_dashboard_server, daemon=True)
+        self.server_thread = threading.Thread(
+            target=self.start_dashboard_server, daemon=True)
         self.server_thread.start()
         time.sleep(2)  # Give server time to start
 
@@ -649,6 +656,7 @@ class RLVRMasterDashboard:
             self.server.shutdown()
             self.is_running = False
             logger.info("RLVR Master Dashboard server stopped")
+
 
 async def main():
     """Main entry point for RLVR Master Dashboard"""

@@ -15,31 +15,32 @@ This system provides comprehensive resource management and quota enforcement:
 Essential for enterprise multi-tenant resource control
 """
 
-import os
-import sys
-import json
-import time
 import asyncio
+import json
 import logging
-import threading
-from typing import Dict, List, Optional, Any, Union, Tuple
-from datetime import datetime, timedelta
-from dataclasses import dataclass, field
-from enum import Enum
-import uuid
-import pymysql
-from contextlib import contextmanager
-from collections import defaultdict
-import psutil
+import os
 import platform
+import sys
+import threading
+import time
+import uuid
+from collections import defaultdict
+from contextlib import contextmanager
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import psutil
+import pymysql
 
 # Add project root to path
 project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, project_root)
 
 try:
-    from tenant_manager import TenantManager, Tenant, ResourceType, ResourceQuota
     from tenant_auth import TenantAuthManager, User
+    from tenant_manager import ResourceQuota, ResourceType, Tenant, TenantManager
 except ImportError:
     TenantManager = None
     Tenant = None
@@ -57,9 +58,21 @@ except ImportError:
 
 try:
     import sqlalchemy
-    from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, DateTime, Boolean, Text, Numeric, Float
+    from sqlalchemy import (
+        Boolean,
+        Column,
+        DateTime,
+        Float,
+        Integer,
+        MetaData,
+        Numeric,
+        String,
+        Table,
+        Text,
+        create_engine,
+    )
     from sqlalchemy.ext.declarative import declarative_base
-    from sqlalchemy.orm import sessionmaker, Session
+    from sqlalchemy.orm import Session, sessionmaker
     HAS_SQLALCHEMY = True
 except ImportError:
     HAS_SQLALCHEMY = False
@@ -80,12 +93,14 @@ except ImportError:
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class ResourceStatus(Enum):
     """Resource status enumeration"""
     NORMAL = "normal"
     WARNING = "warning"
     CRITICAL = "critical"
     EXCEEDED = "exceeded"
+
 
 class AlertType(Enum):
     """Alert type enumeration"""
@@ -94,6 +109,7 @@ class AlertType(Enum):
     PERFORMANCE_DEGRADED = "performance_degraded"
     RESOURCE_EXHAUSTED = "resource_exhausted"
     BILLING_THRESHOLD = "billing_threshold"
+
 
 class ResourceCategory(Enum):
     """Resource category enumeration"""
@@ -104,12 +120,14 @@ class ResourceCategory(Enum):
     APPLICATION = "application"
     CUSTOM = "custom"
 
+
 class MetricType(Enum):
     """Metric type enumeration"""
     COUNTER = "counter"
     GAUGE = "gauge"
     HISTOGRAM = "histogram"
     TIMER = "timer"
+
 
 @dataclass
 class ResourceMetric:
@@ -123,6 +141,7 @@ class ResourceMetric:
     unit: str
     timestamp: datetime
     metadata: Dict[str, Any] = field(default_factory=dict)
+
 
 @dataclass
 class QuotaPolicy:
@@ -141,6 +160,7 @@ class QuotaPolicy:
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
 
+
 @dataclass
 class ResourceAllocation:
     """Resource allocation record"""
@@ -152,6 +172,7 @@ class ResourceAllocation:
     allocated_at: datetime
     expires_at: Optional[datetime] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
+
 
 @dataclass
 class ResourceAlert:
@@ -168,6 +189,7 @@ class ResourceAlert:
     created_at: datetime = field(default_factory=datetime.now)
     resolved_at: Optional[datetime] = None
 
+
 @dataclass
 class BillingRecord:
     """Billing record for resource usage"""
@@ -182,6 +204,7 @@ class BillingRecord:
     created_at: datetime = field(default_factory=datetime.now)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
+
 @dataclass
 class SystemMetrics:
     """System-wide metrics"""
@@ -193,33 +216,38 @@ class SystemMetrics:
     response_time: float
     timestamp: datetime = field(default_factory=datetime.now)
 
+
 class ResourceMonitor:
     """
     Real-time resource monitoring system
     """
-    
+
     def __init__(self, db_url: str = "mysql+pymysql://resources.db"):
         self.db_url = db_url
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logging.getLogger(
+            f"{__name__}.{self.__class__.__name__}")
         self.monitoring_active = False
         self.monitor_thread = None
         self.metrics_cache = {}
-        
+
         # Initialize database
         self._init_database()
-        
+
         # Initialize Redis cache if available
         if HAS_REDIS:
             try:
-                self.redis_client = redis.Redis(host='localhost', port=6379, db=2)
+                self.redis_client = redis.Redis(
+                    host='localhost', port=6379, db=2)
                 self.redis_client.ping()
-                self.logger.info("Redis cache initialized for resource monitoring")
+                self.logger.info(
+                    "Redis cache initialized for resource monitoring")
             except Exception as e:
-                self.logger.warning(f"Redis not available for resource monitoring: {e}")
+                self.logger.warning(
+                    f"Redis not available for resource monitoring: {e}")
                 self.redis_client = None
         else:
             self.redis_client = None
-        
+
         # Initialize Docker client if available
         if HAS_DOCKER:
             try:
@@ -230,7 +258,7 @@ class ResourceMonitor:
                 self.docker_client = None
         else:
             self.docker_client = None
-    
+
     def _init_database(self):
         """Initialize resource monitoring database"""
         try:
@@ -241,14 +269,15 @@ class ResourceMonitor:
                 self.SessionLocal = sessionmaker(bind=self.engine)
             else:
                 # Fallback to SQLite
-                self.resource_conn = pymysql.connect("resources.db", check_same_thread=False)
+                self.resource_conn = pymysql.connect(
+                    "resources.db", check_same_thread=False)
                 self._create_resource_tables_sqlite()
-            
+
             self.logger.info("Resource monitoring database initialized")
-            
+
         except Exception as e:
             self.logger.error(f"Failed to initialize resource database: {e}")
-    
+
     def _create_resource_tables(self):
         """Create resource monitoring tables using SQLAlchemy"""
         try:
@@ -265,7 +294,7 @@ class ResourceMonitor:
                 Column('timestamp', DateTime, nullable=False),
                 Column('metadata', Text)
             )
-            
+
             # Quota policies table
             self.quota_policies_table = Table(
                 'quota_policies', self.Base.metadata,
@@ -283,7 +312,7 @@ class ResourceMonitor:
                 Column('created_at', DateTime, nullable=False),
                 Column('updated_at', DateTime, nullable=False)
             )
-            
+
             # Resource allocations table
             self.allocations_table = Table(
                 'resource_allocations', self.Base.metadata,
@@ -296,7 +325,7 @@ class ResourceMonitor:
                 Column('expires_at', DateTime),
                 Column('metadata', Text)
             )
-            
+
             # Resource alerts table
             self.alerts_table = Table(
                 'resource_alerts', self.Base.metadata,
@@ -312,7 +341,7 @@ class ResourceMonitor:
                 Column('created_at', DateTime, nullable=False),
                 Column('resolved_at', DateTime)
             )
-            
+
             # Billing records table
             self.billing_records_table = Table(
                 'billing_records', self.Base.metadata,
@@ -327,7 +356,7 @@ class ResourceMonitor:
                 Column('created_at', DateTime, nullable=False),
                 Column('metadata', Text)
             )
-            
+
             # System metrics table
             self.system_metrics_table = Table(
                 'system_metrics', self.Base.metadata,
@@ -340,18 +369,18 @@ class ResourceMonitor:
                 Column('response_time', Float, nullable=False),
                 Column('timestamp', DateTime, nullable=False)
             )
-            
+
             # Create all tables
             self.Base.metadata.create_all(self.engine)
-            
+
         except Exception as e:
             self.logger.error(f"Error creating resource tables: {e}")
-    
+
     def _create_resource_tables_sqlite(self):
         """Create resource monitoring tables using SQLite"""
         try:
             cursor = self.resource_conn.cursor()
-            
+
             # Resource metrics table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS resource_metrics (
@@ -366,7 +395,7 @@ class ResourceMonitor:
                     metadata TEXT
                 )
             """)
-            
+
             # Quota policies table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS quota_policies (
@@ -385,7 +414,7 @@ class ResourceMonitor:
                     updated_at TEXT NOT NULL
                 )
             """)
-            
+
             # Resource allocations table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS resource_allocations (
@@ -399,7 +428,7 @@ class ResourceMonitor:
                     metadata TEXT
                 )
             """)
-            
+
             # Resource alerts table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS resource_alerts (
@@ -416,7 +445,7 @@ class ResourceMonitor:
                     resolved_at TEXT
                 )
             """)
-            
+
             # Billing records table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS billing_records (
@@ -432,7 +461,7 @@ class ResourceMonitor:
                     metadata TEXT
                 )
             """)
-            
+
             # System metrics table
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS system_metrics (
@@ -446,19 +475,19 @@ class ResourceMonitor:
                     timestamp TEXT NOT NULL
                 )
             """)
-            
+
             self.resource_conn.commit()
-            
+
         except Exception as e:
             self.logger.error(f"Error creating SQLite resource tables: {e}")
-    
+
     def start_monitoring(self, interval: int = 60):
         """Start resource monitoring"""
         try:
             if self.monitoring_active:
                 self.logger.warning("Resource monitoring already active")
                 return
-            
+
             self.monitoring_active = True
             self.monitor_thread = threading.Thread(
                 target=self._monitor_loop,
@@ -466,24 +495,25 @@ class ResourceMonitor:
                 daemon=True
             )
             self.monitor_thread.start()
-            
-            self.logger.info(f"Resource monitoring started with {interval}s interval")
-            
+
+            self.logger.info(
+                f"Resource monitoring started with {interval}s interval")
+
         except Exception as e:
             self.logger.error(f"Error starting resource monitoring: {e}")
-    
+
     def stop_monitoring(self):
         """Stop resource monitoring"""
         try:
             self.monitoring_active = False
             if self.monitor_thread:
                 self.monitor_thread.join(timeout=5)
-            
+
             self.logger.info("Resource monitoring stopped")
-            
+
         except Exception as e:
             self.logger.error(f"Error stopping resource monitoring: {e}")
-    
+
     def _monitor_loop(self, interval: int):
         """Main monitoring loop"""
         while self.monitoring_active:
@@ -491,34 +521,34 @@ class ResourceMonitor:
                 # Collect system metrics
                 system_metrics = self._collect_system_metrics()
                 self._store_system_metrics(system_metrics)
-                
+
                 # Collect container metrics if Docker is available
                 if self.docker_client:
                     container_metrics = self._collect_container_metrics()
                     for metric in container_metrics:
                         self._store_metric(metric)
-                
+
                 # Sleep for interval
                 time.sleep(interval)
-                
+
             except Exception as e:
                 self.logger.error(f"Error in monitoring loop: {e}")
                 time.sleep(interval)
-    
+
     def _collect_system_metrics(self) -> SystemMetrics:
         """Collect system-wide metrics"""
         try:
             # CPU usage
             cpu_usage = psutil.cpu_percent(interval=1)
-            
+
             # Memory usage
             memory = psutil.virtual_memory()
             memory_usage = memory.percent
-            
+
             # Disk usage
             disk = psutil.disk_usage('/')
             disk_usage = (disk.used / disk.total) * 100
-            
+
             # Network I/O
             network = psutil.net_io_counters()
             network_io = {
@@ -527,13 +557,13 @@ class ResourceMonitor:
                 'packets_sent': network.packets_sent,
                 'packets_recv': network.packets_recv
             }
-            
+
             # Active connections
             connections = len(psutil.net_connections())
-            
+
             # Response time (mock value)
             response_time = 0.1  # Would be measured from actual requests
-            
+
             return SystemMetrics(
                 cpu_usage=cpu_usage,
                 memory_usage=memory_usage,
@@ -542,28 +572,30 @@ class ResourceMonitor:
                 active_connections=connections,
                 response_time=response_time
             )
-            
+
         except Exception as e:
             self.logger.error(f"Error collecting system metrics: {e}")
             return SystemMetrics(0, 0, 0, {}, 0, 0)
-    
+
     def _collect_container_metrics(self) -> List[ResourceMetric]:
         """Collect Docker container metrics"""
         try:
             metrics = []
-            
+
             for container in self.docker_client.containers.list():
                 # Get container stats
                 stats = container.stats(stream=False)
-                
+
                 # Extract tenant ID from container labels
                 tenant_id = container.labels.get('tenant_id', 'unknown')
-                
+
                 # CPU usage
-                cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - stats['precpu_stats']['cpu_usage']['total_usage']
-                system_delta = stats['cpu_stats']['system_cpu_usage'] - stats['precpu_stats']['system_cpu_usage']
+                cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - \
+                    stats['precpu_stats']['cpu_usage']['total_usage']
+                system_delta = stats['cpu_stats']['system_cpu_usage'] - \
+                    stats['precpu_stats']['system_cpu_usage']
                 cpu_usage = (cpu_delta / system_delta) * 100.0
-                
+
                 metrics.append(ResourceMetric(
                     id=str(uuid.uuid4()),
                     tenant_id=tenant_id,
@@ -573,14 +605,15 @@ class ResourceMonitor:
                     value=cpu_usage,
                     unit='percent',
                     timestamp=datetime.now(),
-                    metadata={'container_id': container.id, 'container_name': container.name}
+                    metadata={'container_id': container.id,
+                              'container_name': container.name}
                 ))
-                
+
                 # Memory usage
                 memory_usage = stats['memory_stats']['usage']
                 memory_limit = stats['memory_stats']['limit']
                 memory_percent = (memory_usage / memory_limit) * 100.0
-                
+
                 metrics.append(ResourceMetric(
                     id=str(uuid.uuid4()),
                     tenant_id=tenant_id,
@@ -590,20 +623,21 @@ class ResourceMonitor:
                     value=memory_percent,
                     unit='percent',
                     timestamp=datetime.now(),
-                    metadata={'container_id': container.id, 'container_name': container.name}
+                    metadata={'container_id': container.id,
+                              'container_name': container.name}
                 ))
-            
+
             return metrics
-            
+
         except Exception as e:
             self.logger.error(f"Error collecting container metrics: {e}")
             return []
-    
+
     def _store_system_metrics(self, metrics: SystemMetrics):
         """Store system metrics in database"""
         try:
             metrics_id = str(uuid.uuid4())
-            
+
             if HAS_SQLALCHEMY:
                 with self.SessionLocal() as session:
                     session.execute(
@@ -631,7 +665,7 @@ class ResourceMonitor:
                     metrics.timestamp.isoformat()
                 ))
                 self.resource_conn.commit()
-            
+
             # Cache in Redis
             if self.redis_client:
                 self.redis_client.setex(
@@ -647,10 +681,10 @@ class ResourceMonitor:
                         'timestamp': metrics.timestamp.isoformat()
                     })
                 )
-                
+
         except Exception as e:
             self.logger.error(f"Error storing system metrics: {e}")
-    
+
     def _store_metric(self, metric: ResourceMetric):
         """Store resource metric in database"""
         try:
@@ -682,7 +716,7 @@ class ResourceMonitor:
                     json.dumps(metric.metadata)
                 ))
                 self.resource_conn.commit()
-            
+
             # Cache in Redis
             if self.redis_client:
                 cache_key = f"metric:{metric.tenant_id}:{metric.resource_type.value}:latest"
@@ -695,16 +729,16 @@ class ResourceMonitor:
                         'timestamp': metric.timestamp.isoformat()
                     })
                 )
-                
+
         except Exception as e:
             self.logger.error(f"Error storing metric: {e}")
-    
+
     def get_tenant_metrics(self, tenant_id: str, resource_type: ResourceType,
-                          start_time: datetime, end_time: datetime) -> List[ResourceMetric]:
+                           start_time: datetime, end_time: datetime) -> List[ResourceMetric]:
         """Get metrics for tenant and resource type"""
         try:
             metrics = []
-            
+
             if HAS_SQLALCHEMY:
                 with self.SessionLocal() as session:
                     results = session.execute(
@@ -715,7 +749,7 @@ class ResourceMonitor:
                             (self.metrics_table.c.timestamp <= end_time)
                         ).order_by(self.metrics_table.c.timestamp.asc())
                     ).fetchall()
-                    
+
                     for result in results:
                         metric = ResourceMetric(
                             id=result.id,
@@ -726,7 +760,8 @@ class ResourceMonitor:
                             value=result.value,
                             unit=result.unit,
                             timestamp=result.timestamp,
-                            metadata=json.loads(result.metadata) if result.metadata else {}
+                            metadata=json.loads(
+                                result.metadata) if result.metadata else {}
                         )
                         metrics.append(metric)
             else:
@@ -738,7 +773,7 @@ class ResourceMonitor:
                     ORDER BY timestamp ASC
                 """, (tenant_id, resource_type.value, start_time.isoformat(), end_time.isoformat()))
                 results = cursor.fetchall()
-                
+
                 for result in results:
                     metric = ResourceMetric(
                         id=result[0],
@@ -752,13 +787,13 @@ class ResourceMonitor:
                         metadata=json.loads(result[8]) if result[8] else {}
                     )
                     metrics.append(metric)
-            
+
             return metrics
-            
+
         except Exception as e:
             self.logger.error(f"Error getting tenant metrics: {e}")
             return []
-    
+
     def get_latest_system_metrics(self) -> Optional[SystemMetrics]:
         """Get latest system metrics"""
         try:
@@ -776,7 +811,7 @@ class ResourceMonitor:
                         response_time=data['response_time'],
                         timestamp=datetime.fromisoformat(data['timestamp'])
                     )
-            
+
             # Query database
             if HAS_SQLALCHEMY:
                 with self.SessionLocal() as session:
@@ -785,7 +820,7 @@ class ResourceMonitor:
                             self.system_metrics_table.c.timestamp.desc()
                         ).limit(1)
                     ).fetchone()
-                    
+
                     if result:
                         return SystemMetrics(
                             cpu_usage=result.cpu_usage,
@@ -804,7 +839,7 @@ class ResourceMonitor:
                     LIMIT 1
                 """)
                 result = cursor.fetchone()
-                
+
                 if result:
                     return SystemMetrics(
                         cpu_usage=result[1],
@@ -815,28 +850,30 @@ class ResourceMonitor:
                         response_time=result[6],
                         timestamp=datetime.fromisoformat(result[7])
                     )
-            
+
             return None
-            
+
         except Exception as e:
             self.logger.error(f"Error getting latest system metrics: {e}")
             return None
+
 
 class QuotaManager:
     """
     Quota management and enforcement system
     """
-    
+
     def __init__(self, resource_monitor: ResourceMonitor, tenant_manager: TenantManager = None):
         self.resource_monitor = resource_monitor
         self.tenant_manager = tenant_manager
-        self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+        self.logger = logging.getLogger(
+            f"{__name__}.{self.__class__.__name__}")
         self.quota_policies = {}
         self.alerts_cache = {}
-        
+
         # Load existing quota policies
         self._load_quota_policies()
-    
+
     def _load_quota_policies(self):
         """Load quota policies from database"""
         try:
@@ -845,7 +882,7 @@ class QuotaManager:
                     results = session.execute(
                         self.resource_monitor.quota_policies_table.select()
                     ).fetchall()
-                    
+
                     for result in results:
                         policy = QuotaPolicy(
                             id=result.id,
@@ -867,7 +904,7 @@ class QuotaManager:
                 cursor = self.resource_monitor.resource_conn.cursor()
                 cursor.execute("SELECT * FROM quota_policies")
                 results = cursor.fetchall()
-                
+
                 for result in results:
                     policy = QuotaPolicy(
                         id=result[0],
@@ -885,16 +922,16 @@ class QuotaManager:
                         updated_at=datetime.fromisoformat(result[12])
                     )
                     self.quota_policies[f"{result[1]}:{result[2]}"] = policy
-                    
+
         except Exception as e:
             self.logger.error(f"Error loading quota policies: {e}")
-    
+
     def create_quota_policy(self, tenant_id: str, resource_type: ResourceType,
-                          hard_limit: int, soft_limit: int,
-                          warning_threshold: float = 80.0,
-                          critical_threshold: float = 95.0,
-                          auto_scale: bool = False,
-                          cost_per_unit: float = 0.0) -> Optional[QuotaPolicy]:
+                            hard_limit: int, soft_limit: int,
+                            warning_threshold: float = 80.0,
+                            critical_threshold: float = 95.0,
+                            auto_scale: bool = False,
+                            cost_per_unit: float = 0.0) -> Optional[QuotaPolicy]:
         """Create a new quota policy"""
         try:
             policy = QuotaPolicy(
@@ -908,7 +945,7 @@ class QuotaManager:
                 auto_scale=auto_scale,
                 cost_per_unit=cost_per_unit
             )
-            
+
             # Store in database
             if HAS_SQLALCHEMY:
                 with self.resource_monitor.SessionLocal() as session:
@@ -943,30 +980,31 @@ class QuotaManager:
                     policy.created_at.isoformat(), policy.updated_at.isoformat()
                 ))
                 self.resource_monitor.resource_conn.commit()
-            
+
             # Cache policy
             self.quota_policies[f"{tenant_id}:{resource_type.value}"] = policy
-            
-            self.logger.info(f"Created quota policy for {tenant_id}:{resource_type.value}")
+
+            self.logger.info(
+                f"Created quota policy for {tenant_id}:{resource_type.value}")
             return policy
-            
+
         except Exception as e:
             self.logger.error(f"Error creating quota policy: {e}")
             return None
-    
+
     def check_quota_status(self, tenant_id: str, resource_type: ResourceType,
-                          current_usage: int) -> Tuple[ResourceStatus, Optional[ResourceAlert]]:
+                           current_usage: int) -> Tuple[ResourceStatus, Optional[ResourceAlert]]:
         """Check quota status for tenant and resource"""
         try:
             policy_key = f"{tenant_id}:{resource_type.value}"
             policy = self.quota_policies.get(policy_key)
-            
+
             if not policy:
                 return ResourceStatus.NORMAL, None
-            
+
             # Calculate usage percentage
             usage_percent = (current_usage / policy.hard_limit) * 100
-            
+
             # Determine status
             if usage_percent >= 100:
                 status = ResourceStatus.EXCEEDED
@@ -980,7 +1018,7 @@ class QuotaManager:
             else:
                 status = ResourceStatus.NORMAL
                 alert_type = None
-            
+
             # Create alert if needed
             alert = None
             if alert_type:
@@ -994,20 +1032,20 @@ class QuotaManager:
                     threshold=usage_percent,
                     message=f"Resource {resource_type.value} usage at {usage_percent:.1f}% ({current_usage}/{policy.hard_limit})"
                 )
-                
+
                 # Store alert
                 self._store_alert(alert)
-                
+
                 # Auto-scale if enabled
                 if policy.auto_scale and status == ResourceStatus.CRITICAL:
                     self._auto_scale_resource(tenant_id, resource_type, policy)
-            
+
             return status, alert
-            
+
         except Exception as e:
             self.logger.error(f"Error checking quota status: {e}")
             return ResourceStatus.NORMAL, None
-    
+
     def _store_alert(self, alert: ResourceAlert):
         """Store resource alert in database"""
         try:
@@ -1042,23 +1080,23 @@ class QuotaManager:
                     alert.resolved_at.isoformat() if alert.resolved_at else None
                 ))
                 self.resource_monitor.resource_conn.commit()
-            
+
             # Cache alert
             self.alerts_cache[alert.id] = alert
-            
+
         except Exception as e:
             self.logger.error(f"Error storing alert: {e}")
-    
+
     def _auto_scale_resource(self, tenant_id: str, resource_type: ResourceType, policy: QuotaPolicy):
         """Auto-scale resource based on policy"""
         try:
             new_limit = int(policy.hard_limit * policy.auto_scale_factor)
-            
+
             # Update policy
             policy.hard_limit = new_limit
             policy.soft_limit = int(new_limit * 0.8)  # 80% of new limit
             policy.updated_at = datetime.now()
-            
+
             # Update database
             if HAS_SQLALCHEMY:
                 with self.resource_monitor.SessionLocal() as session:
@@ -1083,21 +1121,22 @@ class QuotaManager:
                     policy.updated_at.isoformat(), policy.id
                 ))
                 self.resource_monitor.resource_conn.commit()
-            
+
             # Update cache
             policy_key = f"{tenant_id}:{resource_type.value}"
             self.quota_policies[policy_key] = policy
-            
-            self.logger.info(f"Auto-scaled {resource_type.value} for {tenant_id} to {new_limit}")
-            
+
+            self.logger.info(
+                f"Auto-scaled {resource_type.value} for {tenant_id} to {new_limit}")
+
         except Exception as e:
             self.logger.error(f"Error auto-scaling resource: {e}")
-    
+
     def get_tenant_alerts(self, tenant_id: str, resolved: bool = False) -> List[ResourceAlert]:
         """Get alerts for tenant"""
         try:
             alerts = []
-            
+
             if HAS_SQLALCHEMY:
                 with self.resource_monitor.SessionLocal() as session:
                     results = session.execute(
@@ -1106,7 +1145,7 @@ class QuotaManager:
                             (self.resource_monitor.alerts_table.c.resolved == resolved)
                         ).order_by(self.resource_monitor.alerts_table.c.created_at.desc())
                     ).fetchall()
-                    
+
                     for result in results:
                         alert = ResourceAlert(
                             id=result.id,
@@ -1130,7 +1169,7 @@ class QuotaManager:
                     ORDER BY created_at DESC
                 """, (tenant_id, resolved))
                 results = cursor.fetchall()
-                
+
                 for result in results:
                     alert = ResourceAlert(
                         id=result[0],
@@ -1143,50 +1182,52 @@ class QuotaManager:
                         message=result[7],
                         resolved=bool(result[8]),
                         created_at=datetime.fromisoformat(result[9]),
-                        resolved_at=datetime.fromisoformat(result[10]) if result[10] else None
+                        resolved_at=datetime.fromisoformat(
+                            result[10]) if result[10] else None
                     )
                     alerts.append(alert)
-            
+
             return alerts
-            
+
         except Exception as e:
             self.logger.error(f"Error getting tenant alerts: {e}")
             return []
+
 
 def main():
     """Main function for testing resource management system"""
     try:
         print("Resource Management & Quota System - Test Mode")
         print("=" * 50)
-        
+
         # Initialize resource monitor
         resource_monitor = ResourceMonitor()
-        
+
         # Initialize quota manager
         quota_manager = QuotaManager(resource_monitor)
-        
+
         # Start monitoring
         print("Starting resource monitoring...")
         resource_monitor.start_monitoring(interval=30)
-        
+
         # Wait for some metrics to be collected
         time.sleep(5)
-        
+
         # Get latest system metrics
         print("Getting latest system metrics...")
         system_metrics = resource_monitor.get_latest_system_metrics()
-        
+
         if system_metrics:
             print(f"CPU Usage: {system_metrics.cpu_usage:.1f}%")
             print(f"Memory Usage: {system_metrics.memory_usage:.1f}%")
             print(f"Disk Usage: {system_metrics.disk_usage:.1f}%")
             print(f"Active Connections: {system_metrics.active_connections}")
             print(f"Response Time: {system_metrics.response_time:.3f}s")
-        
+
         # Test quota policy creation
         print("\nTesting quota policy creation...")
         tenant_id = "test-tenant-123"
-        
+
         policy = quota_manager.create_quota_policy(
             tenant_id=tenant_id,
             resource_type=ResourceType.CPU,
@@ -1197,13 +1238,13 @@ def main():
             auto_scale=True,
             cost_per_unit=0.01
         )
-        
+
         if policy:
             print(f"Created quota policy: {policy.resource_type.value}")
             print(f"Hard Limit: {policy.hard_limit}")
             print(f"Soft Limit: {policy.soft_limit}")
             print(f"Auto Scale: {policy.auto_scale}")
-            
+
             # Test quota status checking
             print("\nTesting quota status checking...")
             status, alert = quota_manager.check_quota_status(
@@ -1211,11 +1252,11 @@ def main():
                 resource_type=ResourceType.CPU,
                 current_usage=850  # 85% of limit
             )
-            
+
             print(f"Quota Status: {status.value}")
             if alert:
                 print(f"Alert: {alert.message}")
-            
+
             # Test critical usage
             print("\nTesting critical usage...")
             status, alert = quota_manager.check_quota_status(
@@ -1223,33 +1264,36 @@ def main():
                 resource_type=ResourceType.CPU,
                 current_usage=970  # 97% of limit
             )
-            
+
             print(f"Critical Status: {status.value}")
             if alert:
                 print(f"Critical Alert: {alert.message}")
-                
+
                 # Check if auto-scaling occurred
-                updated_policy = quota_manager.quota_policies.get(f"{tenant_id}:{ResourceType.CPU.value}")
+                updated_policy = quota_manager.quota_policies.get(
+                    f"{tenant_id}:{ResourceType.CPU.value}")
                 if updated_policy and updated_policy.hard_limit > 1000:
-                    print(f"Auto-scaling occurred! New limit: {updated_policy.hard_limit}")
-            
+                    print(
+                        f"Auto-scaling occurred! New limit: {updated_policy.hard_limit}")
+
             # Get tenant alerts
             print("\nGetting tenant alerts...")
             alerts = quota_manager.get_tenant_alerts(tenant_id, resolved=False)
             print(f"Active alerts: {len(alerts)}")
-            
+
             for alert in alerts:
                 print(f"- {alert.alert_type.value}: {alert.message}")
-        
+
         # Stop monitoring
         print("\nStopping resource monitoring...")
         resource_monitor.stop_monitoring()
-        
+
         print("\nResource management system test completed!")
-        
+
     except Exception as e:
         print(f"Error in resource management system: {e}")
         logger.error(f"Resource management system error: {e}")
+
 
 if __name__ == "__main__":
     main()

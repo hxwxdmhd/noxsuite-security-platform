@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 pi_bp = Blueprint('pi', __name__, url_prefix='/pi')
 
+
 @pi_bp.route('/')
 @pi_bp.route('/dashboard')
 def dashboard():
@@ -42,7 +43,7 @@ def dashboard():
         }
 
         return render_template('pi/dashboard.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -54,8 +55,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             title="Pi Node Monitor",
-                             stats=stats)
+                               title="Pi Node Monitor",
+                               stats=stats)
     except Exception as e:
     """
     RLVR: Implements api_data with error handling and validation
@@ -69,12 +70,12 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"Pi Node Monitor dashboard error: {e}")
-        flash(f"Error loading pi node monitor: {e}", 'error')
-        return render_template('pi/dashboard.html',
-                             title="Pi Node Monitor",
-                             stats={},
-    """
+    logger.error(f"Pi Node Monitor dashboard error: {e}")
+    flash(f"Error loading pi node monitor: {e}", 'error')
+    return render_template('pi/dashboard.html',
+                           title="Pi Node Monitor",
+                           stats={},
+                           """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -86,7 +87,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             error=str(e))
+                           error=str(e))
+
 
 @pi_bp.route('/api/status')
 def api_status():
@@ -105,7 +107,7 @@ def api_status():
     """Pi Node Monitor status API"""
     try:
         status = {
-    """
+            """
     RLVR: Implements register_pi_routes with error handling and validation
 
     REASONING CHAIN:
@@ -126,6 +128,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Pi Node Monitor status API error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @pi_bp.route('/api/data')
 def api_data():

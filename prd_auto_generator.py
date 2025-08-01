@@ -1,3 +1,7 @@
+from typing import Any, Dict, List
+from pathlib import Path
+import json
+import datetime
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,11 +11,6 @@ logger = get_logger(__name__)
 PRD Auto-Generator
 Automatically generates Product Requirement Documents from test results
 """
-
-import datetime
-import json
-from pathlib import Path
-from typing import Any, Dict, List
 
 
 class PRDAutoGenerator:
@@ -30,7 +29,8 @@ class PRDAutoGenerator:
         # Load TestSprite results
         testsprite_dir = Path("logs/autonomous_testing")
         if testsprite_dir.exists():
-            testsprite_files = list(testsprite_dir.glob("testsprite_results_*.json"))
+            testsprite_files = list(
+                testsprite_dir.glob("testsprite_results_*.json"))
             if testsprite_files:
                 latest_testsprite = max(
                     testsprite_files, key=lambda x: x.stat().st_mtime
@@ -54,7 +54,8 @@ class PRDAutoGenerator:
         # Load performance results
         performance_dir = Path("logs/performance_testing")
         if performance_dir.exists():
-            performance_files = list(performance_dir.glob("performance_results_*.json"))
+            performance_files = list(
+                performance_dir.glob("performance_results_*.json"))
             if performance_files:
                 latest_performance = max(
                     performance_files, key=lambda x: x.stat().st_mtime
@@ -215,8 +216,10 @@ class PRDAutoGenerator:
         """Generate complete PRD document"""
 
         # Extract requirements
-        failure_requirements = self.extract_requirements_from_failures(test_results)
-        performance_requirements = self.extract_performance_requirements(test_results)
+        failure_requirements = self.extract_requirements_from_failures(
+            test_results)
+        performance_requirements = self.extract_performance_requirements(
+            test_results)
         all_requirements = failure_requirements + performance_requirements
 
         # Generate roadmap

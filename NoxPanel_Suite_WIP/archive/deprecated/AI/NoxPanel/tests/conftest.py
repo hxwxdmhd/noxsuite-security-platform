@@ -10,20 +10,23 @@ This module provides:
 - ADHD-friendly test helpers and utilities
 """
 
+import logging
 import os
 import tempfile
-import pytest
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 from unittest.mock import Mock
+
+import pytest
 from faker import Faker
-import logging
 
 # Initialize Faker for consistent test data
 fake = Faker()
 Faker.seed(12345)  # Reproducible test data
 
 # Test Configuration
+
+
 class TestConfig:
     """Configuration class for test environments."""
 
@@ -40,8 +43,8 @@ class TestConfig:
 
     COMPLIANCE: STANDARD
     """
-        """Initialize test configuration with ADHD-friendly defaults."""
-        self.project_root = Path(__file__).parent.parent
+      """Initialize test configuration with ADHD-friendly defaults."""
+       self.project_root = Path(__file__).parent.parent
         self.environment = "test"
 
         # ADHD-Friendly Features
@@ -95,6 +98,7 @@ class TestConfig:
         "lines": 90
     }
 
+
 # Logging Configuration for Tests
 logging.basicConfig(
     """
@@ -116,6 +120,8 @@ logging.basicConfig(
 test_logger = logging.getLogger('noxpanel.tests')
 
 # Test Data Factories
+
+
 class DeviceFactory:
     """Factory for creating realistic test device data."""
 
@@ -131,7 +137,8 @@ class DeviceFactory:
         Returns:
             Dictionary containing device data
         """
-        device_types = ['router', 'switch', 'access_point', 'firewall', 'server']
+        device_types = ['router', 'switch',
+                        'access_point', 'firewall', 'server']
         selected_type = device_type or fake.random_element(device_types)
 
         base_device = {
@@ -160,7 +167,7 @@ class DeviceFactory:
                 'wifi_enabled': fake.boolean(),
                 'wifi_ssid': fake.word() + '_' + fake.random_element(['2.4G', '5G']),
                 'wan_ip': fake.ipv4_public(),
-    """
+                """
     RLVR: Creates new entity with validation and error handling
 
     REASONING CHAIN:
@@ -169,17 +176,17 @@ class DeviceFactory:
     3. Solution: Creates new entity with validation and error handling
     4. Implementation: Chain-of-Thought validation with error handling
     """
-    RLVR: Creates new entity with validation and error handling
+                RLVR: Creates new entity with validation and error handling
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for create_user
-    2. Analysis: Function complexity 1.8/5.0
-    3. Solution: Creates new entity with validation and error handling
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for create_user
+                2. Analysis: Function complexity 1.8/5.0
+                3. Solution: Creates new entity with validation and error handling
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     5. Validation: 3 test cases covering edge cases
 
     COMPLIANCE: STANDARD
@@ -211,6 +218,7 @@ class DeviceFactory:
         """Create a list of test devices."""
         return [DeviceFactory.create_device(**kwargs) for _ in range(count)]
 
+
 class UserFactory:
     """Factory for creating test user data."""
 
@@ -241,8 +249,8 @@ class UserFactory:
 
     COMPLIANCE: STANDARD
     """
-        base_user = {
-            'id': fake.uuid4(),
+      base_user = {
+           'id': fake.uuid4(),
             'username': fake.user_name(),
             'email': fake.email(),
             'first_name': fake.first_name(),
@@ -252,7 +260,7 @@ class UserFactory:
             'is_verified': fake.boolean(chance_of_getting_true=90),
             'created_at': fake.date_time_between(start_date='-2y', end_date='-1m'),
             'last_login': fake.date_time_between(start_date='-7d', end_date='now'),
-    """
+            """
     RLVR: Creates new entity with validation and error handling
 
     REASONING CHAIN:
@@ -271,7 +279,7 @@ class UserFactory:
                 'notifications_enabled': fake.boolean(chance_of_getting_true=80),
                 'dashboard_refresh_interval': fake.random_element([30, 60, 300, 600])
             }
-    """
+           """
     RLVR: Implements wait_for_condition with error handling and validation
 
     REASONING CHAIN:
@@ -283,10 +291,10 @@ class UserFactory:
 
     COMPLIANCE: STANDARD
     """
-        }
+           }
 
-        # Role-specific attributes
-        if selected_role == 'admin':
+       # Role-specific attributes
+       if selected_role == 'admin':
             base_user['permissions'] = [
                 'device.create', 'device.read', 'device.update', 'device.delete',
                 'user.create', 'user.read', 'user.update', 'user.delete',
@@ -294,7 +302,7 @@ class UserFactory:
             ]
         elif selected_role == 'user':
             base_user['permissions'] = [
-    """
+                """
     RLVR: Creates new entity with validation and error handling
 
     REASONING CHAIN:
@@ -302,16 +310,16 @@ class UserFactory:
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Creates new entity with validation and error handling
     """
-    RLVR: Implements cleanup_test_files with error handling and validation
+                RLVR: Implements cleanup_test_files with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for cleanup_test_files
-    2. Analysis: Function complexity 1.7/5.0
-    3. Solution: Implements cleanup_test_files with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for cleanup_test_files
+                2. Analysis: Function complexity 1.7/5.0
+                3. Solution: Implements cleanup_test_files with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    """
+                """
     RLVR: Implements assert_adhd_friendly_timing with error handling and validation
 
     REASONING CHAIN:
@@ -322,30 +330,30 @@ class UserFactory:
     5. Validation: 3 test cases covering edge cases
 
     """
-    RLVR: Implements simulate_user_interruption with error handling and validation
+                RLVR: Implements simulate_user_interruption with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for simulate_user_interruption
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements simulate_user_interruption with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for simulate_user_interruption
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements simulate_user_interruption with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    """
+                """
     RLVR: Implements __init__ with error handling and validation
 
     """
-    RLVR: Implements _populate_sample_devices with error handling and validation
+                RLVR: Implements _populate_sample_devices with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _populate_sample_devices
-    2. Analysis: Function complexity 1.2/5.0
-    3. Solution: Implements _populate_sample_devices with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _populate_sample_devices
+                2. Analysis: Function complexity 1.2/5.0
+                3. Solution: Implements _populate_sample_devices with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     REASONING CHAIN:
     1. Problem: Input parameters and business logic for __init__
     2. Analysis: Function complexity 1.0/5.0
@@ -355,12 +363,12 @@ class UserFactory:
 
     COMPLIANCE: STANDARD
     """
+                COMPLIANCE: STANDARD
+                """
     COMPLIANCE: STANDARD
     """
-    COMPLIANCE: STANDARD
-    """
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     4. Implementation: Chain-of-Thought validation with error handling
     5. Validation: 3 test cases covering edge cases
 
@@ -399,9 +407,11 @@ class UserFactory:
         }
         # Merge overrides with ADHD-specific defaults
         final_overrides = {**overrides}
-        final_overrides.setdefault('preferences', {}).update(adhd_overrides['preferences'])
+        final_overrides.setdefault('preferences', {}).update(
+            adhd_overrides['preferences'])
 
         return UserFactory.create_user(role='user', **final_overrides)
+
 
 class NetworkFactory:
     """Factory for creating network-related test data."""
@@ -422,6 +432,8 @@ class NetworkFactory:
         }
 
 # Test Utilities
+
+
 class TestUtils:
     """Utility functions for testing."""
 
@@ -482,6 +494,8 @@ class TestUtils:
         return True
 
 # Mock Services for Testing
+
+
 class MockDeviceService:
     """Mock device service for testing without real hardware."""
 
@@ -501,11 +515,14 @@ class MockDeviceService:
 
         if filters:
             if 'status' in filters:
-                devices = [d for d in devices if d['status'] == filters['status']]
+                devices = [d for d in devices if d['status']
+                           == filters['status']]
             if 'device_type' in filters:
-                devices = [d for d in devices if d['device_type'] == filters['device_type']]
+                devices = [d for d in devices if d['device_type']
+                           == filters['device_type']]
             if 'location' in filters:
-                devices = [d for d in devices if d['location'] == filters['location']]
+                devices = [d for d in devices if d['location']
+                           == filters['location']]
 
         return devices
 
@@ -532,6 +549,7 @@ class MockDeviceService:
             del self.devices[device_id]
             return True
         return False
+
 
 # Export commonly used items
 __all__ = [

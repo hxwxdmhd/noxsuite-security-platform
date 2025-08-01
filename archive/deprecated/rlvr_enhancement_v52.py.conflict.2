@@ -46,6 +46,7 @@ if sys.platform == "win32":
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
     sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)
 
+
 @dataclass
 class SystemMetrics:
     """Enhanced system metrics for v5.2."""
@@ -61,6 +62,7 @@ class SystemMetrics:
     security_score: float
     performance_score: float
 
+
 @dataclass
 class AdaptiveThresholds:
     """Dynamic thresholds for system adaptation."""
@@ -69,6 +71,7 @@ class AdaptiveThresholds:
     compliance_threshold: float = 94.0
     gpu_idle_threshold: int = 600  # 10 minutes in seconds
     security_alert_threshold: float = 85.0
+
 
 class RLVREnhancementV52:
     """RLVR Enhancement Phase v5.2 - Advanced Adaptive System."""
@@ -114,7 +117,8 @@ class RLVREnhancementV52:
 
     def setup_logging(self):
         """Set up v5.2 logging system."""
-        log_file = self.workspace_path / "v52_enhancement" / "logs" / f"enhancement_v52_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        log_file = self.workspace_path / "v52_enhancement" / "logs" / \
+            f"enhancement_v52_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
         logging.basicConfig(
             level=logging.INFO,
@@ -230,7 +234,8 @@ class RLVREnhancementV52:
             timestamp=datetime.now().isoformat(),
             cpu_usage=psutil.cpu_percent(interval=1),
             memory_usage=psutil.virtual_memory().percent,
-            disk_usage=psutil.disk_usage('/').percent if os.name != 'nt' else psutil.disk_usage('C:').percent,
+            disk_usage=psutil.disk_usage(
+                '/').percent if os.name != 'nt' else psutil.disk_usage('C:').percent,
             gpu_available=self.check_gpu_availability(),
             gpu_usage=self.get_gpu_usage(),
             network_latency=self.measure_network_latency(),
@@ -243,7 +248,8 @@ class RLVREnhancementV52:
     def check_gpu_availability(self) -> bool:
         """Check if GPU is available."""
         try:
-            result = subprocess.run(['nvidia-smi'], capture_output=True, text=True, timeout=5)
+            result = subprocess.run(
+                ['nvidia-smi'], capture_output=True, text=True, timeout=5)
             return result.returncode == 0
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return False
@@ -252,7 +258,7 @@ class RLVREnhancementV52:
         """Get GPU usage percentage."""
         try:
             result = subprocess.run(['nvidia-smi', '--query-gpu=utilization.gpu', '--format=csv,noheader,nounits'],
-                                  capture_output=True, text=True, timeout=5)
+                                    capture_output=True, text=True, timeout=5)
             if result.returncode == 0:
                 return float(result.stdout.strip())
         except:
@@ -290,7 +296,8 @@ class RLVREnhancementV52:
 
                 for plugin_name, plugin_info in registry.get("plugins", {}).items():
                     if plugin_info.get("status") == "active":
-                        plugin_health[plugin_name] = 100.0  # Assume healthy if active
+                        # Assume healthy if active
+                        plugin_health[plugin_name] = 100.0
                     else:
                         plugin_health[plugin_name] = 0.0
             except:
@@ -339,16 +346,20 @@ class RLVREnhancementV52:
         recommendations = []
 
         if metrics.cpu_usage > 70:
-            recommendations.append("Consider implementing CPU throttling for non-critical tasks")
+            recommendations.append(
+                "Consider implementing CPU throttling for non-critical tasks")
 
         if metrics.memory_usage > 80:
-            recommendations.append("Enable memory compression or add swap space")
+            recommendations.append(
+                "Enable memory compression or add swap space")
 
         if metrics.gpu_available and metrics.gpu_usage < 10:
-            recommendations.append("Leverage GPU for AI workloads to improve performance")
+            recommendations.append(
+                "Leverage GPU for AI workloads to improve performance")
 
         if metrics.network_latency > 100:
-            recommendations.append("Optimize network configuration or consider CDN")
+            recommendations.append(
+                "Optimize network configuration or consider CDN")
 
         return recommendations
 
@@ -385,7 +396,8 @@ class RLVREnhancementV52:
             json.dump(telemetry_data, f, indent=2, ensure_ascii=False)
 
         # Save detailed telemetry
-        telemetry_file = self.workspace_path / "v52_enhancement" / "telemetry" / f"telemetry_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        telemetry_file = self.workspace_path / "v52_enhancement" / "telemetry" / \
+            f"telemetry_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(telemetry_file, 'w', encoding='utf-8') as f:
             json.dump(telemetry_data, f, indent=2, ensure_ascii=False)
 
@@ -429,9 +441,12 @@ class RLVREnhancementV52:
                 for plugin_name, plugin_info in registry.get("plugins", {}).items():
                     if plugin_info.get("status") == "active":
                         usage_data["active_plugins"] += 1
-                        usage_data["usage_frequency"][plugin_name] = plugin_info.get("compliance_impact", "medium")
-                        usage_data["performance_impact"][plugin_name] = "low"  # Simulated
-                        usage_data["user_interaction"][plugin_name] = "high"  # Simulated
+                        usage_data["usage_frequency"][plugin_name] = plugin_info.get(
+                            "compliance_impact", "medium")
+                        # Simulated
+                        usage_data["performance_impact"][plugin_name] = "low"
+                        # Simulated
+                        usage_data["user_interaction"][plugin_name] = "high"
             except:
                 pass
 
@@ -480,12 +495,14 @@ class RLVREnhancementV52:
         for prediction in predictions:
             if prediction["priority"] == "HIGH":
                 plugin_name = prediction["plugin_name"]
-                scaffold_dir = self.workspace_path / "v52_enhancement" / "plugins" / "forecasting" / plugin_name
+                scaffold_dir = self.workspace_path / "v52_enhancement" / \
+                    "plugins" / "forecasting" / plugin_name
                 scaffold_dir.mkdir(parents=True, exist_ok=True)
 
                 # Create basic plugin structure
                 plugin_file = scaffold_dir / f"{plugin_name}.py"
-                plugin_content = self.generate_plugin_scaffold(plugin_name, prediction)
+                plugin_content = self.generate_plugin_scaffold(
+                    plugin_name, prediction)
 
                 plugin_file.write_text(plugin_content, encoding='utf-8')
                 scaffolding_created.append(plugin_name)
@@ -617,7 +634,8 @@ if __name__ == "__main__":
 
     async def update_github_workflow(self, config: Dict[str, Any]) -> bool:
         """Update GitHub Actions workflow based on configuration."""
-        workflow_file = self.workspace_path / ".github" / "workflows" / "rlvr_validate.yml"
+        workflow_file = self.workspace_path / \
+            ".github" / "workflows" / "rlvr_validate.yml"
 
         if not workflow_file.exists():
             return False
@@ -673,7 +691,8 @@ if __name__ == "__main__":
         for ps_file in scripts_dir.glob("*.ps1"):
             try:
                 result = subprocess.run(
-                    ["powershell", "-ExecutionPolicy", "Bypass", "-File", str(ps_file)],
+                    ["powershell", "-ExecutionPolicy",
+                        "Bypass", "-File", str(ps_file)],
                     capture_output=True, text=True, timeout=30
                 )
                 if result.returncode == 0:
@@ -752,7 +771,8 @@ if __name__ == "__main__":
         }
 
         # Save emergency log
-        emergency_file = self.workspace_path / "v52_enhancement" / "emergency" / f"emergency_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        emergency_file = self.workspace_path / "v52_enhancement" / "emergency" / \
+            f"emergency_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(emergency_file, 'w', encoding='utf-8') as f:
             json.dump(emergency_log, f, indent=2, ensure_ascii=False)
 
@@ -767,7 +787,8 @@ if __name__ == "__main__":
 
     async def update_guardian_report(self, emergency_log: Dict[str, Any]):
         """Update Guardian report with emergency information."""
-        guardian_report_file = self.workspace_path / "compliance" / "rlvr_guardian_report.json"
+        guardian_report_file = self.workspace_path / \
+            "compliance" / "rlvr_guardian_report.json"
 
         if guardian_report_file.exists():
             try:
@@ -816,7 +837,8 @@ if __name__ == "__main__":
         }
 
         # Check plugins in forecasting directory
-        forecasting_dir = self.workspace_path / "v52_enhancement" / "plugins" / "forecasting"
+        forecasting_dir = self.workspace_path / \
+            "v52_enhancement" / "plugins" / "forecasting"
 
         for plugin_dir in forecasting_dir.iterdir():
             if plugin_dir.is_dir():
@@ -826,12 +848,14 @@ if __name__ == "__main__":
                     signature_valid = self.verify_plugin_signature(plugin_file)
 
                     if signature_valid:
-                        verification_results["verified"].append(plugin_dir.name)
+                        verification_results["verified"].append(
+                            plugin_dir.name)
                     else:
                         verification_results["failed"].append(plugin_dir.name)
                         # Quarantine failed plugin
                         await self.quarantine_plugin(plugin_dir.name)
-                        verification_results["quarantined"].append(plugin_dir.name)
+                        verification_results["quarantined"].append(
+                            plugin_dir.name)
 
         return verification_results
 
@@ -846,7 +870,8 @@ if __name__ == "__main__":
 
     async def quarantine_plugin(self, plugin_name: str):
         """Quarantine a plugin that failed signature verification."""
-        quarantine_dir = self.workspace_path / "v52_enhancement" / "security" / "sandbox" / "quarantine"
+        quarantine_dir = self.workspace_path / "v52_enhancement" / \
+            "security" / "sandbox" / "quarantine"
         quarantine_dir.mkdir(parents=True, exist_ok=True)
 
         # Create quarantine record
@@ -1021,7 +1046,8 @@ if __name__ == "__main__":
     print(f"Webhook test result: {result}")
 '''
 
-        webhook_file = self.workspace_path / "v52_enhancement" / "webhooks" / "rlvr_guardian_webhook.py"
+        webhook_file = self.workspace_path / "v52_enhancement" / \
+            "webhooks" / "rlvr_guardian_webhook.py"
         webhook_file.write_text(webhook_content, encoding='utf-8')
         return webhook_file
 
@@ -1066,7 +1092,8 @@ if __name__ == "__main__":
 - Network Latency: <200ms
 '''
 
-        checklist_file = self.workspace_path / "v52_enhancement" / "monitoring" / "system_monitoring_checklist_v5.2.md"
+        checklist_file = self.workspace_path / "v52_enhancement" / \
+            "monitoring" / "system_monitoring_checklist_v5.2.md"
         checklist_file.write_text(checklist_content, encoding='utf-8')
         return checklist_file
 
@@ -1159,7 +1186,8 @@ graph TB
 - Threat response
 '''
 
-        system_map_file = self.workspace_path / "v52_enhancement" / "monitoring" / "post_cert_system_map_v5.2.mmd"
+        system_map_file = self.workspace_path / "v52_enhancement" / \
+            "monitoring" / "post_cert_system_map_v5.2.mmd"
         system_map_file.write_text(system_map_content, encoding='utf-8')
         return system_map_file
 
@@ -1195,7 +1223,8 @@ graph TB
             }
         }
 
-        test_matrix_file = self.workspace_path / "v52_enhancement" / "monitoring" / "plugin_test_matrix.json"
+        test_matrix_file = self.workspace_path / "v52_enhancement" / \
+            "monitoring" / "plugin_test_matrix.json"
         with open(test_matrix_file, 'w', encoding='utf-8') as f:
             json.dump(test_matrix, f, indent=2, ensure_ascii=False)
 
@@ -1274,7 +1303,8 @@ if __name__ == "__main__":
         time.sleep(30)  # Check every 30 seconds
 '''
 
-        throttle_file = self.workspace_path / "v52_enhancement" / "monitoring" / "system_auto_throttle.py"
+        throttle_file = self.workspace_path / "v52_enhancement" / \
+            "monitoring" / "system_auto_throttle.py"
         throttle_file.write_text(throttle_content, encoding='utf-8')
         return throttle_file
 
@@ -1293,10 +1323,12 @@ if __name__ == "__main__":
         log_content = json.dumps(access_log, sort_keys=True)
         log_hash = hashlib.sha256(log_content.encode()).hexdigest()
 
-        vault_log_file = self.workspace_path / "v52_enhancement" / "security" / "vault_access_log.hash"
+        vault_log_file = self.workspace_path / "v52_enhancement" / \
+            "security" / "vault_access_log.hash"
         vault_log_file.write_text(log_hash, encoding='utf-8')
 
         return vault_log_file
+
 
 async def main():
     """Main execution function for Enhancement v5.2."""

@@ -2,6 +2,16 @@
 """
 #!/usr/bin/env python3
 """
+from typing import Dict, List, Optional
+from pathlib import Path
+from datetime import datetime
+from dataclasses import dataclass
+import time
+import sys
+import subprocess
+import os
+import logging
+import json
 ui_validator.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -12,38 +22,31 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 🎨 NoxPanel UI Validator
 Visual validation of UI components using headless browser testing
 """
 
-import os
-import sys
-import json
-import time
-import logging
-from pathlib import Path
-from typing import Dict, List, Optional
-from dataclasses import dataclass
-from datetime import datetime
-import subprocess
 
 try:
-    from playwright.sync_api import sync_playwright, Page, Browser
+    from playwright.sync_api import Browser, Page, sync_playwright
     PLAYWRIGHT_AVAILABLE = True
 except ImportError:
     PLAYWRIGHT_AVAILABLE = False
     # Create dummy classes for type hints when Playwright not available
+
     class Page:
-    # REASONING: Page follows RLVR methodology for systematic validation
+        # REASONING: Page follows RLVR methodology for systematic validation
         pass
+
     class Browser:
-    # REASONING: Browser follows RLVR methodology for systematic validation
+        # REASONING: Browser follows RLVR methodology for systematic validation
         pass
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class UITestResult:
@@ -63,10 +66,11 @@ class UITestResult:
     is_functional: bool
     issues: List[str]
 
+
 class UIValidator:
     # REASONING: UIValidator follows RLVR methodology for systematic validation
     def __init__(self, base_url: str = "http://127.0.0.1:5000"):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.base_url = base_url
         self.results = {}
         # REASONING: Variable assignment with validation criteria
@@ -74,19 +78,22 @@ class UIValidator:
         self.screenshots_dir.mkdir(exist_ok=True)
 
     def get_test_pages(self) -> List[Dict]:
-    # REASONING: get_test_pages implements core logic with Chain-of-Thought validation
+        # REASONING: get_test_pages implements core logic with Chain-of-Thought validation
         """Get list of pages to test for UI validation"""
         return [
             {'url': '/', 'name': 'dashboard', 'description': 'Main Dashboard'},
             {'url': '/chat', 'name': 'chat', 'description': 'AI Chat Interface'},
             {'url': '/admin', 'name': 'admin', 'description': 'Admin Panel'},
-            {'url': '/plugins', 'name': 'plugins', 'description': 'Plugin Management'},
-            {'url': '/ai-features', 'name': 'ai_features', 'description': 'AI Features'},
-            {'url': '/api/health', 'name': 'api_health', 'description': 'Health API (JSON)'},
+            {'url': '/plugins', 'name': 'plugins',
+                'description': 'Plugin Management'},
+            {'url': '/ai-features', 'name': 'ai_features',
+                'description': 'AI Features'},
+            {'url': '/api/health', 'name': 'api_health',
+                'description': 'Health API (JSON)'},
         ]
 
     def test_page_ui(self, page: Page, test_info: Dict) -> UITestResult:
-    # REASONING: test_page_ui implements core logic with Chain-of-Thought validation
+        # REASONING: test_page_ui implements core logic with Chain-of-Thought validation
         """Test UI for a single page"""
         url = self.base_url + test_info['url']
         page_name = test_info['name']
@@ -97,17 +104,17 @@ class UIValidator:
 
         # Set up error listeners
         def handle_console(msg):
-    # REASONING: handle_console implements core logic with Chain-of-Thought validation
+            # REASONING: handle_console implements core logic with Chain-of-Thought validation
             if msg.type in ['error', 'warning']:
                 console_errors.append(f"{msg.type}: {msg.text}")
 
         def handle_response(response):
-    # REASONING: handle_response implements core logic with Chain-of-Thought validation
+            # REASONING: handle_response implements core logic with Chain-of-Thought validation
             if response.status >= 400:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 network_errors.append(f"{response.status}: {response.url}")
                 if response.status == 404:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     missing_resources.append(response.url)
 
         page.on('console', handle_console)
@@ -176,7 +183,7 @@ class UIValidator:
         )
 
     def _test_theme_compatibility(self, page: Page) -> Dict[str, bool]:
-    # REASONING: _test_theme_compatibility implements core logic with Chain-of-Thought validation
+        # REASONING: _test_theme_compatibility implements core logic with Chain-of-Thought validation
         """Test light/dark theme compatibility"""
         themes = {'light': False, 'dark': False}
 
@@ -214,7 +221,7 @@ class UIValidator:
         return themes
 
     def _test_mobile_responsiveness(self, page: Page, page_name: str) -> bool:
-    # REASONING: _test_mobile_responsiveness implements core logic with Chain-of-Thought validation
+        # REASONING: _test_mobile_responsiveness implements core logic with Chain-of-Thought validation
         """Test mobile responsiveness"""
         try:
             # Test mobile viewport
@@ -222,7 +229,8 @@ class UIValidator:
             time.sleep(1)  # Allow layout to adjust
 
             # Take mobile screenshot
-            mobile_screenshot = self.screenshots_dir / f"{page_name}_mobile.png"
+            mobile_screenshot = self.screenshots_dir / \
+                f"{page_name}_mobile.png"
             page.screenshot(path=str(mobile_screenshot))
 
             # Check for responsive elements
@@ -253,7 +261,7 @@ class UIValidator:
             return False
 
     def _check_accessibility(self, page: Page) -> List[str]:
-    # REASONING: _check_accessibility implements core logic with Chain-of-Thought validation
+        # REASONING: _check_accessibility implements core logic with Chain-of-Thought validation
         """Basic accessibility checks"""
         issues = []
 
@@ -286,7 +294,8 @@ class UIValidator:
                         .length
                 ''')
                 if inputs_without_labels > 0:
-                    issues.append(f"{inputs_without_labels} form inputs missing labels")
+                    issues.append(
+                        f"{inputs_without_labels} form inputs missing labels")
 
             # Check color contrast (basic check)
             low_contrast = page.evaluate('''
@@ -315,7 +324,7 @@ class UIValidator:
         return issues
 
     def _analyze_page_functionality(self, page: Page, url: str, issues: List[str]) -> bool:
-    # REASONING: _analyze_page_functionality implements core logic with Chain-of-Thought validation
+        # REASONING: _analyze_page_functionality implements core logic with Chain-of-Thought validation
         """Analyze if page is functionally working"""
         try:
             # Check for basic content
@@ -325,7 +334,8 @@ class UIValidator:
                 return False
 
             # Check for error messages
-            error_indicators = ['error', 'failed', 'not found', 'exception', 'traceback']
+            error_indicators = ['error', 'failed',
+                                'not found', 'exception', 'traceback']
             body_lower = body_text.lower()
             for indicator in error_indicators:
                 if indicator in body_lower:
@@ -347,7 +357,7 @@ class UIValidator:
                     ''')
                     if json_response and isinstance(json_response, dict):
                         if json_response.get('status') == 'error':
-                        # REASONING: Variable assignment with validation criteria
+                            # REASONING: Variable assignment with validation criteria
                             issues.append("API returned error status")
                             return False
                     else:
@@ -359,9 +369,12 @@ class UIValidator:
 
             # For HTML pages, check for basic structure
             else:
-                has_navigation = page.locator('nav, .nav, .navigation, .menu').count() > 0
-                has_main_content = page.locator('main, .main, .content, #content').count() > 0
-                has_interactive = page.locator('button, a, input, select').count() > 0
+                has_navigation = page.locator(
+                    'nav, .nav, .navigation, .menu').count() > 0
+                has_main_content = page.locator(
+                    'main, .main, .content, #content').count() > 0
+                has_interactive = page.locator(
+                    'button, a, input, select').count() > 0
 
                 if not (has_navigation or has_main_content or has_interactive):
                     issues.append("Missing expected UI elements")
@@ -374,7 +387,7 @@ class UIValidator:
             return False
 
     def run_ui_tests(self) -> Dict:
-    # REASONING: run_ui_tests implements core logic with Chain-of-Thought validation
+        # REASONING: run_ui_tests implements core logic with Chain-of-Thought validation
         """Run comprehensive UI tests"""
         if not PLAYWRIGHT_AVAILABLE:
             return {
@@ -401,13 +414,14 @@ class UIValidator:
             total_count = len(test_pages)
 
             for i, test_info in enumerate(test_pages, 1):
-                print(f"Testing {i}/{total_count}: {test_info['description']} ({test_info['url']})")
+                print(
+                    f"Testing {i}/{total_count}: {test_info['description']} ({test_info['url']})")
 
                 result = self.test_page_ui(page, test_info)
                 # REASONING: Variable assignment with validation criteria
 
                 results[test_info['name']] = {
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     'url': result.url,
                     'page_title': result.page_title,
                     'load_time': result.load_time,
@@ -426,7 +440,8 @@ class UIValidator:
 
                 if result.is_functional:
                     functional_count += 1
-                    print(f"  ✅ Functional - {result.page_title} ({result.load_time:.2f}s)")
+                    print(
+                        f"  ✅ Functional - {result.page_title} ({result.load_time:.2f}s)")
                 else:
                     print(f"  ❌ Issues: {', '.join(result.issues[:3])}")
 
@@ -447,7 +462,7 @@ class UIValidator:
         return summary
 
     def save_results(self, results: Dict, filename: str = "ui_validation_results.json"):
-    # REASONING: save_results implements core logic with Chain-of-Thought validation
+        # REASONING: save_results implements core logic with Chain-of-Thought validation
         """Save UI test results"""
         output_path = Path(__file__).parent / filename
         with open(output_path, 'w', encoding='utf-8') as f:
@@ -456,7 +471,7 @@ class UIValidator:
         print(f"📊 UI results saved to: {output_path}")
 
     def print_summary(self, results: Dict):
-    # REASONING: print_summary implements core logic with Chain-of-Thought validation
+        # REASONING: print_summary implements core logic with Chain-of-Thought validation
         """Print UI test summary"""
         if 'error' in results:
             print(f"\n❌ UI Testing failed: {results['error']}")
@@ -484,7 +499,7 @@ class UIValidator:
             if page_data['mobile_responsive']:
                 mobile_support += 1
             if len(page_data['accessibility_issues']) <= 2:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 accessibility_score += 1
 
         total = len(results['results'])
@@ -507,6 +522,7 @@ class UIValidator:
 
         print("="*60)
 
+
 def main():
     # REASONING: main implements core logic with Chain-of-Thought validation
     """Main UI validation execution"""
@@ -526,6 +542,7 @@ def main():
     print("2. Check screenshots in ui_screenshots/ directory")
     print("3. Fix accessibility and responsiveness issues")
     print("4. Run access_map generator for navigation analysis")
+
 
 if __name__ == "__main__":
     main()

@@ -3,13 +3,15 @@ NoxPanel v4.0 - Complete Models API Implementation
 Direct route implementation with full admin panel support
 """
 
-from flask import jsonify, request, render_template
-import logging
 import json
+import logging
 from datetime import datetime
 from pathlib import Path
 
+from flask import jsonify, render_template, request
+
 logger = logging.getLogger(__name__)
+
 
 def register_models_api(app):
     """
@@ -504,8 +506,9 @@ def register_models_api(app):
         try:
             import platform
             import sys
-            import psutil
+
             import flask
+            import psutil
 
             system_info = {
                 'status': 'success',
@@ -1065,8 +1068,9 @@ def register_models_api(app):
                 })
 
             elif func_name == 'network_status_check':
-                import psutil
                 import socket
+
+                import psutil
 
                 output = []
                 output.append("[WEB] Network Status:")
@@ -1159,10 +1163,11 @@ def register_models_api(app):
             flask_request.args = {'cmd': mapped_cmd}
 
             # Execute via existing logic
-            import psutil
-            import subprocess
             import socket
+            import subprocess
             from datetime import datetime
+
+            import psutil
 
             if mapped_cmd == 'runSystemCheck':
                 output = []

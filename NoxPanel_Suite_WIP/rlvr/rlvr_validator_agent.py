@@ -1,4 +1,19 @@
+from typing import Dict, List, Optional, Set, Tuple
+from pathlib import Path
+from datetime import datetime, timedelta
+from dataclasses import asdict, dataclass
+import traceback
+import time
+import sys
+import subprocess
+import re
+import logging
+import json
+import hashlib
+import asyncio
+import ast
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -15,20 +30,6 @@ VALIDATION CHAIN:
 5. Validation: Continuous Chain-of-Thought integrity verification
 """
 
-import asyncio
-import logging
-import json
-import time
-import sys
-import traceback
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, Set
-from dataclasses import dataclass, asdict
-import ast
-import re
-import hashlib
-import subprocess
 
 # Configure logging for validator agent
 logging.basicConfig(
@@ -40,6 +41,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ValidationResult:
@@ -53,6 +55,7 @@ class ValidationResult:
     recommendations: List[str]
     timestamp: str
 
+
 @dataclass
 class ComponentHealth:
     """Component health assessment"""
@@ -63,6 +66,7 @@ class ComponentHealth:
     error_count: int
     last_validated: str
     issues: List[str]
+
 
 class RLVRValidatorAgent:
     """
@@ -177,7 +181,8 @@ class RLVRValidatorAgent:
 
             # Step 1: Structural analysis
             structure_score = await self._analyze_structure(component_path, evidence)
-            reasoning_steps.append(f"Structure analysis: {structure_score:.2f}")
+            reasoning_steps.append(
+                f"Structure analysis: {structure_score:.2f}")
 
             # Step 2: Chain-of-Thought compliance
             cot_score = await self._validate_cot_compliance(component_path, evidence)
@@ -192,7 +197,8 @@ class RLVRValidatorAgent:
             reasoning_steps.append(f"Documentation: {doc_score:.2f}")
 
             # Step 5: Overall assessment
-            overall_score = (structure_score + cot_score + test_score + doc_score) / 4
+            overall_score = (structure_score + cot_score +
+                             test_score + doc_score) / 4
 
             # Generate reasoning chain
             reasoning = f"""
@@ -216,7 +222,8 @@ class RLVRValidatorAgent:
                 ])
 
             if cot_score < 0.80:
-                recommendations.append("Strengthen reasoning chain explanations")
+                recommendations.append(
+                    "Strengthen reasoning chain explanations")
 
             if test_score < 0.75:
                 recommendations.append("Add reasoning-specific test cases")
@@ -246,7 +253,8 @@ class RLVRValidatorAgent:
 
             self.validation_history.append(result)
 
-            logger.info(f"Component validation complete: {component_name} - {result.status}")
+            logger.info(
+                f"Component validation complete: {component_name} - {result.status}")
             return result
 
         except Exception as e:
@@ -261,7 +269,8 @@ class RLVRValidatorAgent:
                 timestamp=datetime.now().isoformat()
             )
 
-            logger.error(f"Component validation failed: {component_name} - {str(e)}")
+            logger.error(
+                f"Component validation failed: {component_name} - {str(e)}")
             return error_result
 
     async def _analyze_structure(self, component_path: Path, evidence: List[str]) -> float:
@@ -294,10 +303,12 @@ class RLVRValidatorAgent:
             try:
                 content = component_path.read_text(encoding='utf-8')
                 reasoning_keywords = self.validation_rules['cot_compliance']['reasoning_keywords']
-                found_keywords = sum(1 for keyword in reasoning_keywords if keyword in content)
+                found_keywords = sum(
+                    1 for keyword in reasoning_keywords if keyword in content)
                 if found_keywords >= 2:
                     score += 1.0
-                    evidence.append(f"Found {found_keywords} reasoning keywords")
+                    evidence.append(
+                        f"Found {found_keywords} reasoning keywords")
             except Exception as e:
                 evidence.append(f"Could not read file content: {str(e)}")
 
@@ -314,19 +325,23 @@ class RLVRValidatorAgent:
                 evidence.append(f"Directory contains {len(files)} files")
 
             # Check for test directory
-            test_dirs = [f for f in files if f.is_dir() and 'test' in f.name.lower()]
+            test_dirs = [f for f in files if f.is_dir()
+                                                      and 'test' in f.name.lower()]
             if test_dirs:
                 score += 1.0
                 evidence.append(f"Found {len(test_dirs)} test directories")
 
             # Check for configuration files
-            config_files = [f for f in files if f.suffix in ['.json', '.conf', '.yaml']]
+            config_files = [f for f in files if f.suffix in [
+                '.json', '.conf', '.yaml']]
             if config_files:
                 score += 1.0
-                evidence.append(f"Found {len(config_files)} configuration files")
+                evidence.append(
+                    f"Found {len(config_files)} configuration files")
 
             # Check for documentation
-            doc_files = [f for f in files if f.suffix in ['.md', '.rst', '.txt']]
+            doc_files = [f for f in files if f.suffix in [
+                '.md', '.rst', '.txt']]
             if doc_files:
                 score += 1.0
                 evidence.append(f"Found {len(doc_files)} documentation files")
@@ -353,51 +368,65 @@ class RLVRValidatorAgent:
 
                 # Check for reasoning keywords
                 reasoning_keywords = self.validation_rules['cot_compliance']['reasoning_keywords']
-                keyword_count = sum(1 for keyword in reasoning_keywords if keyword in content)
+                keyword_count = sum(
+                    1 for keyword in reasoning_keywords if keyword in content)
 
                 if keyword_count >= 3:
                     score += 1.0
-                    evidence.append(f"Strong reasoning annotation: {keyword_count} keywords found")
+                    evidence.append(
+                        f"Strong reasoning annotation: {keyword_count} keywords found")
                 elif keyword_count >= 1:
                     score += 0.5
-                    evidence.append(f"Basic reasoning annotation: {keyword_count} keywords found")
+                    evidence.append(
+                        f"Basic reasoning annotation: {keyword_count} keywords found")
 
                 # Check for step-by-step explanations
-                step_patterns = [r'Step \d+:', r'\d+\.', r'Logic:', r'Evidence:']
-                step_count = sum(1 for pattern in step_patterns if re.search(pattern, content))
+                step_patterns = [r'Step \d+:',
+                    r'\d+\.', r'Logic:', r'Evidence:']
+                step_count = sum(
+                    1 for pattern in step_patterns if re.search(pattern, content))
 
                 if step_count >= 5:
                     score += 1.0
-                    evidence.append(f"Comprehensive step-by-step reasoning: {step_count} steps")
+                    evidence.append(
+                        f"Comprehensive step-by-step reasoning: {step_count} steps")
                 elif step_count >= 2:
                     score += 0.5
-                    evidence.append(f"Basic step-by-step reasoning: {step_count} steps")
+                    evidence.append(
+                        f"Basic step-by-step reasoning: {step_count} steps")
 
                 # Check for problem-solution patterns
                 problem_patterns = [r'Problem:', r'Challenge:', r'Issue:']
                 solution_patterns = [r'Solution:', r'Resolution:', r'Fix:']
 
-                has_problem = any(re.search(pattern, content, re.IGNORECASE) for pattern in problem_patterns)
-                has_solution = any(re.search(pattern, content, re.IGNORECASE) for pattern in solution_patterns)
+                has_problem = any(re.search(pattern, content, re.IGNORECASE)
+                                  for pattern in problem_patterns)
+                has_solution = any(re.search(pattern, content, re.IGNORECASE)
+                                   for pattern in solution_patterns)
 
                 if has_problem and has_solution:
                     score += 1.0
-                    evidence.append("Clear problem-solution structure identified")
+                    evidence.append(
+                        "Clear problem-solution structure identified")
                 elif has_problem or has_solution:
                     score += 0.5
-                    evidence.append("Partial problem-solution structure identified")
+                    evidence.append(
+                        "Partial problem-solution structure identified")
 
                 # Check for validation/confidence indicators
-                validation_patterns = [r'confidence', r'validation', r'verify', r'check']
+                validation_patterns = [r'confidence',
+                    r'validation', r'verify', r'check']
                 validation_count = sum(1 for pattern in validation_patterns
                                      if re.search(pattern, content, re.IGNORECASE))
 
                 if validation_count >= 3:
                     score += 1.0
-                    evidence.append(f"Strong validation indicators: {validation_count} found")
+                    evidence.append(
+                        f"Strong validation indicators: {validation_count} found")
                 elif validation_count >= 1:
                     score += 0.5
-                    evidence.append(f"Basic validation indicators: {validation_count} found")
+                    evidence.append(
+                        f"Basic validation indicators: {validation_count} found")
 
             elif component_path.is_dir():
                 # Directory-based CoT analysis
@@ -410,7 +439,8 @@ class RLVRValidatorAgent:
                         total_score += file_score
 
                     score = total_score / len(files)
-                    evidence.append(f"Average CoT compliance across {len(files)} files: {score:.2f}")
+                    evidence.append(
+                        f"Average CoT compliance across {len(files)} files: {score:.2f}")
 
         except Exception as e:
             evidence.append(f"CoT validation error: {str(e)}")
@@ -454,22 +484,27 @@ class RLVRValidatorAgent:
 
                     if reasoning_tests >= 3:
                         score += 1.0
-                        evidence.append(f"Strong reasoning test coverage: {reasoning_tests} tests")
+                        evidence.append(
+                            f"Strong reasoning test coverage: {reasoning_tests} tests")
                     elif reasoning_tests >= 1:
                         score += 0.5
-                        evidence.append(f"Basic reasoning test coverage: {reasoning_tests} tests")
+                        evidence.append(
+                            f"Basic reasoning test coverage: {reasoning_tests} tests")
 
                     # Check for test assertions
-                    assertion_patterns = [r'assert', r'self\.assert', r'expect', r'should']
+                    assertion_patterns = [
+                        r'assert', r'self\.assert', r'expect', r'should']
                     assertion_count = sum(1 for pattern in assertion_patterns
                                         if re.search(pattern, content))
 
                     if assertion_count >= 10:
                         score += 1.0
-                        evidence.append(f"Comprehensive test assertions: {assertion_count}")
+                        evidence.append(
+                            f"Comprehensive test assertions: {assertion_count}")
                     elif assertion_count >= 3:
                         score += 0.5
-                        evidence.append(f"Basic test assertions: {assertion_count}")
+                        evidence.append(
+                            f"Basic test assertions: {assertion_count}")
 
                     # Check for test documentation
                     if '"""' in content or "'''" in content:
@@ -479,34 +514,42 @@ class RLVRValidatorAgent:
                 else:
                     # Look for corresponding test file
                     test_file_patterns = [
-                        component_path.parent / f"test_{component_path.stem}.py",
-                        component_path.parent / f"{component_path.stem}_test.py",
-                        component_path.parent / "tests" / f"test_{component_path.stem}.py"
+                        component_path.parent /
+                            f"test_{component_path.stem}.py",
+                        component_path.parent /
+                            f"{component_path.stem}_test.py",
+                        component_path.parent / "tests" /
+                            f"test_{component_path.stem}.py"
                     ]
 
                     for test_file in test_file_patterns:
                         if test_file.exists():
                             score += 1.0
-                            evidence.append(f"Found corresponding test file: {test_file.name}")
+                            evidence.append(
+                                f"Found corresponding test file: {test_file.name}")
                             break
 
             elif component_path.is_dir():
                 # Directory-based test analysis
                 test_files = list(component_path.rglob('*test*.py'))
                 source_files = list(component_path.rglob('*.py'))
-                source_files = [f for f in source_files if 'test' not in f.name.lower()]
+                source_files = [
+                    f for f in source_files if 'test' not in f.name.lower()]
 
                 if test_files and source_files:
                     coverage_ratio = len(test_files) / len(source_files)
                     if coverage_ratio >= 0.8:
                         score += 4.0
-                        evidence.append(f"Excellent test coverage: {coverage_ratio:.2f}")
+                        evidence.append(
+                            f"Excellent test coverage: {coverage_ratio:.2f}")
                     elif coverage_ratio >= 0.5:
                         score += 2.0
-                        evidence.append(f"Good test coverage: {coverage_ratio:.2f}")
+                        evidence.append(
+                            f"Good test coverage: {coverage_ratio:.2f}")
                     elif coverage_ratio >= 0.2:
                         score += 1.0
-                        evidence.append(f"Basic test coverage: {coverage_ratio:.2f}")
+                        evidence.append(
+                            f"Basic test coverage: {coverage_ratio:.2f}")
                 elif test_files:
                     score += 1.0
                     evidence.append(f"Found {len(test_files)} test files")
@@ -541,7 +584,8 @@ class RLVRValidatorAgent:
 
                     if docstring_count >= 5:
                         score += 1.0
-                        evidence.append(f"Comprehensive docstrings: {docstring_count}")
+                        evidence.append(
+                            f"Comprehensive docstrings: {docstring_count}")
                     elif docstring_count >= 2:
                         score += 0.5
                         evidence.append(f"Basic docstrings: {docstring_count}")
@@ -553,42 +597,52 @@ class RLVRValidatorAgent:
 
                 if comment_count >= 20:
                     score += 1.0
-                    evidence.append(f"Well-commented code: {comment_count} comments")
+                    evidence.append(
+                        f"Well-commented code: {comment_count} comments")
                 elif comment_count >= 5:
                     score += 0.5
-                    evidence.append(f"Basic comments: {comment_count} comments")
+                    evidence.append(
+                        f"Basic comments: {comment_count} comments")
 
                 # Check for reasoning explanations
-                reasoning_explanations = [r'REASONING:', r'Logic:', r'Why:', r'Because:']
+                reasoning_explanations = [
+                    r'REASONING:', r'Logic:', r'Why:', r'Because:']
                 explanation_count = sum(1 for pattern in reasoning_explanations
                                       if re.search(pattern, content))
 
                 if explanation_count >= 5:
                     score += 1.0
-                    evidence.append(f"Comprehensive reasoning explanations: {explanation_count}")
+                    evidence.append(
+                        f"Comprehensive reasoning explanations: {explanation_count}")
                 elif explanation_count >= 2:
                     score += 0.5
-                    evidence.append(f"Basic reasoning explanations: {explanation_count}")
+                    evidence.append(
+                        f"Basic reasoning explanations: {explanation_count}")
 
                 # Check for type hints (Python)
                 if component_path.suffix == '.py':
-                    type_hint_patterns = [r':\s*\w+', r'->\s*\w+', r'Dict\[', r'List\[', r'Optional\[']
+                    type_hint_patterns = [
+                        r':\s*\w+', r'->\s*\w+', r'Dict\[', r'List\[', r'Optional\[']
                     type_hint_count = sum(1 for pattern in type_hint_patterns
                                         if re.search(pattern, content))
 
                     if type_hint_count >= 10:
                         score += 1.0
-                        evidence.append(f"Strong type annotation: {type_hint_count} hints")
+                        evidence.append(
+                            f"Strong type annotation: {type_hint_count} hints")
                     elif type_hint_count >= 3:
                         score += 0.5
-                        evidence.append(f"Basic type annotation: {type_hint_count} hints")
+                        evidence.append(
+                            f"Basic type annotation: {type_hint_count} hints")
 
             elif component_path.is_dir():
                 # Look for documentation files
-                doc_files = list(component_path.rglob('*.md')) + list(component_path.rglob('*.rst'))
+                doc_files = list(component_path.rglob('*.md')) + \
+                                 list(component_path.rglob('*.rst'))
                 if doc_files:
                     score += 2.0
-                    evidence.append(f"Found {len(doc_files)} documentation files")
+                    evidence.append(
+                        f"Found {len(doc_files)} documentation files")
 
                     # Analyze documentation content
                     for doc_file in doc_files:
@@ -596,7 +650,8 @@ class RLVRValidatorAgent:
                             doc_content = doc_file.read_text(encoding='utf-8')
                             if len(doc_content) > 1000:  # Substantial documentation
                                 score += 1.0
-                                evidence.append(f"Substantial documentation in {doc_file.name}")
+                                evidence.append(
+                                    f"Substantial documentation in {doc_file.name}")
                                 break
                         except Exception:
                             pass
@@ -628,7 +683,8 @@ class RLVRValidatorAgent:
         components.extend(python_files)
 
         # HTML/JS files
-        web_files = list(self.workspace_path.rglob('*.html')) + list(self.workspace_path.rglob('*.js'))
+        web_files = list(self.workspace_path.rglob('*.html')) + \
+                         list(self.workspace_path.rglob('*.js'))
     """
     RLVR: Implements generate_compliance_report with error handling and validation
 
@@ -644,11 +700,13 @@ class RLVRValidatorAgent:
         components.extend(web_files)
 
         # Configuration files
-        config_files = list(self.workspace_path.rglob('*.json')) + list(self.workspace_path.rglob('*.conf'))
+        config_files = list(self.workspace_path.rglob(
+            '*.json')) + list(self.workspace_path.rglob('*.conf'))
         components.extend(config_files)
 
         # Test directories
-        test_dirs = [d for d in self.workspace_path.rglob('*') if d.is_dir() and 'test' in d.name.lower()]
+        test_dirs = [d for d in self.workspace_path.rglob(
+            '*') if d.is_dir() and 'test' in d.name.lower()]
         components.extend(test_dirs)
 
         logger.info(f"Found {len(components)} components to validate")
@@ -657,11 +715,13 @@ class RLVRValidatorAgent:
         for component in components:
             try:
                 result = await self.validate_component(component)
-                results[str(component.relative_to(self.workspace_path))] = result
+                results[str(component.relative_to(
+                    self.workspace_path))] = result
             except Exception as e:
                 logger.error(f"Failed to validate {component}: {str(e)}")
 
-        logger.info(f"Workspace scan complete: {len(results)} components validated")
+        logger.info(
+            f"Workspace scan complete: {len(results)} components validated")
         return results
 
     def generate_compliance_report(self, results: Dict[str, ValidationResult]) -> Dict:
@@ -719,7 +779,8 @@ class RLVRValidatorAgent:
 
         sorted_recommendations = sorted(recommendation_counts.items(),
                                       key=lambda x: x[1], reverse=True)
-        report['recommendations'] = [rec for rec, count in sorted_recommendations[:10]]
+        report['recommendations'] = [rec for rec,
+            count in sorted_recommendations[:10]]
 
         # Generate action plan
         compliance_rate = report['compliance_metrics']['overall_compliance']
@@ -782,7 +843,8 @@ class RLVRValidatorAgent:
     COMPLIANCE: STANDARD
     """
         """
-        logger.info(f"Starting continuous monitoring (interval: {interval_hours} hours)")
+        logger.info(
+            f"Starting continuous monitoring (interval: {interval_hours} hours)")
 
     """
     RLVR: Implements _calculate_compliance_trend with error handling and validation
@@ -807,7 +869,8 @@ class RLVRValidatorAgent:
                 report = self.generate_compliance_report(results)
 
                 # Save report
-                report_path = self.workspace_path / "reports" / f"rlvr_compliance_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+                report_path = self.workspace_path / "reports" / \
+                    f"rlvr_compliance_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
                 with open(report_path, 'w', encoding='utf-8') as f:
     """
     RLVR: Retrieves data with filtering and access control

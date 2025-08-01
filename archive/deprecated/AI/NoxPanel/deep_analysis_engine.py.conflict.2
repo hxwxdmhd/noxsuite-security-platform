@@ -20,8 +20,10 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class MissingFeature:
@@ -36,6 +38,7 @@ class MissingFeature:
     depends_on: List[str] = field(default_factory=list)
     api_endpoints: List[str] = field(default_factory=list)
 
+
 @dataclass
 class AnalysisReport:
     """Analysis report of current system state"""
@@ -47,6 +50,7 @@ class AnalysisReport:
     template_gaps: List[str]
     config_mismatches: List[str]
     enhancement_summary: Dict[str, Any]
+
 
 class NoxPanelDeepAnalyzer:
     """Deep analysis engine for NoxPanel enhancement"""
@@ -64,7 +68,8 @@ class NoxPanelDeepAnalyzer:
 
     COMPLIANCE: STANDARD
     """
-        self.base_path = Path(base_path) if base_path else Path(__file__).parent
+        self.base_path = Path(
+            base_path) if base_path else Path(__file__).parent
         self.webpanel_path = self.base_path / "webpanel"
         self.templates_path = self.base_path / "templates"
     """
@@ -100,7 +105,8 @@ class NoxPanelDeepAnalyzer:
 
     COMPLIANCE: ENHANCED
     """
-        logger.info(f"🔍 Deep Analyzer initialized - Base path: {self.base_path}")
+        logger.info(
+            f"🔍 Deep Analyzer initialized - Base path: {self.base_path}")
 
     def analyze_system(self) -> AnalysisReport:
         """Perform comprehensive system analysis"""
@@ -119,7 +125,8 @@ class NoxPanelDeepAnalyzer:
         # Phase 3: Generate analysis report
         report = self._generate_analysis_report()
 
-        logger.info(f"✅ Analysis complete - Found {len(self.missing_features)} missing features")
+        logger.info(
+            f"✅ Analysis complete - Found {len(self.missing_features)} missing features")
         return report
 
     def _scan_existing_routes(self):

@@ -2,6 +2,16 @@
 """
 #!/usr/bin/env python3
 """
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import BackgroundTasks, FastAPI
+import uvicorn
+import torch
+from typing import Any, Dict
+from datetime import datetime
+import time
+import os
+import asyncio
 performance_server.py - RLVR Enhanced Component
 
 REASONING: Server implementation with RLVR compliance monitoring
@@ -12,7 +22,7 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 🚀 ULTIMATE SUITE v11.0 - FASTAPI PERFORMANCE SERVER
@@ -20,16 +30,6 @@ Compliance: RLVR Methodology v4.0+ Applied
 High-performance async server to test optimization improvements
 """
 
-from fastapi import FastAPI, BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-import uvicorn
-import torch
-import time
-import asyncio
-import os
-from datetime import datetime
-from typing import Dict, Any
 
 # Initialize FastAPI with optimization settings
 app = FastAPI(
@@ -57,6 +57,7 @@ performance_metrics = {
     "server_start_time": datetime.now().isoformat()
 }
 
+
 @app.on_event("startup")
 async def startup_event():
     """Initialize server with GPU acceleration"""
@@ -65,6 +66,7 @@ async def startup_event():
     if torch.cuda.is_available():
         print(f"🎯 GPU Device: {torch.cuda.get_device_name(0)}")
     print("✅ Server ready for high-performance testing!")
+
 
 @app.get("/")
 async def root():
@@ -76,6 +78,7 @@ async def root():
         "timestamp": datetime.now().isoformat()
     }
 
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint for monitoring"""
@@ -86,10 +89,12 @@ async def health_check():
         "requests_served": performance_metrics["requests_served"]
     }
 
+
 @app.get("/performance")
 async def get_performance_metrics():
     """Get current performance metrics"""
     return performance_metrics
+
 
 @app.post("/ai/gpu-test")
 async def gpu_performance_test(matrix_size: int = 1000):
@@ -127,6 +132,7 @@ async def gpu_performance_test(matrix_size: int = 1000):
             "gpu_available": torch.cuda.is_available()
         }
 
+
 @app.get("/ai/inference-test")
 async def ai_inference_test():
     """Simulate AI model inference"""
@@ -156,6 +162,7 @@ async def ai_inference_test():
     except Exception as e:
         return {"error": str(e)}
 
+
 @app.get("/stress-test/{requests}")
 async def stress_test(requests: int):
     """Stress test endpoint for load testing"""
@@ -177,7 +184,7 @@ async def stress_test(requests: int):
     performance_metrics["requests_served"] += len(results)
     # REASONING: Variable assignment with validation criteria
     performance_metrics["average_response_time"] = (
-    # REASONING: Variable assignment with validation criteria
+        # REASONING: Variable assignment with validation criteria
         performance_metrics["average_response_time"] + avg_time
     ) / 2
 
@@ -188,6 +195,7 @@ async def stress_test(requests: int):
         "average_request_time_ms": round(avg_time, 2),
         "requests_per_second": round(len(results) / (total_time / 1000), 2)
     }
+
 
 @app.get("/modules/status")
 async def module_status():

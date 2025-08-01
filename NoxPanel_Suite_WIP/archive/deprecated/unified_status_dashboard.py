@@ -18,7 +18,8 @@ import os
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
+
 
 class UnifiedStatusDashboard:
     """Unified status dashboard for RLVR-NoxPanel integration."""
@@ -129,9 +130,11 @@ class UnifiedStatusDashboard:
         noxpanel = self.system_status['noxpanel_status']
         print(f"🎯 Current Gate: {noxpanel['current_gate']}")
         print(f"🔒 Security Score: {noxpanel['security_score']}/100")
-        print(f"🏆 Gate 5 Achieved: {'✅ YES' if noxpanel['gate5_achieved'] else '❌ NO'}")
+        print(
+            f"🏆 Gate 5 Achieved: {'✅ YES' if noxpanel['gate5_achieved'] else '❌ NO'}")
         print(f"📋 Enterprise Compliance: {noxpanel['enterprise_compliance']}")
-        print(f"🛡️ Zero Trust Architecture: {noxpanel['zero_trust_architecture']}")
+        print(
+            f"🛡️ Zero Trust Architecture: {noxpanel['zero_trust_architecture']}")
         print(f"🤖 AI Integration: {noxpanel['ai_integration']}")
 
         print("\n" + "="*50)
@@ -237,7 +240,8 @@ The RLVR-NoxPanel unified system is fully operational with Gate 5 achievement co
 5. Multi-tenant architecture development
 '''
 
-        report_file = self.workspace_path / "integration" / "Unified_System_Status_Report.md"
+        report_file = self.workspace_path / "integration" / \
+            "Unified_System_Status_Report.md"
         report_file.write_text(report_content, encoding='utf-8')
 
         return str(report_file)
@@ -274,6 +278,7 @@ The RLVR-NoxPanel unified system is fully operational with Gate 5 achievement co
             "monitoring": monitoring_status
         }
 
+
 def main():
     """Main dashboard execution."""
     dashboard = UnifiedStatusDashboard()
@@ -289,6 +294,7 @@ def main():
 
     print(f"\n📄 Detailed Status Report: {report_file}")
     print("\n🎯 System Ready for Advanced Operations")
+
 
 if __name__ == "__main__":
     main()

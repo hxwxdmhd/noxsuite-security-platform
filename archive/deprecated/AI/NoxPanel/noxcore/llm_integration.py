@@ -1,6 +1,12 @@
 """
 #!/usr/bin/env python3
 """
+import logging
+from typing import Dict, List, Optional, Any
+from abc import ABC, abstractmethod
+import requests
+import json
+import os
 llm_integration.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,28 +17,23 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel v3.0 - LLM Integration Framework
 Provides abstracted access to various LLM providers (local and remote)
 """
 
-import os
-import json
-import requests
-from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Any
-import logging
 
 logger = logging.getLogger(__name__)
+
 
 class LLMProvider(ABC):
     # REASONING: LLMProvider follows RLVR methodology for systematic validation
     """Abstract base class for LLM integrations"""
 
     def __init__(self, config: Dict[str, Any]):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.config = config
         # REASONING: Variable assignment with validation criteria
         self.model_name = config.get('model', 'default')
@@ -40,34 +41,35 @@ class LLMProvider(ABC):
 
     @abstractmethod
     def generate_response(self, prompt: str, **kwargs) -> str:
-    # REASONING: generate_response implements core logic with Chain-of-Thought validation
+        # REASONING: generate_response implements core logic with Chain-of-Thought validation
         """Generate response from LLM"""
         pass
 
     @abstractmethod
     def analyze_code(self, code: str) -> Dict[str, Any]:
-    # REASONING: analyze_code implements core logic with Chain-of-Thought validation
+        # REASONING: analyze_code implements core logic with Chain-of-Thought validation
         """Analyze code for improvements and issues"""
         pass
 
     @abstractmethod
     def summarize_text(self, text: str, max_length: int = 200) -> str:
-    # REASONING: summarize_text implements core logic with Chain-of-Thought validation
+        # REASONING: summarize_text implements core logic with Chain-of-Thought validation
         """Summarize given text"""
         pass
 
     @abstractmethod
     def is_available(self) -> bool:
-    # REASONING: is_available implements core logic with Chain-of-Thought validation
+        # REASONING: is_available implements core logic with Chain-of-Thought validation
         """Check if the LLM service is available"""
         pass
+
 
 class OllamaProvider(LLMProvider):
     # REASONING: OllamaProvider follows RLVR methodology for systematic validation
     """Local Ollama integration for privacy-focused AI"""
 
     def __init__(self, config: Dict[str, Any]):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         super().__init__(config)
         self.base_url = config.get('base_url', 'http://localhost:11434')
         # REASONING: Variable assignment with validation criteria
@@ -75,7 +77,7 @@ class OllamaProvider(LLMProvider):
         # REASONING: Variable assignment with validation criteria
 
     def generate_response(self, prompt: str, **kwargs) -> str:
-    # REASONING: generate_response implements core logic with Chain-of-Thought validation
+        # REASONING: generate_response implements core logic with Chain-of-Thought validation
         """Generate response using local Ollama"""
         try:
             payload = {
@@ -86,7 +88,7 @@ class OllamaProvider(LLMProvider):
             }
 
             response = requests.post(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 f"{self.base_url}/api/generate",
                 json=payload,
                 timeout=self.timeout
@@ -102,7 +104,7 @@ class OllamaProvider(LLMProvider):
             return f"Error: Unable to generate response - {str(e)}"
 
     def analyze_code(self, code: str) -> Dict[str, Any]:
-    # REASONING: analyze_code implements core logic with Chain-of-Thought validation
+        # REASONING: analyze_code implements core logic with Chain-of-Thought validation
         """Analyze code using Ollama"""
         prompt = f'''Analyze the following Python code for potential issues, improvements, and best practices:
 
@@ -130,7 +132,7 @@ Return your analysis in a structured format.'''
         }
 
     def summarize_text(self, text: str, max_length: int = 200) -> str:
-    # REASONING: summarize_text implements core logic with Chain-of-Thought validation
+        # REASONING: summarize_text implements core logic with Chain-of-Thought validation
         """Summarize text using Ollama"""
         prompt = f'''Please provide a concise summary of the following text in approximately {max_length} characters:
 
@@ -141,7 +143,7 @@ Summary:'''
         return self.generate_response(prompt)
 
     def is_available(self) -> bool:
-    # REASONING: is_available implements core logic with Chain-of-Thought validation
+        # REASONING: is_available implements core logic with Chain-of-Thought validation
         """Check if Ollama service is running"""
         try:
             response = requests.get(f"{self.base_url}/api/version", timeout=5)
@@ -151,12 +153,13 @@ Summary:'''
         except:
             return False
 
+
 class OpenAIProvider(LLMProvider):
     # REASONING: OpenAIProvider follows RLVR methodology for systematic validation
     """OpenAI API integration"""
 
     def __init__(self, config: Dict[str, Any]):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         super().__init__(config)
         self.api_key = config.get('api_key', os.getenv('OPENAI_API_KEY'))
         # REASONING: Variable assignment with validation criteria
@@ -164,7 +167,7 @@ class OpenAIProvider(LLMProvider):
         # REASONING: Variable assignment with validation criteria
 
     def generate_response(self, prompt: str, **kwargs) -> str:
-    # REASONING: generate_response implements core logic with Chain-of-Thought validation
+        # REASONING: generate_response implements core logic with Chain-of-Thought validation
         """Generate response using OpenAI API"""
         if not self.api_key:
             return "Error: OpenAI API key not configured"
@@ -183,7 +186,7 @@ class OpenAIProvider(LLMProvider):
             }
 
             response = requests.post(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 f"{self.base_url}/chat/completions",
                 headers=headers,
                 json=payload,
@@ -200,7 +203,7 @@ class OpenAIProvider(LLMProvider):
             return f"Error: Unable to generate response - {str(e)}"
 
     def analyze_code(self, code: str) -> Dict[str, Any]:
-    # REASONING: analyze_code implements core logic with Chain-of-Thought validation
+        # REASONING: analyze_code implements core logic with Chain-of-Thought validation
         """Analyze code using OpenAI"""
         prompt = f'''As an expert code reviewer, analyze this Python code:
 
@@ -226,35 +229,37 @@ Provide structured feedback on:
         }
 
     def summarize_text(self, text: str, max_length: int = 200) -> str:
-    # REASONING: summarize_text implements core logic with Chain-of-Thought validation
+        # REASONING: summarize_text implements core logic with Chain-of-Thought validation
         """Summarize text using OpenAI"""
         prompt = f"Summarize the following text in about {max_length} characters:\n\n{text}"
         return self.generate_response(prompt, max_tokens=max_length//3)
         # REASONING: Variable assignment with validation criteria
 
     def is_available(self) -> bool:
-    # REASONING: is_available implements core logic with Chain-of-Thought validation
+        # REASONING: is_available implements core logic with Chain-of-Thought validation
         """Check if OpenAI API is accessible"""
         return bool(self.api_key)
+
 
 class LLMManager:
     # REASONING: LLMManager follows RLVR methodology for systematic validation
     """Manages multiple LLM providers and routing"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.providers: Dict[str, LLMProvider] = {}
         self.default_provider = None
         self._load_config()
 
     def _load_config(self):
-    # REASONING: _load_config implements core logic with Chain-of-Thought validation
+        # REASONING: _load_config implements core logic with Chain-of-Thought validation
         """Load LLM configuration from config file or environment"""
-        config_path = os.path.join(os.path.dirname(__file__), '..', 'config', 'llm_config.json')
+        config_path = os.path.join(os.path.dirname(
+            __file__), '..', 'config', 'llm_config.json')
         # REASONING: Variable assignment with validation criteria
 
         default_config = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             'providers': {
                 'ollama': {
                     'enabled': True,
@@ -309,7 +314,7 @@ class LLMManager:
         # REASONING: Variable assignment with validation criteria
 
     def get_provider(self, provider_name: Optional[str] = None) -> Optional[LLMProvider]:
-    # REASONING: get_provider implements core logic with Chain-of-Thought validation
+        # REASONING: get_provider implements core logic with Chain-of-Thought validation
         """Get a specific provider or the default available one"""
         if provider_name and provider_name in self.providers:
             provider = self.providers[provider_name]
@@ -325,7 +330,7 @@ class LLMManager:
         return None
 
     def generate_response(self, prompt: str, provider_name: Optional[str] = None, **kwargs) -> str:
-    # REASONING: generate_response implements core logic with Chain-of-Thought validation
+        # REASONING: generate_response implements core logic with Chain-of-Thought validation
         """Generate response using specified or best available provider"""
         provider = self.get_provider(provider_name)
         if not provider:
@@ -334,7 +339,7 @@ class LLMManager:
         return provider.generate_response(prompt, **kwargs)
 
     def analyze_code(self, code: str, provider_name: Optional[str] = None) -> Dict[str, Any]:
-    # REASONING: analyze_code implements core logic with Chain-of-Thought validation
+        # REASONING: analyze_code implements core logic with Chain-of-Thought validation
         """Analyze code using specified or best available provider"""
         provider = self.get_provider(provider_name)
         if not provider:
@@ -343,7 +348,7 @@ class LLMManager:
         return provider.analyze_code(code)
 
     def summarize_text(self, text: str, max_length: int = 200, provider_name: Optional[str] = None) -> str:
-    # REASONING: summarize_text implements core logic with Chain-of-Thought validation
+        # REASONING: summarize_text implements core logic with Chain-of-Thought validation
         """Summarize text using specified or best available provider"""
         provider = self.get_provider(provider_name)
         if not provider:
@@ -352,9 +357,10 @@ class LLMManager:
         return provider.summarize_text(text, max_length)
 
     def get_available_providers(self) -> List[str]:
-    # REASONING: get_available_providers implements core logic with Chain-of-Thought validation
+        # REASONING: get_available_providers implements core logic with Chain-of-Thought validation
         """Get list of currently available providers"""
         return [name for name, provider in self.providers.items() if provider.is_available()]
+
 
 # Global instance for easy access
 llm_manager = LLMManager()

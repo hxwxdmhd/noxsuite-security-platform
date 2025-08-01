@@ -9,6 +9,7 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
+
 class SpeechEngine:
     """Speech recognition engine with wake word detection and continuous monitoring"""
 
@@ -114,6 +115,7 @@ class SpeechEngine:
 
     COMPLIANCE: STANDARD
     """
+
     def _initialize_microphone(self) -> bool:
         """Initialize microphone for speech recognition"""
         try:
@@ -164,7 +166,8 @@ class SpeechEngine:
             with self.microphone as source:
                 logger.info("Adjusting for ambient noise... Please wait.")
                 self.recognizer.adjust_for_ambient_noise(source, duration=2)
-                logger.info(f"Energy threshold set to: {self.recognizer.energy_threshold}")
+                logger.info(
+                    f"Energy threshold set to: {self.recognizer.energy_threshold}")
 
             return True
 

@@ -4,19 +4,28 @@ Ultimate Suite v11.0 - Simplified Models for Quick Deployment
 ============================================================
 """
 
-import os
-import sys
 import json
 import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
+import os
+import sys
 import uuid
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
 
 # Use SQLite for initial deployment to avoid PostgreSQL dependency
 try:
-    from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, Text, Float
+    from sqlalchemy import (
+        Boolean,
+        Column,
+        DateTime,
+        Float,
+        Integer,
+        String,
+        Text,
+        create_engine,
+    )
     from sqlalchemy.ext.declarative import declarative_base
-    from sqlalchemy.orm import sessionmaker, Session
+    from sqlalchemy.orm import Session, sessionmaker
     HAS_SQLALCHEMY = True
 except ImportError:
     HAS_SQLALCHEMY = False
@@ -32,7 +41,7 @@ if HAS_SQLALCHEMY:
     class SystemMetrics(Base):
         """System metrics table"""
         __tablename__ = 'system_metrics'
-        
+
         id = Column(Integer, primary_key=True)
         timestamp = Column(DateTime, default=datetime.utcnow)
         cpu_usage = Column(Float)
@@ -43,7 +52,7 @@ if HAS_SQLALCHEMY:
         requests_per_second = Column(Float)
         error_rate = Column(Float)
         response_time_avg = Column(Float)
-        
+
         def to_dict(self):
             return {
                 'id': self.id,
@@ -61,7 +70,7 @@ if HAS_SQLALCHEMY:
     class UserSession(Base):
         """User session management"""
         __tablename__ = 'user_sessions'
-        
+
         id = Column(Integer, primary_key=True)
         session_id = Column(String(255), unique=True, nullable=False)
         user_id = Column(String(255), nullable=False)
@@ -70,7 +79,7 @@ if HAS_SQLALCHEMY:
         created_at = Column(DateTime, default=datetime.utcnow)
         last_activity = Column(DateTime, default=datetime.utcnow)
         is_active = Column(Boolean, default=True)
-        
+
         def to_dict(self):
             return {
                 'id': self.id,
@@ -85,14 +94,14 @@ if HAS_SQLALCHEMY:
     class SystemLog(Base):
         """System logging"""
         __tablename__ = 'system_logs'
-        
+
         id = Column(Integer, primary_key=True)
         timestamp = Column(DateTime, default=datetime.utcnow)
         level = Column(String(20))
         component = Column(String(100))
         message = Column(Text)
         extra_data = Column(Text)  # JSON string for additional data
-        
+
         def to_dict(self):
             return {
                 'id': self.id,
@@ -105,29 +114,29 @@ if HAS_SQLALCHEMY:
 
     class DatabaseManager:
         """Simplified database manager"""
-        
+
         def __init__(self, database_url: str = "mysql+pymysql://heimnetz.db"):
             self.database_url = database_url
             self.engine = create_engine(database_url, echo=False)
             self.Session = sessionmaker(bind=self.engine)
             self.session = self.Session()
-            
+
         def create_tables(self):
             """Create all tables"""
             Base.metadata.create_all(self.engine)
             logger.info("Database tables created successfully")
-            
+
         def get_session(self):
             """Get database session"""
             return self.Session()
-            
+
         def close(self):
             """Close database connection"""
             if self.session:
                 self.session.close()
             if self.engine:
                 self.engine.dispose()
-                
+
         def log_system_metrics(self, metrics: Dict[str, Any]):
             """Log system metrics"""
             try:
@@ -146,7 +155,7 @@ if HAS_SQLALCHEMY:
             except Exception as e:
                 logger.error(f"Failed to log metrics: {e}")
                 self.session.rollback()
-                
+
         def get_recent_metrics(self, limit: int = 100) -> List[Dict[str, Any]]:
             """Get recent system metrics"""
             try:
@@ -162,26 +171,26 @@ else:
     # Fallback without SQLAlchemy
     class DatabaseManager:
         """Fallback database manager without SQLAlchemy"""
-        
+
         def __init__(self, database_url: str = ""):
             self.database_url = database_url
             self.metrics = []
             self.sessions = []
             self.logs = []
             logger.warning("SQLAlchemy not available, using in-memory storage")
-            
+
         def create_tables(self):
             """No-op for fallback"""
             logger.info("Using in-memory storage (no database)")
-            
+
         def get_session(self):
             """Return self for compatibility"""
             return self
-            
+
         def close(self):
             """No-op for fallback"""
             pass
-            
+
         def log_system_metrics(self, metrics: Dict[str, Any]):
             """Store metrics in memory"""
             metrics['timestamp'] = datetime.utcnow().isoformat()
@@ -189,7 +198,7 @@ else:
             # Keep only last 1000 metrics
             if len(self.metrics) > 1000:
                 self.metrics = self.metrics[-1000:]
-                
+
         def get_recent_metrics(self, limit: int = 100) -> List[Dict[str, Any]]:
             """Get recent metrics from memory"""
             return self.metrics[-limit:]
@@ -203,7 +212,7 @@ if __name__ == '__main__':
         db_manager = DatabaseManager()
         db_manager.create_tables()
         print("✓ Simple database setup successful")
-        
+
         # Test metrics logging
         test_metrics = {
             'cpu_usage': 25.5,
@@ -211,13 +220,13 @@ if __name__ == '__main__':
             'disk_usage': 60.0,
             'active_connections': 5
         }
-        
+
         db_manager.log_system_metrics(test_metrics)
         recent_metrics = db_manager.get_recent_metrics(10)
         print(f"✓ Metrics logging successful: {len(recent_metrics)} records")
-        
+
         db_manager.close()
-        
+
     except Exception as e:
         print(f"✗ Database setup failed: {e}")
         import traceback

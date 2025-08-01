@@ -5,17 +5,17 @@ Automatically discovers and imports network devices
 Replaces autoimport.ps1 with Python implementation
 """
 
-import subprocess
-import socket
-import threading
-import time
 import json
 import logging
+import os
+import re
+import socket
+import subprocess
+import sys
+import threading
+import time
 from datetime import datetime
 from pathlib import Path
-import re
-import sys
-import os
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
@@ -27,6 +27,7 @@ except ImportError:
     NoxDatabase = None
 
 logger = logging.getLogger(__name__)
+
 
 class NetworkScanner:
     """Network device discovery and import"""
@@ -129,7 +130,8 @@ class NetworkScanner:
 
             if result.returncode == 0:
                 # Parse ARP output for MAC address
-                match = re.search(r'([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}', result.stdout)
+                match = re.search(
+                    r'([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}', result.stdout)
                 if match:
                     return match.group().replace('-', ':').lower()
         except:

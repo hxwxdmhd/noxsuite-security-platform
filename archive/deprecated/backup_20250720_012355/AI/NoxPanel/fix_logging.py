@@ -6,6 +6,7 @@ This will make the server more stable on Windows terminals
 import re
 import os
 
+
 def fix_unicode_in_file(file_path):
     """
     RLVR: Implements fix_unicode_in_file with error handling and validation
@@ -60,6 +61,7 @@ def fix_unicode_in_file(file_path):
         return True
 
     return False
+
 
 if __name__ == "__main__":
     files_to_fix = [

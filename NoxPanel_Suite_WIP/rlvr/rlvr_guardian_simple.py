@@ -1,4 +1,16 @@
+import yaml
+import psutil
+from typing import Any, Dict, List
+from pathlib import Path
+from datetime import datetime, timedelta
+import sys
+import platform
+import os
+import logging
+import json
+import asyncio
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -21,17 +33,6 @@ POST-CERTIFICATION OBJECTIVES:
 ADAPTIVE INTELLIGENCE ENABLED
 """
 
-import json
-import logging
-import asyncio
-import psutil
-import platform
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Any
-import os
-import sys
-import yaml
 
 class RLVRGuardianSimple:
     """
@@ -40,7 +41,7 @@ class RLVRGuardianSimple:
     2. Analysis: Class requires specific implementation patterns for RLVRGuardianSimple functionality
     3. Solution: Implement RLVRGuardianSimple with SOLID principles and enterprise patterns
     4. Validation: Test RLVRGuardianSimple with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """RLVR Guardian - Post-Certification Monitoring System."""
@@ -55,22 +56,22 @@ class RLVRGuardianSimple:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Initialize RLVR Guardian system."""
-        self.workspace_path = Path(workspace_path)
-        self.setup_guardian_infrastructure()
+    """Initialize RLVR Guardian system."""
+    self.workspace_path = Path(workspace_path)
+    self.setup_guardian_infrastructure()
 
-        # Current system state
-        self.current_compliance = 94.54
-        self.baseline_compliance = 94.54
-        self.target_compliance = 98.0
-        self.deviation_threshold = 2.0
+    # Current system state
+    self.current_compliance = 94.54
+    self.baseline_compliance = 94.54
+    self.target_compliance = 98.0
+    self.deviation_threshold = 2.0
 
-        self.logger = self.setup_logging()
+    self.logger = self.setup_logging()
 
-        logger.info("RLVR Guardian - Post-Certification Mode Active")
-        logger.info(f"Current Compliance: {self.current_compliance:.2f}%")
-        logger.info(f"Target Compliance: {self.target_compliance:.1f}%")
-        logger.info("Adaptive Intelligence: ENABLED")
+    logger.info("RLVR Guardian - Post-Certification Mode Active")
+    logger.info(f"Current Compliance: {self.current_compliance:.2f}%")
+    logger.info(f"Target Compliance: {self.target_compliance:.1f}%")
+    logger.info("Adaptive Intelligence: ENABLED")
 
     def setup_guardian_infrastructure(self):
     """
@@ -82,23 +83,23 @@ class RLVRGuardianSimple:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Set up Guardian infrastructure directories."""
-        directories = [
-            self.workspace_path / "compliance",
-            self.workspace_path / "monitoring",
-            self.workspace_path / "updates",
-            self.workspace_path / "security",
-            self.workspace_path / "ci",
-            self.workspace_path / "snapshots",
-            self.workspace_path / "plugins" / "devkit",
-            self.workspace_path / "recovery",
-            self.workspace_path / "ai" / "training_data",
-            self.workspace_path / "envs",
-            self.workspace_path / ".github" / "workflows"
-        ]
+    """Set up Guardian infrastructure directories."""
+    directories = [
+        self.workspace_path / "compliance",
+        self.workspace_path / "monitoring",
+        self.workspace_path / "updates",
+        self.workspace_path / "security",
+        self.workspace_path / "ci",
+        self.workspace_path / "snapshots",
+        self.workspace_path / "plugins" / "devkit",
+        self.workspace_path / "recovery",
+        self.workspace_path / "ai" / "training_data",
+        self.workspace_path / "envs",
+        self.workspace_path / ".github" / "workflows"
+    ]
 
-        for directory in directories:
-            directory.mkdir(parents=True, exist_ok=True)
+    for directory in directories:
+        directory.mkdir(parents=True, exist_ok=True)
 
     def setup_logging(self):
     """
@@ -110,19 +111,20 @@ class RLVRGuardianSimple:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Set up Guardian logging system."""
-        log_file = self.workspace_path / "compliance" / f"rlvr_guardian_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+    """Set up Guardian logging system."""
+    log_file = self.workspace_path / "compliance" / \
+        f"rlvr_guardian_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
-        logging.basicConfig(
-            level=logging.INFO,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            handlers=[
-                logging.FileHandler(log_file, encoding='utf-8'),
-                logging.StreamHandler()
-            ]
-        )
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(log_file, encoding='utf-8'),
+            logging.StreamHandler()
+        ]
+    )
 
-        return logging.getLogger('[RLVR-GUARDIAN]')
+    return logging.getLogger('[RLVR-GUARDIAN]')
 
     async def run_guardian_cycle(self) -> Dict[str, Any]:
         """Run complete Guardian monitoring cycle."""
@@ -172,7 +174,8 @@ class RLVRGuardianSimple:
         with open(report_file, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
-        logger.info(f"Compliance monitoring completed - Status: {report['compliance_status']}")
+        logger.info(
+            f"Compliance monitoring completed - Status: {report['compliance_status']}")
         return report
 
     async def generate_monitoring_outputs(self) -> Dict[str, Any]:
@@ -305,7 +308,8 @@ if __name__ == "__main__":
             yaml.dump(ci_config, f, default_flow_style=False)
 
         # Also save GitHub Actions workflow
-        github_workflow = self.workspace_path / ".github" / "workflows" / "rlvr_validate.yml"
+        github_workflow = self.workspace_path / \
+            ".github" / "workflows" / "rlvr_validate.yml"
         with open(github_workflow, 'w', encoding='utf-8') as f:
             yaml.dump(ci_config, f, default_flow_style=False)
 
@@ -353,6 +357,7 @@ if __name__ == "__main__":
         logger.info("Adaptive strategy adjustments completed")
         return strategy_adjustments
 
+
 async def main():
     """Main execution function for RLVR Guardian."""
     try:
@@ -369,10 +374,13 @@ async def main():
         logger.info("="*80)
 
         compliance_report = guardian_report["compliance_report"]
-        logger.info(f"Compliance Status: {compliance_report['compliance_status']}")
-        logger.info(f"Current Compliance: {compliance_report['current_compliance']:.2f}%")
+        logger.info(
+            f"Compliance Status: {compliance_report['compliance_status']}")
+        logger.info(
+            f"Current Compliance: {compliance_report['current_compliance']:.2f}%")
         logger.info(f"Target Compliance: 98.0%")
-        logger.info(f"Improvement Opportunities: {len(compliance_report['improvement_opportunities'])}")
+        logger.info(
+            f"Improvement Opportunities: {len(compliance_report['improvement_opportunities'])}")
 
         monitoring_outputs = guardian_report["monitoring_outputs"]
         logger.info(f"\nMonitoring Outputs Generated:")
@@ -381,8 +389,10 @@ async def main():
 
         strategy_adjustments = guardian_report["strategy_adjustments"]
         logger.info(f"\nAdaptive Strategy Adjustments:")
-        logger.info(f"  Platform: {strategy_adjustments['current_context']['platform']}")
-        logger.info(f"  Strategy Changes: {len(strategy_adjustments['strategy_changes'])}")
+        logger.info(
+            f"  Platform: {strategy_adjustments['current_context']['platform']}")
+        logger.info(
+            f"  Strategy Changes: {len(strategy_adjustments['strategy_changes'])}")
 
         logger.info("\n" + "="*80)
         logger.info("RLVR GUARDIAN MONITORING CYCLE COMPLETED SUCCESSFULLY")

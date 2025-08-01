@@ -4,12 +4,14 @@ System Diagnostic Script for NoxPanel
 Performs basic system health checks
 """
 
-import psutil
 import platform
 import socket
 import subprocess
 import sys
 from datetime import datetime
+
+import psutil
+
 
 def check_system_info():
     """
@@ -80,6 +82,7 @@ def check_system_info():
     print(f"Hostname: {socket.gethostname()}")
     print()
 
+
 def check_cpu_memory():
     """Check CPU and Memory usage"""
     print("=== CPU & Memory ===")
@@ -92,6 +95,7 @@ def check_cpu_memory():
     print(f"Available Memory: {memory.available // (1024**3)} GB")
     print()
 
+
 def check_disk_usage():
     """Check disk usage"""
     print("=== Disk Usage ===")
@@ -103,6 +107,7 @@ def check_disk_usage():
             print(f"Drive {partition.device}: Permission denied")
     print()
 
+
 def check_network():
     """Basic network connectivity check"""
     print("=== Network Check ===")
@@ -113,7 +118,7 @@ def check_network():
 
         # Basic connectivity check
         result = subprocess.run(["ping", "-n", "1", "8.8.8.8"],
-                              capture_output=True, timeout=5)
+                                capture_output=True, timeout=5)
         if result.returncode == 0:
             print("✅ Internet Connectivity: OK")
         else:
@@ -121,6 +126,7 @@ def check_network():
     except Exception as e:
         print(f"❌ Network Check Failed: {e}")
     print()
+
 
 def main():
     print("🔍 NoxPanel System Diagnostic")
@@ -141,6 +147,7 @@ def main():
         return 1
 
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

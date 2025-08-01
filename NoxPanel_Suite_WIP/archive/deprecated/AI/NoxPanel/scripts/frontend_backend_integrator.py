@@ -11,17 +11,18 @@ This script handles:
 - Development vs Production modes
 """
 
-import os
-import sys
 import json
-import time
-import subprocess
-import threading
+import os
 import shutil
+import subprocess
+import sys
+import threading
+import time
 from pathlib import Path
 from typing import Dict, List, Optional
-import requests
 from urllib.parse import urljoin
+
+import requests
 
 # Configuration
 BACKEND_URL = "http://127.0.0.1:5002"
@@ -31,6 +32,7 @@ FRONTEND_DIR = PROJECT_ROOT / "frontend"
 BACKEND_DIR = PROJECT_ROOT
 BUILD_DIR = FRONTEND_DIR / "build"
 STATIC_DIR = BACKEND_DIR / "webpanel" / "static"
+
 
 class FrontendBackendIntegrator:
     def __init__(self):

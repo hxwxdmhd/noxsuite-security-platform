@@ -1,6 +1,22 @@
 """
 #!/usr/bin/env python3
 """
+import requests
+from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+from datetime import datetime
+import zipfile
+import urllib.request
+import time
+import tempfile
+import sys
+import subprocess
+import shutil
+import re
+import platform
+import os
+import json
+import hashlib
 init_noxvalidator_advanced.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,7 +27,7 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 🔍 NoxValidator Advanced - Deep Analysis & AI-Powered Recommendations (v2.0)
@@ -35,22 +51,6 @@ Features:
 - 🎯 Provides detailed, actionable improvement suggestions
 """
 
-import os
-import sys
-import json
-import shutil
-import platform
-import subprocess
-import urllib.request
-import zipfile
-import tempfile
-import requests
-import re
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
-from datetime import datetime
-import time
-import hashlib
 
 # --- Project Configuration ---
 
@@ -59,6 +59,7 @@ CURRENT_TIME = "2025-07-15 11:14:04"
 CURRENT_USER = "hxwxdmhd"
 
 # --- Colors for ADHD-friendly interface ---
+
 
 class Colors:
     # REASONING: Colors follows RLVR methodology for systematic validation
@@ -75,9 +76,11 @@ class Colors:
     BG_GREEN = '\033[102m'
     BG_BLUE = '\033[104m'
 
+
 def colorize(text: str, color: str) -> str:
     # REASONING: colorize implements core logic with Chain-of-Thought validation
     return f"{color}{text}{Colors.RESET}"
+
 
 def print_banner():
     # REASONING: print_banner implements core logic with Chain-of-Thought validation
@@ -97,11 +100,13 @@ def print_banner():
 """
     print(banner)
 
+
 def print_section(title: str, icon: str = "📋"):
     # REASONING: print_section implements core logic with Chain-of-Thought validation
     print(f"\n{Colors.BOLD}{Colors.BLUE}{'═' * 60}{Colors.RESET}")
     print(f"{Colors.BOLD}{Colors.BLUE}{icon} {title}{Colors.RESET}")
     print(f"{Colors.BOLD}{Colors.BLUE}{'═' * 60}{Colors.RESET}")
+
 
 def print_progress(current: int, total: int, description: str):
     # REASONING: print_progress implements core logic with Chain-of-Thought validation
@@ -111,18 +116,22 @@ def print_progress(current: int, total: int, description: str):
     bar = '█' * filled_length + '░' * (bar_length - filled_length)
     print(f"{Colors.GREEN}[{bar}] {percentage}%{Colors.RESET} {description}")
 
+
 def print_error(message: str):
     # REASONING: print_error implements core logic with Chain-of-Thought validation
     print(f"\n{Colors.BG_RED}{Colors.WHITE} ❌ ERROR {Colors.RESET}")
     print(f"{Colors.RED}🔥 {message}{Colors.RESET}\n")
 
+
 def print_success(message: str):
     # REASONING: print_success implements core logic with Chain-of-Thought validation
     print(f"{Colors.GREEN}✅ {message}{Colors.RESET}")
 
+
 def print_warning(message: str):
     # REASONING: print_warning implements core logic with Chain-of-Thought validation
     print(f"{Colors.YELLOW}⚠️  {message}{Colors.RESET}")
+
 
 def print_info(message: str):
     # REASONING: print_info implements core logic with Chain-of-Thought validation
@@ -130,18 +139,19 @@ def print_info(message: str):
 
 # --- Local AI Model Detection and Integration ---
 
+
 class LocalAIManager:
     # REASONING: LocalAIManager follows RLVR methodology for systematic validation
     """Manages detection and interaction with local AI models."""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.available_models = {}
         self.active_model = None
         self._detect_local_ai()
 
     def _detect_local_ai(self):
-    # REASONING: _detect_local_ai implements core logic with Chain-of-Thought validation
+        # REASONING: _detect_local_ai implements core logic with Chain-of-Thought validation
         """Detect available local AI services."""
         print_info("Detecting local AI models...")
 
@@ -158,15 +168,17 @@ class LocalAIManager:
             self.available_models['local_ai'] = self._get_local_ai_models()
 
         if self.available_models:
-            print_success(f"Found {len(self.available_models)} local AI service(s)")
+            print_success(
+                f"Found {len(self.available_models)} local AI service(s)")
         else:
             print_warning("No local AI models detected")
 
     def _check_ollama(self) -> bool:
-    # REASONING: _check_ollama implements core logic with Chain-of-Thought validation
+        # REASONING: _check_ollama implements core logic with Chain-of-Thought validation
         """Check if Ollama is running."""
         try:
-            response = requests.get("http://localhost:11434/api/tags", timeout=5)
+            response = requests.get(
+                "http://localhost:11434/api/tags", timeout=5)
             # REASONING: Variable assignment with validation criteria
             return response.status_code == 200
             # REASONING: Variable assignment with validation criteria
@@ -174,13 +186,14 @@ class LocalAIManager:
             return False
 
     def _get_ollama_models(self) -> List[Dict[str, Any]]:
-    # REASONING: _get_ollama_models implements core logic with Chain-of-Thought validation
+        # REASONING: _get_ollama_models implements core logic with Chain-of-Thought validation
         """Get list of available Ollama models."""
         try:
-            response = requests.get("http://localhost:11434/api/tags", timeout=5)
+            response = requests.get(
+                "http://localhost:11434/api/tags", timeout=5)
             # REASONING: Variable assignment with validation criteria
             if response.status_code == 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 models = response.json().get('models', [])
                 # REASONING: Variable assignment with validation criteria
                 return [{'name': m['name'], 'size': m.get('size', 0), 'service': 'ollama'} for m in models]
@@ -189,10 +202,11 @@ class LocalAIManager:
         return []
 
     def _check_lm_studio(self) -> bool:
-    # REASONING: _check_lm_studio implements core logic with Chain-of-Thought validation
+        # REASONING: _check_lm_studio implements core logic with Chain-of-Thought validation
         """Check if LM Studio is running."""
         try:
-            response = requests.get("http://localhost:1234/v1/models", timeout=5)
+            response = requests.get(
+                "http://localhost:1234/v1/models", timeout=5)
             # REASONING: Variable assignment with validation criteria
             return response.status_code == 200
             # REASONING: Variable assignment with validation criteria
@@ -200,13 +214,14 @@ class LocalAIManager:
             return False
 
     def _get_lm_studio_models(self) -> List[Dict[str, Any]]:
-    # REASONING: _get_lm_studio_models implements core logic with Chain-of-Thought validation
+        # REASONING: _get_lm_studio_models implements core logic with Chain-of-Thought validation
         """Get list of available LM Studio models."""
         try:
-            response = requests.get("http://localhost:1234/v1/models", timeout=5)
+            response = requests.get(
+                "http://localhost:1234/v1/models", timeout=5)
             # REASONING: Variable assignment with validation criteria
             if response.status_code == 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 models = response.json().get('data', [])
                 # REASONING: Variable assignment with validation criteria
                 return [{'name': m['id'], 'service': 'lm_studio'} for m in models]
@@ -214,10 +229,11 @@ class LocalAIManager:
             return []
 
     def _check_local_ai(self) -> bool:
-    # REASONING: _check_local_ai implements core logic with Chain-of-Thought validation
+        # REASONING: _check_local_ai implements core logic with Chain-of-Thought validation
         """Check if LocalAI is running."""
         try:
-            response = requests.get("http://localhost:8080/v1/models", timeout=5)
+            response = requests.get(
+                "http://localhost:8080/v1/models", timeout=5)
             # REASONING: Variable assignment with validation criteria
             return response.status_code == 200
             # REASONING: Variable assignment with validation criteria
@@ -225,13 +241,14 @@ class LocalAIManager:
             return False
 
     def _get_local_ai_models(self) -> List[Dict[str, Any]]:
-    # REASONING: _get_local_ai_models implements core logic with Chain-of-Thought validation
+        # REASONING: _get_local_ai_models implements core logic with Chain-of-Thought validation
         """Get list of available LocalAI models."""
         try:
-            response = requests.get("http://localhost:8080/v1/models", timeout=5)
+            response = requests.get(
+                "http://localhost:8080/v1/models", timeout=5)
             # REASONING: Variable assignment with validation criteria
             if response.status_code == 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 models = response.json().get('data', [])
                 # REASONING: Variable assignment with validation criteria
                 return [{'name': m['id'], 'service': 'local_ai'} for m in models]
@@ -239,7 +256,7 @@ class LocalAIManager:
             return []
 
     def select_best_model(self) -> Optional[Dict[str, Any]]:
-    # REASONING: select_best_model implements core logic with Chain-of-Thought validation
+        # REASONING: select_best_model implements core logic with Chain-of-Thought validation
         """Select the best available model for analysis."""
         all_models = []
         for service, models in self.available_models.items():
@@ -249,7 +266,8 @@ class LocalAIManager:
             return None
 
         # Prefer code-focused models
-        code_models = [m for m in all_models if 'code' in m['name'].lower() or 'llama' in m['name'].lower()]
+        code_models = [m for m in all_models if 'code' in m['name'].lower(
+        ) or 'llama' in m['name'].lower()]
         if code_models:
             self.active_model = code_models[0]
             return self.active_model
@@ -259,7 +277,7 @@ class LocalAIManager:
         return self.active_model
 
     def query_ai(self, prompt: str, context: str = "") -> str:
-    # REASONING: query_ai implements core logic with Chain-of-Thought validation
+        # REASONING: query_ai implements core logic with Chain-of-Thought validation
         """Query the active AI model with a prompt."""
         if not self.active_model:
             return "No AI model available"
@@ -279,11 +297,11 @@ class LocalAIManager:
         return "Unable to process AI query"
 
     def _query_ollama(self, prompt: str) -> str:
-    # REASONING: _query_ollama implements core logic with Chain-of-Thought validation
+        # REASONING: _query_ollama implements core logic with Chain-of-Thought validation
         """Query Ollama model."""
         try:
             response = requests.post(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "http://localhost:11434/api/generate",
                 json={
                     "model": self.active_model['name'],
@@ -293,17 +311,17 @@ class LocalAIManager:
                 timeout=60
             )
             if response.status_code == 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 return response.json().get('response', 'No response')
         except Exception as e:
             raise Exception(f"Ollama query failed: {e}")
 
     def _query_lm_studio(self, prompt: str) -> str:
-    # REASONING: _query_lm_studio implements core logic with Chain-of-Thought validation
+        # REASONING: _query_lm_studio implements core logic with Chain-of-Thought validation
         """Query LM Studio model."""
         try:
             response = requests.post(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "http://localhost:1234/v1/chat/completions",
                 json={
                     "model": self.active_model['name'],
@@ -313,17 +331,17 @@ class LocalAIManager:
                 timeout=60
             )
             if response.status_code == 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 return response.json()['choices'][0]['message']['content']
         except Exception as e:
             raise Exception(f"LM Studio query failed: {e}")
 
     def _query_local_ai(self, prompt: str) -> str:
-    # REASONING: _query_local_ai implements core logic with Chain-of-Thought validation
+        # REASONING: _query_local_ai implements core logic with Chain-of-Thought validation
         """Query LocalAI model."""
         try:
             response = requests.post(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "http://localhost:8080/v1/chat/completions",
                 json={
                     "model": self.active_model['name'],
@@ -333,24 +351,25 @@ class LocalAIManager:
                 timeout=60
             )
             if response.status_code == 200:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 return response.json()['choices'][0]['message']['content']
         except Exception as e:
             raise Exception(f"LocalAI query failed: {e}")
 
 # --- ChatGPT Conversation Analyzer ---
 
+
 class ChatGPTAnalyzer:
     # REASONING: ChatGPTAnalyzer follows RLVR methodology for systematic validation
     """Analyzes uploaded ChatGPT conversations for insights."""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.conversations = []
         self.insights = {}
 
     def load_conversation_file(self, file_path: Path) -> bool:
-    # REASONING: load_conversation_file implements core logic with Chain-of-Thought validation
+        # REASONING: load_conversation_file implements core logic with Chain-of-Thought validation
         """Load and parse ChatGPT conversation file."""
         try:
             print_info(f"Loading conversation file: {file_path.name}")
@@ -368,7 +387,7 @@ class ChatGPTAnalyzer:
             return False
 
     def _load_json_conversation(self, file_path: Path) -> bool:
-    # REASONING: _load_json_conversation implements core logic with Chain-of-Thought validation
+        # REASONING: _load_json_conversation implements core logic with Chain-of-Thought validation
         """Load JSON formatted ChatGPT export."""
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -393,7 +412,8 @@ class ChatGPTAnalyzer:
                         })
 
             self.conversations.append(conversation)
-            print_success(f"Loaded {len(conversation['messages'])} messages from {file_path.name}")
+            print_success(
+                f"Loaded {len(conversation['messages'])} messages from {file_path.name}")
             return True
 
         except Exception as e:
@@ -401,7 +421,7 @@ class ChatGPTAnalyzer:
             return False
 
     def _load_text_conversation(self, file_path: Path) -> bool:
-    # REASONING: _load_text_conversation implements core logic with Chain-of-Thought validation
+        # REASONING: _load_text_conversation implements core logic with Chain-of-Thought validation
         """Load text/markdown formatted conversation."""
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -422,7 +442,8 @@ class ChatGPTAnalyzer:
                             'content': '\n'.join(current_content)
                         })
                     current_role = 'user'
-                    current_content = [line.split(':', 1)[1].strip() if ':' in line else line]
+                    current_content = [line.split(
+                        ':', 1)[1].strip() if ':' in line else line]
                 elif line.lower().startswith('assistant:') or line.lower().startswith('chatgpt:'):
                     if current_role and current_content:
                         messages.append({
@@ -430,7 +451,8 @@ class ChatGPTAnalyzer:
                             'content': '\n'.join(current_content)
                         })
                     current_role = 'assistant'
-                    current_content = [line.split(':', 1)[1].strip() if ':' in line else line]
+                    current_content = [line.split(
+                        ':', 1)[1].strip() if ':' in line else line]
                 elif line:
                     current_content.append(line)
 
@@ -448,7 +470,8 @@ class ChatGPTAnalyzer:
             }
 
             self.conversations.append(conversation)
-            print_success(f"Loaded {len(messages)} messages from {file_path.name}")
+            print_success(
+                f"Loaded {len(messages)} messages from {file_path.name}")
             return True
 
         except Exception as e:
@@ -456,7 +479,7 @@ class ChatGPTAnalyzer:
             return False
 
     def analyze_conversations(self) -> Dict[str, Any]:
-    # REASONING: analyze_conversations implements core logic with Chain-of-Thought validation
+        # REASONING: analyze_conversations implements core logic with Chain-of-Thought validation
         """Analyze loaded conversations for insights."""
         if not self.conversations:
             return {'error': 'No conversations loaded'}
@@ -477,7 +500,7 @@ class ChatGPTAnalyzer:
         return insights
 
     def _extract_topics(self) -> List[str]:
-    # REASONING: _extract_topics implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_topics implements core logic with Chain-of-Thought validation
         """Extract main topics discussed in conversations."""
         topics = set()
 
@@ -500,7 +523,7 @@ class ChatGPTAnalyzer:
         return list(topics)
 
     def _find_patterns(self) -> List[str]:
-    # REASONING: _find_patterns implements core logic with Chain-of-Thought validation
+        # REASONING: _find_patterns implements core logic with Chain-of-Thought validation
         """Find common patterns in user questions."""
         patterns = []
 
@@ -512,21 +535,25 @@ class ChatGPTAnalyzer:
 
         # Common question patterns
         if any('how to' in msg for msg in user_messages):
-            patterns.append('Frequent "how-to" questions - user learning new concepts')
+            patterns.append(
+                'Frequent "how-to" questions - user learning new concepts')
 
         if any('error' in msg or 'problem' in msg for msg in user_messages):
-            patterns.append('Troubleshooting focus - user encountering technical issues')
+            patterns.append(
+                'Troubleshooting focus - user encountering technical issues')
 
         if any('best practice' in msg or 'recommended' in msg for msg in user_messages):
-            patterns.append('Best practices inquiry - user seeking optimization advice')
+            patterns.append(
+                'Best practices inquiry - user seeking optimization advice')
 
         if any('adhd' in msg or 'friendly' in msg for msg in user_messages):
-            patterns.append('ADHD-friendly development focus - accessibility priority')
+            patterns.append(
+                'ADHD-friendly development focus - accessibility priority')
 
         return patterns
 
     def _extract_recommendations(self) -> List[str]:
-    # REASONING: _extract_recommendations implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_recommendations implements core logic with Chain-of-Thought validation
         """Extract recommendations from assistant responses."""
         recommendations = []
 
@@ -543,12 +570,14 @@ class ChatGPTAnalyzer:
 
                     for pattern in rec_patterns:
                         matches = re.findall(pattern, content, re.IGNORECASE)
-                        recommendations.extend(matches[:3])  # Limit to avoid spam
+                        # Limit to avoid spam
+                        recommendations.extend(matches[:3])
 
-        return list(set(recommendations))[:10]  # Remove duplicates, limit to 10
+        # Remove duplicates, limit to 10
+        return list(set(recommendations))[:10]
 
     def _extract_code_snippets(self) -> List[Dict[str, Any]]:
-    # REASONING: _extract_code_snippets implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_code_snippets implements core logic with Chain-of-Thought validation
         """Extract code snippets from conversations."""
         snippets = []
 
@@ -557,7 +586,8 @@ class ChatGPTAnalyzer:
                 content = msg['content']
 
                 # Find code blocks
-                code_blocks = re.findall(r'```(\w+)?\n(.*?)\n```', content, re.DOTALL)
+                code_blocks = re.findall(
+                    r'```(\w+)?\n(.*?)\n```', content, re.DOTALL)
 
                 for language, code in code_blocks:
                     if len(code.strip()) > 20:  # Only meaningful snippets
@@ -570,7 +600,7 @@ class ChatGPTAnalyzer:
         return snippets[:5]  # Limit to 5 most recent
 
     def _extract_technical_concepts(self) -> List[str]:
-    # REASONING: _extract_technical_concepts implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_technical_concepts implements core logic with Chain-of-Thought validation
         """Extract technical concepts mentioned in conversations."""
         concepts = set()
 
@@ -592,23 +622,24 @@ class ChatGPTAnalyzer:
 
 # --- Deep Project Scanner ---
 
+
 class DeepProjectScanner:
     # REASONING: DeepProjectScanner follows RLVR methodology for systematic validation
     """Performs deep analysis of project structure, files, and status."""
 
     def __init__(self, project_path: Path):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.project_path = project_path
         self.scan_results = {}
         # REASONING: Variable assignment with validation criteria
 
     def perform_deep_scan(self) -> Dict[str, Any]:
-    # REASONING: perform_deep_scan implements core logic with Chain-of-Thought validation
+        # REASONING: perform_deep_scan implements core logic with Chain-of-Thought validation
         """Perform comprehensive project analysis."""
         print_info(f"Performing deep scan of: {self.project_path}")
 
         results = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             'timestamp': CURRENT_TIME,
             'project_path': str(self.project_path),
             'file_analysis': self._analyze_files(),
@@ -626,7 +657,7 @@ class DeepProjectScanner:
         return results
 
     def _analyze_files(self) -> Dict[str, Any]:
-    # REASONING: _analyze_files implements core logic with Chain-of-Thought validation
+        # REASONING: _analyze_files implements core logic with Chain-of-Thought validation
         """Analyze all files in the project."""
         file_analysis = {
             'total_files': 0,
@@ -643,7 +674,8 @@ class DeepProjectScanner:
 
                 # File type analysis
                 suffix = file_path.suffix.lower()
-                file_analysis['file_types'][suffix] = file_analysis['file_types'].get(suffix, 0) + 1
+                file_analysis['file_types'][suffix] = file_analysis['file_types'].get(
+                    suffix, 0) + 1
 
                 # Size analysis
                 size = file_path.stat().st_size
@@ -655,7 +687,8 @@ class DeepProjectScanner:
 
                 # Empty file check
                 if size == 0:
-                    file_analysis['empty_files'].append(str(file_path.relative_to(self.project_path)))
+                    file_analysis['empty_files'].append(
+                        str(file_path.relative_to(self.project_path)))
 
                 # Modification time analysis
                 mtime = file_path.stat().st_mtime
@@ -676,7 +709,7 @@ class DeepProjectScanner:
         return file_analysis
 
     def _calculate_code_metrics(self) -> Dict[str, Any]:
-    # REASONING: _calculate_code_metrics implements core logic with Chain-of-Thought validation
+        # REASONING: _calculate_code_metrics implements core logic with Chain-of-Thought validation
         """Calculate code quality metrics."""
         metrics = {
             'total_lines': 0,
@@ -711,7 +744,8 @@ class DeepProjectScanner:
 
                 # Count functions and classes
                 metrics['functions'] += len(re.findall(r'def \w+\(', content))
-                metrics['classes'] += len(re.findall(r'class \w+[\(:]', content))
+                metrics['classes'] += len(
+                    re.findall(r'class \w+[\(:]', content))
 
                 # Simple complexity scoring (nested blocks)
                 nesting_level = 0
@@ -733,13 +767,15 @@ class DeepProjectScanner:
 
         # Calculate averages
         if metrics['files_analyzed'] > 0:
-            metrics['avg_lines_per_file'] = metrics['total_lines'] / metrics['files_analyzed']
-            metrics['comment_ratio'] = metrics['comment_lines'] / max(metrics['total_lines'], 1) * 100
+            metrics['avg_lines_per_file'] = metrics['total_lines'] / \
+                metrics['files_analyzed']
+            metrics['comment_ratio'] = metrics['comment_lines'] / \
+                max(metrics['total_lines'], 1) * 100
 
         return metrics
 
     def _analyze_dependencies(self) -> Dict[str, Any]:
-    # REASONING: _analyze_dependencies implements core logic with Chain-of-Thought validation
+        # REASONING: _analyze_dependencies implements core logic with Chain-of-Thought validation
         """Analyze project dependencies."""
         dep_analysis = {
             'requirements_files': [],
@@ -755,7 +791,8 @@ class DeepProjectScanner:
         req_files.extend(list(self.project_path.rglob('pyproject.toml')))
 
         for req_file in req_files:
-            dep_analysis['requirements_files'].append(str(req_file.relative_to(self.project_path)))
+            dep_analysis['requirements_files'].append(
+                str(req_file.relative_to(self.project_path)))
 
             if req_file.name.endswith('.txt'):
                 try:
@@ -768,7 +805,8 @@ class DeepProjectScanner:
 
                             # Check for version pinning
                             if '==' not in req and '>=' not in req:
-                                dep_analysis['security_issues'].append(f"Unpinned dependency: {req}")
+                                dep_analysis['security_issues'].append(
+                                    f"Unpinned dependency: {req}")
 
                 except Exception as e:
                     print_warning(f"Could not analyze {req_file}: {e}")
@@ -788,15 +826,16 @@ class DeepProjectScanner:
             except Exception:
                 pass
 
-        dep_analysis['local_imports'] = list(set(dep_analysis['local_imports']))[:10]
+        dep_analysis['local_imports'] = list(
+            set(dep_analysis['local_imports']))[:10]
 
         return dep_analysis
 
     def _deep_configuration_analysis(self) -> Dict[str, Any]:
-    # REASONING: _deep_configuration_analysis implements core logic with Chain-of-Thought validation
+        # REASONING: _deep_configuration_analysis implements core logic with Chain-of-Thought validation
         """Deep dive into configuration files."""
         config_analysis = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             'config_files': [],
             'environment_variables': [],
             'secrets_found': [],
@@ -804,7 +843,8 @@ class DeepProjectScanner:
         }
 
         # Find configuration files
-        config_patterns = ['*.json', '*.yaml', '*.yml', '*.ini', '*.cfg', '.env*']
+        config_patterns = ['*.json', '*.yaml',
+                           '*.yml', '*.ini', '*.cfg', '.env*']
         # REASONING: Variable assignment with validation criteria
         config_files = []
         # REASONING: Variable assignment with validation criteria
@@ -814,11 +854,12 @@ class DeepProjectScanner:
 
         for config_file in config_files:
             if config_file.is_file():
-                config_analysis['config_files'].append(str(config_file.relative_to(self.project_path)))
+                config_analysis['config_files'].append(
+                    str(config_file.relative_to(self.project_path)))
 
                 try:
                     with open(config_file, 'r', encoding='utf-8') as f:
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         content = f.read()
 
                     # Look for environment variables
@@ -846,20 +887,23 @@ class DeepProjectScanner:
                 except Exception:
                     pass
 
-        config_analysis['environment_variables'] = list(set(config_analysis['environment_variables']))
+        config_analysis['environment_variables'] = list(
+            set(config_analysis['environment_variables']))
         # REASONING: Variable assignment with validation criteria
 
         # Calculate configuration completeness
-        expected_env_vars = ['SECRET_KEY', 'DEBUG', 'DATABASE_URL', 'FLASK_ENV']
+        expected_env_vars = ['SECRET_KEY',
+                             'DEBUG', 'DATABASE_URL', 'FLASK_ENV']
         found_vars = config_analysis['environment_variables']
         # REASONING: Variable assignment with validation criteria
-        config_analysis['configuration_completeness'] = len(set(expected_env_vars) & set(found_vars)) / len(expected_env_vars) * 100
+        config_analysis['configuration_completeness'] = len(
+            set(expected_env_vars) & set(found_vars)) / len(expected_env_vars) * 100
         # REASONING: Variable assignment with validation criteria
 
         return config_analysis
 
     def _analyze_git_history(self) -> Dict[str, Any]:
-    # REASONING: _analyze_git_history implements core logic with Chain-of-Thought validation
+        # REASONING: _analyze_git_history implements core logic with Chain-of-Thought validation
         """Analyze Git repository if present."""
         git_analysis = {
             'is_git_repo': False,
@@ -876,42 +920,44 @@ class DeepProjectScanner:
             try:
                 # Get commit count
                 result = subprocess.run(['git', 'rev-list', '--count', 'HEAD'],
-                # REASONING: Variable assignment with validation criteria
-                                      cwd=self.project_path, capture_output=True, text=True)
+                                        # REASONING: Variable assignment with validation criteria
+                                        cwd=self.project_path, capture_output=True, text=True)
                 if result.returncode == 0:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     git_analysis['total_commits'] = int(result.stdout.strip())
                     # REASONING: Variable assignment with validation criteria
 
                 # Get recent commits
                 result = subprocess.run(['git', 'log', '--oneline', '-10'],
-                # REASONING: Variable assignment with validation criteria
-                                      cwd=self.project_path, capture_output=True, text=True)
+                                        # REASONING: Variable assignment with validation criteria
+                                        cwd=self.project_path, capture_output=True, text=True)
                 if result.returncode == 0:
-                # REASONING: Variable assignment with validation criteria
-                    git_analysis['recent_commits'] = result.stdout.strip().split('\n')
+                    # REASONING: Variable assignment with validation criteria
+                    git_analysis['recent_commits'] = result.stdout.strip().split(
+                        '\n')
                     # REASONING: Variable assignment with validation criteria
 
                 # Get contributors
                 result = subprocess.run(['git', 'shortlog', '-sn'],
-                # REASONING: Variable assignment with validation criteria
-                                      cwd=self.project_path, capture_output=True, text=True)
+                                        # REASONING: Variable assignment with validation criteria
+                                        cwd=self.project_path, capture_output=True, text=True)
                 if result.returncode == 0:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     contributors = []
                     for line in result.stdout.strip().split('\n'):
                         if line.strip():
                             parts = line.strip().split('\t')
                             if len(parts) == 2:
-                                contributors.append({'commits': int(parts[0]), 'name': parts[1]})
+                                contributors.append(
+                                    {'commits': int(parts[0]), 'name': parts[1]})
                     git_analysis['contributors'] = contributors
 
                 # Get current branch
                 result = subprocess.run(['git', 'branch', '--show-current'],
-                # REASONING: Variable assignment with validation criteria
-                                      cwd=self.project_path, capture_output=True, text=True)
+                                        # REASONING: Variable assignment with validation criteria
+                                        cwd=self.project_path, capture_output=True, text=True)
                 if result.returncode == 0:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     git_analysis['branch_info']['current'] = result.stdout.strip()
                     # REASONING: Variable assignment with validation criteria
 
@@ -921,7 +967,7 @@ class DeepProjectScanner:
         return git_analysis
 
     def _analyze_status_files(self) -> Dict[str, Any]:
-    # REASONING: _analyze_status_files implements core logic with Chain-of-Thought validation
+        # REASONING: _analyze_status_files implements core logic with Chain-of-Thought validation
         """Analyze status and state files."""
         status_analysis = {
             'status_files': [],
@@ -950,7 +996,8 @@ class DeepProjectScanner:
                     if file_path.exists():
                         files.append(file_path)
 
-            status_analysis[category] = [str(f.relative_to(self.project_path)) for f in files]
+            status_analysis[category] = [
+                str(f.relative_to(self.project_path)) for f in files]
 
         # Analyze status file contents
         for status_file_name in status_analysis['status_files']:
@@ -972,7 +1019,7 @@ class DeepProjectScanner:
         return status_analysis
 
     def _analyze_architecture(self) -> Dict[str, Any]:
-    # REASONING: _analyze_architecture implements core logic with Chain-of-Thought validation
+        # REASONING: _analyze_architecture implements core logic with Chain-of-Thought validation
         """Analyze project architecture patterns."""
         arch_analysis = {
             'patterns_detected': [],
@@ -1024,13 +1071,15 @@ class DeepProjectScanner:
         total_files = len(python_files)
         if total_files > 0:
             # More files in subdirectories = better modularity
-            files_in_subdirs = len([f for f in python_files if len(f.parts) > 2])
-            arch_analysis['modularity_score'] = min(100, (files_in_subdirs / total_files) * 100)
+            files_in_subdirs = len(
+                [f for f in python_files if len(f.parts) > 2])
+            arch_analysis['modularity_score'] = min(
+                100, (files_in_subdirs / total_files) * 100)
 
         return arch_analysis
 
     def _check_performance_indicators(self) -> Dict[str, Any]:
-    # REASONING: _check_performance_indicators implements core logic with Chain-of-Thought validation
+        # REASONING: _check_performance_indicators implements core logic with Chain-of-Thought validation
         """Check for performance-related indicators."""
         perf_analysis = {
             'async_usage': False,
@@ -1052,12 +1101,14 @@ class DeepProjectScanner:
                     perf_analysis['async_usage'] = True
 
                 # Check for caching
-                cache_indicators = ['@cache', '@lru_cache', 'redis', 'memcached']
+                cache_indicators = [
+                    '@cache', '@lru_cache', 'redis', 'memcached']
                 if any(indicator in content for indicator in cache_indicators):
                     perf_analysis['caching_present'] = True
 
                 # Check for database optimizations
-                db_optimizations = ['index', 'query.filter', 'bulk_create', 'select_related']
+                db_optimizations = ['index', 'query.filter',
+                                    'bulk_create', 'select_related']
                 for opt in db_optimizations:
                     if opt in content:
                         perf_analysis['database_optimizations'].append(opt)
@@ -1067,26 +1118,29 @@ class DeepProjectScanner:
                     perf_analysis['static_file_handling'] = True
 
                 # Check for monitoring
-                monitoring_indicators = ['prometheus', 'grafana', 'logging', 'metrics']
+                monitoring_indicators = ['prometheus',
+                                         'grafana', 'logging', 'metrics']
                 if any(indicator in content for indicator in monitoring_indicators):
                     perf_analysis['monitoring_setup'] = True
 
             except Exception:
                 pass
 
-        perf_analysis['database_optimizations'] = list(set(perf_analysis['database_optimizations']))
+        perf_analysis['database_optimizations'] = list(
+            set(perf_analysis['database_optimizations']))
         # REASONING: Variable assignment with validation criteria
 
         return perf_analysis
 
 # --- Advanced AI-Powered Analyzer ---
 
+
 class AdvancedNoxPanelAnalyzer:
     # REASONING: AdvancedNoxPanelAnalyzer follows RLVR methodology for systematic validation
     """Advanced analyzer that combines all data sources with AI insights."""
 
     def __init__(self, noxpanel_path: Optional[Path] = None):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.noxpanel_path = noxpanel_path or self._find_noxpanel()
         self.ai_manager = LocalAIManager()
         self.chat_analyzer = ChatGPTAnalyzer()
@@ -1098,7 +1152,7 @@ class AdvancedNoxPanelAnalyzer:
             self.project_scanner = DeepProjectScanner(self.noxpanel_path)
 
     def _find_noxpanel(self) -> Optional[Path]:
-    # REASONING: _find_noxpanel implements core logic with Chain-of-Thought validation
+        # REASONING: _find_noxpanel implements core logic with Chain-of-Thought validation
         """Try to find NoxPanel installation automatically."""
         search_paths = [
             Path.cwd() / "noxpanel",
@@ -1114,13 +1168,13 @@ class AdvancedNoxPanelAnalyzer:
         return None
 
     def _is_noxpanel_directory(self, path: Path) -> bool:
-    # REASONING: _is_noxpanel_directory implements core logic with Chain-of-Thought validation
+        # REASONING: _is_noxpanel_directory implements core logic with Chain-of-Thought validation
         """Check if directory looks like a NoxPanel installation."""
         required_files = ["project.json", "src/main.py", "scaffolder/"]
         return all((path / file).exists() for file in required_files)
 
     def load_chatgpt_conversations(self, file_paths: List[Path]) -> bool:
-    # REASONING: load_chatgpt_conversations implements core logic with Chain-of-Thought validation
+        # REASONING: load_chatgpt_conversations implements core logic with Chain-of-Thought validation
         """Load multiple ChatGPT conversation files."""
         success_count = 0
         for file_path in file_paths:
@@ -1129,13 +1183,14 @@ class AdvancedNoxPanelAnalyzer:
 
         if success_count > 0:
             self.chat_analyzer.analyze_conversations()
-            print_success(f"Successfully loaded {success_count} conversation files")
+            print_success(
+                f"Successfully loaded {success_count} conversation files")
             return True
 
         return False
 
     def perform_comprehensive_analysis(self) -> Dict[str, Any]:
-    # REASONING: perform_comprehensive_analysis implements core logic with Chain-of-Thought validation
+        # REASONING: perform_comprehensive_analysis implements core logic with Chain-of-Thought validation
         """Perform comprehensive analysis combining all data sources."""
         print_section("Comprehensive AI-Powered Analysis", "🧠")
 
@@ -1144,7 +1199,7 @@ class AdvancedNoxPanelAnalyzer:
 
         # Gather all data
         analysis_data = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             'timestamp': CURRENT_TIME,
             'analyzer_version': '2.0',
             'user': CURRENT_USER,
@@ -1161,11 +1216,13 @@ class AdvancedNoxPanelAnalyzer:
         # 2. AI model selection
         selected_model = self.ai_manager.select_best_model()
         if selected_model:
-            print_success(f"Using AI model: {selected_model['name']} ({selected_model['service']})")
+            print_success(
+                f"Using AI model: {selected_model['name']} ({selected_model['service']})")
             analysis_data['ai_model'] = selected_model
             # REASONING: Variable assignment with validation criteria
         else:
-            print_warning("No local AI models available - analysis will be limited")
+            print_warning(
+                "No local AI models available - analysis will be limited")
 
         # 3. ChatGPT insights
         if self.chat_analyzer.conversations:
@@ -1176,15 +1233,18 @@ class AdvancedNoxPanelAnalyzer:
         # 4. AI-powered cross-analysis
         if selected_model:
             print_info("Generating AI-powered recommendations...")
-            analysis_data['ai_recommendations'] = self._generate_ai_recommendations(analysis_data)
+            analysis_data['ai_recommendations'] = self._generate_ai_recommendations(
+                analysis_data)
             # REASONING: Variable assignment with validation criteria
 
         # 5. Calculate comprehensive scores
-        analysis_data['comprehensive_scores'] = self._calculate_comprehensive_scores(analysis_data)
+        analysis_data['comprehensive_scores'] = self._calculate_comprehensive_scores(
+            analysis_data)
         # REASONING: Variable assignment with validation criteria
 
         # 6. Generate improvement roadmap
-        analysis_data['improvement_roadmap'] = self._generate_improvement_roadmap(analysis_data)
+        analysis_data['improvement_roadmap'] = self._generate_improvement_roadmap(
+            analysis_data)
         # REASONING: Variable assignment with validation criteria
 
         self.analysis_results = analysis_data
@@ -1192,7 +1252,7 @@ class AdvancedNoxPanelAnalyzer:
         return analysis_data
 
     def _generate_ai_recommendations(self, analysis_data: Dict[str, Any]) -> Dict[str, Any]:
-    # REASONING: _generate_ai_recommendations implements core logic with Chain-of-Thought validation
+        # REASONING: _generate_ai_recommendations implements core logic with Chain-of-Thought validation
         """Generate AI-powered recommendations based on all available data."""
 
         # Prepare context for AI
@@ -1216,7 +1276,8 @@ class AdvancedNoxPanelAnalyzer:
         Focus on ADHD-friendly development practices.
         """
 
-        recommendations['code_quality'] = self.ai_manager.query_ai(code_prompt, context)
+        recommendations['code_quality'] = self.ai_manager.query_ai(
+            code_prompt, context)
 
         # Architecture recommendations
         arch_prompt = f"""
@@ -1230,7 +1291,8 @@ class AdvancedNoxPanelAnalyzer:
         Provide specific architectural improvements for better maintainability and ADHD-friendly development.
         """
 
-        recommendations['architecture'] = self.ai_manager.query_ai(arch_prompt, context)
+        recommendations['architecture'] = self.ai_manager.query_ai(
+            arch_prompt, context)
 
         # Security recommendations
         config_analysis = analysis_data['deep_scan']['configuration_deep_dive']
@@ -1247,7 +1309,8 @@ class AdvancedNoxPanelAnalyzer:
         Provide specific security improvements and best practices.
         """
 
-        recommendations['security'] = self.ai_manager.query_ai(security_prompt, context)
+        recommendations['security'] = self.ai_manager.query_ai(
+            security_prompt, context)
 
         # Performance recommendations
         perf_analysis = analysis_data['deep_scan']['performance_indicators']
@@ -1264,7 +1327,8 @@ class AdvancedNoxPanelAnalyzer:
         Provide specific performance improvement suggestions.
         """
 
-        recommendations['performance'] = self.ai_manager.query_ai(perf_prompt, context)
+        recommendations['performance'] = self.ai_manager.query_ai(
+            perf_prompt, context)
 
         # ChatGPT-informed recommendations
         if 'chat_insights' in analysis_data:
@@ -1281,12 +1345,13 @@ class AdvancedNoxPanelAnalyzer:
             Provide recommendations that address the user's specific interests and learning patterns.
             """
 
-            recommendations['personalized'] = self.ai_manager.query_ai(chat_prompt, context)
+            recommendations['personalized'] = self.ai_manager.query_ai(
+                chat_prompt, context)
 
         return recommendations
 
     def _prepare_ai_context(self, analysis_data: Dict[str, Any]) -> str:
-    # REASONING: _prepare_ai_context implements core logic with Chain-of-Thought validation
+        # REASONING: _prepare_ai_context implements core logic with Chain-of-Thought validation
         """Prepare context information for AI queries."""
         context = f"""
         Context: NoxPanel Advanced Analysis
@@ -1320,7 +1385,7 @@ class AdvancedNoxPanelAnalyzer:
         return context
 
     def _calculate_comprehensive_scores(self, analysis_data: Dict[str, Any]) -> Dict[str, Any]:
-    # REASONING: _calculate_comprehensive_scores implements core logic with Chain-of-Thought validation
+        # REASONING: _calculate_comprehensive_scores implements core logic with Chain-of-Thought validation
         """Calculate comprehensive scoring across all dimensions."""
         scores = {}
 
@@ -1363,7 +1428,8 @@ class AdvancedNoxPanelAnalyzer:
         security_score = config_analysis['configuration_completeness']
         # REASONING: Variable assignment with validation criteria
 
-        security_score -= len(config_analysis['secrets_found']) * 25  # Major penalty for exposed secrets
+        # Major penalty for exposed secrets
+        security_score -= len(config_analysis['secrets_found']) * 25
         # REASONING: Variable assignment with validation criteria
 
         scores['security'] = max(0, security_score)
@@ -1403,7 +1469,7 @@ class AdvancedNoxPanelAnalyzer:
         return scores
 
     def _generate_improvement_roadmap(self, analysis_data: Dict[str, Any]) -> Dict[str, Any]:
-    # REASONING: _generate_improvement_roadmap implements core logic with Chain-of-Thought validation
+        # REASONING: _generate_improvement_roadmap implements core logic with Chain-of-Thought validation
         """Generate a prioritized improvement roadmap."""
         roadmap = {
             'immediate_actions': [],
@@ -1484,6 +1550,7 @@ class AdvancedNoxPanelAnalyzer:
 
 # --- Start Menu ---
 
+
 def show_advanced_start_menu() -> str:
     # REASONING: show_advanced_start_menu implements core logic with Chain-of-Thought validation
     """Display interactive start menu for advanced NoxValidator."""
@@ -1508,10 +1575,12 @@ def show_advanced_start_menu() -> str:
         print()
 
     while True:
-        choice = input(f"{Colors.CYAN}Select an option [1-8, q]:{Colors.RESET} ").strip().lower()
+        choice = input(
+            f"{Colors.CYAN}Select an option [1-8, q]:{Colors.RESET} ").strip().lower()
         if choice in options:
             return choice
         print_error("Invalid option. Please choose 1-8 or q.")
+
 
 def get_chatgpt_files() -> List[Path]:
     # REASONING: get_chatgpt_files implements core logic with Chain-of-Thought validation
@@ -1523,7 +1592,8 @@ def get_chatgpt_files() -> List[Path]:
 
     files = []
     while True:
-        file_input = input(f"{Colors.CYAN}Enter file path (or 'done' to finish):{Colors.RESET} ").strip()
+        file_input = input(
+            f"{Colors.CYAN}Enter file path (or 'done' to finish):{Colors.RESET} ").strip()
 
         if file_input.lower() == 'done':
             break
@@ -1543,6 +1613,7 @@ def get_chatgpt_files() -> List[Path]:
 
     return files
 
+
 def run_advanced_analysis(choice: str) -> None:
     # REASONING: run_advanced_analysis implements core logic with Chain-of-Thought validation
     """Run the selected advanced analysis."""
@@ -1552,16 +1623,19 @@ def run_advanced_analysis(choice: str) -> None:
 
     if not analyzer.noxpanel_path:
         print_error("NoxPanel installation not found!")
-        print_info("Please ensure NoxPanel is installed in one of these locations:")
+        print_info(
+            "Please ensure NoxPanel is installed in one of these locations:")
         print("  - ./noxpanel/")
         print("  - ../noxpanel/")
         print("  - ~/noxpanel/")
         print("  - ~/projects/noxpanel/")
 
-        custom_path = input(f"\n{Colors.CYAN}Enter custom NoxPanel path (or press Enter to exit):{Colors.RESET} ").strip()
+        custom_path = input(
+            f"\n{Colors.CYAN}Enter custom NoxPanel path (or press Enter to exit):{Colors.RESET} ").strip()
         if custom_path:
             analyzer.noxpanel_path = Path(custom_path)
-            analyzer.project_scanner = DeepProjectScanner(analyzer.noxpanel_path)
+            analyzer.project_scanner = DeepProjectScanner(
+                analyzer.noxpanel_path)
             if not analyzer._is_noxpanel_directory(analyzer.noxpanel_path):
                 print_error("Invalid NoxPanel directory!")
                 return
@@ -1572,10 +1646,12 @@ def run_advanced_analysis(choice: str) -> None:
 
     # Check for local AI
     if analyzer.ai_manager.available_models:
-        model_count = sum(len(models) for models in analyzer.ai_manager.available_models.values())
+        model_count = sum(len(models)
+                          for models in analyzer.ai_manager.available_models.values())
         print_success(f"Found {model_count} local AI model(s)")
     else:
-        print_warning("No local AI models detected - install Ollama, LM Studio, or LocalAI for enhanced analysis")
+        print_warning(
+            "No local AI models detected - install Ollama, LM Studio, or LocalAI for enhanced analysis")
 
     if choice == "1":  # Quick AI Analysis
         print_section("Quick AI Analysis", "⚡")
@@ -1615,13 +1691,16 @@ def run_advanced_analysis(choice: str) -> None:
         print(f"• Code lines: {scan_results['code_metrics']['code_lines']}")
         print(f"• Functions: {scan_results['code_metrics']['functions']}")
         print(f"• Classes: {scan_results['code_metrics']['classes']}")
-        print(f"• Configuration files: {len(scan_results['configuration_deep_dive']['config_files'])}")
+        print(
+            f"• Configuration files: {len(scan_results['configuration_deep_dive']['config_files'])}")
 
         if scan_results['git_analysis']['is_git_repo']:
-            print(f"• Git commits: {scan_results['git_analysis']['total_commits']}")
+            print(
+                f"• Git commits: {scan_results['git_analysis']['total_commits']}")
 
         # Save detailed results
-        report_path = PROJECT_ROOT / "outputs" / f"deep_scan_{CURRENT_TIME.replace(':', '-').replace(' ', '_')}.json"
+        report_path = PROJECT_ROOT / "outputs" / \
+            f"deep_scan_{CURRENT_TIME.replace(':', '-').replace(' ', '_')}.json"
         report_path.parent.mkdir(parents=True, exist_ok=True)
         with open(report_path, 'w') as f:
             json.dump(scan_results, f, indent=2)

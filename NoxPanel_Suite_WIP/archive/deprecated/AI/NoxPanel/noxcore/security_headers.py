@@ -1,6 +1,13 @@
 """
 #!/usr/bin/env python3
 """
+from flask import Response, current_app, request
+from typing import Any, Dict, List, Optional
+from dataclasses import dataclass, field
+import time
+import secrets
+import logging
+import hashlib
 security_headers.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,30 +18,26 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel v5.0 - Security Headers System
 Comprehensive security headers implementation for web application protection
 """
 
-import logging
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, field
-from flask import Response, request, current_app
-import secrets
-import hashlib
-import time
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class CSPDirective:
     # REASONING: CSPDirective follows RLVR methodology for systematic validation
     """Content Security Policy directive configuration"""
     script_src: List[str] = field(default_factory=lambda: ["'self'"])
-    style_src: List[str] = field(default_factory=lambda: ["'self'", "'unsafe-inline'"])
-    img_src: List[str] = field(default_factory=lambda: ["'self'", "data:", "https:"])
+    style_src: List[str] = field(default_factory=lambda: [
+                                 "'self'", "'unsafe-inline'"])
+    img_src: List[str] = field(default_factory=lambda: [
+                               "'self'", "data:", "https:"])
     # REASONING: Variable assignment with validation criteria
     font_src: List[str] = field(default_factory=lambda: ["'self'", "https:"])
     connect_src: List[str] = field(default_factory=lambda: ["'self'"])
@@ -49,7 +52,9 @@ class CSPDirective:
     frame_ancestors: List[str] = field(default_factory=lambda: ["'none'"])
     block_all_mixed_content: bool = True
     upgrade_insecure_requests: bool = True
-    require_sri_for: List[str] = field(default_factory=lambda: ["script", "style"])
+    require_sri_for: List[str] = field(
+        default_factory=lambda: ["script", "style"])
+
 
 @dataclass
 class SecurityHeadersConfig:
@@ -104,29 +109,30 @@ class SecurityHeadersConfig:
     # Custom headers
     custom_headers: Dict[str, str] = field(default_factory=dict)
 
+
 class NonceManager:
     # REASONING: NonceManager follows RLVR methodology for systematic validation
     """Manages CSP nonces for inline scripts and styles"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.current_nonce = None
         self.nonce_cache: Dict[str, str] = {}
 
     def generate_nonce(self) -> str:
-    # REASONING: generate_nonce implements core logic with Chain-of-Thought validation
+        # REASONING: generate_nonce implements core logic with Chain-of-Thought validation
         """Generate a new cryptographically secure nonce"""
         nonce = secrets.token_urlsafe(16)
         self.current_nonce = nonce
         return nonce
 
     def get_current_nonce(self) -> Optional[str]:
-    # REASONING: get_current_nonce implements core logic with Chain-of-Thought validation
+        # REASONING: get_current_nonce implements core logic with Chain-of-Thought validation
         """Get the current request nonce"""
         return self.current_nonce
 
     def generate_hash(self, content: str, algorithm: str = 'sha256') -> str:
-    # REASONING: generate_hash implements core logic with Chain-of-Thought validation
+        # REASONING: generate_hash implements core logic with Chain-of-Thought validation
         """Generate CSP hash for inline content"""
         if algorithm == 'sha256':
             hash_obj = hashlib.sha256()
@@ -140,18 +146,19 @@ class NonceManager:
         hash_obj.update(content.encode('utf-8'))
         return f"{algorithm}-{hash_obj.hexdigest()}"
 
+
 class SecurityHeadersManager:
     # REASONING: SecurityHeadersManager follows RLVR methodology for systematic validation
     """Manages security headers for the application"""
 
     def __init__(self, config: SecurityHeadersConfig = None):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.config = config or SecurityHeadersConfig()
         # REASONING: Variable assignment with validation criteria
         self.nonce_manager = NonceManager()
 
     def build_csp_header(self, nonce: Optional[str] = None) -> str:
-    # REASONING: build_csp_header implements core logic with Chain-of-Thought validation
+        # REASONING: build_csp_header implements core logic with Chain-of-Thought validation
         """Build Content Security Policy header"""
         csp = self.config.csp
         # REASONING: Variable assignment with validation criteria
@@ -188,7 +195,8 @@ class SecurityHeadersManager:
             directives.append("upgrade-insecure-requests")
 
         if csp.require_sri_for:
-            directives.append(f"require-sri-for {' '.join(csp.require_sri_for)}")
+            directives.append(
+                f"require-sri-for {' '.join(csp.require_sri_for)}")
 
         # Add report URI if configured
         if self.config.csp_report_uri:
@@ -197,7 +205,7 @@ class SecurityHeadersManager:
         return "; ".join(directives)
 
     def build_hsts_header(self) -> Optional[str]:
-    # REASONING: build_hsts_header implements core logic with Chain-of-Thought validation
+        # REASONING: build_hsts_header implements core logic with Chain-of-Thought validation
         """Build Strict Transport Security header"""
         if not self.config.hsts_enabled:
             return None
@@ -214,7 +222,7 @@ class SecurityHeadersManager:
         return "; ".join(hsts_parts)
 
     def build_permissions_policy_header(self) -> str:
-    # REASONING: build_permissions_policy_header implements core logic with Chain-of-Thought validation
+        # REASONING: build_permissions_policy_header implements core logic with Chain-of-Thought validation
         """Build Permissions Policy header"""
         policies = []
 
@@ -222,13 +230,14 @@ class SecurityHeadersManager:
             if not origins:
                 policies.append(f"{feature}=()")
             else:
-                origin_list = " ".join(f'"{origin}"' if origin != 'self' else origin for origin in origins)
+                origin_list = " ".join(
+                    f'"{origin}"' if origin != 'self' else origin for origin in origins)
                 policies.append(f"{feature}=({origin_list})")
 
         return ", ".join(policies)
 
     def get_security_headers(self, response: Response) -> Dict[str, str]:
-    # REASONING: get_security_headers implements core logic with Chain-of-Thought validation
+        # REASONING: get_security_headers implements core logic with Chain-of-Thought validation
         """Get all security headers for a response"""
         headers = {}
 
@@ -291,7 +300,7 @@ class SecurityHeadersManager:
         return headers
 
     def apply_security_headers(self, response: Response) -> Response:
-    # REASONING: apply_security_headers implements core logic with Chain-of-Thought validation
+        # REASONING: apply_security_headers implements core logic with Chain-of-Thought validation
         """Apply all security headers to a response"""
         headers = self.get_security_headers(response)
         # REASONING: Variable assignment with validation criteria
@@ -303,41 +312,43 @@ class SecurityHeadersManager:
         return response
 
     def get_nonce(self) -> Optional[str]:
-    # REASONING: get_nonce implements core logic with Chain-of-Thought validation
+        # REASONING: get_nonce implements core logic with Chain-of-Thought validation
         """Get the current nonce for inline scripts/styles"""
         return self.nonce_manager.get_current_nonce()
 
     def validate_sri_hash(self, content: str, provided_hash: str) -> bool:
-    # REASONING: validate_sri_hash implements core logic with Chain-of-Thought validation
+        # REASONING: validate_sri_hash implements core logic with Chain-of-Thought validation
         """Validate Subresource Integrity hash"""
         try:
             algorithm, expected_hash = provided_hash.split('-', 1)
-            calculated_hash = self.nonce_manager.generate_hash(content, algorithm)
+            calculated_hash = self.nonce_manager.generate_hash(
+                content, algorithm)
             return calculated_hash == provided_hash
         except Exception as e:
             logger.warning(f"SRI validation failed: {e}")
             return False
 
     def update_config(self, new_config: SecurityHeadersConfig):
-    # REASONING: update_config implements core logic with Chain-of-Thought validation
+        # REASONING: update_config implements core logic with Chain-of-Thought validation
         """Update security headers configuration"""
         self.config = new_config
         # REASONING: Variable assignment with validation criteria
         logger.info("Security headers configuration updated")
 
     def add_custom_header(self, name: str, value: str):
-    # REASONING: add_custom_header implements core logic with Chain-of-Thought validation
+        # REASONING: add_custom_header implements core logic with Chain-of-Thought validation
         """Add a custom security header"""
         self.config.custom_headers[name] = value
         # REASONING: Variable assignment with validation criteria
         logger.info(f"Custom security header added: {name}")
 
     def remove_custom_header(self, name: str):
-    # REASONING: remove_custom_header implements core logic with Chain-of-Thought validation
+        # REASONING: remove_custom_header implements core logic with Chain-of-Thought validation
         """Remove a custom security header"""
         if name in self.config.custom_headers:
             del self.config.custom_headers[name]
             logger.info(f"Custom security header removed: {name}")
+
 
 def create_development_config() -> SecurityHeadersConfig:
     # REASONING: create_development_config implements core logic with Chain-of-Thought validation
@@ -354,6 +365,7 @@ def create_development_config() -> SecurityHeadersConfig:
         cross_origin_embedder_policy="unsafe-none",
         cross_origin_resource_policy="cross-origin"
     )
+
 
 def create_production_config() -> SecurityHeadersConfig:
     # REASONING: create_production_config implements core logic with Chain-of-Thought validation
@@ -377,8 +389,10 @@ def create_production_config() -> SecurityHeadersConfig:
         cross_origin_resource_policy="same-origin"
     )
 
+
 # Global security headers manager
 security_headers_manager = None
+
 
 def init_security_headers(app, environment: str = 'development'):
     # REASONING: init_security_headers implements core logic with Chain-of-Thought validation
@@ -397,17 +411,19 @@ def init_security_headers(app, environment: str = 'development'):
 
     @app.after_request
     def apply_security_headers(response):
-    # REASONING: apply_security_headers implements core logic with Chain-of-Thought validation
+        # REASONING: apply_security_headers implements core logic with Chain-of-Thought validation
         """Apply security headers to all responses"""
         return security_headers_manager.apply_security_headers(response)
 
     logger.info(f"Security headers initialized for {environment} environment")
     return security_headers_manager
 
+
 def get_security_headers_manager() -> Optional[SecurityHeadersManager]:
     # REASONING: get_security_headers_manager implements core logic with Chain-of-Thought validation
     """Get the global security headers manager"""
     return security_headers_manager
+
 
 def get_current_nonce() -> Optional[str]:
     # REASONING: get_current_nonce implements core logic with Chain-of-Thought validation

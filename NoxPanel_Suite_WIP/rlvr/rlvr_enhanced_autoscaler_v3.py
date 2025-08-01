@@ -13,20 +13,22 @@ REASONING CHAIN v3.0:
 """
 
 import asyncio
+import json
 import logging
+import math
+import statistics
 import sys
 import time
-import json
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Dict, List, NamedTuple, Optional, Tuple
+
+import numpy as np
 import psutil
 import requests
-import statistics
-import numpy as np
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, NamedTuple
-from dataclasses import dataclass, asdict
-from enum import Enum
-import math
+
 
 class ScalingDecision(Enum):
     # REASONING: ScalingDecision follows RLVR methodology for systematic validation
@@ -36,6 +38,7 @@ class ScalingDecision(Enum):
     MAINTAIN = "maintain"
     EMERGENCY_SCALE = "emergency_scale"
     GRACEFUL_DEGRADE = "graceful_degrade"
+
 
 @dataclass
 class MetricSnapshot:
@@ -48,6 +51,7 @@ class MetricSnapshot:
     response_time_ms: float
     error_rate: float
     throughput_rps: float
+
 
 class PredictionModel:
     # REASONING: PredictionModel follows RLVR methodology for systematic validation
@@ -143,7 +147,8 @@ class PredictionModel:
 
         try:
             # Extract time series data
-            timestamps = [datetime.fromisoformat(m.timestamp) for m in self.metric_history]
+            timestamps = [datetime.fromisoformat(
+                m.timestamp) for m in self.metric_history]
             cpu_values = [m.cpu_percent for m in self.metric_history]
             memory_values = [m.memory_percent for m in self.metric_history]
             throughput_values = [m.throughput_rps for m in self.metric_history]
@@ -164,12 +169,14 @@ class PredictionModel:
 
                 # Calculate slope
                 if n * sum_x2 - sum_x * sum_x != 0:
-                    slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x)
+                    slope = (n * sum_xy - sum_x * sum_y) / \
+                             (n * sum_x2 - sum_x * sum_x)
                 else:
                     slope = 0
 
                 # Predict future value
-                future_x = len(values) + (minutes_ahead / 5)  # Assuming 5-minute intervals
+                # Assuming 5-minute intervals
+                future_x = len(values) + (minutes_ahead / 5)
                 predicted = values[-1] + slope * (future_x - (len(values) - 1))
 
                 return max(0, predicted)  # Ensure non-negative
@@ -192,13 +199,17 @@ class PredictionModel:
             predicted_throughput = predict_linear_trend(throughput_values)
 
             # Calculate confidence based on data quality and consistency
-            cpu_variance = statistics.variance(cpu_values[-min(10, len(cpu_values)):])
-            memory_variance = statistics.variance(memory_values[-min(10, len(memory_values)):])
+            cpu_variance = statistics.variance(
+                cpu_values[-min(10, len(cpu_values)):])
+            memory_variance = statistics.variance(
+                memory_values[-min(10, len(memory_values)):])
 
             # Lower variance = higher confidence
             max_variance = 100.0  # Theoretical max for percentages
-            confidence = 1.0 - (cpu_variance + memory_variance) / (2 * max_variance)
-            confidence = max(0.3, min(0.95, confidence))  # Clamp between 30% and 95%
+            confidence = 1.0 - \
+                (cpu_variance + memory_variance) / (2 * max_variance)
+            confidence = max(0.3, min(0.95, confidence)
+                             )  # Clamp between 30% and 95%
 
             return {
                 'cpu_percent': min(100.0, predicted_cpu),

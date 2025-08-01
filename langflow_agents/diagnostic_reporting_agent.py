@@ -1,3 +1,12 @@
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime
+import time
+import sys
+import shutil
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -9,22 +18,14 @@ Aggregates logs, agent outputs, audit data, and ChatGPT validations into a
 human-friendly, ADHD-optimized system health report.
 """
 
-import json
-import logging
-import os
-import shutil
-import sys
-import time
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(Path(__file__).parent / "diagnostic_reporting.log"),
+        logging.FileHandler(Path(__file__).parent /
+                            "diagnostic_reporting.log"),
         logging.StreamHandler(),
     ],
 )
@@ -77,7 +78,8 @@ class DiagnosticReportingAgent:
             if os.path.exists(history_file):
                 with open(history_file, "r") as f:
                     self.report_history = json.load(f)
-                logger.info(f"Loaded {len(self.report_history)} historical reports")
+                logger.info(
+                    f"Loaded {len(self.report_history)} historical reports")
         except Exception as e:
             logger.error(f"Error loading report history: {e}")
             self.report_history = []
@@ -115,7 +117,8 @@ class DiagnosticReportingAgent:
             # Collect System Auditor data
             try:
                 audit_dir = (
-                    Path(__file__).parent.parent / "langflow_agents" / "audit_results"
+                    Path(__file__).parent.parent /
+                    "langflow_agents" / "audit_results"
                 )
                 if audit_dir.exists():
                     latest_file = audit_dir / "latest_audit.json"
@@ -140,12 +143,14 @@ class DiagnosticReportingAgent:
                             data["sources"].append("system_auditor")
             except Exception as e:
                 logger.error(f"Error collecting auditor data: {e}")
-                data["errors"].append(f"Auditor data collection error: {str(e)}")
+                data["errors"].append(
+                    f"Auditor data collection error: {str(e)}")
 
             # Collect Integration Manager data
             try:
                 # Check if integration status file exists
-                integration_file = Path(__file__).parent.parent / "agent_status.json"
+                integration_file = Path(
+                    __file__).parent.parent / "agent_status.json"
                 if integration_file.exists():
                     with open(integration_file, "r") as f:
                         status_data = json.load(f)
@@ -154,7 +159,8 @@ class DiagnosticReportingAgent:
                             data["sources"].append("integration_manager")
             except Exception as e:
                 logger.error(f"Error collecting integration data: {e}")
-                data["errors"].append(f"Integration data collection error: {str(e)}")
+                data["errors"].append(
+                    f"Integration data collection error: {str(e)}")
 
             # Collect Workflow Executor data
             try:
@@ -175,11 +181,13 @@ class DiagnosticReportingAgent:
                         data["sources"].append("workflow_executor")
             except Exception as e:
                 logger.error(f"Error collecting workflow data: {e}")
-                data["errors"].append(f"Workflow data collection error: {str(e)}")
+                data["errors"].append(
+                    f"Workflow data collection error: {str(e)}")
 
             # Collect ChatGPT Verification data
             try:
-                verification_dir = Path(__file__).parent / "verification_results"
+                verification_dir = Path(
+                    __file__).parent / "verification_results"
                 if verification_dir.exists():
                     # Check for latest overall verification
                     latest_file = (
@@ -197,7 +205,8 @@ class DiagnosticReportingAgent:
                             "latest_workflow",
                         ]:
                             latest_file = (
-                                verification_dir / f"{prefix}_verification.json"
+                                verification_dir /
+                                f"{prefix}_verification.json"
                             )
                             if latest_file.exists():
                                 with open(latest_file, "r") as f:
@@ -206,18 +215,21 @@ class DiagnosticReportingAgent:
                                 break
             except Exception as e:
                 logger.error(f"Error collecting verification data: {e}")
-                data["errors"].append(f"Verification data collection error: {str(e)}")
+                data["errors"].append(
+                    f"Verification data collection error: {str(e)}")
 
             # Collect system status data
             try:
-                system_status_file = Path(__file__).parent.parent / "system_status.json"
+                system_status_file = Path(
+                    __file__).parent.parent / "system_status.json"
                 if system_status_file.exists():
                     with open(system_status_file, "r") as f:
                         data["system_status"] = json.load(f)
                     data["sources"].append("system_status")
             except Exception as e:
                 logger.error(f"Error collecting system status data: {e}")
-                data["errors"].append(f"System status collection error: {str(e)}")
+                data["errors"].append(
+                    f"System status collection error: {str(e)}")
 
         except Exception as e:
             logger.error(f"Error collecting agent data: {e}")
@@ -256,7 +268,8 @@ class DiagnosticReportingAgent:
         try:
             # Process Docker health
             if "system_status" in agent_data:
-                docker_status = agent_data["system_status"].get("docker_status", {})
+                docker_status = agent_data["system_status"].get(
+                    "docker_status", {})
 
                 # Docker component health
                 docker_health = "healthy"
@@ -264,12 +277,14 @@ class DiagnosticReportingAgent:
 
                 if "error" in docker_status:
                     docker_health = "error"
-                    docker_issues.append(f"Docker error: {docker_status['error']}")
+                    docker_issues.append(
+                        f"Docker error: {docker_status['error']}")
                 elif "containers" in docker_status:
                     containers = docker_status["containers"]
                     if containers.get("running", 0) < 1:
                         docker_health = "critical"
-                        docker_issues.append("No Docker containers are running")
+                        docker_issues.append(
+                            "No Docker containers are running")
 
                     # Check NoxSuite containers
                     nox_containers = docker_status.get("noxsuite_status", {})
@@ -309,7 +324,8 @@ class DiagnosticReportingAgent:
             ):
                 langflow_data = agent_data["auditor_data"]["langflow"]
                 langflow_health = (
-                    "healthy" if langflow_data.get("health", False) else "error"
+                    "healthy" if langflow_data.get(
+                        "health", False) else "error"
                 )
 
                 if not langflow_data.get("health", False):
@@ -338,7 +354,8 @@ class DiagnosticReportingAgent:
 
             if "auditor_data" in agent_data and "mcp" in agent_data["auditor_data"]:
                 mcp_data = agent_data["auditor_data"]["mcp"]
-                mcp_health = "healthy" if mcp_data.get("health", False) else "error"
+                mcp_health = "healthy" if mcp_data.get(
+                    "health", False) else "error"
 
                 if not mcp_data.get("health", False):
                     report["issues"].append("MCP Server health check failed")
@@ -398,7 +415,8 @@ class DiagnosticReportingAgent:
                         if integration_health == "healthy"
                         else integration_health
                     )
-                    report["issues"].append("Agent definitions not synchronized")
+                    report["issues"].append(
+                        "Agent definitions not synchronized")
 
                 report["components"]["integration"] = {
                     "health": integration_health,
@@ -523,7 +541,7 @@ class DiagnosticReportingAgent:
 
             # Trim history if needed
             if len(self.report_history) > self.max_report_history:
-                self.report_history = self.report_history[-self.max_report_history :]
+                self.report_history = self.report_history[-self.max_report_history:]
 
             self._save_report_history()
             self.last_report = report
@@ -584,7 +602,7 @@ class DiagnosticReportingAgent:
 
             # Trim history if needed
             if len(self.report_history) > self.max_report_history:
-                self.report_history = self.report_history[-self.max_report_history :]
+                self.report_history = self.report_history[-self.max_report_history:]
 
             self._save_report_history()
             self.last_report = report
@@ -634,7 +652,8 @@ class DiagnosticReportingAgent:
                     ).timestamp()
                     if report_time >= yesterday:
                         # Get full alert report
-                        alert_file = os.path.join(self.report_dir, report_entry["file"])
+                        alert_file = os.path.join(
+                            self.report_dir, report_entry["file"])
                         if os.path.exists(alert_file):
                             with open(alert_file, "r") as f:
                                 alert_data = json.load(f)
@@ -659,7 +678,8 @@ class DiagnosticReportingAgent:
                 if os.path.exists(previous_report_file):
                     with open(previous_report_file, "r") as f:
                         previous_report = json.load(f)
-                        previous_issues = set(previous_report.get("issues", []))
+                        previous_issues = set(
+                            previous_report.get("issues", []))
 
                         # Issues that were in previous report but not in current one are resolved
                         resolved = previous_issues - current_issues
@@ -727,7 +747,7 @@ class DiagnosticReportingAgent:
 
             # Trim history if needed
             if len(self.report_history) > self.max_report_history:
-                self.report_history = self.report_history[-self.max_report_history :]
+                self.report_history = self.report_history[-self.max_report_history:]
 
             self._save_report_history()
             self.last_report = report
@@ -780,7 +800,8 @@ class DiagnosticReportingAgent:
 
             # Check Langflow workflows
             if "workflow_data" in agent_data:
-                workflows_total = agent_data["workflow_data"].get("workflows_total", 0)
+                workflows_total = agent_data["workflow_data"].get(
+                    "workflows_total", 0)
                 workflows_passed = agent_data["workflow_data"].get(
                     "workflows_passed", 0
                 )
@@ -794,15 +815,18 @@ class DiagnosticReportingAgent:
                         f"Langflow workflows not all successful ({workflows_passed}/{workflows_total})"
                     )
             else:
-                report["missing_criteria"].append("Langflow workflow status unknown")
+                report["missing_criteria"].append(
+                    "Langflow workflow status unknown")
 
             # Check Docker container connectivity
             if "auditor_data" in agent_data and "docker" in agent_data["auditor_data"]:
                 docker_data = agent_data["auditor_data"]["docker"]
 
-                nox_services = docker_data.get("containers", {}).get("nox_services", {})
+                nox_services = docker_data.get(
+                    "containers", {}).get("nox_services", {})
                 report["success_criteria"]["docker_container_connectivity"] = (
-                    nox_services.get("noxsuite-langflow", {}).get("found", False)
+                    nox_services.get("noxsuite-langflow", {}
+                                     ).get("found", False)
                     and nox_services.get("noxsuite-postgres", {}).get("found", False)
                     and nox_services.get("noxsuite-redis", {}).get("found", False)
                 )
@@ -812,7 +836,8 @@ class DiagnosticReportingAgent:
                         "Docker container connectivity not verified"
                     )
             else:
-                report["missing_criteria"].append("Docker container status unknown")
+                report["missing_criteria"].append(
+                    "Docker container status unknown")
 
             # Check Copilot agent under 128 tool limit
             if "auditor_data" in agent_data and "copilot" in agent_data["auditor_data"]:
@@ -830,7 +855,8 @@ class DiagnosticReportingAgent:
                         f"Copilot agent approaching tool limit ({usage_percentage}%)"
                     )
             else:
-                report["missing_criteria"].append("Copilot agent status unknown")
+                report["missing_criteria"].append(
+                    "Copilot agent status unknown")
 
             # Check ChatGPT validation
             if "verification_data" in agent_data:
@@ -852,10 +878,12 @@ class DiagnosticReportingAgent:
                         "ChatGPT external validation not confirming system health"
                     )
             else:
-                report["missing_criteria"].append("ChatGPT validation status unknown")
+                report["missing_criteria"].append(
+                    "ChatGPT validation status unknown")
 
             # Check if mission is accomplished
-            report["mission_accomplished"] = all(report["success_criteria"].values())
+            report["mission_accomplished"] = all(
+                report["success_criteria"].values())
 
             # Generate ADHD-friendly summary
             if report["mission_accomplished"]:
@@ -907,7 +935,7 @@ class DiagnosticReportingAgent:
 
             # Trim history if needed
             if len(self.report_history) > self.max_report_history:
-                self.report_history = self.report_history[-self.max_report_history :]
+                self.report_history = self.report_history[-self.max_report_history:]
 
             self._save_report_history()
             self.last_report = report
@@ -956,7 +984,8 @@ class DiagnosticReportingAgent:
                     )
                     if "details" in status:
                         for key, value in status["details"].items():
-                            f.write(f"- {key.replace('_', ' ').title()}: {value}\n")
+                            f.write(
+                                f"- {key.replace('_', ' ').title()}: {value}\n")
                     f.write("\n")
 
                 if report["issues"]:
@@ -991,7 +1020,8 @@ class DiagnosticReportingAgent:
                 json.dump(report, f, indent=2)
 
             # Also save as latest alert report
-            latest_file = os.path.join(self.alert_report_dir, "latest_alert.json")
+            latest_file = os.path.join(
+                self.alert_report_dir, "latest_alert.json")
             with open(latest_file, "w") as f:
                 json.dump(report, f, indent=2)
 
@@ -1095,7 +1125,8 @@ class DiagnosticReportingAgent:
             daily_interval: Time between daily reports in seconds (default: 24 hours)
             run_once: If True, run each report once and return
         """
-        logger.info(f"Starting {'single' if run_once else 'continuous'} reporting")
+        logger.info(
+            f"Starting {'single' if run_once else 'continuous'} reporting")
 
         try:
             # Track last report times
@@ -1178,7 +1209,8 @@ class DiagnosticReportingAgent:
                 )
 
         # Get most recent mission status
-        mission_reports = [r for r in self.report_history if r["type"] == "mission"]
+        mission_reports = [
+            r for r in self.report_history if r["type"] == "mission"]
         if mission_reports:
             most_recent = mission_reports[-1]
             status["mission_accomplished"] = most_recent.get(
@@ -1192,15 +1224,18 @@ class DiagnosticReportingAgent:
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Diagnostic & Reporting Agent")
-    parser.add_argument("--health", action="store_true", help="Generate health report")
+    parser = argparse.ArgumentParser(
+        description="Diagnostic & Reporting Agent")
+    parser.add_argument("--health", action="store_true",
+                        help="Generate health report")
     parser.add_argument(
         "--daily", action="store_true", help="Generate daily summary report"
     )
     parser.add_argument(
         "--mission", action="store_true", help="Generate mission status report"
     )
-    parser.add_argument("--alert", action="store_true", help="Generate alert report")
+    parser.add_argument("--alert", action="store_true",
+                        help="Generate alert report")
     parser.add_argument("--alert-text", type=str, help="Text for alert report")
     parser.add_argument(
         "--severity",

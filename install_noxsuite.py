@@ -1,4 +1,8 @@
+from pathlib import Path
+import sys
+import os
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -7,13 +11,11 @@ NoxSuite Smart Installer Launcher
 Simple launcher script that provides multiple installation modes
 """
 
-import sys
-import os
-from pathlib import Path
 
 # Add current directory to path to import our modules
 current_dir = Path(__file__).parent
 sys.path.insert(0, str(current_dir))
+
 
 def show_help():
     """Show help message with available modes"""
@@ -62,17 +64,18 @@ For more information, visit: https://github.com/noxsuite/noxsuite
     """
     logger.info(help_text)
 
+
 def check_dependencies():
     """Quick dependency check"""
     logger.info("🔍 Checking dependencies...")
-    
+
     dependencies = {
         "Python": sys.version_info >= (3, 8),
         "Git": os.system("git --version > /dev/null 2>&1") == 0,
         "Docker": os.system("docker --version > /dev/null 2>&1") == 0,
         "Node.js": os.system("node --version > /dev/null 2>&1") == 0
     }
-    
+
     logger.info("\n📋 Dependency Status:")
     all_good = True
     for dep, available in dependencies.items():
@@ -80,26 +83,28 @@ def check_dependencies():
         logger.info(f"   {status} {dep}")
         if not available:
             all_good = False
-    
+
     if all_good:
         logger.info("\n🎉 All dependencies are available!")
     else:
-        logger.info("\n⚠️  Some dependencies are missing. The installer can help install them.")
-    
+        logger.info(
+            "\n⚠️  Some dependencies are missing. The installer can help install them.")
+
     return all_good
+
 
 def check_updates():
     """Check for installer updates"""
     logger.info("🔄 Checking for updates...")
-    
+
     try:
         from noxsuite_installer_utils import UpdateChecker
         from noxsuite_smart_installer_complete import SmartLogger
-        
+
         logger = SmartLogger()
         checker = UpdateChecker(logger)
         updates = checker.check_for_updates()
-        
+
         if updates.get("available", False):
             logger.info("🆕 Updates available:")
             for component, info in updates["components"].items():
@@ -109,9 +114,10 @@ def check_updates():
                     logger.info(f"   • {component}: {current} → {latest}")
         else:
             logger.info("✅ You have the latest version!")
-            
+
     except Exception as e:
         logger.info(f"❌ Could not check for updates: {e}")
+
 
 def try_bootstrap():
     """Try to run bootstrap installer if main installer fails"""
@@ -121,7 +127,7 @@ def try_bootstrap():
         if bootstrap_file.exists():
             import subprocess
             result = subprocess.run([
-                sys.executable, 
+                sys.executable,
                 str(bootstrap_file)
             ] + sys.argv[1:], capture_output=False)
             sys.exit(result.returncode)
@@ -132,43 +138,49 @@ def try_bootstrap():
         logger.info(f"❌ Bootstrap failed: {e}")
         return False
 
+
 def main():
     """Main launcher function"""
     # Parse command line arguments
     args = sys.argv[1:]
-    
+
     if not args or args[0] in ["--help", "-h", "help"]:
         show_help()
         return
-    
+
     if args[0] == "--version":
         logger.info("NoxSuite Smart Installer v1.0.0")
         return
-    
+
     if args[0] == "--check-deps":
         check_dependencies()
         return
-    
+
     if args[0] == "--update":
         check_updates()
         return
-    
+
     # Import the main installer
     try:
-        from noxsuite_smart_installer_complete import SmartNoxSuiteInstaller, InstallMode
+        from noxsuite_smart_installer_complete import (
+            InstallMode,
+            SmartNoxSuiteInstaller,
+        )
     except ImportError as e:
         logger.info(f"❌ Could not import installer modules: {e}")
         logger.info("This usually means required dependencies are missing.")
-        
+
         # Try to run bootstrap installer
-        logger.info("\n🔧 The installer will now attempt to install missing dependencies...")
+        logger.info(
+            "\n🔧 The installer will now attempt to install missing dependencies...")
         try_bootstrap()
-        
-        logger.info("\nIf the problem persists, try manually installing dependencies:")
+
+        logger.info(
+            "\nIf the problem persists, try manually installing dependencies:")
         logger.info("  pip install requests chardet")
         logger.info("  python install_noxsuite.py")
         sys.exit(1)
-    
+
     # Determine installation mode
     mode_map = {
         "guided": InstallMode.GUIDED,
@@ -177,17 +189,19 @@ def main():
         "safe": InstallMode.SAFE,
         "recovery": InstallMode.RECOVERY
     }
-    
+
     mode_arg = args[0].lower() if args else "guided"
     install_mode = mode_map.get(mode_arg, InstallMode.GUIDED)
-    
+
     if mode_arg not in mode_map:
         logger.info(f"❌ Unknown mode: {mode_arg}")
         logger.info("Use --help to see available modes")
         sys.exit(1)
-    
+
     # Welcome message
     logger.info(f"")
+
+
 ╔═══════════════════════════════════════════════════════════════════╗
 ║                🧠 NoxSuite Smart Self-Healing Installer           ║
 ║                      Starting {install_mode.value.title()} Mode Installation                   ║

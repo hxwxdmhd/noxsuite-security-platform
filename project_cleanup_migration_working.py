@@ -63,7 +63,8 @@ def is_protected(path):
 
 
 def backup_and_delete(path):
-    backup_path = os.path.join(BACKUP_DIR, os.path.relpath(path, start=os.getcwd()))
+    backup_path = os.path.join(
+        BACKUP_DIR, os.path.relpath(path, start=os.getcwd()))
     os.makedirs(os.path.dirname(backup_path), exist_ok=True)
     try:
         if os.path.isdir(path):
@@ -151,7 +152,8 @@ def main():
     logger.info(
         f"Found {len(targets)} cleanup targets and {len(diagnostics)} diagnostic files."
     )
-    confirm = input("Proceed with deletion and backup? (y/N): ").strip().lower()
+    confirm = input(
+        "Proceed with deletion and backup? (y/N): ").strip().lower()
     if confirm != "y":
         logger.info("Aborted by user.")
         return

@@ -8,20 +8,20 @@ This module implements the comprehensive plugin ecosystem toolkit for Gate 6,
 providing plugin SDK, marketplace, sandbox security, and analytics capabilities.
 """
 
-import json
-import os
 import hashlib
+import json
 import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Union
-from pathlib import Path
+import os
 import secrets
+import shutil
 import subprocess
+import tempfile
 import threading
 import time
 import zipfile
-import shutil
-import tempfile
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 # Configure logging
 logging.basicConfig(
@@ -29,6 +29,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
 
 class PluginEcosystemToolkit:
     """
@@ -376,7 +377,8 @@ PLUGIN_METADATA = {{
 }}'''
 
             # Save template
-            template_path = Path("k:/Project Heimnetz/AI/NoxPanel/plugin_sdk/templates/python_plugin_template.py")
+            template_path = Path(
+                "k:/Project Heimnetz/AI/NoxPanel/plugin_sdk/templates/python_plugin_template.py")
             template_path.parent.mkdir(parents=True, exist_ok=True)
 
             with open(template_path, 'w', encoding='utf-8') as f:
@@ -470,7 +472,8 @@ if __name__ == "__main__":
 '''
 
             # Save generator script
-            generator_path = Path("k:/Project Heimnetz/AI/NoxPanel/plugin_sdk/tools/plugin_generator.py")
+            generator_path = Path(
+                "k:/Project Heimnetz/AI/NoxPanel/plugin_sdk/tools/plugin_generator.py")
             generator_path.parent.mkdir(parents=True, exist_ok=True)
 
             with open(generator_path, 'w', encoding='utf-8') as f:
@@ -627,7 +630,8 @@ class PluginAPIClient:
 '''
 
             # Save SDK bindings
-            sdk_path = Path("k:/Project Heimnetz/AI/NoxPanel/plugin_sdk/noxpanel_sdk.py")
+            sdk_path = Path(
+                "k:/Project Heimnetz/AI/NoxPanel/plugin_sdk/noxpanel_sdk.py")
             with open(sdk_path, 'w', encoding='utf-8') as f:
                 f.write(sdk_bindings)
 
@@ -657,7 +661,8 @@ class PluginAPIClient:
             }
 
             # Save marketplace configuration
-            marketplace_path = Path("k:/Project Heimnetz/AI/NoxPanel/marketplace/marketplace_db.json")
+            marketplace_path = Path(
+                "k:/Project Heimnetz/AI/NoxPanel/marketplace/marketplace_db.json")
             marketplace_path.parent.mkdir(parents=True, exist_ok=True)
 
             with open(marketplace_path, 'w') as f:
@@ -699,7 +704,8 @@ class PluginAPIClient:
             }
 
             # Save security configuration
-            security_path = Path("k:/Project Heimnetz/AI/NoxPanel/security/plugin_security.json")
+            security_path = Path(
+                "k:/Project Heimnetz/AI/NoxPanel/security/plugin_security.json")
             security_path.parent.mkdir(parents=True, exist_ok=True)
 
             with open(security_path, 'w') as f:
@@ -708,7 +714,8 @@ class PluginAPIClient:
             logger.info("✅ Security framework configuration completed")
 
         except Exception as e:
-            logger.error(f"❌ Security framework configuration failed: {str(e)}")
+            logger.error(
+                f"❌ Security framework configuration failed: {str(e)}")
             raise
 
     def _initialize_analytics_system(self) -> None:
@@ -738,7 +745,8 @@ class PluginAPIClient:
             }
 
             # Save analytics configuration
-            analytics_path = Path("k:/Project Heimnetz/AI/NoxPanel/analytics/analytics_config.json")
+            analytics_path = Path(
+                "k:/Project Heimnetz/AI/NoxPanel/analytics/analytics_config.json")
             analytics_path.parent.mkdir(parents=True, exist_ok=True)
 
             with open(analytics_path, 'w') as f:
@@ -786,7 +794,8 @@ CMD ["python", "sandbox_runner.py"]
 '''
 
             # Save Dockerfile
-            dockerfile_path = Path("k:/Project Heimnetz/AI/NoxPanel/sandbox/Dockerfile")
+            dockerfile_path = Path(
+                "k:/Project Heimnetz/AI/NoxPanel/sandbox/Dockerfile")
             dockerfile_path.parent.mkdir(parents=True, exist_ok=True)
 
             with open(dockerfile_path, 'w', encoding='utf-8') as f:
@@ -880,7 +889,8 @@ API client for communication with NoxPanel core system.
 '''
 
             # Save README
-            readme_path = Path("k:/Project Heimnetz/AI/NoxPanel/plugin_sdk/README.md")
+            readme_path = Path(
+                "k:/Project Heimnetz/AI/NoxPanel/plugin_sdk/README.md")
             with open(readme_path, 'w', encoding='utf-8') as f:
                 f.write(readme_content)
 
@@ -964,13 +974,15 @@ API client for communication with NoxPanel core system.
             # Check file size (max 10MB)
             file_size = plugin_path.stat().st_size
             if file_size > 10 * 1024 * 1024:
-                validation_result["issues"].append("File size exceeds 10MB limit")
+                validation_result["issues"].append(
+                    "File size exceeds 10MB limit")
                 validation_result["security_score"] -= 30
 
             # Malware scan simulation
             if self._simulate_malware_scan(plugin_path):
                 validation_result["security_score"] -= 50
-                validation_result["issues"].append("Potential security risk detected")
+                validation_result["issues"].append(
+                    "Potential security risk detected")
 
             # Set final status
             if validation_result["security_score"] < 70:
@@ -978,7 +990,8 @@ API client for communication with NoxPanel core system.
             elif validation_result["security_score"] < 90:
                 validation_result["validation_status"] = "WARNING"
 
-            logger.info(f"✅ Plugin validation completed: {validation_result['validation_status']}")
+            logger.info(
+                f"✅ Plugin validation completed: {validation_result['validation_status']}")
             return validation_result
 
         except Exception as e:
@@ -1046,6 +1059,7 @@ API client for communication with NoxPanel core system.
             logger.error(f"❌ Failed to get system status: {str(e)}")
             raise
 
+
 def main():
     """Main execution function"""
     try:
@@ -1068,9 +1082,12 @@ def main():
             print(f"  • {name}: {component['status']}")
 
         print("\n🏪 MARKETPLACE CONFIG:")
-        print(f"  • Categories: {len(ecosystem_report['marketplace_config']['categories'])}")
-        print(f"  • Rating System: {ecosystem_report['marketplace_config']['rating_system']['enabled']}")
-        print(f"  • Pricing Models: {len(ecosystem_report['marketplace_config']['pricing_models'])}")
+        print(
+            f"  • Categories: {len(ecosystem_report['marketplace_config']['categories'])}")
+        print(
+            f"  • Rating System: {ecosystem_report['marketplace_config']['rating_system']['enabled']}")
+        print(
+            f"  • Pricing Models: {len(ecosystem_report['marketplace_config']['pricing_models'])}")
 
         print("\n🔒 SECURITY FRAMEWORK:")
         for feature, enabled in ecosystem_report['security_framework'].items():
@@ -1098,6 +1115,7 @@ def main():
     except Exception as e:
         print(f"❌ Error: {str(e)}")
         raise
+
 
 if __name__ == "__main__":
     main()

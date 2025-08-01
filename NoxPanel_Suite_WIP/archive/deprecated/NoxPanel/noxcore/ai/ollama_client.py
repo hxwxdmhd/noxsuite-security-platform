@@ -1,12 +1,14 @@
 """Ollama Client for Local LLM Integration"""
 
-import requests
 import json
 import logging
-from typing import Dict, List, Optional, Generator
 from datetime import datetime
+from typing import Dict, Generator, List, Optional
+
+import requests
 
 logger = logging.getLogger(__name__)
+
 
 class OllamaClient:
     """Client for interacting with Ollama local LLM service"""

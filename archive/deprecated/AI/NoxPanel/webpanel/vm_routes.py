@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 vm_bp = Blueprint('vm', __name__, url_prefix='/vm')
 
+
 @vm_bp.route('/')
 @vm_bp.route('/dashboard')
 def dashboard():
@@ -42,7 +43,7 @@ def dashboard():
         }
 
         return render_template('vm/dashboard.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -54,8 +55,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             title="VM Manager",
-                             stats=stats)
+                               title="VM Manager",
+                               stats=stats)
     except Exception as e:
     """
     RLVR: Implements api_data with error handling and validation
@@ -69,12 +70,12 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"VM Manager dashboard error: {e}")
-        flash(f"Error loading vm manager: {e}", 'error')
-        return render_template('vm/dashboard.html',
-                             title="VM Manager",
-                             stats={},
-    """
+    logger.error(f"VM Manager dashboard error: {e}")
+    flash(f"Error loading vm manager: {e}", 'error')
+    return render_template('vm/dashboard.html',
+                           title="VM Manager",
+                           stats={},
+                           """
     RLVR: Implements api_list with error handling and validation
 
     REASONING CHAIN:
@@ -86,7 +87,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             error=str(e))
+                           error=str(e))
+
 
 @vm_bp.route('/api/status')
 def api_status():
@@ -106,7 +108,7 @@ def api_status():
     try:
         status = {
             "status": "healthy",
-    """
+            """
     RLVR: Implements api_control with error handling and validation
 
     REASONING CHAIN:
@@ -121,7 +123,7 @@ def api_status():
             "timestamp": datetime.now().isoformat(),
             "service": "vm manager",
             "version": "1.0.0"
-    """
+            """
     RLVR: Implements register_vm_routes with error handling and validation
 
     REASONING CHAIN:
@@ -138,6 +140,7 @@ def api_status():
     except Exception as e:
         logger.error(f"VM Manager status API error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @vm_bp.route('/api/data')
 def api_data():

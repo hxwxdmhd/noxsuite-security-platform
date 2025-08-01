@@ -62,7 +62,8 @@ class DatabaseService:
         try:
             status = self.migration_manager.status()
             if status["needs_migration"]:
-                logger.info(f"Applying {status['pending_count']} pending migrations")
+                logger.info(
+                    f"Applying {status['pending_count']} pending migrations")
                 success = self.migration_manager.auto_migrate()
                 if success:
                     logger.info("Database migrations applied successfully")
@@ -172,7 +173,8 @@ class DatabaseService:
         try:
             backup_file = Path(backup_path)
             if not backup_file.exists():
-                raise FileNotFoundError(f"Backup file not found: {backup_path}")
+                raise FileNotFoundError(
+                    f"Backup file not found: {backup_path}")
 
             # Close current connections
             self.db.close()

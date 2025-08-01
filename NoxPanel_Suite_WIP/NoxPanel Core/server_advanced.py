@@ -8,51 +8,74 @@ Date: July 18, 2025
 Version: v2.0 (Advanced)
 """
 
-import os
-import sys
-import json
-import time
-import hashlib
-import secrets
-import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass
-from functools import wraps
-import threading
 import asyncio
-from concurrent.futures import ThreadPoolExecutor
-
-# Core Flask and Extensions
-from flask import Flask, request, jsonify, render_template_string, session, g
-from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask_cors import CORS
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from flask_caching import Cache
-
-# Database and ORM
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Boolean, Text, Index
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.pool import StaticPool
-import pymysql
-
-# Security and Validation
-from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.middleware.proxy_fix import ProxyFix
-import bleach
+import hashlib
+import json
+import logging
+import os
 import re
+import secrets
+import sys
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from functools import wraps
+from typing import Any, Dict, List, Optional
+
+import bleach
 
 # Monitoring and Metrics
 import psutil
+import pymysql
 import redis
-from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
+
+# Core Flask and Extensions
+from flask import Flask, g, jsonify, render_template_string, request, session
+from flask_caching import Cache
+from flask_cors import CORS
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    get_jwt_identity,
+    jwt_required,
+)
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_socketio import SocketIO, emit, join_room, leave_room
+from prometheus_client import (
+    CONTENT_TYPE_LATEST,
+    Counter,
+    Gauge,
+    Histogram,
+    generate_latest,
+)
+
+# Database and ORM
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    Index,
+    Integer,
+    String,
+    Text,
+    create_engine,
+)
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.pool import StaticPool
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+# Security and Validation
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # Configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATABASE_URL = os.environ.get('DATABASE_URL', f'mysql+pymysql://{BASE_DIR}/heimnetz_advanced.db')
+DATABASE_URL = os.environ.get(
+    'DATABASE_URL', f'mysql+pymysql://{BASE_DIR}/heimnetz_advanced.db')
 REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_urlsafe(32))
 JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', secrets.token_urlsafe(32))
@@ -69,29 +92,34 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Prometheus Metrics
-REQUEST_COUNT = Counter('http_requests_total', 'Total HTTP requests', ['method', 'endpoint', 'status'])
-REQUEST_DURATION = Histogram('http_request_duration_seconds', 'HTTP request duration')
-ACTIVE_CONNECTIONS = Gauge('websocket_connections_active', 'Active WebSocket connections')
+REQUEST_COUNT = Counter('http_requests_total', 'Total HTTP requests', [
+                        'method', 'endpoint', 'status'])
+REQUEST_DURATION = Histogram(
+    'http_request_duration_seconds', 'HTTP request duration')
+ACTIVE_CONNECTIONS = Gauge(
+    'websocket_connections_active', 'Active WebSocket connections')
 SYSTEM_CPU = Gauge('system_cpu_percent', 'System CPU usage percentage')
-SYSTEM_MEMORY = Gauge('system_memory_percent', 'System memory usage percentage')
+SYSTEM_MEMORY = Gauge('system_memory_percent',
+                      'System memory usage percentage')
 
 # Database Models
 Base = declarative_base()
 
+
 class User(Base):
     """
     Enhanced User with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component User needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for User functionality
     3. Solution: Implement User with SOLID principles and enterprise patterns
     4. Validation: Test User with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     __tablename__ = 'users'
-    
+
     id = Column(Integer, primary_key=True)
     username = Column(String(80), unique=True, nullable=False)
     email = Column(String(120), unique=True, nullable=False)
@@ -100,26 +128,27 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     last_login = Column(DateTime)
-    
+
     __table_args__ = (
         Index('idx_username', 'username'),
         Index('idx_email', 'email'),
     )
 
+
 class SystemMetrics(Base):
     """
     Enhanced SystemMetrics with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component SystemMetrics needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for SystemMetrics functionality
     3. Solution: Implement SystemMetrics with SOLID principles and enterprise patterns
     4. Validation: Test SystemMetrics with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     __tablename__ = 'system_metrics'
-    
+
     id = Column(Integer, primary_key=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
     cpu_percent = Column(Float)
@@ -130,25 +159,26 @@ class SystemMetrics(Base):
     active_connections = Column(Integer)
     request_count = Column(Integer)
     avg_response_time = Column(Float)
-    
+
     __table_args__ = (
         Index('idx_timestamp', 'timestamp'),
     )
 
+
 class AuditLog(Base):
     """
     Enhanced AuditLog with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component AuditLog needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for AuditLog functionality
     3. Solution: Implement AuditLog with SOLID principles and enterprise patterns
     4. Validation: Test AuditLog with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     __tablename__ = 'audit_logs'
-    
+
     id = Column(Integer, primary_key=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
     user_id = Column(Integer)
@@ -157,10 +187,11 @@ class AuditLog(Base):
     details = Column(Text)
     ip_address = Column(String(45))
     user_agent = Column(String(500))
-    
+
     __table_args__ = (
         Index('idx_timestamp_user', 'timestamp', 'user_id'),
     )
+
 
 @dataclass
 class SecurityConfig:
@@ -170,7 +201,7 @@ class SecurityConfig:
     2. Analysis: Class requires specific implementation patterns for SecurityConfig functionality
     3. Solution: Implement SecurityConfig with SOLID principles and enterprise patterns
     4. Validation: Test SecurityConfig with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Security configuration settings"""
@@ -184,6 +215,7 @@ class SecurityConfig:
     lockout_duration: int = 900  # 15 minutes
     jwt_expiration: int = 86400  # 24 hours
 
+
 class SecurityManager:
     """
     REASONING CHAIN:
@@ -191,27 +223,27 @@ class SecurityManager:
     2. Analysis: Manager class requires coordinated resource handling and lifecycle management
     3. Solution: Implement SecurityManager with SOLID principles and enterprise patterns
     4. Validation: Test SecurityManager with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Advanced security management system"""
-    
+
     def __init__(self):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.config = SecurityConfig()
         self.failed_attempts = {}
         self.lockout_times = {}
-        
+
     def validate_password(self, password: str) -> Dict[str, Any]:
     """
     REASONING CHAIN:
@@ -219,33 +251,37 @@ class SecurityManager:
     2. Analysis: Validation function requires thorough input analysis
     3. Solution: Implement validate_password with enterprise-grade patterns and error handling
     4. Validation: Test validate_password with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Validate password strength"""
         errors = []
-        
+
         if len(password) < self.config.password_min_length:
-            errors.append(f"Password must be at least {self.config.password_min_length} characters")
-        
+            errors.append(
+                f"Password must be at least {self.config.password_min_length} characters")
+
         if self.config.password_require_uppercase and not re.search(r'[A-Z]', password):
-            errors.append("Password must contain at least one uppercase letter")
-        
+            errors.append(
+                "Password must contain at least one uppercase letter")
+
         if self.config.password_require_lowercase and not re.search(r'[a-z]', password):
-            errors.append("Password must contain at least one lowercase letter")
-        
+            errors.append(
+                "Password must contain at least one lowercase letter")
+
         if self.config.password_require_digit and not re.search(r'[0-9]', password):
             errors.append("Password must contain at least one digit")
-        
+
         if self.config.password_require_special and not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-            errors.append("Password must contain at least one special character")
-        
+            errors.append(
+                "Password must contain at least one special character")
+
         return {
             'valid': len(errors) == 0,
             'errors': errors,
             'strength': self._calculate_strength(password)
         }
-    
+
     def _calculate_strength(self, password: str) -> int:
     """
     REASONING CHAIN:
@@ -253,15 +289,15 @@ class SecurityManager:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _calculate_strength with enterprise-grade patterns and error handling
     4. Validation: Test _calculate_strength with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Calculate password strength score (0-100)"""
         score = 0
-        
+
         # Length bonus
         score += min(len(password) * 2, 20)
-        
+
         # Character variety bonus
         if re.search(r'[a-z]', password):
             score += 10
@@ -271,19 +307,19 @@ class SecurityManager:
             score += 10
         if re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
             score += 15
-        
+
         # Complexity bonus
         if len(set(password)) / len(password) > 0.7:
             score += 15
-        
+
         # Pattern penalty
         if re.search(r'(.)\1{2,}', password):
             score -= 10
         if re.search(r'(012|123|234|345|456|567|678|789|890)', password):
             score -= 5
-        
+
         return max(0, min(100, score))
-    
+
     def is_account_locked(self, identifier: str) -> bool:
     """
     REASONING CHAIN:
@@ -291,21 +327,21 @@ class SecurityManager:
     2. Analysis: Implementation requires specific logic for is_account_locked operation
     3. Solution: Implement is_account_locked with enterprise-grade patterns and error handling
     4. Validation: Test is_account_locked with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Check if account is locked due to failed attempts"""
         if identifier not in self.lockout_times:
             return False
-        
+
         if datetime.utcnow() > self.lockout_times[identifier]:
             del self.lockout_times[identifier]
             if identifier in self.failed_attempts:
                 del self.failed_attempts[identifier]
             return False
-        
+
         return True
-    
+
     def record_failed_attempt(self, identifier: str):
     """
     REASONING CHAIN:
@@ -313,18 +349,19 @@ class SecurityManager:
     2. Analysis: Implementation requires specific logic for record_failed_attempt operation
     3. Solution: Implement record_failed_attempt with enterprise-grade patterns and error handling
     4. Validation: Test record_failed_attempt with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Record failed login attempt"""
         if identifier not in self.failed_attempts:
             self.failed_attempts[identifier] = 0
-        
+
         self.failed_attempts[identifier] += 1
-        
+
         if self.failed_attempts[identifier] >= self.config.max_login_attempts:
-            self.lockout_times[identifier] = datetime.utcnow() + timedelta(seconds=self.config.lockout_duration)
-    
+            self.lockout_times[identifier] = datetime.utcnow(
+            ) + timedelta(seconds=self.config.lockout_duration)
+
     def reset_failed_attempts(self, identifier: str):
     """
     REASONING CHAIN:
@@ -332,7 +369,7 @@ class SecurityManager:
     2. Analysis: Implementation requires specific logic for reset_failed_attempts operation
     3. Solution: Implement reset_failed_attempts with enterprise-grade patterns and error handling
     4. Validation: Test reset_failed_attempts with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Reset failed attempts counter"""
@@ -340,7 +377,7 @@ class SecurityManager:
             del self.failed_attempts[identifier]
         if identifier in self.lockout_times:
             del self.lockout_times[identifier]
-    
+
     def sanitize_input(self, text: str) -> str:
     """
     REASONING CHAIN:
@@ -348,12 +385,12 @@ class SecurityManager:
     2. Analysis: Implementation requires specific logic for sanitize_input operation
     3. Solution: Implement sanitize_input with enterprise-grade patterns and error handling
     4. Validation: Test sanitize_input with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Sanitize user input"""
         return bleach.clean(text, tags=[], attributes={}, strip=True)
-    
+
     def validate_email(self, email: str) -> bool:
     """
     REASONING CHAIN:
@@ -361,12 +398,13 @@ class SecurityManager:
     2. Analysis: Validation function requires thorough input analysis
     3. Solution: Implement validate_email with enterprise-grade patterns and error handling
     4. Validation: Test validate_email with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Validate email format"""
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return re.match(pattern, email) is not None
+
 
 class PerformanceMonitor:
     """
@@ -375,21 +413,21 @@ class PerformanceMonitor:
     2. Analysis: Class requires specific implementation patterns for PerformanceMonitor functionality
     3. Solution: Implement PerformanceMonitor with SOLID principles and enterprise patterns
     4. Validation: Test PerformanceMonitor with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Advanced performance monitoring system"""
-    
+
     def __init__(self):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.metrics_history = []
@@ -400,7 +438,7 @@ class PerformanceMonitor:
             'response_time': 1.0
         }
         self.executor = ThreadPoolExecutor(max_workers=4)
-        
+
     def collect_metrics(self) -> Dict[str, Any]:
     """
     REASONING CHAIN:
@@ -408,7 +446,7 @@ class PerformanceMonitor:
     2. Analysis: Implementation requires specific logic for collect_metrics operation
     3. Solution: Implement collect_metrics with enterprise-grade patterns and error handling
     4. Validation: Test collect_metrics with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Collect comprehensive system metrics"""
@@ -418,11 +456,11 @@ class PerformanceMonitor:
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage('/')
             network = psutil.net_io_counters()
-            
+
             # Process metrics
             process = psutil.Process()
             process_memory = process.memory_info()
-            
+
             metrics = {
                 'timestamp': datetime.utcnow().isoformat(),
                 'cpu_percent': cpu_percent,
@@ -439,25 +477,25 @@ class PerformanceMonitor:
                 'active_connections': len(getattr(g, 'websocket_connections', [])),
                 'uptime': (datetime.utcnow() - getattr(g, 'server_start_time', datetime.utcnow())).total_seconds()
             }
-            
+
             # Update Prometheus metrics
             SYSTEM_CPU.set(cpu_percent)
             SYSTEM_MEMORY.set(memory.percent)
-            
+
             # Store in history
             self.metrics_history.append(metrics)
             if len(self.metrics_history) > 1000:
                 self.metrics_history.pop(0)
-            
+
             # Check for alerts
             self._check_alerts(metrics)
-            
+
             return metrics
-            
+
         except Exception as e:
             logger.error(f"Error collecting metrics: {e}")
             return {}
-    
+
     def _check_alerts(self, metrics: Dict[str, Any]):
     """
     REASONING CHAIN:
@@ -465,38 +503,39 @@ class PerformanceMonitor:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _check_alerts with enterprise-grade patterns and error handling
     4. Validation: Test _check_alerts with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Check for performance alerts"""
         alerts = []
-        
+
         if metrics['cpu_percent'] > self.alert_thresholds['cpu']:
             alerts.append({
                 'type': 'cpu_high',
                 'message': f"High CPU usage: {metrics['cpu_percent']:.1f}%",
                 'severity': 'warning'
             })
-        
+
         if metrics['memory_percent'] > self.alert_thresholds['memory']:
             alerts.append({
                 'type': 'memory_high',
                 'message': f"High memory usage: {metrics['memory_percent']:.1f}%",
                 'severity': 'warning'
             })
-        
+
         if metrics['disk_percent'] > self.alert_thresholds['disk']:
             alerts.append({
                 'type': 'disk_high',
                 'message': f"High disk usage: {metrics['disk_percent']:.1f}%",
                 'severity': 'critical'
             })
-        
+
         if alerts:
             logger.warning(f"Performance alerts: {alerts}")
             # Emit alerts via WebSocket
             if hasattr(g, 'socketio'):
                 g.socketio.emit('performance_alert', {'alerts': alerts})
+
 
 class CacheManager:
     """
@@ -505,21 +544,21 @@ class CacheManager:
     2. Analysis: Manager class requires coordinated resource handling and lifecycle management
     3. Solution: Implement CacheManager with SOLID principles and enterprise patterns
     4. Validation: Test CacheManager with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Advanced caching system with Redis support"""
-    
+
     def __init__(self, redis_url: str = None):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.redis_url = redis_url or REDIS_URL
@@ -531,15 +570,17 @@ class CacheManager:
             'sets': 0,
             'deletes': 0
         }
-        
+
         try:
-            self.redis_client = redis.from_url(self.redis_url, socket_connect_timeout=5)
+            self.redis_client = redis.from_url(
+                self.redis_url, socket_connect_timeout=5)
             self.redis_client.ping()
             logger.info("Redis cache connected successfully")
         except Exception as e:
-            logger.warning(f"Redis connection failed: {e}. Using memory cache.")
+            logger.warning(
+                f"Redis connection failed: {e}. Using memory cache.")
             self.redis_client = None
-    
+
     def get(self, key: str) -> Any:
     """
     REASONING CHAIN:
@@ -547,7 +588,7 @@ class CacheManager:
     2. Analysis: Implementation requires specific logic for get operation
     3. Solution: Implement get with enterprise-grade patterns and error handling
     4. Validation: Test get with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Get value from cache"""
@@ -565,15 +606,15 @@ class CacheManager:
                         return entry['value']
                     else:
                         del self.memory_cache[key]
-            
+
             self.cache_stats['misses'] += 1
             return None
-            
+
         except Exception as e:
             logger.error(f"Cache get error: {e}")
             self.cache_stats['misses'] += 1
             return None
-    
+
     def set(self, key: str, value: Any, ttl: int = 3600) -> bool:
     """
     REASONING CHAIN:
@@ -581,7 +622,7 @@ class CacheManager:
     2. Analysis: Implementation requires specific logic for set operation
     3. Solution: Implement set with enterprise-grade patterns and error handling
     4. Validation: Test set with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Set value in cache"""
@@ -593,14 +634,14 @@ class CacheManager:
                     'value': value,
                     'expires': datetime.utcnow() + timedelta(seconds=ttl)
                 }
-            
+
             self.cache_stats['sets'] += 1
             return True
-            
+
         except Exception as e:
             logger.error(f"Cache set error: {e}")
             return False
-    
+
     def delete(self, key: str) -> bool:
     """
     REASONING CHAIN:
@@ -608,7 +649,7 @@ class CacheManager:
     2. Analysis: Implementation requires specific logic for delete operation
     3. Solution: Implement delete with enterprise-grade patterns and error handling
     4. Validation: Test delete with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Delete key from cache"""
@@ -618,14 +659,14 @@ class CacheManager:
             else:
                 if key in self.memory_cache:
                     del self.memory_cache[key]
-            
+
             self.cache_stats['deletes'] += 1
             return True
-            
+
         except Exception as e:
             logger.error(f"Cache delete error: {e}")
             return False
-    
+
     def clear(self) -> bool:
     """
     REASONING CHAIN:
@@ -633,7 +674,7 @@ class CacheManager:
     2. Analysis: Implementation requires specific logic for clear operation
     3. Solution: Implement clear with enterprise-grade patterns and error handling
     4. Validation: Test clear with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Clear all cache entries"""
@@ -642,13 +683,13 @@ class CacheManager:
                 self.redis_client.flushdb()
             else:
                 self.memory_cache.clear()
-            
+
             return True
-            
+
         except Exception as e:
             logger.error(f"Cache clear error: {e}")
             return False
-    
+
     def get_stats(self) -> Dict[str, Any]:
     """
     REASONING CHAIN:
@@ -656,13 +697,14 @@ class CacheManager:
     2. Analysis: Getter method requires consistent data access and error handling
     3. Solution: Implement get_stats with enterprise-grade patterns and error handling
     4. Validation: Test get_stats with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Get cache statistics"""
         total_requests = self.cache_stats['hits'] + self.cache_stats['misses']
-        hit_rate = (self.cache_stats['hits'] / total_requests * 100) if total_requests > 0 else 0
-        
+        hit_rate = (
+            self.cache_stats['hits'] / total_requests * 100) if total_requests > 0 else 0
+
         return {
             'hits': self.cache_stats['hits'],
             'misses': self.cache_stats['misses'],
@@ -673,6 +715,7 @@ class CacheManager:
             'backend': 'redis' if self.redis_client else 'memory'
         }
 
+
 class AdvancedServer:
     """
     REASONING CHAIN:
@@ -680,21 +723,21 @@ class AdvancedServer:
     2. Analysis: Class requires specific implementation patterns for AdvancedServer functionality
     3. Solution: Implement AdvancedServer with SOLID principles and enterprise patterns
     4. Validation: Test AdvancedServer with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Ultimate Suite v11.0 - Advanced Server Implementation"""
-    
+
     def __init__(self):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.app = Flask(__name__)
@@ -706,18 +749,18 @@ class AdvancedServer:
         self.setup_websocket()
         self.setup_routes()
         self.setup_error_handlers()
-        
+
         # Initialize managers
         self.security_manager = SecurityManager()
         self.performance_monitor = PerformanceMonitor()
         self.cache_manager = CacheManager()
-        
+
         # Server state
         self.server_start_time = datetime.utcnow()
         self.websocket_connections = set()
-        
+
         logger.info("AdvancedServer initialized successfully")
-    
+
     def setup_configuration(self):
     """
     REASONING CHAIN:
@@ -725,7 +768,7 @@ class AdvancedServer:
     2. Analysis: Implementation requires specific logic for setup_configuration operation
     3. Solution: Implement setup_configuration with enterprise-grade patterns and error handling
     4. Validation: Test setup_configuration with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Configure Flask application"""
@@ -740,10 +783,11 @@ class AdvancedServer:
             'RATELIMIT_STORAGE_URL': REDIS_URL,
             'MAX_CONTENT_LENGTH': 16 * 1024 * 1024,  # 16MB max file size
         })
-        
+
         # Trust proxy headers
-        self.app.wsgi_app = ProxyFix(self.app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
-    
+        self.app.wsgi_app = ProxyFix(
+            self.app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
     def setup_database(self):
     """
     REASONING CHAIN:
@@ -751,22 +795,23 @@ class AdvancedServer:
     2. Analysis: Implementation requires specific logic for setup_database operation
     3. Solution: Implement setup_database with enterprise-grade patterns and error handling
     4. Validation: Test setup_database with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Initialize database connection and tables"""
         try:
-            self.engine = create_engine(DATABASE_URL, poolclass=StaticPool, connect_args={'check_same_thread': False})
+            self.engine = create_engine(DATABASE_URL, poolclass=StaticPool, connect_args={
+                                        'check_same_thread': False})
             self.db_session = scoped_session(sessionmaker(bind=self.engine))
-            
+
             # Create tables
             Base.metadata.create_all(self.engine)
             logger.info("Database initialized successfully")
-            
+
         except Exception as e:
             logger.error(f"Database initialization error: {e}")
             raise
-    
+
     def setup_security(self):
     """
     REASONING CHAIN:
@@ -774,16 +819,16 @@ class AdvancedServer:
     2. Analysis: Implementation requires specific logic for setup_security operation
     3. Solution: Implement setup_security with enterprise-grade patterns and error handling
     4. Validation: Test setup_security with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Setup security components"""
         # CORS
         CORS(self.app, origins=['*'], supports_credentials=True)
-        
+
         # JWT
         self.jwt = JWTManager(self.app)
-        
+
         # Rate limiting with fallback to memory storage
         try:
             self.limiter = Limiter(
@@ -793,26 +838,27 @@ class AdvancedServer:
                 storage_uri=REDIS_URL
             )
         except Exception as e:
-            logger.warning(f"Redis rate limiting failed: {e}. Using memory storage.")
+            logger.warning(
+                f"Redis rate limiting failed: {e}. Using memory storage.")
             self.limiter = Limiter(
                 app=self.app,
                 key_func=get_remote_address,
                 default_limits=["200 per day", "50 per hour"],
                 storage_uri="memory://"
             )
-        
+
         # Security headers
         @self.app.after_request
         def set_security_headers(response):
     """
     Enhanced set_security_headers with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Data modification needs controlled state management
     2. Analysis: Setter method requires validation and state consistency
     3. Solution: Implement set_security_headers with enterprise-grade patterns and error handling
     4. Validation: Test set_security_headers with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
             response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -821,7 +867,7 @@ class AdvancedServer:
             response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
             response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
             return response
-        
+
         logger.info("Security components initialized")
     
     def setup_caching(self):

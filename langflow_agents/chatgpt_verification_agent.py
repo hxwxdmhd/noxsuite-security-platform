@@ -1,3 +1,13 @@
+import requests
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime
+import time
+import sys
+import os
+import logging
+import json
+import hashlib
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -10,24 +20,14 @@ independent reasoning and validation, comparing ChatGPT's recommendations
 to MCP findings and flagging discrepancies.
 """
 
-import hashlib
-import json
-import logging
-import os
-import sys
-import time
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-import requests
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(Path(__file__).parent / "chatgpt_verification.log"),
+        logging.FileHandler(Path(__file__).parent /
+                            "chatgpt_verification.log"),
         logging.StreamHandler(),
     ],
 )
@@ -79,7 +79,8 @@ class ChatGPTVerificationAgent:
         self.cache_hits = 0
         self.api_calls = 0
 
-        logger.info(f"ChatGPT Verification Agent initialized with model: {self.model}")
+        logger.info(
+            f"ChatGPT Verification Agent initialized with model: {self.model}")
 
     def verify_system_audit(self, audit_data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -116,7 +117,8 @@ class ChatGPTVerificationAgent:
             openai_response = self._query_openai_api(prompt)
 
             if not openai_response:
-                results["issues"].append("Failed to get response from OpenAI API")
+                results["issues"].append(
+                    "Failed to get response from OpenAI API")
                 return results
 
             # Process the verification response
@@ -186,16 +188,19 @@ class ChatGPTVerificationAgent:
                 return results
 
             # Prepare integration summary for API
-            integration_summary = self._prepare_integration_summary(integration_data)
+            integration_summary = self._prepare_integration_summary(
+                integration_data)
 
             # Create prompt for OpenAI
-            prompt = self._create_integration_verification_prompt(integration_summary)
+            prompt = self._create_integration_verification_prompt(
+                integration_summary)
 
             # Get verification from OpenAI
             openai_response = self._query_openai_api(prompt)
 
             if not openai_response:
-                results["issues"].append("Failed to get response from OpenAI API")
+                results["issues"].append(
+                    "Failed to get response from OpenAI API")
                 return results
 
             # Process the verification response
@@ -261,13 +266,15 @@ class ChatGPTVerificationAgent:
             workflow_summary = self._prepare_workflow_summary(workflow_data)
 
             # Create prompt for OpenAI
-            prompt = self._create_workflow_verification_prompt(workflow_summary)
+            prompt = self._create_workflow_verification_prompt(
+                workflow_summary)
 
             # Get verification from OpenAI
             openai_response = self._query_openai_api(prompt)
 
             if not openai_response:
-                results["issues"].append("Failed to get response from OpenAI API")
+                results["issues"].append(
+                    "Failed to get response from OpenAI API")
                 return results
 
             # Process the verification response
@@ -330,13 +337,15 @@ class ChatGPTVerificationAgent:
             system_status = self._collect_system_status_data()
 
             # Create prompt for OpenAI
-            prompt = self._create_system_status_verification_prompt(system_status)
+            prompt = self._create_system_status_verification_prompt(
+                system_status)
 
             # Get verification from OpenAI
             openai_response = self._query_openai_api(prompt)
 
             if not openai_response:
-                results["issues"].append("Failed to get response from OpenAI API")
+                results["issues"].append(
+                    "Failed to get response from OpenAI API")
                 return results
 
             # Process the verification response
@@ -520,7 +529,8 @@ class ChatGPTVerificationAgent:
         try:
             # Try to find the latest audit results
             audit_dir = (
-                Path(__file__).parent.parent / "langflow_agents" / "audit_results"
+                Path(__file__).parent.parent /
+                "langflow_agents" / "audit_results"
             )
             if audit_dir.exists():
                 latest_audit = None
@@ -534,10 +544,12 @@ class ChatGPTVerificationAgent:
                             system_status["audit"] = self._prepare_audit_summary(
                                 latest_audit
                             )
-                            system_status["data_sources"].append(str(audit_file))
+                            system_status["data_sources"].append(
+                                str(audit_file))
                             break
                         except Exception as e:
-                            logger.error(f"Error reading latest audit file: {e}")
+                            logger.error(
+                                f"Error reading latest audit file: {e}")
 
                     # If no "latest" file, find the most recent one
                     file_time = os.path.getmtime(audit_file)
@@ -550,8 +562,10 @@ class ChatGPTVerificationAgent:
                             pass
 
                 if not system_status["audit"] and latest_audit:
-                    system_status["audit"] = self._prepare_audit_summary(latest_audit)
-                    system_status["data_sources"].append("most_recent_audit_file")
+                    system_status["audit"] = self._prepare_audit_summary(
+                        latest_audit)
+                    system_status["data_sources"].append(
+                        "most_recent_audit_file")
 
             # Try to find system status file
             status_file = Path(__file__).parent.parent / "system_status.json"
@@ -566,7 +580,8 @@ class ChatGPTVerificationAgent:
 
             # Try to find agent collaboration config
             config_file = (
-                Path(__file__).parent.parent / "agent_collaboration_config.json"
+                Path(__file__).parent.parent /
+                "agent_collaboration_config.json"
             )
             if config_file.exists():
                 try:
@@ -579,7 +594,8 @@ class ChatGPTVerificationAgent:
 
             # Try to find agent collaboration results
             results_file = (
-                Path(__file__).parent.parent / "agent_coordination_results.json"
+                Path(__file__).parent.parent /
+                "agent_coordination_results.json"
             )
             if results_file.exists():
                 try:
@@ -778,8 +794,10 @@ Format your response in a structured way, with clear sections and bullet points 
                 "max_tokens": 1024,
             }
 
-            logger.info(f"Sending request to OpenAI API using model {self.model}")
-            response = requests.post(url, headers=headers, json=data, timeout=30)
+            logger.info(
+                f"Sending request to OpenAI API using model {self.model}")
+            response = requests.post(
+                url, headers=headers, json=data, timeout=30)
             self.api_calls += 1
 
             if response.status_code == 200:
@@ -877,7 +895,8 @@ Format your response in a structured way, with clear sections and bullet points 
                     line = line.strip()
                     if line.startswith("- ") or line.startswith("* "):
                         # Add critical issues to discrepancies with a marker
-                        result["discrepancies"].append("[CRITICAL] " + line[2:])
+                        result["discrepancies"].append(
+                            "[CRITICAL] " + line[2:])
         except Exception as e:
             logger.error(f"Error processing verification response: {e}")
 
@@ -919,7 +938,8 @@ Format your response in a structured way, with clear sections and bullet points 
             interval: Time between verifications in seconds (default: 30 minutes)
             run_once: If True, run only one verification and return
         """
-        logger.info(f"Starting {'single' if run_once else 'continuous'} verification")
+        logger.info(
+            f"Starting {'single' if run_once else 'continuous'} verification")
 
         try:
             while True:
@@ -930,7 +950,8 @@ Format your response in a structured way, with clear sections and bullet points 
                     logger.info("Single verification completed, exiting loop")
                     break
 
-                logger.info(f"Sleeping for {interval} seconds until next verification")
+                logger.info(
+                    f"Sleeping for {interval} seconds until next verification")
                 time.sleep(interval)
         except KeyboardInterrupt:
             logger.info("Verification process interrupted by user")
@@ -978,7 +999,8 @@ Format your response in a structured way, with clear sections and bullet points 
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="ChatGPT Cross-Verification Agent")
+    parser = argparse.ArgumentParser(
+        description="ChatGPT Cross-Verification Agent")
     parser.add_argument(
         "--once", action="store_true", help="Run verification once and exit"
     )
@@ -989,11 +1011,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    api_key = (
-        args.api_key
-        or os.environ.get("OPENAI_API_KEY")
-        or ""
-    )
+    api_key = args.api_key or os.environ.get("OPENAI_API_KEY") or ""
 
     if not api_key:
         logger.info(

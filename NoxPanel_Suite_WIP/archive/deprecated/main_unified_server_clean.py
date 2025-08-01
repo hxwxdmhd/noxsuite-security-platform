@@ -13,36 +13,40 @@ This is the SINGLE, UNIFIED server implementation that consolidates:
 ARCHITECTURAL PRINCIPLE: ONE SERVER TO RULE THEM ALL
 """
 
-import os
-import sys
-import time
+import base64
+import hashlib
+import html
 import json
 import logging
-import threading
-import pymysql
-import hashlib
+import mimetypes
+import os
+import platform
 import secrets
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-from http.server import HTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs
-from socketserver import ThreadingMixIn
+import socket
+import ssl
 
 # Built-in imports
 import subprocess
-import platform
-import socket
-import urllib.request
+import sys
+import threading
+import time
 import urllib.parse
-import ssl
-import base64
+import urllib.request
 import uuid
-import mimetypes
-import html
+from datetime import datetime, timedelta
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from socketserver import ThreadingMixIn
+from typing import Any, Dict, List, Optional
+from urllib.parse import parse_qs, urlparse
+
+import pymysql
 
 # Enhanced Plugin System Integration
 try:
-    from unified_plugin_system_clean import UnifiedPluginSystem, initialize_plugin_system
+    from unified_plugin_system_clean import (
+        UnifiedPluginSystem,
+        initialize_plugin_system,
+    )
     ENHANCED_PLUGIN_SYSTEM = True
     logger = logging.getLogger(__name__)
     logger.info("Enhanced Plugin System loaded successfully")
@@ -53,7 +57,7 @@ except ImportError as e:
 
 # Check for Flask availability
 try:
-    from flask import Flask, request, jsonify, render_template_string, session
+    from flask import Flask, jsonify, render_template_string, request, session
     from flask_cors import CORS
     FLASK_AVAILABLE = True
 except ImportError:
@@ -79,9 +83,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class SystemMonitor:
     """Basic system monitoring without external dependencies"""
-    
+
     @staticmethod
     def get_cpu_usage():
         """Get CPU usage percentage"""
@@ -101,7 +106,7 @@ class SystemMonitor:
                 return 0.0
             except:
                 return 0.0
-    
+
     @staticmethod
     def get_memory_usage():
         """Get memory usage information"""
@@ -117,7 +122,8 @@ class SystemMonitor:
             try:
                 if platform.system() == "Windows":
                     result = subprocess.run(
-                        ['wmic', 'OS', 'get', 'TotalVisibleMemorySize,FreePhysicalMemory', '/value'],
+                        ['wmic', 'OS', 'get',
+                            'TotalVisibleMemorySize,FreePhysicalMemory', '/value'],
                         capture_output=True, text=True
                     )
                     total_mem = free_mem = 0
@@ -126,7 +132,7 @@ class SystemMonitor:
                             total_mem = int(line.split('=')[1]) * 1024
                         elif 'FreePhysicalMemory' in line:
                             free_mem = int(line.split('=')[1]) * 1024
-                    
+
                     used_mem = total_mem - free_mem
                     return {
                         'percent': round((used_mem / total_mem) * 100, 2),
@@ -136,7 +142,7 @@ class SystemMonitor:
                 return {'percent': 0, 'used_gb': 0, 'total_gb': 0}
             except:
                 return {'percent': 0, 'used_gb': 0, 'total_gb': 0}
-    
+
     @staticmethod
     def get_disk_usage():
         """Get disk usage information"""
@@ -164,19 +170,20 @@ class SystemMonitor:
             except:
                 return {'percent': 0, 'used_gb': 0, 'total_gb': 0}
 
+
 class DatabaseManager:
     """Simple SQLite database manager"""
-    
+
     def __init__(self, db_path='unified_heimnetz.db'):
         self.db_path = db_path
         self.init_database()
-    
+
     def init_database(self):
         """Initialize database tables"""
         try:
             with pymysql.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                
+
                 # Users table
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS users (
@@ -189,7 +196,7 @@ class DatabaseManager:
                         last_login TIMESTAMP
                     )
                 ''')
-                
+
                 # System metrics table
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS system_metrics (
@@ -202,7 +209,7 @@ class DatabaseManager:
                         requests_per_minute INTEGER
                     )
                 ''')
-                
+
                 # Audit log table
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS audit_log (
@@ -216,21 +223,23 @@ class DatabaseManager:
                         details TEXT
                     )
                 ''')
-                
+
                 # Create default admin user if not exists
-                cursor.execute('SELECT COUNT(*) FROM users WHERE username = ?', ('admin',))
+                cursor.execute(
+                    'SELECT COUNT(*) FROM users WHERE username = ?', ('admin',))
                 if cursor.fetchone()[0] == 0:
-                    admin_password = hashlib.sha256('admin123'.encode()).hexdigest()
+                    admin_password = hashlib.sha256(
+                        'admin123'.encode()).hexdigest()
                     cursor.execute('''
                         INSERT INTO users (username, password_hash, role)
                         VALUES (?, ?, ?)
                     ''', ('admin', admin_password, 'admin'))
-                
+
                 conn.commit()
                 logger.info("Database initialized successfully")
         except Exception as e:
             logger.error(f"Database initialization failed: {e}")
-    
+
     def verify_user(self, username, password):
         """Verify user credentials"""
         try:
@@ -242,7 +251,7 @@ class DatabaseManager:
                     FROM users
                     WHERE username = ? AND password_hash = ?
                 ''', (username, password_hash))
-                
+
                 user = cursor.fetchone()
                 if user and user[3]:  # is_active
                     return {
@@ -255,7 +264,7 @@ class DatabaseManager:
         except Exception as e:
             logger.error(f"User verification failed: {e}")
             return None
-    
+
     def log_metric(self, cpu_usage, memory_usage, disk_usage, active_connections, requests_per_minute):
         """Log system metrics"""
         try:
@@ -269,7 +278,7 @@ class DatabaseManager:
                 conn.commit()
         except Exception as e:
             logger.error(f"Metric logging failed: {e}")
-    
+
     def log_audit(self, user_id, action, result, ip_address, user_agent, details=None):
         """Log audit event"""
         try:
@@ -284,17 +293,18 @@ class DatabaseManager:
         except Exception as e:
             logger.error(f"Audit logging failed: {e}")
 
+
 class SimpleUnifiedPluginSystem:
     """Simple plugin system"""
-    
+
     def __init__(self):
         self.plugins = {}
         self.plugin_directories = ['plugins', 'AI/plugins', 'NoxPanel/plugins']
-    
+
     def get_all_plugins(self):
         """Get all available plugins"""
         return self.plugins
-    
+
     def activate_plugin(self, name):
         """Activate a plugin"""
         if name in self.plugins:
@@ -302,7 +312,7 @@ class SimpleUnifiedPluginSystem:
             logger.info(f"Plugin {name} activated")
             return True
         return False
-    
+
     def deactivate_plugin(self, name):
         """Deactivate a plugin"""
         if name in self.plugins:
@@ -310,7 +320,7 @@ class SimpleUnifiedPluginSystem:
             logger.info(f"Plugin {name} deactivated")
             return True
         return False
-    
+
     def discover_and_load_plugins(self):
         """Discover and load plugins from directories"""
         for directory in self.plugin_directories:
@@ -327,22 +337,23 @@ class SimpleUnifiedPluginSystem:
                         }
         logger.info(f"Discovered {len(self.plugins)} plugins")
 
+
 class UnifiedServer:
     """THE SINGLE, UNIFIED SERVER for Ultimate Suite v11.0"""
-    
+
     def __init__(self, config=None):
         """Initialize the unified server"""
         logger.info("Initializing Ultimate Suite v11.0 Unified Server")
-        
+
         # Configuration
         self.config = config or {}
         self.host = self.config.get('host', '0.0.0.0')
         self.port = self.config.get('port', 5000)
         self.debug = self.config.get('debug', False)
-        
+
         # Initialize components
         self.db_manager = DatabaseManager()
-        
+
         # Initialize Enhanced Plugin System
         if ENHANCED_PLUGIN_SYSTEM:
             self.plugin_system = UnifiedPluginSystem()
@@ -351,9 +362,9 @@ class UnifiedServer:
             # Fallback to simple plugin system
             self.plugin_system = SimpleUnifiedPluginSystem()
             logger.info("Simple Plugin System initialized")
-        
+
         self.system_monitor = SystemMonitor()
-        
+
         # Performance metrics
         self.metrics = {
             'requests_count': 0,
@@ -362,44 +373,44 @@ class UnifiedServer:
             'last_restart': datetime.now(),
             'system_health': 'healthy'
         }
-        
+
         # Security
         self.sessions = {}
         self.request_tracker = {}
-        
+
         # Choose server implementation
         if FLASK_AVAILABLE:
             self._setup_flask_server()
         else:
             self._setup_builtin_server()
-        
+
         # Setup monitoring
         self._setup_monitoring()
-        
+
         logger.info("Unified Server initialized successfully")
-    
+
     def _setup_flask_server(self):
         """Setup Flask-based server"""
         self.app = Flask(__name__)
         self.app.config['SECRET_KEY'] = secrets.token_hex(32)
-        
+
         # Enable CORS if available
         if FLASK_AVAILABLE:
             CORS(self.app, origins=["*"], supports_credentials=True)
-        
+
         # Setup routes
         self._setup_flask_routes()
-        
+
         logger.info("Flask server initialized")
-    
+
     def _setup_flask_routes(self):
         """Setup Flask routes"""
-        
+
         @self.app.route('/')
         def index():
             """Main dashboard"""
             return render_template_string(self._get_dashboard_template())
-        
+
         @self.app.route('/api/health')
         def health_check():
             """Health check endpoint"""
@@ -411,7 +422,7 @@ class UnifiedServer:
                 'active_connections': self.metrics['active_connections'],
                 'total_requests': self.metrics['requests_count']
             })
-        
+
         @self.app.route('/api/system/status')
         def system_status():
             """System status endpoint"""
@@ -419,7 +430,7 @@ class UnifiedServer:
                 cpu_usage = self.system_monitor.get_cpu_usage()
                 memory_usage = self.system_monitor.get_memory_usage()
                 disk_usage = self.system_monitor.get_disk_usage()
-                
+
                 return jsonify({
                     'timestamp': datetime.utcnow().isoformat(),
                     'system': {
@@ -440,7 +451,7 @@ class UnifiedServer:
             except Exception as e:
                 logger.error(f"Error getting system status: {e}")
                 return jsonify({'error': 'Failed to get system status'}), 500
-        
+
         @self.app.route('/api/auth/login', methods=['POST'])
         def login():
             """User authentication endpoint"""
@@ -448,10 +459,10 @@ class UnifiedServer:
                 data = request.get_json()
                 username = data.get('username', '').strip()
                 password = data.get('password', '')
-                
+
                 if not username or not password:
                     return jsonify({'error': 'Username and password required'}), 400
-                
+
                 # Verify user
                 user = self.db_manager.verify_user(username, password)
                 if user:
@@ -462,11 +473,11 @@ class UnifiedServer:
                         'created_at': datetime.utcnow(),
                         'last_activity': datetime.utcnow()
                     }
-                    
+
                     # Log successful login
-                    self.db_manager.log_audit(user['id'], 'login', 'success', 
-                                            request.remote_addr, request.user_agent.string if request.user_agent else None)
-                    
+                    self.db_manager.log_audit(user['id'], 'login', 'success',
+                                              request.remote_addr, request.user_agent.string if request.user_agent else None)
+
                     return jsonify({
                         'success': True,
                         'message': 'Login successful',
@@ -475,21 +486,21 @@ class UnifiedServer:
                     })
                 else:
                     # Log failed login
-                    self.db_manager.log_audit(None, 'login', 'failed', 
-                                            request.remote_addr, request.user_agent.string if request.user_agent else None,
-                                            {'username': username})
+                    self.db_manager.log_audit(None, 'login', 'failed',
+                                              request.remote_addr, request.user_agent.string if request.user_agent else None,
+                                              {'username': username})
                     return jsonify({'error': 'Invalid credentials'}), 401
-                    
+
             except Exception as e:
                 logger.error(f"Login error: {e}")
                 return jsonify({'error': 'Login failed'}), 500
-        
+
         @self.app.route('/api/plugins')
         def list_plugins():
             """List available plugins"""
             try:
                 plugins = self.plugin_system.get_all_plugins()
-                
+
                 # Enhanced plugin system integration
                 if ENHANCED_PLUGIN_SYSTEM and hasattr(self.plugin_system, 'get_system_metrics'):
                     system_metrics = self.plugin_system.get_system_metrics()
@@ -514,7 +525,7 @@ class UnifiedServer:
             except Exception as e:
                 logger.error(f"Error listing plugins: {e}")
                 return jsonify({'error': 'Failed to list plugins'}), 500
-        
+
         # Enhanced Plugin System API endpoints
         if ENHANCED_PLUGIN_SYSTEM:
             @self.app.route('/api/plugins/<plugin_name>', methods=['GET'])
@@ -523,10 +534,11 @@ class UnifiedServer:
                 try:
                     if plugin_name not in self.plugin_system.plugins:
                         return jsonify({'error': 'Plugin not found'}), 404
-                    
+
                     plugin_info = self.plugin_system.plugins[plugin_name]
                     if hasattr(self.plugin_system, 'get_plugin_metrics'):
-                        metrics = self.plugin_system.get_plugin_metrics(plugin_name)
+                        metrics = self.plugin_system.get_plugin_metrics(
+                            plugin_name)
                         return jsonify({
                             'plugin_info': plugin_info,
                             'metrics': metrics
@@ -536,16 +548,18 @@ class UnifiedServer:
                 except Exception as e:
                     logger.error(f"Error getting plugin details: {e}")
                     return jsonify({'error': 'Failed to get plugin details'}), 500
-            
+
             @self.app.route('/api/plugins/<plugin_name>/activate', methods=['POST'])
             def activate_plugin_endpoint(plugin_name):
                 """Activate a plugin"""
                 try:
                     if hasattr(self.plugin_system, 'activate_plugin_with_monitoring'):
-                        success = self.plugin_system.activate_plugin_with_monitoring(plugin_name)
+                        success = self.plugin_system.activate_plugin_with_monitoring(
+                            plugin_name)
                     else:
-                        success = self.plugin_system.activate_plugin(plugin_name)
-                    
+                        success = self.plugin_system.activate_plugin(
+                            plugin_name)
+
                     return jsonify({
                         'success': success,
                         'message': f'Plugin {plugin_name} {"activated" if success else "activation failed"}'
@@ -553,7 +567,7 @@ class UnifiedServer:
                 except Exception as e:
                     logger.error(f"Error activating plugin: {e}")
                     return jsonify({'error': 'Failed to activate plugin'}), 500
-            
+
             @self.app.route('/api/plugins/<plugin_name>/deactivate', methods=['POST'])
             def deactivate_plugin_endpoint(plugin_name):
                 """Deactivate a plugin"""
@@ -566,27 +580,28 @@ class UnifiedServer:
                 except Exception as e:
                     logger.error(f"Error deactivating plugin: {e}")
                     return jsonify({'error': 'Failed to deactivate plugin'}), 500
-            
+
             @self.app.route('/api/plugins/<plugin_name>/metrics', methods=['GET'])
             def get_plugin_metrics_endpoint(plugin_name):
                 """Get plugin metrics"""
                 try:
                     if hasattr(self.plugin_system, 'get_plugin_metrics'):
-                        metrics = self.plugin_system.get_plugin_metrics(plugin_name)
+                        metrics = self.plugin_system.get_plugin_metrics(
+                            plugin_name)
                         return jsonify(metrics)
                     else:
                         return jsonify({'error': 'Metrics not available'})
                 except Exception as e:
                     logger.error(f"Error getting plugin metrics: {e}")
                     return jsonify({'error': 'Failed to get plugin metrics'}), 500
-            
+
             @self.app.route('/api/plugins/<plugin_name>/security', methods=['GET'])
             def get_plugin_security_endpoint(plugin_name):
                 """Get plugin security validation"""
                 try:
                     if plugin_name not in self.plugin_system.plugins:
                         return jsonify({'error': 'Plugin not found'}), 404
-                    
+
                     plugin_info = self.plugin_system.plugins[plugin_name]
                     return jsonify({
                         'valid': plugin_info.get('security_valid', False),
@@ -596,7 +611,7 @@ class UnifiedServer:
                 except Exception as e:
                     logger.error(f"Error getting plugin security: {e}")
                     return jsonify({'error': 'Failed to get plugin security'}), 500
-            
+
             @self.app.route('/api/plugins/system/metrics', methods=['GET'])
             def get_system_metrics_endpoint():
                 """Get system metrics"""
@@ -608,17 +623,19 @@ class UnifiedServer:
                 except Exception as e:
                     logger.error(f"Error getting system metrics: {e}")
                     return jsonify({'error': 'Failed to get system metrics'}), 500
-            
+
             @self.app.route('/api/plugins/system/health', methods=['GET'])
             def get_system_health_endpoint():
                 """Get system health"""
                 try:
                     if hasattr(self.plugin_system, 'get_performance_summary'):
                         performance_summary = self.plugin_system.get_performance_summary()
-                        
-                        healthy_plugins = sum(1 for health in performance_summary['health_status'].values() if health)
-                        unhealthy_plugins = len(performance_summary['health_status']) - healthy_plugins
-                        
+
+                        healthy_plugins = sum(
+                            1 for health in performance_summary['health_status'].values() if health)
+                        unhealthy_plugins = len(
+                            performance_summary['health_status']) - healthy_plugins
+
                         return jsonify({
                             'overall_health': 'HEALTHY' if unhealthy_plugins == 0 else 'DEGRADED',
                             'healthy_plugins': healthy_plugins,
@@ -636,7 +653,7 @@ class UnifiedServer:
                 except Exception as e:
                     logger.error(f"Error getting system health: {e}")
                     return jsonify({'error': 'Failed to get system health'}), 500
-            
+
             @self.app.route('/api/plugins/discover', methods=['POST'])
             def discover_plugins_endpoint():
                 """Trigger plugin discovery"""
@@ -644,14 +661,15 @@ class UnifiedServer:
                     initial_count = len(self.plugin_system.plugins)
                     self.plugin_system.discover_and_load_plugins()
                     final_count = len(self.plugin_system.plugins)
-                    
+
                     if hasattr(self.plugin_system, 'enabled_plugins'):
                         loaded_count = len(self.plugin_system.enabled_plugins)
                     else:
-                        loaded_count = len([p for p in self.plugin_system.plugins.values() if p.get('active', False)])
-                    
+                        loaded_count = len(
+                            [p for p in self.plugin_system.plugins.values() if p.get('active', False)])
+
                     failed_count = final_count - loaded_count
-                    
+
                     return jsonify({
                         'discovered': final_count - initial_count,
                         'loaded': loaded_count,
@@ -660,7 +678,7 @@ class UnifiedServer:
                 except Exception as e:
                     logger.error(f"Error discovering plugins: {e}")
                     return jsonify({'error': 'Failed to discover plugins'}), 500
-        
+
         else:
             # Simple plugin endpoints for fallback
             @self.app.route('/api/plugins/<plugin_name>/activate', methods=['POST'])
@@ -675,7 +693,7 @@ class UnifiedServer:
                 except Exception as e:
                     logger.error(f"Error activating plugin: {e}")
                     return jsonify({'error': 'Failed to activate plugin'}), 500
-            
+
             @self.app.route('/api/plugins/<plugin_name>/deactivate', methods=['POST'])
             def deactivate_plugin_simple(plugin_name):
                 """Deactivate a plugin (simple version)"""
@@ -688,46 +706,48 @@ class UnifiedServer:
                 except Exception as e:
                     logger.error(f"Error deactivating plugin: {e}")
                     return jsonify({'error': 'Failed to deactivate plugin'}), 500
-        
+
         @self.app.before_request
         def before_request():
             """Before request handler"""
             self.metrics['requests_count'] += 1
             self.metrics['active_connections'] += 1
-        
+
         @self.app.after_request
         def after_request(response):
             """After request handler"""
-            self.metrics['active_connections'] = max(0, self.metrics['active_connections'] - 1)
-            
+            self.metrics['active_connections'] = max(
+                0, self.metrics['active_connections'] - 1)
+
             # Add security headers
             response.headers['X-Content-Type-Options'] = 'nosniff'
             response.headers['X-Frame-Options'] = 'DENY'
             response.headers['X-XSS-Protection'] = '1; mode=block'
-            
+
             return response
-    
+
     def _setup_builtin_server(self):
         """Setup built-in HTTP server as fallback"""
         logger.info("Setting up built-in HTTP server")
-        
+
         class UnifiedHTTPHandler(BaseHTTPRequestHandler):
             def __init__(self, request, client_address, server):
                 self.server_instance = server.server_instance
                 super().__init__(request, client_address, server)
-            
+
             def do_GET(self):
                 """Handle GET requests"""
                 try:
                     path = urlparse(self.path).path
-                    
+
                     if path == '/':
                         # Main dashboard
                         self.send_response(200)
                         self.send_header('Content-type', 'text/html')
                         self.end_headers()
-                        self.wfile.write(self.server_instance._get_dashboard_template().encode())
-                    
+                        self.wfile.write(
+                            self.server_instance._get_dashboard_template().encode())
+
                     elif path == '/api/health':
                         # Health check
                         self.send_response(200)
@@ -742,17 +762,17 @@ class UnifiedServer:
                             'total_requests': self.server_instance.metrics['requests_count']
                         }
                         self.wfile.write(json.dumps(health_data).encode())
-                    
+
                     elif path == '/api/system/status':
                         # System status
                         self.send_response(200)
                         self.send_header('Content-type', 'application/json')
                         self.end_headers()
-                        
+
                         cpu_usage = self.server_instance.system_monitor.get_cpu_usage()
                         memory_usage = self.server_instance.system_monitor.get_memory_usage()
                         disk_usage = self.server_instance.system_monitor.get_disk_usage()
-                        
+
                         status_data = {
                             'timestamp': datetime.utcnow().isoformat(),
                             'system': {
@@ -771,31 +791,33 @@ class UnifiedServer:
                             }
                         }
                         self.wfile.write(json.dumps(status_data).encode())
-                    
+
                     else:
                         # Not found
                         self.send_response(404)
                         self.end_headers()
                         self.wfile.write(b'Not Found')
-                        
+
                 except Exception as e:
                     logger.error(f"Error handling request: {e}")
                     self.send_response(500)
                     self.end_headers()
                     self.wfile.write(b'Internal Server Error')
-            
+
             def log_message(self, format, *args):
                 """Override to use our logger"""
                 logger.info(f"{self.address_string()} - {format % args}")
-        
+
         class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
             """Threaded HTTP server"""
+
             def __init__(self, server_address, RequestHandlerClass, server_instance):
                 self.server_instance = server_instance
                 super().__init__(server_address, RequestHandlerClass)
-        
-        self.http_server = ThreadedHTTPServer((self.host, self.port), UnifiedHTTPHandler, self)
-    
+
+        self.http_server = ThreadedHTTPServer(
+            (self.host, self.port), UnifiedHTTPHandler, self)
+
     def _setup_monitoring(self):
         """Setup background monitoring"""
         def monitoring_loop():
@@ -806,7 +828,7 @@ class UnifiedServer:
                     cpu_usage = self.system_monitor.get_cpu_usage()
                     memory_usage = self.system_monitor.get_memory_usage()
                     disk_usage = self.system_monitor.get_disk_usage()
-                    
+
                     # Log metrics to database
                     self.db_manager.log_metric(
                         cpu_usage,
@@ -815,25 +837,27 @@ class UnifiedServer:
                         self.metrics['active_connections'],
                         self.metrics['requests_count']
                     )
-                    
+
                     # Health check
                     if cpu_usage > 90 or memory_usage['percent'] > 90 or disk_usage['percent'] > 95:
                         self.metrics['system_health'] = 'warning'
-                        logger.warning(f"System resources high: CPU={cpu_usage}%, Memory={memory_usage['percent']}%, Disk={disk_usage['percent']}%")
+                        logger.warning(
+                            f"System resources high: CPU={cpu_usage}%, Memory={memory_usage['percent']}%, Disk={disk_usage['percent']}%")
                     else:
                         self.metrics['system_health'] = 'healthy'
-                    
+
                     time.sleep(30)  # Monitor every 30 seconds
-                    
+
                 except Exception as e:
                     logger.error(f"Monitoring error: {e}")
                     time.sleep(30)
-        
+
         # Start monitoring thread
-        monitoring_thread = threading.Thread(target=monitoring_loop, daemon=True)
+        monitoring_thread = threading.Thread(
+            target=monitoring_loop, daemon=True)
         monitoring_thread.start()
         logger.info("Background monitoring started")
-    
+
     def _get_dashboard_template(self) -> str:
         """Get the main dashboard HTML template"""
         return '''
@@ -1141,35 +1165,40 @@ class UnifiedServer:
 </body>
 </html>
         '''
-        
+
         return template
-    
+
     def run(self):
         """Run the unified server"""
         try:
-            logger.info(f"Starting Ultimate Suite v11.0 Unified Server on {self.host}:{self.port}")
-            logger.info("🚀 UNIFIED ARCHITECTURE - SINGLE SERVER IMPLEMENTATION")
-            logger.info("✅ Server consolidation complete: 47 files → 3 unified files")
-            
+            logger.info(
+                f"Starting Ultimate Suite v11.0 Unified Server on {self.host}:{self.port}")
+            logger.info(
+                "🚀 UNIFIED ARCHITECTURE - SINGLE SERVER IMPLEMENTATION")
+            logger.info(
+                "✅ Server consolidation complete: 47 files → 3 unified files")
+
             # Create logs directory if it doesn't exist
             os.makedirs('logs', exist_ok=True)
-            
+
             # Load plugins
             self.plugin_system.discover_and_load_plugins()
-            
+
             # Start server
             if FLASK_AVAILABLE:
                 logger.info("Starting Flask server...")
-                self.app.run(host=self.host, port=self.port, debug=self.debug, threaded=True)
+                self.app.run(host=self.host, port=self.port,
+                             debug=self.debug, threaded=True)
             else:
                 logger.info("Starting built-in HTTP server...")
                 self.http_server.serve_forever()
-                
+
         except KeyboardInterrupt:
             logger.info("Server shutdown requested")
         except Exception as e:
             logger.error(f"Server error: {e}")
             raise
+
 
 def main():
     """Main entry point"""
@@ -1180,16 +1209,17 @@ def main():
             'port': int(os.getenv('PORT', '5000')),
             'debug': os.getenv('DEBUG', 'false').lower() == 'true'
         }
-        
+
         # Create and run server
         server = UnifiedServer(config)
         server.run()
-        
+
     except KeyboardInterrupt:
         logger.info("Server shutdown requested")
     except Exception as e:
         logger.error(f"Server error: {e}")
         sys.exit(1)
+
 
 if __name__ == '__main__':
     main()

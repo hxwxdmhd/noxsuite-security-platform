@@ -55,6 +55,7 @@ ai_manager: Optional[AIManager] = None
 ws_manager: Optional[WebSocketManager] = None
 plugin_manager: Optional[PluginManager] = None
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
@@ -110,6 +111,7 @@ async def lifespan(app: FastAPI):
             await plugin_manager.cleanup()
 
         logger.info("✅ NoxSuite Backend shutdown complete")
+
 
 # Create FastAPI application
 app = FastAPI(
@@ -186,7 +188,8 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # Trusted hosts (security)
 app.add_middleware(
-    TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "*.noxsuite.local"]
+    TrustedHostMiddleware, allowed_hosts=[
+        "localhost", "127.0.0.1", "*.noxsuite.local"]
 )
 
 # Custom metrics middleware
@@ -274,6 +277,7 @@ app.include_router(websocket.router, prefix="/ws", tags=["WebSocket"])
 # ROOT ENDPOINTS
 # ============================================================================
 
+
 @app.get("/", response_class=HTMLResponse)
 async def root():
     """Root endpoint with HTML welcome page"""
@@ -354,6 +358,7 @@ async def root():
     """
     )
 
+
 @app.get("/api")
 async def api_root():
     """API root endpoint"""
@@ -379,9 +384,11 @@ async def api_root():
         },
     }
 
+
 # ============================================================================
 # BACKGROUND TASKS
 # ============================================================================
+
 
 async def system_monitor_task():
     """Background task for system monitoring"""
@@ -403,6 +410,7 @@ async def system_monitor_task():
         except Exception as e:
             logger.error(f"System monitor task error: {e}")
             await asyncio.sleep(60)  # Wait longer on error
+
 
 async def ai_model_health_check():
     """Background task for AI model health monitoring"""
@@ -428,6 +436,7 @@ async def ai_model_health_check():
         except Exception as e:
             logger.error(f"AI health check task error: {e}")
             await asyncio.sleep(300)  # Wait longer on error
+
 
 async def collect_system_metrics() -> Dict[str, Any]:
     """Collect comprehensive system metrics"""
@@ -476,6 +485,7 @@ async def collect_system_metrics() -> Dict[str, Any]:
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
 
+
 def _calculate_cpu_percent(stats: Dict) -> float:
     """Calculate CPU percentage from Docker stats"""
     try:
@@ -498,6 +508,7 @@ def _calculate_cpu_percent(stats: Dict) -> float:
     except (KeyError, ZeroDivisionError):
         return 0.0
 
+
 def _calculate_memory_usage(stats: Dict) -> Dict[str, int]:
     """Calculate memory usage from Docker stats"""
     try:
@@ -510,6 +521,7 @@ def _calculate_memory_usage(stats: Dict) -> Dict[str, int]:
         }
     except KeyError:
         return {"usage_mb": 0, "limit_mb": 0, "percent": 0}
+
 
 def _get_system_uptime() -> str:
     """Get system uptime"""
@@ -528,9 +540,11 @@ def _get_system_uptime() -> str:
         logger.warning(f"Unexpected error: {e}")
         return "Unknown"
 
+
 # ============================================================================
 # ERROR HANDLERS
 # ============================================================================
+
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
@@ -545,6 +559,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         },
     )
 
+
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
     """Handle general exceptions"""
@@ -558,6 +573,7 @@ async def general_exception_handler(request: Request, exc: Exception):
             "path": str(request.url.path),
         },
     )
+
 
 # ============================================================================
 # APPLICATION STARTUP

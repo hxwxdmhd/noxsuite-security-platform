@@ -4,26 +4,28 @@ NoxPanel Knowledge Base - Conversation Parser & AI Integration
 Comprehensive system to parse conversations.json and extract knowledge
 """
 
-import json
-import re
-import pymysql
 import argparse
-import logging
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass
 import hashlib
+import json
+import logging
+import re
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import pymysql
 
 # NLP/Text Processing (lightweight approach)
 try:
     import nltk
-    from nltk.tokenize import word_tokenize, sent_tokenize
     from nltk.corpus import stopwords
     from nltk.stem import PorterStemmer
+    from nltk.tokenize import sent_tokenize, word_tokenize
     NLTK_AVAILABLE = True
 except ImportError:
     NLTK_AVAILABLE = False
+
 
 @dataclass
 class ExtractedSnippet:
@@ -36,6 +38,7 @@ class ExtractedSnippet:
     tags: List[str]
     snippet_id: str
 
+
 @dataclass
 class ConversationSummary:
     """Represents a processed conversation summary"""
@@ -47,6 +50,7 @@ class ConversationSummary:
     timestamp: str
     participant_count: int
     message_count: int
+
 
 class ConversationProcessor:
     """Advanced conversation processing and knowledge extraction"""
@@ -79,7 +83,8 @@ class ConversationProcessor:
                 self.stemmer = PorterStemmer()
                 self.stop_words = set(stopwords.words('english'))
             except:
-                self.logger.warning("NLTK components not available, using simple processing")
+                self.logger.warning(
+                    "NLTK components not available, using simple processing")
                 NLTK_AVAILABLE = False
 
         # Language detection patterns
@@ -221,7 +226,8 @@ class ConversationProcessor:
         for language, patterns in self.language_patterns.items():
             score = 0
             for pattern in patterns:
-                matches = len(re.findall(pattern, code, re.IGNORECASE | re.MULTILINE))
+                matches = len(re.findall(
+                    pattern, code, re.IGNORECASE | re.MULTILINE))
                 score += matches
             scores[language] = score
 
@@ -236,7 +242,8 @@ class ConversationProcessor:
 
         # Pattern for code blocks with triple backticks
         code_block_pattern = r'```(\w+)?\n?(.*?)```'
-        matches = re.findall(code_block_pattern, text, re.DOTALL | re.IGNORECASE)
+        matches = re.findall(code_block_pattern, text,
+                             re.DOTALL | re.IGNORECASE)
 
         for i, (declared_lang, code) in enumerate(matches):
             if len(code.strip()) < 10:  # Skip very short snippets
@@ -252,7 +259,8 @@ class ConversationProcessor:
             tags = self.extract_tags_from_text(text + " " + code)
 
             # Generate unique ID
-            snippet_id = hashlib.md5(f"{conversation_id}_{i}_{code[:100]}".encode()).hexdigest()[:12]
+            snippet_id = hashlib.md5(
+                f"{conversation_id}_{i}_{code[:100]}".encode()).hexdigest()[:12]
 
     """
     RLVR: Implements generate_snippet_description with error handling and validation

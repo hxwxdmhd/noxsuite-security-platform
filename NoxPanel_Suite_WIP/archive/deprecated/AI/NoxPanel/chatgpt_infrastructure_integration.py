@@ -11,19 +11,20 @@ This module provides:
 - Real-time AI assistance for network management
 """
 
-import os
-import sys
 import json
-import time
-import socket
-import threading
-from datetime import datetime
-from typing import Dict, List, Any, Optional
 import logging
+import os
+import socket
+import sys
+import threading
+import time
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 class ChatGPTInfrastructureAgent:
     """AI-powered infrastructure analysis and management agent"""
@@ -65,7 +66,7 @@ class ChatGPTInfrastructureAgent:
     COMPLIANCE: STANDARD
     """
     """
-        self.knowledge_base = InfrastructureKnowledgeBase()
+       self.knowledge_base = InfrastructureKnowledgeBase()
     """
     RLVR: Implements _analyze_devices with error handling and validation
 
@@ -78,7 +79,7 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-        self.device_classifier = AIDeviceClassifier()
+       self.device_classifier = AIDeviceClassifier()
         self.security_analyst = AISecurityAnalyst()
         self.configuration_advisor = ConfigurationAdvisor()
         self.conversation_history = []
@@ -94,29 +95,29 @@ class ChatGPTInfrastructureAgent:
             "security_assessment": self._assess_security(network_data),
             "performance_insights": self._analyze_performance(network_data),
             "recommendations": self._generate_recommendations(network_data),
-    """
+            """
     RLVR: Implements _assess_security with error handling and validation
 
     REASONING CHAIN:
     """
-    RLVR: Implements _analyze_performance with error handling and validation
+            RLVR: Implements _analyze_performance with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _analyze_performance
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _analyze_performance with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for _analyze_performance
+            2. Analysis: Function complexity 1.0/5.0
+            3. Solution: Implements _analyze_performance with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+            COMPLIANCE: STANDARD
+            """
     1. Problem: Input parameters and business logic for _assess_security
     2. Analysis: Function complexity 1.0/5.0
     """
-    RLVR: Implements _generate_recommendations with error handling and validation
+            RLVR: Implements _generate_recommendations with error handling and validation
 
-    REASONING CHAIN:
-    """
+            REASONING CHAIN:
+            """
     RLVR: Implements _generate_ai_insights with error handling and validation
 
     REASONING CHAIN:
@@ -128,19 +129,19 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-    RLVR: Implements _identify_network_segments with error handling and validation
+            RLVR: Implements _identify_network_segments with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _identify_network_segments
-    2. Analysis: Function complexity 1.6/5.0
-    3. Solution: Implements _identify_network_segments with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for _identify_network_segments
+            2. Analysis: Function complexity 1.6/5.0
+            3. Solution: Implements _identify_network_segments with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
+            COMPLIANCE: STANDARD
+            """
     """
-    """
-    """
+            """
     RLVR: Implements _assess_topology with error handling and validation
 
     REASONING CHAIN:
@@ -151,14 +152,14 @@ class ChatGPTInfrastructureAgent:
     5. Validation: 3 test cases covering edge cases
 
     """
-    RLVR: Implements _analyze_bandwidth_usage with error handling and validation
+            RLVR: Implements _analyze_bandwidth_usage with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _analyze_bandwidth_usage
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _analyze_bandwidth_usage with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    """
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for _analyze_bandwidth_usage
+            2. Analysis: Function complexity 1.0/5.0
+            3. Solution: Implements _analyze_bandwidth_usage with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            """
     RLVR: Implements _calculate_uptime_stats with error handling and validation
 
     REASONING CHAIN:
@@ -169,20 +170,20 @@ class ChatGPTInfrastructureAgent:
     5. Validation: 3 test cases covering edge cases
 
     """
-    RLVR: Implements _detect_device_anomalies with error handling and validation
+            RLVR: Implements _detect_device_anomalies with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _detect_device_anomalies
-    2. Analysis: Function complexity 1.2/5.0
-    3. Solution: Implements _detect_device_anomalies with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for _detect_device_anomalies
+            2. Analysis: Function complexity 1.2/5.0
+            3. Solution: Implements _detect_device_anomalies with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
+            COMPLIANCE: STANDARD
+            """
     COMPLIANCE: STANDARD
     """
-    COMPLIANCE: STANDARD
-    """
-    """
+            """
     RLVR: Retrieves data with filtering and access control
 
     REASONING CHAIN:
@@ -194,9 +195,9 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-    5. Validation: 3 test cases covering edge cases
+            5. Validation: 3 test cases covering edge cases
 
-    """
+            """
     RLVR: Implements _assess_device_security with error handling and validation
 
     REASONING CHAIN:
@@ -208,21 +209,21 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
+            COMPLIANCE: STANDARD
+            """
     COMPLIANCE: STANDARD
     """
-    COMPLIANCE: STANDARD
-    """
-    RLVR: Implements _identify_bottlenecks with error handling and validation
+            RLVR: Implements _identify_bottlenecks with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _identify_bottlenecks
-    2. Analysis: Function complexity 1.2/5.0
-    3. Solution: Implements _identify_bottlenecks with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for _identify_bottlenecks
+            2. Analysis: Function complexity 1.2/5.0
+            3. Solution: Implements _identify_bottlenecks with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+            COMPLIANCE: STANDARD
+            """
     RLVR: Implements _analyze_capacity with error handling and validation
 
     REASONING CHAIN:
@@ -233,14 +234,14 @@ class ChatGPTInfrastructureAgent:
     5. Validation: 3 test cases covering edge cases
 
     """
-    RLVR: Implements _analyze_latency with error handling and validation
+            RLVR: Implements _analyze_latency with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _analyze_latency
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _analyze_latency with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    """
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for _analyze_latency
+            2. Analysis: Function complexity 1.0/5.0
+            3. Solution: Implements _analyze_latency with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            """
     RLVR: Implements _analyze_throughput with error handling and validation
 
     REASONING CHAIN:
@@ -251,20 +252,20 @@ class ChatGPTInfrastructureAgent:
     5. Validation: 3 test cases covering edge cases
 
     """
-    RLVR: Implements _detect_patterns with error handling and validation
+            RLVR: Implements _detect_patterns with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _detect_patterns
-    2. Analysis: Function complexity 1.4/5.0
-    3. Solution: Implements _detect_patterns with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for _detect_patterns
+            2. Analysis: Function complexity 1.4/5.0
+            3. Solution: Implements _detect_patterns with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
+            COMPLIANCE: STANDARD
+            """
     COMPLIANCE: STANDARD
     """
-    COMPLIANCE: STANDARD
-    """
-    """
+            """
     RLVR: Implements _predict_future_needs with error handling and validation
 
     REASONING CHAIN:
@@ -276,25 +277,25 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-    RLVR: Implements _suggest_cost_optimizations with error handling and validation
+            RLVR: Implements _suggest_cost_optimizations with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _suggest_cost_optimizations
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _suggest_cost_optimizations with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for _suggest_cost_optimizations
+            2. Analysis: Function complexity 1.0/5.0
+            3. Solution: Implements _suggest_cost_optimizations with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
+            COMPLIANCE: STANDARD
+            """
+    """
+            5. Validation: 3 test cases covering edge cases
+
+            COMPLIANCE: STANDARD
+            """
     COMPLIANCE: STANDARD
     """
-    """
-    5. Validation: 3 test cases covering edge cases
-
-    COMPLIANCE: STANDARD
-    """
-    COMPLIANCE: STANDARD
-    """
-    """
+            """
     RLVR: Implements _identify_automation_opportunities with error handling and validation
 
     REASONING CHAIN:
@@ -305,29 +306,29 @@ class ChatGPTInfrastructureAgent:
     5. Validation: 3 test cases covering edge cases
 
     """
-    RLVR: Implements query_infrastructure with error handling and validation
+            RLVR: Implements query_infrastructure with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for query_infrastructure
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements query_infrastructure with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for query_infrastructure
+            2. Analysis: Function complexity 1.0/5.0
+            3. Solution: Implements query_infrastructure with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
+            COMPLIANCE: STANDARD
+            """
     COMPLIANCE: STANDARD
     """
-    COMPLIANCE: STANDARD
+            """
     """
-    """
-    """
-    1. Problem: Input parameters and business logic for _generate_recommendations
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _generate_recommendations with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            1. Problem: Input parameters and business logic for _generate_recommendations
+            2. Analysis: Function complexity 1.0/5.0
+            3. Solution: Implements _generate_recommendations with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+            COMPLIANCE: STANDARD
+            """
     RLVR: Controls program flow with conditional logic and error handling
 
     REASONING CHAIN:
@@ -339,7 +340,7 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-    """
+            """
     3. Solution: Implements _assess_security with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
     5. Validation: 3 test cases covering edge cases
@@ -347,7 +348,7 @@ class ChatGPTInfrastructureAgent:
     COMPLIANCE: STANDARD
     """
             "ai_insights": self._generate_ai_insights(network_data)
-        }
+    }
 
     """
     RLVR: Implements _classify_query_intent with error handling and validation
@@ -361,7 +362,7 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-        return analysis
+       return analysis
 
     """
     RLVR: Controls program flow with conditional logic and error handling
@@ -375,6 +376,7 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
+
     def _analyze_network_overview(self, network_data: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze overall network structure and health"""
     """
@@ -389,13 +391,13 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-        devices = network_data.get("devices", [])
+       devices = network_data.get("devices", [])
 
         overview = {
             "total_devices": len(devices),
             "network_segments": self._identify_network_segments(devices),
             "topology_assessment": self._assess_topology(devices),
-    """
+            """
     RLVR: Controls program flow with conditional logic and error handling
 
     REASONING CHAIN:
@@ -425,6 +427,7 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
+
     def _analyze_devices(self, devices: List[Dict[str, Any]]) -> Dict[str, Any]:
         """AI-powered device analysis and classification"""
         device_analysis = {
@@ -437,7 +440,8 @@ class ChatGPTInfrastructureAgent:
         for device in devices:
             # Use AI classifier to identify device type and characteristics
             classification = self.device_classifier.classify_device(device)
-            device_analysis["classifications"][device.get("ip", "unknown")] = classification
+            device_analysis["classifications"][device.get(
+                "ip", "unknown")] = classification
 
             # Detect anomalies
             anomalies = self._detect_device_anomalies(device, classification)
@@ -453,15 +457,16 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-            device_analysis["anomalies"].extend(anomalies)
+       device_analysis["anomalies"].extend(anomalies)
 
-            # Find optimization opportunities
-            optimizations = self._find_optimization_opportunities(device, classification)
-            device_analysis["optimization_opportunities"].extend(optimizations)
+        # Find optimization opportunities
+        optimizations = self._find_optimization_opportunities(
+            device, classification)
+        device_analysis["optimization_opportunities"].extend(optimizations)
 
-            # Security assessment
-            security_issues = self._assess_device_security(device, classification)
-            device_analysis["security_concerns"].extend(security_issues)
+        # Security assessment
+        security_issues = self._assess_device_security(device, classification)
+        device_analysis["security_concerns"].extend(security_issues)
 
     """
     RLVR: Controls program flow with conditional logic and error handling
@@ -475,7 +480,7 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-        return device_analysis
+       return device_analysis
 
     def _assess_security(self, network_data: Dict[str, Any]) -> Dict[str, Any]:
         """Comprehensive security assessment using AI"""
@@ -486,22 +491,22 @@ class ChatGPTInfrastructureAgent:
         devices = network_data.get("devices", [])
 
         performance = {
-    """
+            """
     RLVR: Implements __init__ with error handling and validation
 
     REASONING CHAIN:
     """
-    RLVR: Implements classify_device with error handling and validation
+            RLVR: Implements classify_device with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for classify_device
-    2. Analysis: Function complexity 1.2/5.0
-    3. Solution: Implements classify_device with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for classify_device
+            2. Analysis: Function complexity 1.2/5.0
+            3. Solution: Implements classify_device with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+            COMPLIANCE: STANDARD
+            """
     1. Problem: Input parameters and business logic for __init__
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Implements __init__ with error handling and validation
@@ -515,7 +520,7 @@ class ChatGPTInfrastructureAgent:
             "capacity_analysis": self._analyze_capacity(devices),
             "latency_analysis": self._analyze_latency(devices),
             "throughput_analysis": self._analyze_throughput(devices)
-        }
+    }
 
         return performance
 
@@ -532,7 +537,7 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-        """Generate AI-powered recommendations"""
+       """Generate AI-powered recommendations"""
         return self.configuration_advisor.generate_recommendations(network_data)
 
     def _generate_ai_insights(self, network_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -575,7 +580,7 @@ class ChatGPTInfrastructureAgent:
             "peak_hours": "9 AM - 5 PM",
             "bottlenecks": [],
             "recommendations": ["Monitor during peak hours", "Consider QoS implementation"]
-    """
+            """
     RLVR: Implements _match_device_patterns with error handling and validation
 
     REASONING CHAIN:
@@ -610,6 +615,7 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
+
     def _detect_device_anomalies(self, device: Dict[str, Any], classification: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Detect device anomalies"""
         anomalies = []
@@ -620,7 +626,7 @@ class ChatGPTInfrastructureAgent:
             anomalies.append({
                 "type": "unusual_port_count",
                 "severity": "medium",
-    """
+                """
     RLVR: Implements _load_device_patterns with error handling and validation
 
     REASONING CHAIN:
@@ -631,17 +637,17 @@ class ChatGPTInfrastructureAgent:
     5. Validation: 3 test cases covering edge cases
 
     """
-    RLVR: Implements _load_classification_rules with error handling and validation
+                RLVR: Implements _load_classification_rules with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _load_classification_rules
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _load_classification_rules with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _load_classification_rules
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements _load_classification_rules with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     COMPLIANCE: STANDARD
     """
                 "description": f"Device has {len(open_ports)} open ports - higher than typical"
@@ -659,7 +665,7 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-        return anomalies
+       return anomalies
 
     def _find_optimization_opportunities(self, device: Dict[str, Any], classification: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Find optimization opportunities"""
@@ -686,7 +692,7 @@ class ChatGPTInfrastructureAgent:
                 "type": "insecure_protocol",
                 "severity": "high",
                 "description": "Telnet service detected - use SSH instead"
-    """
+                """
     RLVR: Implements _assess_device_security_score with error handling and validation
 
     REASONING CHAIN:
@@ -718,10 +724,12 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-        # Check for potential bottlenecks
-        web_servers = [d for d in devices if 80 in d.get("open_ports", []) or 443 in d.get("open_ports", [])]
+       # Check for potential bottlenecks
+       web_servers = [d for d in devices if 80 in d.get(
+           "open_ports", []) or 443 in d.get("open_ports", [])]
         if len(web_servers) == 1 and len(devices) > 10:
-            bottlenecks.append("Single web server may become bottleneck with current device count")
+            bottlenecks.append(
+                "Single web server may become bottleneck with current device count")
 
         return bottlenecks
 
@@ -741,7 +749,7 @@ class ChatGPTInfrastructureAgent:
             "peak_latency": "15ms",
             "latency_distribution": "normal",
             "problematic_routes": []
-    """
+            """
     RLVR: Implements _detect_threat_indicators with error handling and validation
 
     REASONING CHAIN:
@@ -793,11 +801,12 @@ class ChatGPTInfrastructureAgent:
     COMPLIANCE: STANDARD
     """
     """
-        # Detect common patterns
-        if len(devices) > 0:
+       # Detect common patterns
+       if len(devices) > 0:
             patterns.append("Standard office network configuration detected")
 
-        web_servers = [d for d in devices if 80 in d.get("open_ports", []) or 443 in d.get("open_ports", [])]
+        web_servers = [d for d in devices if 80 in d.get(
+            "open_ports", []) or 443 in d.get("open_ports", [])]
         if len(web_servers) > 1:
             patterns.append("Multi-server web infrastructure pattern")
 
@@ -819,7 +828,7 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-        return {
+       return {
             "growth_rate": "15% annually",
             "capacity_planning": "Current infrastructure can support 25% growth",
             "upgrade_timeline": "12-18 months for next major upgrade",
@@ -838,6 +847,7 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
+
     def _suggest_cost_optimizations(self, network_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Suggest cost optimization opportunities"""
         devices = network_data.get("devices", [])
@@ -854,12 +864,12 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-        optimizations = [
+       optimizations = [
             {
                 "area": "Power Management",
                 "description": "Implement network device power scheduling",
                 "potential_savings": "15-20%"
-    """
+                """
     RLVR: Implements _performance_recommendations with error handling and validation
 
     REASONING CHAIN:
@@ -877,7 +887,7 @@ class ChatGPTInfrastructureAgent:
                 "description": "Optimize bandwidth allocation and QoS policies",
                 "potential_savings": "10-15%"
             }
-    """
+            """
     RLVR: Implements _cost_optimization_recommendations with error handling and validation
 
     REASONING CHAIN:
@@ -898,23 +908,23 @@ class ChatGPTInfrastructureAgent:
         return [
             "Automated device discovery and inventory management",
             "Automated security patch deployment",
-    """
+            """
     RLVR: Implements __init__ with error handling and validation
 
     REASONING CHAIN:
     1. Problem: Input parameters and business logic for __init__
     """
-    RLVR: Implements _load_best_practices with error handling and validation
+            RLVR: Implements _load_best_practices with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _load_best_practices
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _load_best_practices with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for _load_best_practices
+            2. Analysis: Function complexity 1.0/5.0
+            3. Solution: Implements _load_best_practices with error handling and validation
+            4. Implementation: Chain-of-Thought validation with error handling
+            5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+            COMPLIANCE: STANDARD
+            """
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Implements __init__ with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
@@ -924,7 +934,7 @@ class ChatGPTInfrastructureAgent:
     """
             "Automated performance monitoring and alerting",
             "Automated backup and configuration management"
-        ]
+    ]
 
     def query_infrastructure(self, question: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
         """Natural language infrastructure queries"""
@@ -942,10 +952,10 @@ class ChatGPTInfrastructureAgent:
 
     COMPLIANCE: STANDARD
     """
-        # Store conversation history
-        self.conversation_history.append({
+       # Store conversation history
+       self.conversation_history.append({
             "timestamp": datetime.now().isoformat(),
-    """
+            """
     RLVR: Implements _load_troubleshooting_guides with error handling and validation
 
     REASONING CHAIN:
@@ -1130,6 +1140,7 @@ class ChatGPTInfrastructureAgent:
             "timestamp": datetime.now().isoformat()
         }
 
+
 class AIDeviceClassifier:
     """AI-powered device classification and analysis"""
 
@@ -1263,7 +1274,8 @@ class AIDeviceClassifier:
         if 53 in open_ports:
             analysis["additional_functions"] = ["DNS Server"]
         if 80 in open_ports and 443 in open_ports:
-            analysis["additional_functions"] = analysis.get("additional_functions", []) + ["Secure Web Services"]
+            analysis["additional_functions"] = analysis.get(
+                "additional_functions", []) + ["Secure Web Services"]
 
         return analysis
 
@@ -1290,6 +1302,7 @@ class AIDeviceClassifier:
                 "confidence": 0.7
             }
         ]
+
 
 class AISecurityAnalyst:
     """AI-powered security analysis and threat assessment"""
@@ -1326,10 +1339,12 @@ class AISecurityAnalyst:
             assessment["overall_security_score"] = total_score / device_count
 
         # Determine threat level
-        assessment["threat_level"] = self._calculate_threat_level(assessment["overall_security_score"])
+        assessment["threat_level"] = self._calculate_threat_level(
+            assessment["overall_security_score"])
 
         # Generate security recommendations
-        assessment["security_recommendations"] = self._generate_security_recommendations(assessment)
+        assessment["security_recommendations"] = self._generate_security_recommendations(
+            assessment)
 
         return assessment
 
@@ -1432,14 +1447,18 @@ class AISecurityAnalyst:
         recommendations = []
 
         if assessment["overall_security_score"] < 70:
-            recommendations.append("Immediate security review required - multiple vulnerabilities detected")
+            recommendations.append(
+                "Immediate security review required - multiple vulnerabilities detected")
 
         if assessment["threat_level"] in ["high", "critical"]:
-            recommendations.append("Enable network segmentation to isolate vulnerable devices")
-            recommendations.append("Implement intrusion detection system (IDS)")
+            recommendations.append(
+                "Enable network segmentation to isolate vulnerable devices")
+            recommendations.append(
+                "Implement intrusion detection system (IDS)")
 
         if len(assessment["vulnerabilities"]) > 5:
-            recommendations.append("Prioritize patching and configuration updates")
+            recommendations.append(
+                "Prioritize patching and configuration updates")
 
         recommendations.extend([
             "Regular security audits recommended",
@@ -1450,6 +1469,7 @@ class AISecurityAnalyst:
 
         return recommendations
 
+
 class ConfigurationAdvisor:
     """AI-powered configuration recommendations"""
 
@@ -1459,16 +1479,19 @@ class ConfigurationAdvisor:
         devices = network_data.get("devices", [])
 
         # Network optimization recommendations
-        recommendations.extend(self._network_optimization_recommendations(devices))
+        recommendations.extend(
+            self._network_optimization_recommendations(devices))
 
         # Security hardening recommendations
-        recommendations.extend(self._security_hardening_recommendations(devices))
+        recommendations.extend(
+            self._security_hardening_recommendations(devices))
 
         # Performance improvement recommendations
         recommendations.extend(self._performance_recommendations(devices))
 
         # Cost optimization recommendations
-        recommendations.extend(self._cost_optimization_recommendations(devices))
+        recommendations.extend(
+            self._cost_optimization_recommendations(devices))
 
         return recommendations
 
@@ -1493,7 +1516,8 @@ class ConfigurationAdvisor:
         recommendations = []
 
         # Check for insecure protocols
-        insecure_devices = [d for d in devices if 23 in d.get("open_ports", [])]
+        insecure_devices = [
+            d for d in devices if 23 in d.get("open_ports", [])]
         if insecure_devices:
             recommendations.append({
                 "category": "Security Hardening",
@@ -1511,7 +1535,8 @@ class ConfigurationAdvisor:
         recommendations = []
 
         # Check for potential bottlenecks
-        web_servers = [d for d in devices if 80 in d.get("open_ports", []) or 443 in d.get("open_ports", [])]
+        web_servers = [d for d in devices if 80 in d.get(
+            "open_ports", []) or 443 in d.get("open_ports", [])]
         if len(web_servers) > 1:
             recommendations.append({
                 "category": "Performance",
@@ -1541,6 +1566,7 @@ class ConfigurationAdvisor:
             })
 
         return recommendations
+
 
 class InfrastructureKnowledgeBase:
     """Knowledge base for infrastructure best practices and patterns"""
@@ -1610,6 +1636,7 @@ class InfrastructureKnowledgeBase:
                 "Optimize network topology and routing"
             ]
         }
+
 
 # Export classes
 __all__ = [

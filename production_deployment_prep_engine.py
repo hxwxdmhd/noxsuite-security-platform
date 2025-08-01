@@ -4,7 +4,7 @@ NoxSuite Production Deployment Preparation Engine
 =================================================
 
 Autonomous development agent for Production Deployment Preparation Phase:
-1. Frontend Container Repair & LAN Accessibility 
+1. Frontend Container Repair & LAN Accessibility
 2. CVE Scan & Continuous Security
 3. Performance Optimization
 4. Accelerate Core Module Development
@@ -14,42 +14,44 @@ Autonomous development agent for Production Deployment Preparation Phase:
 OBJECTIVES: Fix frontend access, optimize performance, accelerate development
 """
 
-import os
-import sys
 import json
-import time
 import logging
-import subprocess
-import requests
+import os
 import socket
-import psutil
-import yaml
+import subprocess
+import sys
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+import psutil
+import requests
+import yaml
+
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler('production_deployment_prep.log'),
-        logging.StreamHandler(sys.stdout)
-    ]
+        logging.FileHandler("production_deployment_prep.log"),
+        logging.StreamHandler(sys.stdout),
+    ],
 )
 logger = logging.getLogger(__name__)
 
+
 class ProductionDeploymentPrepEngine:
     """Production deployment preparation and optimization engine"""
-    
+
     def __init__(self):
         self.base_dir = Path(__file__).parent
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.hostname = socket.gethostname()
         self.local_ip = self.get_local_ip()
-        
+
         # Load previous validation results
         self.load_validation_context()
-        
+
     def get_local_ip(self) -> str:
         """Get local IP address"""
         try:
@@ -58,7 +60,7 @@ class ProductionDeploymentPrepEngine:
                 return s.getsockname()[0]
         except Exception:
             return "127.0.0.1"
-            
+
     def load_validation_context(self):
         """Load context from previous validation phase"""
         self.validation_context = {
@@ -68,13 +70,13 @@ class ProductionDeploymentPrepEngine:
             "accessible_services": 5,
             "total_services": 6,
             "missing_service": "Frontend App (port 3001)",
-            "critical_issues": ["Frontend container not accessible"]
+            "critical_issues": ["Frontend container not accessible"],
         }
-        
+
     def diagnose_frontend_container_issue(self) -> Dict:
         """Diagnose and fix frontend container accessibility issue"""
         logger.info("STEP 1: Diagnosing Frontend Container Issue")
-        
+
         diagnosis = {
             "timestamp": datetime.now().isoformat(),
             "issue_type": "Frontend Container Not Accessible",
@@ -82,72 +84,78 @@ class ProductionDeploymentPrepEngine:
             "expected_service": "Grafana Dashboard",
             "current_status": {},
             "docker_analysis": {},
-            "fix_recommendations": []
+            "fix_recommendations": [],
         }
-        
+
         try:
             # Check current Docker containers
-            result = subprocess.run(['docker', 'ps', '--format', 'json'], 
-                                  capture_output=True, text=True)
+            result = subprocess.run(
+                ["docker", "ps", "--format", "json"], capture_output=True, text=True
+            )
             if result.returncode == 0:
                 containers = []
-                for line in result.stdout.strip().split('\n'):
+                for line in result.stdout.strip().split("\n"):
                     if line:
                         container = json.loads(line)
                         containers.append(container)
-                        
-                diagnosis["docker_analysis"]["running_containers"] = len(containers)
+
+                diagnosis["docker_analysis"]["running_containers"] = len(
+                    containers)
                 diagnosis["docker_analysis"]["containers"] = containers
-                
+
                 # Check for port 3001 binding
                 port_3001_container = None
                 for container in containers:
-                    if '3001' in container.get('Ports', ''):
+                    if "3001" in container.get("Ports", ""):
                         port_3001_container = container
                         break
-                        
+
                 if port_3001_container:
-                    diagnosis["current_status"]["port_3001_service"] = port_3001_container['Names']
+                    diagnosis["current_status"]["port_3001_service"] = (
+                        port_3001_container["Names"]
+                    )
                     diagnosis["current_status"]["status"] = "Found but may be unhealthy"
                 else:
                     diagnosis["current_status"]["port_3001_service"] = "None found"
                     diagnosis["current_status"]["status"] = "Missing - needs deployment"
-                    
+
             # Test port accessibility
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(2)
             port_accessible = sock.connect_ex((self.local_ip, 3001)) == 0
             sock.close()
-            
+
             diagnosis["current_status"]["port_accessible"] = port_accessible
-            
+
             # Generate fix recommendations
             if not port_accessible:
-                diagnosis["fix_recommendations"].extend([
-                    {
-                        "priority": "critical",
-                        "action": "Deploy Grafana service on port 3001",
-                        "command": "docker-compose -f docker-compose.noxsuite.yml up -d grafana",
-                        "validation": "curl -f http://localhost:3001/api/health"
-                    },
-                    {
-                        "priority": "high", 
-                        "action": "Fix docker-compose dependencies",
-                        "command": "docker-compose -f docker-compose.noxsuite.yml pull",
-                        "validation": "docker-compose -f docker-compose.noxsuite.yml config"
-                    }
-                ])
-                
+                diagnosis["fix_recommendations"].extend(
+                    [
+                        {
+                            "priority": "critical",
+                            "action": "Deploy Grafana service on port 3001",
+                            "command": "docker-compose -f docker-compose.noxsuite.yml up -d grafana",
+                            "validation": "curl -f http://localhost:3001/api/health",
+                        },
+                        {
+                            "priority": "high",
+                            "action": "Fix docker-compose dependencies",
+                            "command": "docker-compose -f docker-compose.noxsuite.yml pull",
+                            "validation": "docker-compose -f docker-compose.noxsuite.yml config",
+                        },
+                    ]
+                )
+
         except Exception as e:
             logger.error(f"Frontend diagnosis failed: {e}")
             diagnosis["error"] = str(e)
-            
+
         return diagnosis
-        
+
     def create_frontend_fix_patch(self, diagnosis: Dict) -> str:
         """Create frontend fix patch and docker-compose corrections"""
         logger.info("Creating frontend fix patch...")
-        
+
         patch_content = f"""# Frontend Container Fix Patch - {self.timestamp}
 # Addresses: {diagnosis.get('issue_type', 'Frontend accessibility issue')}
 
@@ -234,97 +242,119 @@ deploy:
 """
 
         # Save patch file
-        patch_path = self.base_dir / f"frontend_fix_patch_{self.timestamp}.diff"
-        with open(patch_path, 'w', encoding='utf-8') as f:
+        patch_path = self.base_dir / \
+            f"frontend_fix_patch_{self.timestamp}.diff"
+        with open(patch_path, "w", encoding="utf-8") as f:
             f.write(patch_content)
-            
+
         # Create actual docker-compose files for deployment
         grafana_compose = {
-            'version': '3.8',
-            'services': {
-                'grafana-standalone': {
-                    'image': 'grafana/grafana:latest',
-                    'container_name': 'noxsuite-grafana-fixed',
-                    'restart': 'unless-stopped',
-                    'ports': ['3001:3000'],
-                    'environment': [
-                        'GF_SECURITY_ADMIN_USER=admin',
-                        'GF_SECURITY_ADMIN_PASSWORD=noxsuite123',
-                        'GF_USERS_ALLOW_SIGN_UP=false',
-                        'GF_SERVER_ROOT_URL=http://localhost:3001'
+            "version": "3.8",
+            "services": {
+                "grafana-standalone": {
+                    "image": "grafana/grafana:latest",
+                    "container_name": "noxsuite-grafana-fixed",
+                    "restart": "unless-stopped",
+                    "ports": ["3001:3000"],
+                    "environment": [
+                        "GF_SECURITY_ADMIN_USER=admin",
+                        "GF_SECURITY_ADMIN_PASSWORD=noxsuite123",
+                        "GF_USERS_ALLOW_SIGN_UP=false",
+                        "GF_SERVER_ROOT_URL=http://localhost:3001",
                     ],
-                    'volumes': ['grafana_data_fixed:/var/lib/grafana'],
-                    'healthcheck': {
-                        'test': ['CMD-SHELL', 'curl -f http://localhost:3000/api/health || exit 1'],
-                        'interval': '30s',
-                        'timeout': '10s',
-                        'retries': 3,
-                        'start_period': '40s'
-                    }
+                    "volumes": ["grafana_data_fixed:/var/lib/grafana"],
+                    "healthcheck": {
+                        "test": [
+                            "CMD-SHELL",
+                            "curl -f http://localhost:3000/api/health || exit 1",
+                        ],
+                        "interval": "30s",
+                        "timeout": "10s",
+                        "retries": 3,
+                        "start_period": "40s",
+                    },
                 }
             },
-            'volumes': {
-                'grafana_data_fixed': None
-            }
+            "volumes": {"grafana_data_fixed": None},
         }
-        
+
         grafana_compose_path = self.base_dir / "frontend-fix-grafana.yml"
-        with open(grafana_compose_path, 'w') as f:
+        with open(grafana_compose_path, "w") as f:
             yaml.dump(grafana_compose, f, default_flow_style=False)
-            
+
         logger.info(f"Frontend fix patch created: {patch_path}")
         return str(patch_path)
-        
+
     def deploy_frontend_fix(self) -> Dict:
         """Deploy the frontend fix"""
         logger.info("Deploying frontend fix...")
-        
+
         deployment_result = {
             "timestamp": datetime.now().isoformat(),
             "deployment_method": "Standalone Grafana on port 3001",
             "status": "unknown",
             "steps": [],
-            "validation": {}
+            "validation": {},
         }
-        
+
         try:
             # Deploy Grafana standalone
             compose_file = self.base_dir / "frontend-fix-grafana.yml"
-            
+
             # Pull image first
-            pull_result = subprocess.run(['docker', 'pull', 'grafana/grafana:latest'], 
-                                       capture_output=True, text=True)
-            deployment_result["steps"].append({
-                "step": "pull_grafana_image",
-                "success": pull_result.returncode == 0,
-                "output": pull_result.stdout if pull_result.returncode == 0 else pull_result.stderr
-            })
-            
+            pull_result = subprocess.run(
+                ["docker", "pull", "grafana/grafana:latest"],
+                capture_output=True,
+                text=True,
+            )
+            deployment_result["steps"].append(
+                {
+                    "step": "pull_grafana_image",
+                    "success": pull_result.returncode == 0,
+                    "output": (
+                        pull_result.stdout
+                        if pull_result.returncode == 0
+                        else pull_result.stderr
+                    ),
+                }
+            )
+
             # Deploy service
-            deploy_result = subprocess.run(['docker-compose', '-f', str(compose_file), 'up', '-d'], 
-                                         capture_output=True, text=True)
-            deployment_result["steps"].append({
-                "step": "deploy_grafana_service", 
-                "success": deploy_result.returncode == 0,
-                "output": deploy_result.stdout if deploy_result.returncode == 0 else deploy_result.stderr
-            })
-            
+            deploy_result = subprocess.run(
+                ["docker-compose", "-f", str(compose_file), "up", "-d"],
+                capture_output=True,
+                text=True,
+            )
+            deployment_result["steps"].append(
+                {
+                    "step": "deploy_grafana_service",
+                    "success": deploy_result.returncode == 0,
+                    "output": (
+                        deploy_result.stdout
+                        if deploy_result.returncode == 0
+                        else deploy_result.stderr
+                    ),
+                }
+            )
+
             # Wait for service to start
             time.sleep(10)
-            
+
             # Validate deployment
             validation_result = self.validate_frontend_fix()
             deployment_result["validation"] = validation_result
-            
-            deployment_result["status"] = "success" if validation_result.get("accessible") else "partial"
-            
+
+            deployment_result["status"] = (
+                "success" if validation_result.get("accessible") else "partial"
+            )
+
         except Exception as e:
             logger.error(f"Frontend deployment failed: {e}")
             deployment_result["status"] = "failed"
             deployment_result["error"] = str(e)
-            
+
         return deployment_result
-        
+
     def validate_frontend_fix(self) -> Dict:
         """Validate the frontend fix"""
         validation = {
@@ -332,100 +362,103 @@ deploy:
             "port_3001_accessible": False,
             "service_healthy": False,
             "response_time_ms": None,
-            "service_type": "unknown"
+            "service_type": "unknown",
         }
-        
+
         try:
             # Test port accessibility
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(5)
             port_accessible = sock.connect_ex((self.local_ip, 3001)) == 0
             sock.close()
-            
+
             validation["port_3001_accessible"] = port_accessible
-            
+
             if port_accessible:
                 # Test HTTP health check
                 try:
                     start_time = time.time()
-                    response = requests.get(f"http://{self.local_ip}:3001/api/health", timeout=10)
+                    response = requests.get(
+                        f"http://{self.local_ip}:3001/api/health", timeout=10
+                    )
                     response_time = (time.time() - start_time) * 1000
-                    
+
                     validation["service_healthy"] = response.status_code == 200
                     validation["response_time_ms"] = round(response_time, 2)
                     validation["service_type"] = "grafana"
                     validation["response_data"] = response.text[:200]
-                    
+
                 except requests.RequestException:
                     # Try basic HTTP check
                     try:
-                        response = requests.get(f"http://{self.local_ip}:3001/", timeout=10)
+                        response = requests.get(
+                            f"http://{self.local_ip}:3001/", timeout=10
+                        )
                         validation["service_healthy"] = response.status_code < 400
                         validation["service_type"] = "http_service"
                     except:
                         validation["service_healthy"] = False
-                        
-            validation["accessible"] = validation["port_3001_accessible"] and validation["service_healthy"]
-            
+
+            validation["accessible"] = (
+                validation["port_3001_accessible"] and validation["service_healthy"]
+            )
+
         except Exception as e:
             logger.error(f"Frontend validation failed: {e}")
             validation["error"] = str(e)
-            
+
         return validation
-        
+
     def execute_cve_scan_and_security(self) -> Dict:
         """Execute comprehensive CVE scanning and security assessment"""
         logger.info("STEP 2: Executing CVE Scan & Continuous Security")
-        
+
         security_assessment = {
             "timestamp": datetime.now().isoformat(),
             "scan_results": {},
-            "vulnerability_summary": {
-                "critical": 0,
-                "high": 0,
-                "medium": 0,
-                "low": 0
-            },
+            "vulnerability_summary": {"critical": 0, "high": 0, "medium": 0, "low": 0},
             "docker_security": {},
             "python_dependencies": {},
-            "remediation_plan": []
+            "remediation_plan": [],
         }
-        
+
         try:
             # Docker image security scan (simulated comprehensive)
             docker_images = []
-            result = subprocess.run(['docker', 'images', '--format', 'json'], 
-                                  capture_output=True, text=True)
+            result = subprocess.run(
+                ["docker", "images", "--format", "json"], capture_output=True, text=True
+            )
             if result.returncode == 0:
-                for line in result.stdout.strip().split('\n'):
+                for line in result.stdout.strip().split("\n"):
                     if line:
                         image = json.loads(line)
                         docker_images.append(image)
-                        
+
             security_assessment["docker_security"] = {
                 "total_images": len(docker_images),
                 "scanned_images": len(docker_images),
                 "vulnerabilities_found": 0,  # Simulated clean scan
-                "last_scan": datetime.now().isoformat()
+                "last_scan": datetime.now().isoformat(),
             }
-            
+
             # Python dependency scan
             try:
-                pip_result = subprocess.run(['pip', 'list', '--format=json'], 
-                                          capture_output=True, text=True)
+                pip_result = subprocess.run(
+                    ["pip", "list", "--format=json"], capture_output=True, text=True
+                )
                 if pip_result.returncode == 0:
                     packages = json.loads(pip_result.stdout)
                     security_assessment["python_dependencies"] = {
                         "total_packages": len(packages),
                         "vulnerable_packages": 0,  # Simulated clean
-                        "packages_analyzed": len(packages)
+                        "packages_analyzed": len(packages),
                     }
             except:
                 security_assessment["python_dependencies"] = {
                     "status": "scan_failed",
-                    "message": "Could not analyze Python dependencies"
+                    "message": "Could not analyze Python dependencies",
                 }
-                
+
             # Generate CVE patch plan
             cve_patch_plan = {
                 "timestamp": datetime.now().isoformat(),
@@ -434,205 +467,215 @@ deploy:
                     {
                         "action": "Update base images to latest secure versions",
                         "impact": "Reduces attack surface",
-                        "command": "docker-compose pull && docker-compose up -d"
+                        "command": "docker-compose pull && docker-compose up -d",
                     }
                 ],
                 "security_hardening": [
                     {
                         "action": "Enable Docker security scanning",
                         "command": "docker scout quickview",
-                        "impact": "Continuous vulnerability monitoring"
+                        "impact": "Continuous vulnerability monitoring",
                     },
                     {
                         "action": "Implement secrets management",
                         "command": "docker secret create",
-                        "impact": "Secure credential storage"
-                    }
-                ]
+                        "impact": "Secure credential storage",
+                    },
+                ],
             }
-            
+
             # Save CVE patch plan
-            cve_plan_path = self.base_dir / f"cve_patch_plan_{self.timestamp}.json"
-            with open(cve_plan_path, 'w') as f:
+            cve_plan_path = self.base_dir / \
+                f"cve_patch_plan_{self.timestamp}.json"
+            with open(cve_plan_path, "w") as f:
                 json.dump(cve_patch_plan, f, indent=2)
-                
+
             security_assessment["cve_patch_plan_path"] = str(cve_plan_path)
             security_assessment["overall_security_status"] = "SECURE"
-            
+
         except Exception as e:
             logger.error(f"CVE scan failed: {e}")
             security_assessment["error"] = str(e)
-            
+
         return security_assessment
-        
+
     def optimize_performance(self) -> Dict:
         """Optimize Docker performance and system resources"""
         logger.info("STEP 3: Performance Optimization")
-        
+
         optimization_report = {
             "timestamp": datetime.now().isoformat(),
             "current_metrics": {},
             "optimizations_applied": [],
             "performance_improvements": {},
-            "recommendations": []
+            "recommendations": [],
         }
-        
+
         try:
             # Collect current system metrics
             cpu_percent = psutil.cpu_percent(interval=1)
             memory = psutil.virtual_memory()
-            disk = psutil.disk_usage('/')
-            
+            disk = psutil.disk_usage("/")
+
             optimization_report["current_metrics"] = {
                 "cpu_percent": cpu_percent,
                 "memory_percent": memory.percent,
                 "memory_available_gb": round(memory.available / (1024**3), 2),
-                "disk_free_gb": round(disk.free / (1024**3), 2)
+                "disk_free_gb": round(disk.free / (1024**3), 2),
             }
-            
+
             # Docker container resource analysis
             docker_stats = []
             try:
-                result = subprocess.run(['docker', 'stats', '--no-stream', '--format', 
-                                       'table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}'], 
-                                      capture_output=True, text=True, timeout=10)
+                result = subprocess.run(
+                    [
+                        "docker",
+                        "stats",
+                        "--no-stream",
+                        "--format",
+                        "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}",
+                    ],
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
+                )
                 if result.returncode == 0:
-                    lines = result.stdout.strip().split('\n')[1:]  # Skip header
+                    lines = result.stdout.strip().split("\n")[
+                        1:]  # Skip header
                     for line in lines:
                         if line:
-                            parts = line.split('\t')
+                            parts = line.split("\t")
                             if len(parts) >= 3:
-                                docker_stats.append({
-                                    "container": parts[0],
-                                    "cpu_percent": parts[1],
-                                    "memory_usage": parts[2],
-                                    "network_io": parts[3] if len(parts) > 3 else "N/A"
-                                })
+                                docker_stats.append(
+                                    {
+                                        "container": parts[0],
+                                        "cpu_percent": parts[1],
+                                        "memory_usage": parts[2],
+                                        "network_io": (
+                                            parts[3] if len(
+                                                parts) > 3 else "N/A"
+                                        ),
+                                    }
+                                )
             except subprocess.TimeoutExpired:
                 logger.warning("Docker stats collection timed out")
-                
+
             optimization_report["docker_metrics"] = docker_stats
-            
+
             # Performance optimizations
             optimizations = []
-            
+
             if cpu_percent > 80:
-                optimizations.append({
-                    "issue": f"High CPU usage ({cpu_percent}%)",
-                    "optimization": "Implement Docker resource limits",
-                    "action": "Add CPU limits to docker-compose services",
-                    "expected_improvement": "20-30% CPU reduction"
-                })
-                
+                optimizations.append(
+                    {
+                        "issue": f"High CPU usage ({cpu_percent}%)",
+                        "optimization": "Implement Docker resource limits",
+                        "action": "Add CPU limits to docker-compose services",
+                        "expected_improvement": "20-30% CPU reduction",
+                    }
+                )
+
             if memory.percent > 80:
-                optimizations.append({
-                    "issue": f"High memory usage ({memory.percent}%)",
-                    "optimization": "Optimize container memory allocation",
-                    "action": "Set memory limits and enable swappiness",
-                    "expected_improvement": "15-25% memory reduction"
-                })
-                
+                optimizations.append(
+                    {
+                        "issue": f"High memory usage ({memory.percent}%)",
+                        "optimization": "Optimize container memory allocation",
+                        "action": "Set memory limits and enable swappiness",
+                        "expected_improvement": "15-25% memory reduction",
+                    }
+                )
+
             optimization_report["optimizations_applied"] = optimizations
-            
+
             # Generate optimized docker-compose with resource limits
             self.create_optimized_docker_compose()
-            
+
             optimization_report["recommendations"] = [
                 "Monitor container resource usage regularly",
                 "Implement health checks for all services",
                 "Use multi-stage builds to reduce image sizes",
-                "Enable Docker BuildKit for faster builds"
+                "Enable Docker BuildKit for faster builds",
             ]
-            
+
         except Exception as e:
             logger.error(f"Performance optimization failed: {e}")
             optimization_report["error"] = str(e)
-            
+
         return optimization_report
-        
+
     def create_optimized_docker_compose(self):
         """Create optimized docker-compose with resource limits"""
         optimized_compose = {
-            'version': '3.8',
-            'services': {
-                'noxguard-api-optimized': {
-                    'image': 'noxguard---noxpanel-main-noxguard-api',
-                    'container_name': 'noxguard-api-optimized',
-                    'restart': 'unless-stopped',
-                    'ports': ['8000:8000'],
-                    'deploy': {
-                        'resources': {
-                            'limits': {
-                                'memory': '512M',
-                                'cpus': '0.5'
-                            },
-                            'reservations': {
-                                'memory': '256M',
-                                'cpus': '0.2'
-                            }
+            "version": "3.8",
+            "services": {
+                "noxguard-api-optimized": {
+                    "image": "noxguard---noxpanel-main-noxguard-api",
+                    "container_name": "noxguard-api-optimized",
+                    "restart": "unless-stopped",
+                    "ports": ["8000:8000"],
+                    "deploy": {
+                        "resources": {
+                            "limits": {"memory": "512M", "cpus": "0.5"},
+                            "reservations": {"memory": "256M", "cpus": "0.2"},
                         }
                     },
-                    'healthcheck': {
-                        'test': ['CMD', 'curl', '-f', 'http://localhost:8000/health'],
-                        'interval': '30s',
-                        'timeout': '10s',
-                        'retries': 3
-                    }
+                    "healthcheck": {
+                        "test": ["CMD", "curl", "-f", "http://localhost:8000/health"],
+                        "interval": "30s",
+                        "timeout": "10s",
+                        "retries": 3,
+                    },
                 },
-                'noxguard-monitor-optimized': {
-                    'image': 'noxguard---noxpanel-main-noxguard-monitor',
-                    'container_name': 'noxguard-monitor-optimized',
-                    'restart': 'unless-stopped',
-                    'ports': ['8001:8001'],
-                    'deploy': {
-                        'resources': {
-                            'limits': {
-                                'memory': '256M',
-                                'cpus': '0.3'
-                            }
-                        }
-                    }
-                }
-            }
+                "noxguard-monitor-optimized": {
+                    "image": "noxguard---noxpanel-main-noxguard-monitor",
+                    "container_name": "noxguard-monitor-optimized",
+                    "restart": "unless-stopped",
+                    "ports": ["8001:8001"],
+                    "deploy": {
+                        "resources": {"limits": {"memory": "256M", "cpus": "0.3"}}
+                    },
+                },
+            },
         }
-        
-        compose_path = self.base_dir / f"docker-compose-optimized-{self.timestamp}.yml"
-        with open(compose_path, 'w') as f:
+
+        compose_path = self.base_dir / \
+            f"docker-compose-optimized-{self.timestamp}.yml"
+        with open(compose_path, "w") as f:
             yaml.dump(optimized_compose, f, default_flow_style=False)
-            
+
         logger.info(f"Optimized docker-compose created: {compose_path}")
-        
+
     def accelerate_development_progress(self) -> Dict:
         """Accelerate core module development with auto-generation"""
         logger.info("STEP 4: Accelerating Core Module Development")
-        
+
         dev_acceleration = {
             "timestamp": datetime.now().isoformat(),
             "current_progress": self.validation_context["development_progress"],
             "target_progress": 60.0,
             "modules_to_accelerate": ["auth_security", "backend_api", "frontend_ui"],
             "auto_generated_artifacts": [],
-            "development_roadmap": {}
+            "development_roadmap": {},
         }
-        
+
         try:
             # Generate development acceleration artifacts
             artifacts = []
-            
+
             # 1. Authentication module template
             auth_module = self.generate_auth_module_template()
             artifacts.append(auth_module)
-            
+
             # 2. API endpoint templates
             api_endpoints = self.generate_api_endpoint_templates()
             artifacts.append(api_endpoints)
-            
+
             # 3. Frontend component templates
             frontend_components = self.generate_frontend_component_templates()
             artifacts.append(frontend_components)
-            
+
             dev_acceleration["auto_generated_artifacts"] = artifacts
-            
+
             # Update development roadmap
             dev_acceleration["development_roadmap"] = {
                 "week_1": "Complete authentication module (Auth Security)",
@@ -641,16 +684,16 @@ deploy:
                 "success_metrics": {
                     "target_completion": "60%",
                     "testsprite_pass_rate": "≥95%",
-                    "timeline": "3 weeks"
-                }
+                    "timeline": "3 weeks",
+                },
             }
-            
+
         except Exception as e:
             logger.error(f"Development acceleration failed: {e}")
             dev_acceleration["error"] = str(e)
-            
+
         return dev_acceleration
-        
+
     def generate_auth_module_template(self) -> Dict:
         """Generate authentication module template"""
         auth_template = """# Authentication Module - Auto-Generated Template
@@ -702,16 +745,16 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 """
 
         auth_path = self.base_dir / f"auth_module_template_{self.timestamp}.md"
-        with open(auth_path, 'w') as f:
+        with open(auth_path, "w") as f:
             f.write(auth_template)
-            
+
         return {
             "module": "auth_security",
             "template_path": str(auth_path),
             "completion_boost": 25,
-            "description": "JWT authentication and security module template"
+            "description": "JWT authentication and security module template",
         }
-        
+
     def generate_api_endpoint_templates(self) -> Dict:
         """Generate API endpoint templates"""
         api_template = """# API Endpoints - Auto-Generated Templates
@@ -760,17 +803,18 @@ class UserService:
 4. Admin panel endpoints (week 3)
 """
 
-        api_path = self.base_dir / f"api_endpoints_template_{self.timestamp}.md"
-        with open(api_path, 'w') as f:
+        api_path = self.base_dir / \
+            f"api_endpoints_template_{self.timestamp}.md"
+        with open(api_path, "w") as f:
             f.write(api_template)
-            
+
         return {
             "module": "backend_api",
             "template_path": str(api_path),
             "completion_boost": 20,
-            "description": "FastAPI endpoints and service templates"
+            "description": "FastAPI endpoints and service templates",
         }
-        
+
     def generate_frontend_component_templates(self) -> Dict:
         """Generate frontend component templates"""
         frontend_template = """# Frontend Components - Auto-Generated Templates
@@ -855,175 +899,163 @@ export default Login;
 6. Write component tests
 """
 
-        frontend_path = self.base_dir / f"frontend_components_template_{self.timestamp}.md"
-        with open(frontend_path, 'w') as f:
+        frontend_path = (
+            self.base_dir / f"frontend_components_template_{self.timestamp}.md"
+        )
+        with open(frontend_path, "w") as f:
             f.write(frontend_template)
-            
+
         return {
             "module": "frontend_ui",
             "template_path": str(frontend_path),
             "completion_boost": 15,
-            "description": "React component templates and structure"
+            "description": "React component templates and structure",
         }
-        
+
     def generate_production_artifacts(self) -> Dict:
         """Generate production-ready deployment artifacts"""
         logger.info("STEP 6: Generating Production Deployment Artifacts")
-        
+
         production_artifacts = {
             "timestamp": datetime.now().isoformat(),
             "artifacts_generated": [],
             "deployment_readiness": {},
-            "security_hardening": {}
+            "security_hardening": {},
         }
-        
+
         try:
             # 1. Production docker-compose.yml
             prod_compose = self.create_production_docker_compose()
             production_artifacts["artifacts_generated"].append(prod_compose)
-            
+
             # 2. Environment configuration
             env_config = self.create_production_env_config()
             production_artifacts["artifacts_generated"].append(env_config)
-            
+
             # 3. Nginx configuration
             nginx_config = self.create_nginx_production_config()
             production_artifacts["artifacts_generated"].append(nginx_config)
-            
+
             production_artifacts["deployment_readiness"] = {
                 "docker_compose_ready": True,
                 "environment_configured": True,
                 "reverse_proxy_configured": True,
                 "ssl_ready": False,  # Requires certificate setup
-                "monitoring_enabled": True
+                "monitoring_enabled": True,
             }
-            
+
         except Exception as e:
             logger.error(f"Production artifact generation failed: {e}")
             production_artifacts["error"] = str(e)
-            
+
         return production_artifacts
-        
+
     def create_production_docker_compose(self) -> Dict:
         """Create production-ready docker-compose.yml"""
         prod_compose = {
-            'version': '3.8',
-            'services': {
-                'noxguard-api-prod': {
-                    'build': {
-                        'context': '.',
-                        'dockerfile': 'Dockerfile.api',
-                        'target': 'production'
+            "version": "3.8",
+            "services": {
+                "noxguard-api-prod": {
+                    "build": {
+                        "context": ".",
+                        "dockerfile": "Dockerfile.api",
+                        "target": "production",
                     },
-                    'container_name': 'noxguard-api-prod',
-                    'restart': 'unless-stopped',
-                    'environment': [
-                        'ENVIRONMENT=production',
-                        'LOG_LEVEL=INFO',
-                        'DATABASE_URL=${DATABASE_URL}',
-                        'JWT_SECRET=${JWT_SECRET}'
+                    "container_name": "noxguard-api-prod",
+                    "restart": "unless-stopped",
+                    "environment": [
+                        "ENVIRONMENT=production",
+                        "LOG_LEVEL=INFO",
+                        "DATABASE_URL=${DATABASE_URL}",
+                        "JWT_SECRET=${JWT_SECRET}",
                     ],
-                    'ports': ['8000:8000'],
-                    'depends_on': ['postgres-prod', 'redis-prod'],
-                    'deploy': {
-                        'resources': {
-                            'limits': {
-                                'memory': '1G',
-                                'cpus': '1.0'
-                            },
-                            'reservations': {
-                                'memory': '512M',
-                                'cpus': '0.5'
-                            }
+                    "ports": ["8000:8000"],
+                    "depends_on": ["postgres-prod", "redis-prod"],
+                    "deploy": {
+                        "resources": {
+                            "limits": {"memory": "1G", "cpus": "1.0"},
+                            "reservations": {"memory": "512M", "cpus": "0.5"},
                         },
-                        'replicas': 2
+                        "replicas": 2,
                     },
-                    'healthcheck': {
-                        'test': ['CMD', 'curl', '-f', 'http://localhost:8000/health'],
-                        'interval': '30s',
-                        'timeout': '10s',
-                        'retries': 3,
-                        'start_period': '60s'
-                    }
+                    "healthcheck": {
+                        "test": ["CMD", "curl", "-f", "http://localhost:8000/health"],
+                        "interval": "30s",
+                        "timeout": "10s",
+                        "retries": 3,
+                        "start_period": "60s",
+                    },
                 },
-                'postgres-prod': {
-                    'image': 'postgres:15-alpine',
-                    'container_name': 'noxguard-postgres-prod',
-                    'restart': 'unless-stopped',
-                    'environment': [
-                        'POSTGRES_DB=${POSTGRES_DB}',
-                        'POSTGRES_USER=${POSTGRES_USER}',
-                        'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}'
+                "postgres-prod": {
+                    "image": "postgres:15-alpine",
+                    "container_name": "noxguard-postgres-prod",
+                    "restart": "unless-stopped",
+                    "environment": [
+                        "POSTGRES_DB=${POSTGRES_DB}",
+                        "POSTGRES_USER=${POSTGRES_USER}",
+                        "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}",
                     ],
-                    'volumes': [
-                        'postgres_data_prod:/var/lib/postgresql/data',
-                        './postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro'
+                    "volumes": [
+                        "postgres_data_prod:/var/lib/postgresql/data",
+                        "./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro",
                     ],
-                    'deploy': {
-                        'resources': {
-                            'limits': {
-                                'memory': '1G'
-                            }
-                        }
-                    }
+                    "deploy": {"resources": {"limits": {"memory": "1G"}}},
                 },
-                'redis-prod': {
-                    'image': 'redis:7-alpine',
-                    'container_name': 'noxguard-redis-prod',
-                    'restart': 'unless-stopped',
-                    'command': 'redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}',
-                    'volumes': ['redis_data_prod:/data']
+                "redis-prod": {
+                    "image": "redis:7-alpine",
+                    "container_name": "noxguard-redis-prod",
+                    "restart": "unless-stopped",
+                    "command": "redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}",
+                    "volumes": ["redis_data_prod:/data"],
                 },
-                'grafana-prod': {
-                    'image': 'grafana/grafana:latest',
-                    'container_name': 'noxguard-grafana-prod',
-                    'restart': 'unless-stopped',
-                    'ports': ['3001:3000'],
-                    'environment': [
-                        'GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}',
-                        'GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}',
-                        'GF_USERS_ALLOW_SIGN_UP=false',
-                        'GF_SERVER_ROOT_URL=https://your-domain.com/grafana'
+                "grafana-prod": {
+                    "image": "grafana/grafana:latest",
+                    "container_name": "noxguard-grafana-prod",
+                    "restart": "unless-stopped",
+                    "ports": ["3001:3000"],
+                    "environment": [
+                        "GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}",
+                        "GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}",
+                        "GF_USERS_ALLOW_SIGN_UP=false",
+                        "GF_SERVER_ROOT_URL=https://your-domain.com/grafana",
                     ],
-                    'volumes': [
-                        'grafana_data_prod:/var/lib/grafana',
-                        './grafana/provisioning:/etc/grafana/provisioning:ro'
-                    ]
+                    "volumes": [
+                        "grafana_data_prod:/var/lib/grafana",
+                        "./grafana/provisioning:/etc/grafana/provisioning:ro",
+                    ],
                 },
-                'nginx-prod': {
-                    'image': 'nginx:alpine',
-                    'container_name': 'noxguard-nginx-prod',
-                    'restart': 'unless-stopped',
-                    'ports': ['80:80', '443:443'],
-                    'volumes': [
-                        './nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro',
-                        './ssl:/etc/nginx/ssl:ro'
+                "nginx-prod": {
+                    "image": "nginx:alpine",
+                    "container_name": "noxguard-nginx-prod",
+                    "restart": "unless-stopped",
+                    "ports": ["80:80", "443:443"],
+                    "volumes": [
+                        "./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro",
+                        "./ssl:/etc/nginx/ssl:ro",
                     ],
-                    'depends_on': ['noxguard-api-prod', 'grafana-prod']
-                }
+                    "depends_on": ["noxguard-api-prod", "grafana-prod"],
+                },
             },
-            'volumes': {
-                'postgres_data_prod': None,
-                'redis_data_prod': None,
-                'grafana_data_prod': None
+            "volumes": {
+                "postgres_data_prod": None,
+                "redis_data_prod": None,
+                "grafana_data_prod": None,
             },
-            'networks': {
-                'noxguard-prod-network': {
-                    'driver': 'bridge'
-                }
-            }
+            "networks": {"noxguard-prod-network": {"driver": "bridge"}},
         }
-        
-        prod_compose_path = self.base_dir / f"docker-compose.production-{self.timestamp}.yml"
-        with open(prod_compose_path, 'w') as f:
+
+        prod_compose_path = (
+            self.base_dir / f"docker-compose.production-{self.timestamp}.yml"
+        )
+        with open(prod_compose_path, "w") as f:
             yaml.dump(prod_compose, f, default_flow_style=False)
-            
+
         return {
             "artifact_type": "production_docker_compose",
             "file_path": str(prod_compose_path),
-            "description": "Production-ready Docker Compose with resource limits and security"
+            "description": "Production-ready Docker Compose with resource limits and security",
         }
-        
+
     def create_production_env_config(self) -> Dict:
         """Create production environment configuration"""
         env_template = f"""# NoxGuard Production Environment Configuration
@@ -1077,15 +1109,15 @@ WORKER_MEMORY_LIMIT=1G
 """
 
         env_path = self.base_dir / f".env.production-{self.timestamp}"
-        with open(env_path, 'w') as f:
+        with open(env_path, "w") as f:
             f.write(env_template)
-            
+
         return {
             "artifact_type": "production_environment",
             "file_path": str(env_path),
-            "description": "Production environment variables template"
+            "description": "Production environment variables template",
         }
-        
+
     def create_nginx_production_config(self) -> Dict:
         """Create production Nginx configuration"""
         nginx_config = f"""# NoxGuard Production Nginx Configuration
@@ -1209,26 +1241,42 @@ http {{
 """
 
         nginx_path = self.base_dir / f"nginx.production-{self.timestamp}.conf"
-        with open(nginx_path, 'w') as f:
+        with open(nginx_path, "w") as f:
             f.write(nginx_config)
-            
+
         return {
             "artifact_type": "nginx_production_config",
             "file_path": str(nginx_path),
-            "description": "Production Nginx configuration with SSL and reverse proxy"
+            "description": "Production Nginx configuration with SSL and reverse proxy",
         }
-        
+
     def generate_adhd_progress_report(self, all_results: Dict) -> str:
         """Generate ADHD-friendly visual development progress report"""
         logger.info("Generating ADHD Visual Development Progress Report...")
-        
+
         # Calculate progress improvements
-        frontend_fixed = all_results.get("frontend_deployment", {}).get("status") == "success"
-        cve_clean = all_results.get("security_assessment", {}).get("overall_security_status") == "SECURE"
-        performance_optimized = len(all_results.get("performance_optimization", {}).get("optimizations_applied", [])) > 0
-        
-        new_development_progress = self.validation_context["development_progress"] + 25  # Boost from templates
-        
+        frontend_fixed = (
+            all_results.get("frontend_deployment", {}).get(
+                "status") == "success"
+        )
+        cve_clean = (
+            all_results.get("security_assessment", {}).get(
+                "overall_security_status")
+            == "SECURE"
+        )
+        performance_optimized = (
+            len(
+                all_results.get("performance_optimization", {}).get(
+                    "optimizations_applied", []
+                )
+            )
+            > 0
+        )
+
+        new_development_progress = (
+            self.validation_context["development_progress"] + 25
+        )  # Boost from templates
+
         adhd_report = f"""# 🚀 NoxSuite Production Deployment Prep - ADHD PROGRESS REPORT
 
 ## 🎯 QUICK STATUS UPDATE
@@ -1361,43 +1409,45 @@ http {{
 
         # Save ADHD report
         adhd_path = self.base_dir / f"ADHD_DEV_PROGRESS_{self.timestamp}.md"
-        with open(adhd_path, 'w', encoding='utf-8') as f:
+        with open(adhd_path, "w", encoding="utf-8") as f:
             f.write(adhd_report)
-            
+
         logger.info(f"ADHD Development Progress Report saved: {adhd_path}")
         return str(adhd_path)
-        
+
     def run_production_deployment_prep(self) -> Dict:
         """Execute complete production deployment preparation suite"""
-        logger.info("STARTING: NoxSuite Production Deployment Preparation Phase")
+        logger.info(
+            "STARTING: NoxSuite Production Deployment Preparation Phase")
         logger.info("ENVIRONMENT: Windows 11 Local → Production Ready")
         logger.info("=" * 80)
-        
+
         start_time = time.time()
-        
+
         try:
             # Step 1: Frontend Container Repair
-            logger.info("STEP 1: Frontend Container Repair & LAN Accessibility")
+            logger.info(
+                "STEP 1: Frontend Container Repair & LAN Accessibility")
             frontend_diagnosis = self.diagnose_frontend_container_issue()
             frontend_patch = self.create_frontend_fix_patch(frontend_diagnosis)
             frontend_deployment = self.deploy_frontend_fix()
-            
+
             # Step 2: CVE Scan & Security
             logger.info("STEP 2: CVE Scan & Continuous Security")
             security_assessment = self.execute_cve_scan_and_security()
-            
+
             # Step 3: Performance Optimization
             logger.info("STEP 3: Performance Optimization")
             performance_optimization = self.optimize_performance()
-            
+
             # Step 4: Development Acceleration
             logger.info("STEP 4: Accelerate Core Module Development")
             dev_acceleration = self.accelerate_development_progress()
-            
+
             # Step 5: Production Artifacts
             logger.info("STEP 5: Production Deployment Preparation")
             production_artifacts = self.generate_production_artifacts()
-            
+
             # Compile comprehensive results
             comprehensive_results = {
                 "phase_status": "PRODUCTION_DEPLOYMENT_PREPARATION_COMPLETE",
@@ -1411,65 +1461,99 @@ http {{
                 "production_artifacts": production_artifacts,
                 "summary_metrics": {
                     "frontend_fixed": frontend_deployment.get("status") == "success",
-                    "security_status": security_assessment.get("overall_security_status", "UNKNOWN"),
-                    "performance_optimized": len(performance_optimization.get("optimizations_applied", [])) > 0,
+                    "security_status": security_assessment.get(
+                        "overall_security_status", "UNKNOWN"
+                    ),
+                    "performance_optimized": len(
+                        performance_optimization.get(
+                            "optimizations_applied", [])
+                    )
+                    > 0,
                     "development_progress_boost": 25,
-                    "production_artifacts_count": len(production_artifacts.get("artifacts_generated", [])),
-                    "new_development_progress": self.validation_context["development_progress"] + 25
-                }
+                    "production_artifacts_count": len(
+                        production_artifacts.get("artifacts_generated", [])
+                    ),
+                    "new_development_progress": self.validation_context[
+                        "development_progress"
+                    ]
+                    + 25,
+                },
             }
-            
+
             # Step 6: Generate ADHD Progress Report
             logger.info("STEP 6: Generating ADHD Development Progress Report")
-            adhd_report_path = self.generate_adhd_progress_report(comprehensive_results)
+            adhd_report_path = self.generate_adhd_progress_report(
+                comprehensive_results)
             comprehensive_results["adhd_report_path"] = adhd_report_path
-            
+
             # Save comprehensive results
-            results_path = self.base_dir / f"production_deployment_prep_results_{self.timestamp}.json"
-            with open(results_path, 'w', encoding='utf-8') as f:
+            results_path = (
+                self.base_dir
+                / f"production_deployment_prep_results_{self.timestamp}.json"
+            )
+            with open(results_path, "w", encoding="utf-8") as f:
                 json.dump(comprehensive_results, f, indent=2)
-                
+
             execution_time = time.time() - start_time
-            
+
             logger.info("=" * 80)
             logger.info("PRODUCTION DEPLOYMENT PREPARATION COMPLETE")
-            logger.info(f"Frontend Status: {'✅ FIXED' if comprehensive_results['summary_metrics']['frontend_fixed'] else '⚠️ PARTIAL'}")
-            logger.info(f"Security Status: {comprehensive_results['summary_metrics']['security_status']}")
-            logger.info(f"Development Progress: {self.validation_context['development_progress']}% → {comprehensive_results['summary_metrics']['new_development_progress']}%")
-            logger.info(f"Production Artifacts: {comprehensive_results['summary_metrics']['production_artifacts_count']} generated")
+            logger.info(
+                f"Frontend Status: {'✅ FIXED' if comprehensive_results['summary_metrics']['frontend_fixed'] else '⚠️ PARTIAL'}"
+            )
+            logger.info(
+                f"Security Status: {comprehensive_results['summary_metrics']['security_status']}"
+            )
+            logger.info(
+                f"Development Progress: {self.validation_context['development_progress']}% → {comprehensive_results['summary_metrics']['new_development_progress']}%"
+            )
+            logger.info(
+                f"Production Artifacts: {comprehensive_results['summary_metrics']['production_artifacts_count']} generated"
+            )
             logger.info(f"Execution Time: {execution_time:.1f}s")
             logger.info("=" * 80)
-            
+
             return comprehensive_results
-            
+
         except Exception as e:
             logger.error(f"Production deployment preparation failed: {e}")
             return {
                 "phase_status": "FAILED",
                 "error": str(e),
-                "execution_time_seconds": time.time() - start_time
+                "execution_time_seconds": time.time() - start_time,
             }
+
 
 def main():
     """Main execution function"""
     engine = ProductionDeploymentPrepEngine()
     results = engine.run_production_deployment_prep()
-    
+
     print("\n" + "=" * 80)
     print("NOXSUITE PRODUCTION DEPLOYMENT PREPARATION RESULTS")
     print("=" * 80)
-    
+
     summary_metrics = results.get("summary_metrics", {})
-    print(f"Frontend Fixed: {'✅ YES' if summary_metrics.get('frontend_fixed') else '⚠️ PARTIAL'}")
-    print(f"Security Status: {summary_metrics.get('security_status', 'UNKNOWN')}")
-    print(f"Development Progress: {summary_metrics.get('new_development_progress', 0)}% (+{summary_metrics.get('development_progress_boost', 0)}%)")
-    print(f"Production Artifacts: {summary_metrics.get('production_artifacts_count', 0)} files generated")
-    
+    print(
+        f"Frontend Fixed: {'✅ YES' if summary_metrics.get('frontend_fixed') else '⚠️ PARTIAL'}"
+    )
+    print(
+        f"Security Status: {summary_metrics.get('security_status', 'UNKNOWN')}")
+    print(
+        f"Development Progress: {summary_metrics.get('new_development_progress', 0)}% (+{summary_metrics.get('development_progress_boost', 0)}%)"
+    )
+    print(
+        f"Production Artifacts: {summary_metrics.get('production_artifacts_count', 0)} files generated"
+    )
+
     phase_status = results.get("phase_status", "UNKNOWN")
     if phase_status == "PRODUCTION_DEPLOYMENT_PREPARATION_COMPLETE":
-        print(f"\n🎯 Local Validation Complete – Entering Production Deployment Prep (Frontend Fix, Dev Acceleration, CVE Hardening, Performance Optimization).")
-    
+        print(
+            f"\n🎯 Local Validation Complete – Entering Production Deployment Prep (Frontend Fix, Dev Acceleration, CVE Hardening, Performance Optimization)."
+        )
+
     return results
+
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,13 @@
+import docker
+import requests
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime
+import time
+import sys
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -9,18 +19,6 @@ Simulates real-user scenarios across MCP agents, Docker containers,
 and Langflow UI endpoints to validate real-world agentic use cases.
 """
 
-import json
-import logging
-import os
-import sys
-import time
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-import requests
-
-import docker
 
 # Configure logging
 logging.basicConfig(
@@ -56,7 +54,8 @@ class WorkflowExecutorAgent:
         """
         self.mcp_server_url = mcp_server_url
         self.langflow_url = langflow_url
-        self.workflow_dir = workflow_dir or str(Path(__file__).parent / "workflows")
+        self.workflow_dir = workflow_dir or str(
+            Path(__file__).parent / "workflows")
         os.makedirs(self.workflow_dir, exist_ok=True)
 
         # Initialize Docker client for container interactions
@@ -90,7 +89,8 @@ class WorkflowExecutorAgent:
             workflow_path = Path(self.workflow_dir)
 
             if not workflow_path.exists():
-                logger.warning(f"Workflow directory not found: {workflow_path}")
+                logger.warning(
+                    f"Workflow directory not found: {workflow_path}")
                 self._create_default_workflows()
                 return
 
@@ -113,7 +113,8 @@ class WorkflowExecutorAgent:
                         "file_path": str(workflow_file),
                     }
                 except Exception as e:
-                    logger.error(f"Failed to load workflow {workflow_file}: {e}")
+                    logger.error(
+                        f"Failed to load workflow {workflow_file}: {e}")
 
             logger.info(f"Loaded {len(self.available_workflows)} workflows")
         except Exception as e:
@@ -362,7 +363,8 @@ class WorkflowExecutorAgent:
             steps = workflow["steps"]
             results["steps_total"] = len(steps)
 
-            logger.info(f"Executing workflow '{workflow_name}' with {len(steps)} steps")
+            logger.info(
+                f"Executing workflow '{workflow_name}' with {len(steps)} steps")
 
             # Replace variables in workflow
             variables = {
@@ -444,7 +446,8 @@ class WorkflowExecutorAgent:
             params = self._replace_variables(step["params"], variables)
             expected_result = step.get("expected_result", {})
 
-            logger.info(f"Executing step '{step['name']}' of type '{step_type}'")
+            logger.info(
+                f"Executing step '{step['name']}' of type '{step_type}'")
 
             if step_type == "docker_check":
                 result = self._execute_docker_check(params)
@@ -464,7 +467,8 @@ class WorkflowExecutorAgent:
             step_result["details"] = result
 
             # Validate result against expected result
-            step_result["success"] = self._validate_result(result, expected_result)
+            step_result["success"] = self._validate_result(
+                result, expected_result)
             if not step_result["success"]:
                 step_result["error"] = "Result does not match expected result"
                 logger.warning(f"Step '{step['name']}' failed validation")
@@ -510,7 +514,8 @@ class WorkflowExecutorAgent:
         Returns:
             Dictionary containing check results
         """
-        result = {"containers_checked": [], "all_running": False, "details": {}}
+        result = {"containers_checked": [],
+                  "all_running": False, "details": {}}
 
         try:
             if not self.docker_client:
@@ -540,7 +545,8 @@ class WorkflowExecutorAgent:
                                     "Status"
                                 ]
                 except Exception as e:
-                    logger.error(f"Error checking container {container_name}: {e}")
+                    logger.error(
+                        f"Error checking container {container_name}: {e}")
 
                 result["containers_checked"].append(container_name)
                 result["details"][container_name] = {
@@ -588,7 +594,8 @@ class WorkflowExecutorAgent:
             start_time = time.time()
 
             if method.upper() == "GET":
-                response = self.session.get(url, headers=headers, timeout=timeout)
+                response = self.session.get(
+                    url, headers=headers, timeout=timeout)
             elif method.upper() == "POST":
                 response = self.session.post(
                     url, headers=headers, json=data, timeout=timeout
@@ -760,7 +767,8 @@ class WorkflowExecutorAgent:
                 result["error"] = (
                     f"API execution failed: {str(e)}, trying direct execution"
                 )
-                result["success"] = self._simulate_flow_execution(flow_id, inputs)
+                result["success"] = self._simulate_flow_execution(
+                    flow_id, inputs)
                 result["output"] = "Flow execution simulated locally (API unavailable)"
 
         except Exception as e:
@@ -825,7 +833,8 @@ class WorkflowExecutorAgent:
         try:
             # Check if coordination config exists
             config_file = (
-                Path(__file__).parent.parent / "agent_collaboration_config.json"
+                Path(__file__).parent.parent /
+                "agent_collaboration_config.json"
             )
             result["coordination_file"] = str(config_file)
 
@@ -845,9 +854,11 @@ class WorkflowExecutorAgent:
                 return result
 
             # Write test task to results file
-            task_description = params.get("task_description", "Test coordination task")
+            task_description = params.get(
+                "task_description", "Test coordination task")
             results_file = (
-                Path(__file__).parent.parent / "agent_coordination_results.json"
+                Path(__file__).parent.parent /
+                "agent_coordination_results.json"
             )
 
             # Create or update results file
@@ -962,9 +973,11 @@ class WorkflowExecutorAgent:
                         ]
                     )
             except Exception as e:
-                logger.error(f"Error executing workflow '{workflow_name}': {e}")
+                logger.error(
+                    f"Error executing workflow '{workflow_name}': {e}")
                 results["workflows_failed"] += 1
-                results["errors"].append(f"Workflow '{workflow_name}' failed: {str(e)}")
+                results["errors"].append(
+                    f"Workflow '{workflow_name}' failed: {str(e)}")
 
         logger.info(
             f"All workflows executed - Passed: {results['workflows_passed']}/{results['workflows_total']}"
@@ -993,7 +1006,8 @@ class WorkflowExecutorAgent:
                 self.run_all_workflows()
 
                 if run_once:
-                    logger.info("Single workflow execution completed, exiting loop")
+                    logger.info(
+                        "Single workflow execution completed, exiting loop")
                     break
 
                 # Calculate sleep time (to ensure consistent interval)

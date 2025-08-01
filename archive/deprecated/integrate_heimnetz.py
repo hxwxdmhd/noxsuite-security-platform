@@ -30,32 +30,33 @@ FRONTEND_PATH = Path("c:/xampp/htdocs/heimnetzV2/Heimnetz/htdocs")
 BACKEND_PATH = PROJECT_ROOT / "AI" / "NoxPanel"
 ARCHIVE_PATH = PROJECT_ROOT / "archive"
 
+
 class HeimnetzIntegrator:
     def __init__(self):
         self.success_count = 0
         self.error_count = 0
-        
+
     def log_success(self, message):
         logger.info(f"✅ {message}")
         self.success_count += 1
-        
+
     def log_error(self, message):
         logger.error(f"❌ {message}")
         self.error_count += 1
-        
+
     def log_info(self, message):
         logger.info(f"ℹ️  {message}")
 
     def check_prerequisites(self):
         """Check if all required paths exist"""
         self.log_info("Checking prerequisites...")
-        
+
         paths_to_check = [
             (FRONTEND_PATH, "Frontend (XAMPP)"),
             (BACKEND_PATH, "Backend (AI NoxPanel)"),
             (PROJECT_ROOT / "main.py", "Unified launcher")
         ]
-        
+
         all_good = True
         for path, name in paths_to_check:
             if path.exists():
@@ -63,13 +64,13 @@ class HeimnetzIntegrator:
             else:
                 self.log_error(f"{name} not found at {path}")
                 all_good = False
-                
+
         return all_good
 
     def create_archive_directory(self):
         """Create archive directory for cleanup"""
         self.log_info("Creating archive directory...")
-        
+
         try:
             ARCHIVE_PATH.mkdir(exist_ok=True)
             self.log_success(f"Archive directory ready at {ARCHIVE_PATH}")
@@ -81,10 +82,11 @@ class HeimnetzIntegrator:
     def move_backup_files(self):
         """Move backup files to archive"""
         self.log_info("Moving backup files to archive...")
-        
-        backup_patterns = ["*_backup.*", "*_fixed.*", "*_old.*", "*_v2.*", "*_test.*"]
+
+        backup_patterns = ["*_backup.*", "*_fixed.*",
+                           "*_old.*", "*_v2.*", "*_test.*"]
         moved_count = 0
-        
+
         for pattern in backup_patterns:
             for file_path in PROJECT_ROOT.glob(pattern):
                 if file_path.is_file():
@@ -94,18 +96,19 @@ class HeimnetzIntegrator:
                         moved_count += 1
                     except Exception as e:
                         self.log_error(f"Failed to move {file_path.name}: {e}")
-        
+
         if moved_count > 0:
             self.log_success(f"Moved {moved_count} backup files to archive")
         else:
-            self.log_success("No backup files found to move - directory is clean")
-        
+            self.log_success(
+                "No backup files found to move - directory is clean")
+
         return True
 
     def create_unified_config(self):
         """Create unified configuration file"""
         self.log_info("Creating unified configuration...")
-        
+
         config = {
             "project": {
                 "name": "Heimnetz",
@@ -141,14 +144,14 @@ class HeimnetzIntegrator:
                 "bootstrapper": "init_noxpanel.py"
             }
         }
-        
+
         try:
             config_path = PROJECT_ROOT / "config" / "heimnetz_unified.json"
             config_path.parent.mkdir(exist_ok=True)
-            
+
             with open(config_path, 'w', encoding='utf-8') as f:
                 json.dump(config, f, indent=2)
-                
+
             self.log_success(f"Unified configuration created at {config_path}")
             return True
         except Exception as e:
@@ -158,7 +161,7 @@ class HeimnetzIntegrator:
     def update_main_launcher(self):
         """Update main.py to include integration features"""
         self.log_info("Updating main launcher with integration features...")
-        
+
         integration_code = '''
 def start_integrated_web():
     """Start integrated web interface (Frontend + Backend)"""
@@ -201,35 +204,38 @@ def start_integrated_web():
         print_status("Falling back to basic web server", "info")
         start_web_dashboard()
 '''
-        
+
         try:
             # Read current main.py
             main_path = PROJECT_ROOT / "main.py"
             with open(main_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             # Add integration function if not already present
             if "start_integrated_web" not in content:
                 # Insert before the main() function
                 main_function_pos = content.find("def main():")
                 if main_function_pos != -1:
-                    new_content = content[:main_function_pos] + integration_code + "\n" + content[main_function_pos:]
-                    
+                    new_content = content[:main_function_pos] + \
+                        integration_code + "\n" + content[main_function_pos:]
+
                     # Update the web dashboard option to use integrated version
                     new_content = new_content.replace(
                         'elif choice == "web":\n                start_web_dashboard()',
                         'elif choice == "web":\n                start_integrated_web()'
                     )
-                    
+
                     with open(main_path, 'w', encoding='utf-8') as f:
                         f.write(new_content)
-                    
-                    self.log_success("Main launcher updated with integration features")
+
+                    self.log_success(
+                        "Main launcher updated with integration features")
                     return True
             else:
-                self.log_info("Integration features already present in main launcher")
+                self.log_info(
+                    "Integration features already present in main launcher")
                 return True
-                
+
         except Exception as e:
             self.log_error(f"Failed to update main launcher: {e}")
             return False
@@ -237,7 +243,7 @@ def start_integrated_web():
     def create_api_bridge(self):
         """Create API bridge between frontend JavaScript and backend Flask"""
         self.log_info("Creating API bridge...")
-        
+
         bridge_code = '''
 """
 API Bridge for Heimnetz Integration
@@ -328,12 +334,12 @@ def heimnetz_scan():
         logger.error(f"Scan error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
 '''
-        
+
         try:
             bridge_path = PROJECT_ROOT / "api_bridge.py"
             with open(bridge_path, 'w', encoding='utf-8') as f:
                 f.write(bridge_code)
-            
+
             self.log_success(f"API bridge created at {bridge_path}")
             return True
         except Exception as e:
@@ -343,7 +349,7 @@ def heimnetz_scan():
     def create_integration_readme(self):
         """Create README for the integrated system"""
         self.log_info("Creating integration README...")
-        
+
         readme_content = '''# 🏠 Heimnetz Integrated System v7.0
 
 ## Quick Start
@@ -431,7 +437,7 @@ Heimnetz/
             readme_path = PROJECT_ROOT / "README_INTEGRATED.md"
             with open(readme_path, 'w', encoding='utf-8') as f:
                 f.write(readme_content)
-            
+
             self.log_success(f"Integration README created at {readme_path}")
             return True
         except Exception as e:
@@ -442,7 +448,7 @@ Heimnetz/
         """Run the complete integration process"""
         self.log_info("🚀 Starting Heimnetz Integration Process...")
         self.log_info("=" * 60)
-        
+
         steps = [
             ("Prerequisites Check", self.check_prerequisites),
             ("Archive Directory Creation", self.create_archive_directory),
@@ -452,24 +458,25 @@ Heimnetz/
             ("API Bridge Creation", self.create_api_bridge),
             ("Integration Documentation", self.create_integration_readme)
         ]
-        
+
         for step_name, step_function in steps:
             self.log_info(f"\n📋 {step_name}...")
             if not step_function():
                 self.log_error(f"Integration halted at: {step_name}")
                 return False
-        
+
         self.log_info("\n" + "=" * 60)
         self.log_success(f"🎉 Integration completed successfully!")
         self.log_info(f"✅ Successes: {self.success_count}")
         self.log_info(f"❌ Errors: {self.error_count}")
-        
+
         if self.error_count == 0:
             self.log_info("\n🚀 Ready to launch:")
             self.log_info("   python main.py --web")
             self.log_info("   http://localhost:5000/heimnetz")
-        
+
         return True
+
 
 if __name__ == "__main__":
     integrator = HeimnetzIntegrator()

@@ -8,62 +8,70 @@ Priority: CRITICAL - Production blocking security issue
 Timeline: 6-hour emergency implementation window
 """
 
+import logging
 import os
 import sys
-import logging
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 # Setup emergency logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - EMERGENCY-PATCH - %(levelname)s - %(message)s'
+    format="%(asctime)s - EMERGENCY-PATCH - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
+
 class EmergencySecurityPatcher:
     """Emergency security patcher for critical endpoints"""
-    
+
     def __init__(self, project_root=None):
         self.project_root = Path(project_root) if project_root else Path.cwd()
         self.patches_applied = []
-        self.backup_dir = self.project_root / "emergency_backups" / f"patch_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        self.backup_dir = (
+            self.project_root
+            / "emergency_backups"
+            / f"patch_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        )
         self.backup_dir.mkdir(parents=True, exist_ok=True)
-        
+
         logger.info("Emergency Security Patcher initialized")
         logger.info(f"Project root: {self.project_root}")
         logger.info(f"Backup directory: {self.backup_dir}")
-    
+
     def find_knowledge_api_files(self):
         """Find files containing /api/knowledge endpoints"""
         search_patterns = [
             "*/webpanel/*.py",
-            "*/app*.py", 
+            "*/app*.py",
             "*/routes*.py",
             "*/api*.py",
-            "*/**/app.py"
+            "*/**/app.py",
         ]
-        
+
         knowledge_files = []
-        
+
         for pattern in search_patterns:
             for file_path in self.project_root.glob(pattern):
                 if file_path.is_file():
                     try:
-                        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                        with open(
+                            file_path, "r", encoding="utf-8", errors="ignore"
+                        ) as f:
                             content = f.read()
-                            if '/api/knowledge' in content:
+                            if "/api/knowledge" in content:
                                 knowledge_files.append(file_path)
-                                logger.info(f"Found knowledge API in: {file_path}")
+                                logger.info(
+                                    f"Found knowledge API in: {file_path}")
                     except Exception as e:
                         logger.warning(f"Could not read {file_path}: {e}")
-        
+
         return knowledge_files
-    
+
     def create_emergency_knowledge_routes(self):
         """Create emergency protected knowledge routes if none exist"""
         emergency_routes_file = self.project_root / "emergency_knowledge_routes.py"
-        
+
         routes_content = f'''#!/usr/bin/env python3
 """
 EMERGENCY KNOWLEDGE API ROUTES
@@ -117,17 +125,18 @@ def register_emergency_knowledge_routes(app):
     app.register_blueprint(emergency_knowledge_bp)
     return app
 '''
-        
-        with open(emergency_routes_file, 'w', encoding='utf-8') as f:
+
+        with open(emergency_routes_file, "w", encoding="utf-8") as f:
             f.write(routes_content)
-        
+
         self.patches_applied.append("Created emergency knowledge routes")
-        logger.info(f"Created emergency knowledge routes: {emergency_routes_file}")
-    
+        logger.info(
+            f"Created emergency knowledge routes: {emergency_routes_file}")
+
     def create_emergency_app_integration(self):
         """Create emergency Flask app integration file"""
         integration_file = self.project_root / "emergency_app_integration.py"
-        
+
         integration_content = f'''#!/usr/bin/env python3
 """
 EMERGENCY FLASK APP INTEGRATION
@@ -170,17 +179,17 @@ def apply_emergency_integration(app):
 # from emergency_app_integration import apply_emergency_integration
 # app = apply_emergency_integration(app)
 '''
-        
-        with open(integration_file, 'w', encoding='utf-8') as f:
+
+        with open(integration_file, "w", encoding="utf-8") as f:
             f.write(integration_content)
-        
+
         self.patches_applied.append("Created emergency app integration")
         logger.info(f"Created emergency app integration: {integration_file}")
-    
+
     def generate_patch_report(self):
         """Generate emergency patch report"""
         report_file = self.project_root / "EMERGENCY_SECURITY_PATCH_REPORT.md"
-        
+
         report_content = f"""# EMERGENCY SECURITY PATCH REPORT
 
 **Date**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")} UTC  
@@ -217,10 +226,10 @@ def apply_emergency_integration(app):
 ## FILES CREATED
 
 """
-        
+
         for patch in self.patches_applied:
             report_content += f"- {patch}\n"
-        
+
         report_content += f"""
 ## EMERGENCY ACCESS
 
@@ -261,32 +270,37 @@ app = apply_emergency_integration(app)
 **Patch ID**: emergency-patch-{datetime.now().strftime("%Y%m%d-%H%M%S")}  
 **Rollback**: Use files in `{self.backup_dir}` to rollback if needed  
 """
-        
-        with open(report_file, 'w', encoding='utf-8') as f:
+
+        with open(report_file, "w", encoding="utf-8") as f:
             f.write(report_content)
-        
+
         logger.info(f"Emergency patch report generated: {report_file}")
-    
+
     def apply_all_patches(self):
         """Apply all emergency security patches"""
         logger.info("Starting emergency security patch deployment...")
-        
+
         # Find and patch knowledge API files
         knowledge_files = self.find_knowledge_api_files()
-        
+
         if not knowledge_files:
-            logger.warning("No knowledge API files found - creating emergency endpoint protection")
-        
+            logger.warning(
+                "No knowledge API files found - creating emergency endpoint protection"
+            )
+
         # Create emergency components
         self.create_emergency_knowledge_routes()
         self.create_emergency_app_integration()
-        
+
         # Generate patch report
         self.generate_patch_report()
-        
-        logger.info(f"Emergency security patches completed: {len(self.patches_applied)} files created")
-        
+
+        logger.info(
+            f"Emergency security patches completed: {len(self.patches_applied)} files created"
+        )
+
         return len(self.patches_applied) > 0
+
 
 def main():
     """Main emergency patching execution"""
@@ -295,12 +309,12 @@ def main():
     print("Audit: 4.0.0 Critical Security Response")
     print("Target: /api/knowledge/* authentication bypass fix")
     print("=" * 60)
-    
+
     patcher = EmergencySecurityPatcher()
-    
+
     try:
         success = patcher.apply_all_patches()
-        
+
         if success:
             print("\nEMERGENCY SECURITY PATCHES APPLIED SUCCESSFULLY")
             print("Report: EMERGENCY_SECURITY_PATCH_REPORT.md")
@@ -314,13 +328,14 @@ def main():
             print("\nEMERGENCY PATCHING FAILED")
             print("Check logs for details")
             return 1
-            
+
     except Exception as e:
         logger.error(f"Emergency patching failed: {e}")
         print(f"\nCRITICAL ERROR: {e}")
         return 1
-    
+
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

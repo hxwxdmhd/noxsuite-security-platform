@@ -27,8 +27,9 @@ certifi.py
 
 This module returns the installation location of cacert.pem or its contents.
 """
-import sys
 import atexit
+import sys
+
 
 def exit_cacert_ctx() -> None:
     _CACERT_CTX.__exit__(None, None, None)  # type: ignore[union-attr]
@@ -60,7 +61,8 @@ if sys.version_info >= (3, 11):
             # We also have to hold onto the actual context manager, because
             # it will do the cleanup whenever it gets garbage collected, so
             # we will also store that at the global level as well.
-            _CACERT_CTX = as_file(files("pip._vendor.certifi").joinpath("cacert.pem"))
+            _CACERT_CTX = as_file(
+                files("pip._vendor.certifi").joinpath("cacert.pem"))
             _CACERT_PATH = str(_CACERT_CTX.__enter__())
             atexit.register(exit_cacert_ctx)
 
@@ -71,7 +73,8 @@ if sys.version_info >= (3, 11):
 
 elif sys.version_info >= (3, 7):
 
-    from importlib.resources import path as get_path, read_text
+    from importlib.resources import path as get_path
+    from importlib.resources import read_text
 
     _CACERT_CTX = None
     _CACERT_PATH = None

@@ -4,16 +4,16 @@ NoxPanel Full Stack Launcher
 Complete application launcher with comprehensive error handling and system validation
 """
 
-import os
-import sys
-import logging
-import subprocess
-import time
 import json
-from pathlib import Path
-from typing import Dict, Any, Optional
-import threading
+import logging
+import os
 import signal
+import subprocess
+import sys
+import threading
+import time
+from pathlib import Path
+from typing import Any, Dict, Optional
 
 # Ensure proper Python path
 base_path = Path(__file__).parent
@@ -31,6 +31,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
 
 class NoxPanelLauncher:
     """Comprehensive NoxPanel application launcher"""
@@ -92,7 +93,8 @@ class NoxPanelLauncher:
 
     def signal_handler(self, signum, frame):
         """Handle shutdown signals"""
-        logger.info(f"[SHUTDOWN] Received signal {signum}, shutting down gracefully...")
+        logger.info(
+            f"[SHUTDOWN] Received signal {signum}, shutting down gracefully...")
         self.shutdown()
         sys.exit(0)
 
@@ -103,13 +105,15 @@ class NoxPanelLauncher:
         try:
             # Check Python version
             if sys.version_info < (3, 8):
-                logger.error(f"[FAIL] Python 3.8+ required, found {sys.version}")
+                logger.error(
+                    f"[FAIL] Python 3.8+ required, found {sys.version}")
                 return False
 
             logger.info(f"[OK] Python version: {sys.version}")
 
             # Check required directories
-            required_dirs = ['webpanel', 'noxcore', 'templates', 'data/db', 'data/logs']
+            required_dirs = ['webpanel', 'noxcore',
+                'templates', 'data/db', 'data/logs']
             for dir_name in required_dirs:
                 dir_path = self.base_path / dir_name
                 if not dir_path.exists():
@@ -314,7 +318,7 @@ class NoxPanelLauncher:
     def create_fallback_app(self):
         """Create a simple fallback application"""
         try:
-            from flask import Flask, render_template, jsonify
+            from flask import Flask, jsonify, render_template
 
             self.app = Flask(__name__,
                            template_folder=str(self.base_path / "templates"),
@@ -445,8 +449,8 @@ class NoxPanelLauncher:
     def test_server_response(self) -> bool:
         """Test if server is responding"""
         try:
-            import urllib.request
             import urllib.error
+            import urllib.request
 
             # Try multiple health endpoints
             health_urls = [

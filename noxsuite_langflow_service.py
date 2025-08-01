@@ -7,84 +7,90 @@ Simple Langflow service for MCP integration with the NoxSuite system.
 This provides basic workflow management and MCP protocol support.
 """
 
-import os
-import sys
 import json
 import logging
+import os
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler('logs/langflow_service.log'),
-        logging.StreamHandler()
-    ]
+        logging.FileHandler("logs/langflow_service.log"),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
 
+
 class NoxSuiteLangflowService:
     """Basic Langflow service for NoxSuite MCP integration"""
-    
+
     def __init__(self, port=7860):
         self.port = port
         self.host = "0.0.0.0"
         self.process = None
         self.status = "stopped"
-        
+
     def start(self):
         """Start the Langflow service"""
         try:
-            logger.info(f"Starting NoxSuite Langflow Service on {self.host}:{self.port}")
-            
+            logger.info(
+                f"Starting NoxSuite Langflow Service on {self.host}:{self.port}"
+            )
+
             # Create a simple HTTP server for basic functionality
-            from http.server import HTTPServer, BaseHTTPRequestHandler
             import json
-            
+            from http.server import BaseHTTPRequestHandler, HTTPServer
+
             class LangflowHandler(BaseHTTPRequestHandler):
                 def do_GET(self):
-                    if self.path == '/health':
+                    if self.path == "/health":
                         self.send_response(200)
-                        self.send_header('Content-type', 'application/json')
+                        self.send_header("Content-type", "application/json")
                         self.end_headers()
                         response = {
                             "status": "healthy",
                             "service": "NoxSuite Langflow Service",
                             "timestamp": datetime.now().isoformat(),
                             "port": 7860,
-                            "mcp_ready": True
+                            "mcp_ready": True,
                         }
                         self.wfile.write(json.dumps(response).encode())
-                    elif self.path == '/api/flows':
+                    elif self.path == "/api/flows":
                         self.send_response(200)
-                        self.send_header('Content-type', 'application/json')
+                        self.send_header("Content-type", "application/json")
                         self.end_headers()
                         response = {
                             "flows": [],
                             "message": "NoxSuite Langflow Service - Basic API endpoint",
-                            "mcp_integration": "ready"
+                            "mcp_integration": "ready",
                         }
                         self.wfile.write(json.dumps(response).encode())
-                    elif self.path.startswith('/api/flows/') and self.path.endswith('/run'):
-                        flow_name = self.path.split('/')[-2]
+                    elif self.path.startswith("/api/flows/") and self.path.endswith(
+                        "/run"
+                    ):
+                        flow_name = self.path.split("/")[-2]
                         self.send_response(200)
-                        self.send_header('Content-type', 'application/json')
+                        self.send_header("Content-type", "application/json")
                         self.end_headers()
                         response = {
                             "status": "executed",
                             "flow_name": flow_name,
                             "timestamp": datetime.now().isoformat(),
-                            "message": f"Flow {flow_name} executed successfully"
+                            "message": f"Flow {flow_name} executed successfully",
                         }
                         self.wfile.write(json.dumps(response).encode())
                     else:
                         self.send_response(200)
-                        self.send_header('Content-type', 'text/html')
+                        self.send_header("Content-type", "text/html")
                         self.end_headers()
-                        html = """
+                        html = (
+                            """
                         <!DOCTYPE html>
                         <html>
                         <head>
@@ -114,62 +120,71 @@ class NoxSuiteLangflowService:
                                     <li>✅ Health Monitoring: Active</li>
                                 </ul>
                                 
-                                <p><small>Timestamp: """ + datetime.now().isoformat() + """</small></p>
+                                <p><small>Timestamp: """
+                            + datetime.now().isoformat()
+                            + """</small></p>
                             </div>
                         </body>
                         </html>
                         """
+                        )
                         self.wfile.write(html.encode())
-                        
+
                 def do_POST(self):
-                    if self.path.startswith('/api/flows/') and self.path.endswith('/run'):
-                        flow_name = self.path.split('/')[-2]
-                        content_length = int(self.headers.get('Content-Length', 0))
+                    if self.path.startswith("/api/flows/") and self.path.endswith(
+                        "/run"
+                    ):
+                        flow_name = self.path.split("/")[-2]
+                        content_length = int(
+                            self.headers.get("Content-Length", 0))
                         post_data = self.rfile.read(content_length)
-                        
+
                         self.send_response(200)
-                        self.send_header('Content-type', 'application/json')
+                        self.send_header("Content-type", "application/json")
                         self.end_headers()
-                        
+
                         try:
-                            params = json.loads(post_data.decode()) if post_data else {}
+                            params = json.loads(
+                                post_data.decode()) if post_data else {}
                         except:
                             params = {}
-                            
+
                         response = {
                             "status": "success",
                             "flow_name": flow_name,
                             "timestamp": datetime.now().isoformat(),
                             "parameters": params,
-                            "result": f"Flow {flow_name} executed with MCP integration"
+                            "result": f"Flow {flow_name} executed with MCP integration",
                         }
                         self.wfile.write(json.dumps(response).encode())
                     else:
                         self.send_response(404)
                         self.end_headers()
-                        
+
                 def log_message(self, format, *args):
                     # Suppress default logging to avoid noise
                     pass
-            
+
             # Start the server
             server = HTTPServer((self.host, self.port), LangflowHandler)
             self.status = "running"
-            logger.info(f"✅ NoxSuite Langflow Service started successfully on http://{self.host}:{self.port}")
+            logger.info(
+                f"✅ NoxSuite Langflow Service started successfully on http://{self.host}:{self.port}"
+            )
             logger.info("🔗 MCP integration ready")
             logger.info("🌐 Web interface available")
-            
+
             # Update status file
             self.update_status()
-            
+
             # Start server
             server.serve_forever()
-            
+
         except Exception as e:
             logger.error(f"Failed to start Langflow service: {e}")
             self.status = "error"
             return False
-            
+
     def update_status(self):
         """Update the status file"""
         status_data = {
@@ -182,32 +197,37 @@ class NoxSuiteLangflowService:
             "endpoints": {
                 "health": f"http://localhost:{self.port}/health",
                 "api": f"http://localhost:{self.port}/api/flows",
-                "web": f"http://localhost:{self.port}/"
-            }
+                "web": f"http://localhost:{self.port}/",
+            },
         }
-        
+
         try:
-            with open('langflow_service_status.json', 'w') as f:
+            with open("langflow_service_status.json", "w") as f:
                 json.dump(status_data, f, indent=2)
         except Exception as e:
             logger.warning(f"Could not update status file: {e}")
 
+
 def main():
     """Main entry point"""
     import argparse
-    
-    parser = argparse.ArgumentParser(description='NoxSuite Langflow Service')
-    parser.add_argument('--port', type=int, default=7860, help='Port to run on (default: 7860)')
-    parser.add_argument('--host', default='0.0.0.0', help='Host to bind to (default: 0.0.0.0)')
-    
+
+    parser = argparse.ArgumentParser(description="NoxSuite Langflow Service")
+    parser.add_argument(
+        "--port", type=int, default=7860, help="Port to run on (default: 7860)"
+    )
+    parser.add_argument(
+        "--host", default="0.0.0.0", help="Host to bind to (default: 0.0.0.0)"
+    )
+
     args = parser.parse_args()
-    
+
     # Ensure logs directory exists
-    os.makedirs('logs', exist_ok=True)
-    
+    os.makedirs("logs", exist_ok=True)
+
     service = NoxSuiteLangflowService(port=args.port)
     service.host = args.host
-    
+
     try:
         service.start()
     except KeyboardInterrupt:
@@ -219,5 +239,6 @@ def main():
         service.status = "error"
         service.update_status()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

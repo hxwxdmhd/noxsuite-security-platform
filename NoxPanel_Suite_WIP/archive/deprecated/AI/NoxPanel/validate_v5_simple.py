@@ -3,18 +3,20 @@ NoxPanel v5.0 - Simple System Validation
 Quick validation of Phase 2A critical fixes
 """
 
+import logging
 import os
 import sys
 import time
-import logging
 from pathlib import Path
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
 # Set up logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
+
 
 def test_imports():
     """
@@ -64,6 +66,7 @@ def test_imports():
 
     return results
 
+
 def test_security_config():
     """Test security configuration"""
     try:
@@ -79,7 +82,7 @@ def test_security_config():
 
     COMPLIANCE: STANDARD
     """
-        from noxcore.security_config import EnvironmentSecurityManager
+       from noxcore.security_config import EnvironmentSecurityManager
 
         # Set development environment
         os.environ["NOXPANEL_ENV"] = "development"
@@ -114,6 +117,7 @@ def test_security_config():
         logger.error(f"❌ Security config test failed: {e}")
         return {"status": f"❌ Failed: {e}"}
 
+
 def test_database_pool():
     """Test database connection pool"""
     try:
@@ -137,9 +141,10 @@ def test_database_pool():
 
     COMPLIANCE: STANDARD
     """
-        # Test basic connection
-        with pool.get_connection() as conn:
-            conn.execute("CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY, data TEXT)")
+       # Test basic connection
+       with pool.get_connection() as conn:
+            conn.execute(
+                "CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY, data TEXT)")
             conn.execute("INSERT INTO test (data) VALUES (?)", ("test_data",))
             result = conn.execute("SELECT COUNT(*) FROM test").fetchone()
             count = result[0]
@@ -151,7 +156,7 @@ def test_database_pool():
             "database_path": str(test_db),
             "records_count": count,
             "connection_pool": "Active"
-    """
+            """
     RLVR: Implements main with error handling and validation
 
     REASONING CHAIN:
@@ -169,10 +174,11 @@ def test_database_pool():
         logger.error(f"❌ Database pool test failed: {e}")
         return {"status": f"❌ Failed: {e}"}
 
+
 def test_rate_limiter():
     """Test rate limiting system"""
     try:
-        from noxcore.rate_limiter import get_rate_limiter, RateLimitRule
+        from noxcore.rate_limiter import RateLimitRule, get_rate_limiter
 
         limiter = get_rate_limiter()
 
@@ -183,7 +189,8 @@ def test_rate_limiter():
         # Get statistics
         stats = limiter.get_all_stats()
 
-        logger.info(f"✅ Rate limiter working - {stats['total_clients']} clients tracked")
+        logger.info(
+            f"✅ Rate limiter working - {stats['total_clients']} clients tracked")
 
         return {
             "status": "✅ Working",
@@ -195,6 +202,7 @@ def test_rate_limiter():
     except Exception as e:
         logger.error(f"❌ Rate limiter test failed: {e}")
         return {"status": f"❌ Failed: {e}"}
+
 
 def test_app_creation():
     """Test that the new app can be created"""
@@ -208,7 +216,8 @@ def test_app_creation():
             response = client.get('/api/health')
             health_data = response.get_json()
 
-            logger.info(f"✅ App creation successful - Health: {health_data.get('status', 'unknown')}")
+            logger.info(
+                f"✅ App creation successful - Health: {health_data.get('status', 'unknown')}")
 
             return {
                 "status": "✅ Working",
@@ -221,6 +230,7 @@ def test_app_creation():
     except Exception as e:
         logger.error(f"❌ App creation test failed: {e}")
         return {"status": f"❌ Failed: {e}"}
+
 
 def main():
     """Run simple validation tests"""
@@ -257,7 +267,8 @@ def main():
     total_count = len(tests)
 
     for test_name, result in all_results.items():
-        status = result.get('status', 'Unknown') if isinstance(result, dict) else '✅ Working'
+        status = result.get('status', 'Unknown') if isinstance(
+            result, dict) else '✅ Working'
         if '✅' in str(status):
             working_count += 1
         logger.info(f"{test_name}: {status}")
@@ -271,11 +282,13 @@ def main():
         logger.info("🎉 Phase 2A implementation is largely successful!")
         return 0
     elif success_rate >= 60:
-        logger.info("⚠️ Phase 2A implementation has some issues but core systems working")
+        logger.info(
+            "⚠️ Phase 2A implementation has some issues but core systems working")
         return 0
     else:
         logger.info("❌ Phase 2A implementation needs attention")
         return 1
+
 
 if __name__ == "__main__":
     exit_code = main()

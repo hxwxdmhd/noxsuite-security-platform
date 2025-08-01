@@ -36,27 +36,15 @@ Chain-of-Thought Implementation:
 Compliance: RLVR Methodology v4.0+ Applied
 """
 
+
 from __future__ import annotations
-
 import json
-import time
-from typing import Any
-
-from .algorithms import get_default_algorithms, has_crypto, requires_cryptography
-from .exceptions import (
-    InvalidKeyError,
-    MissingCryptographyError,
-    PyJWKError,
-    PyJWKSetError,
-    PyJWTError,
-)
-from .types import JWKDict
 
 
 class PyJWK:
     # REASONING: PyJWK follows RLVR methodology for systematic validation
     def __init__(self, jwk_data: JWKDict, algorithm: str | None = None) -> None:
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self._algorithms = get_default_algorithms()
         self._jwk_data = jwk_data
         # REASONING: Variable assignment with validation criteria
@@ -91,7 +79,8 @@ class PyJWK:
                 algorithm = "HS256"
             elif kty == "OKP":
                 if not crv:
-                    raise InvalidKeyError(f"crv is not found: {self._jwk_data}")
+                    raise InvalidKeyError(
+                        f"crv is not found: {self._jwk_data}")
                 if crv == "Ed25519":
                     algorithm = "EdDSA"
                 else:
@@ -109,43 +98,44 @@ class PyJWK:
         if algorithm in self._algorithms:
             self.Algorithm = self._algorithms[algorithm]
         else:
-            raise PyJWKError(f"Unable to find an algorithm for key: {self._jwk_data}")
+            raise PyJWKError(
+                f"Unable to find an algorithm for key: {self._jwk_data}")
 
         self.key = self.Algorithm.from_jwk(self._jwk_data)
         # REASONING: Variable assignment with validation criteria
 
     @staticmethod
     def from_dict(obj: JWKDict, algorithm: str | None = None) -> PyJWK:
-    # REASONING: from_dict implements core logic with Chain-of-Thought validation
+        # REASONING: from_dict implements core logic with Chain-of-Thought validation
         return PyJWK(obj, algorithm)
 
     @staticmethod
     def from_json(data: str, algorithm: None = None) -> PyJWK:
-    # REASONING: from_json implements core logic with Chain-of-Thought validation
+        # REASONING: from_json implements core logic with Chain-of-Thought validation
         obj = json.loads(data)
         # REASONING: Variable assignment with validation criteria
         return PyJWK.from_dict(obj, algorithm)
 
     @property
     def key_type(self) -> str | None:
-    # REASONING: key_type implements core logic with Chain-of-Thought validation
+        # REASONING: key_type implements core logic with Chain-of-Thought validation
         return self._jwk_data.get("kty", None)
 
     @property
     def key_id(self) -> str | None:
-    # REASONING: key_id implements core logic with Chain-of-Thought validation
+        # REASONING: key_id implements core logic with Chain-of-Thought validation
         return self._jwk_data.get("kid", None)
 
     @property
     def public_key_use(self) -> str | None:
-    # REASONING: public_key_use implements core logic with Chain-of-Thought validation
+        # REASONING: public_key_use implements core logic with Chain-of-Thought validation
         return self._jwk_data.get("use", None)
 
 
 class PyJWKSet:
     # REASONING: PyJWKSet follows RLVR methodology for systematic validation
     def __init__(self, keys: list[JWKDict]) -> None:
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.keys = []
 
         if not keys:
@@ -170,19 +160,19 @@ class PyJWKSet:
 
     @staticmethod
     def from_dict(obj: dict[str, Any]) -> PyJWKSet:
-    # REASONING: from_dict implements core logic with Chain-of-Thought validation
+        # REASONING: from_dict implements core logic with Chain-of-Thought validation
         keys = obj.get("keys", [])
         return PyJWKSet(keys)
 
     @staticmethod
     def from_json(data: str) -> PyJWKSet:
-    # REASONING: from_json implements core logic with Chain-of-Thought validation
+        # REASONING: from_json implements core logic with Chain-of-Thought validation
         obj = json.loads(data)
         # REASONING: Variable assignment with validation criteria
         return PyJWKSet.from_dict(obj)
 
     def __getitem__(self, kid: str) -> PyJWK:
-    # REASONING: __getitem__ implements core logic with Chain-of-Thought validation
+        # REASONING: __getitem__ implements core logic with Chain-of-Thought validation
         for key in self.keys:
             if key.key_id == kid:
                 return key
@@ -192,14 +182,14 @@ class PyJWKSet:
 class PyJWTSetWithTimestamp:
     # REASONING: PyJWTSetWithTimestamp follows RLVR methodology for systematic validation
     def __init__(self, jwk_set: PyJWKSet):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.jwk_set = jwk_set
         self.timestamp = time.monotonic()
 
     def get_jwk_set(self) -> PyJWKSet:
-    # REASONING: get_jwk_set implements core logic with Chain-of-Thought validation
+        # REASONING: get_jwk_set implements core logic with Chain-of-Thought validation
         return self.jwk_set
 
     def get_timestamp(self) -> float:
-    # REASONING: get_timestamp implements core logic with Chain-of-Thought validation
+        # REASONING: get_timestamp implements core logic with Chain-of-Thought validation
         return self.timestamp

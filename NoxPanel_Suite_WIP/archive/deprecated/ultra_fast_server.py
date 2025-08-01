@@ -4,12 +4,13 @@ Ultra-Fast Test Server for Gate 3 Performance Testing
 Optimized for <10ms response times with minimal overhead
 """
 
-from flask import Flask, jsonify, request, Response
-import time
-import os
-import json
 import gc
+import json
+import os
+import time
 from functools import lru_cache
+
+from flask import Flask, Response, jsonify, request
 
 # Disable Flask debug mode for maximum performance
 app = Flask(__name__)
@@ -35,26 +36,31 @@ SECURITY_HEADERS = {
     'Referrer-Policy': 'strict-origin-when-cross-origin'
 }
 
+
 def add_security_headers(response):
     """Add security headers to response"""
     for header, value in SECURITY_HEADERS.items():
         response.headers[header] = value
     return response
 
+
 @app.after_request
 def after_request(response):
     """Add security headers and optimize response"""
     return add_security_headers(response)
+
 
 @app.route('/')
 def home():
     """Ultra-fast root endpoint"""
     return jsonify({'message': 'NoxPanel Ultra-Fast Server', 'status': 'active'})
 
+
 @app.route('/knowledge')
 def knowledge():
     """Ultra-fast knowledge endpoint"""
     return jsonify({'knowledge_base': 'active', 'articles': 1000, 'status': 'ready'})
+
 
 @app.route('/api/knowledge/stats')
 def knowledge_stats():
@@ -65,6 +71,7 @@ def knowledge_stats():
         'views_today': 500,
         'response_time': '<10ms'
     })
+
 
 @app.route('/api/knowledge/suggestions')
 def knowledge_suggestions():
@@ -81,10 +88,12 @@ def knowledge_suggestions():
         'count': 4
     })
 
+
 @app.route('/health')
 def health_check():
     """Ultra-fast health check"""
     return jsonify(CACHED_DATA['health'])
+
 
 @app.route('/performance')
 def performance_test():
@@ -98,10 +107,12 @@ def performance_test():
         'target': '< 100ms'
     })
 
+
 @app.route('/database')
 def database_test():
     """Simulated database test"""
     return jsonify(CACHED_DATA['database'])
+
 
 @app.route('/memory')
 def memory_test():
@@ -109,10 +120,12 @@ def memory_test():
     gc.collect()  # Force garbage collection
     return jsonify(CACHED_DATA['resources'])
 
+
 @app.route('/concurrency')
 def concurrency_test():
     """Concurrency test endpoint"""
     return jsonify(CACHED_DATA['concurrency'])
+
 
 @app.route('/auth/login', methods=['POST'])
 def auth_login():
@@ -120,7 +133,7 @@ def auth_login():
     data = request.get_json()
     if not data or 'username' not in data or 'password' not in data:
         return jsonify({'error': 'Missing credentials'}), 400
-    
+
     # Simulated authentication
     if data['username'] == 'admin' and data['password'] == 'secure123':
         return jsonify({
@@ -128,8 +141,9 @@ def auth_login():
             'expires': int(time.time()) + 3600,
             'user': data['username']
         })
-    
+
     return jsonify({'error': 'Invalid credentials'}), 401
+
 
 @app.route('/secure/data')
 def secure_data():
@@ -137,12 +151,13 @@ def secure_data():
     auth_header = request.headers.get('Authorization')
     if not auth_header or not auth_header.startswith('Bearer '):
         return jsonify({'error': 'Authentication required'}), 401
-    
+
     return jsonify({
         'data': 'Secure data accessed successfully',
         'timestamp': time.time(),
         'user_authenticated': True
     })
+
 
 @app.route('/api/validate', methods=['POST'])
 def input_validation():
@@ -150,7 +165,7 @@ def input_validation():
     data = request.get_json()
     if not data:
         return jsonify({'error': 'No data provided'}), 400
-    
+
     # Input sanitization
     if 'user_input' in data:
         user_input = str(data['user_input'])
@@ -159,29 +174,32 @@ def input_validation():
         for char in dangerous_chars:
             if char in user_input.lower():
                 return jsonify({'error': 'Invalid input detected'}), 400
-    
+
     return jsonify({
         'status': 'Input validated successfully',
         'sanitized': True,
         'timestamp': time.time()
     })
 
+
 @app.errorhandler(404)
 def not_found(error):
     """Custom 404 handler"""
     return jsonify({'error': 'Endpoint not found'}), 404
+
 
 @app.errorhandler(500)
 def internal_error(error):
     """Custom 500 handler"""
     return jsonify({'error': 'Internal server error'}), 500
 
+
 if __name__ == '__main__':
     print("Starting Ultra-Fast Server for Gates 3-4 Testing...")
     print("Target: <100ms response times for Gate 3")
     print("Security features enabled for Gate 4")
     print("Server running on http://localhost:5000")
-    
+
     # Run with optimized settings
     app.run(
         host='0.0.0.0',

@@ -5,16 +5,16 @@ Text Summarization Script for NoxPanel v3.0
 Uses AI to summarize text files or input text
 """
 
-import sys
-import os
+from noxcore.llm_integration import llm_manager
 import argparse
+import os
+import sys
 from pathlib import Path
 
 # Add the project root to Python path for imports
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from noxcore.llm_integration import llm_manager
 
 def summarize_file(file_path: str, max_length: int = 200) -> str:
     """
@@ -64,15 +64,16 @@ def summarize_file(file_path: str, max_length: int = 200) -> str:
 
     COMPLIANCE: STANDARD
     """
-        summary = llm_manager.summarize_text(content, max_length)
+    summary = llm_manager.summarize_text(content, max_length)
 
-        print(f"[INFO] Summary length: {len(summary)} characters")
-        return summary
+    print(f"[INFO] Summary length: {len(summary)} characters")
+    return summary
 
     except FileNotFoundError:
         return f"Error: File not found: {file_path}"
     except Exception as e:
         return f"Error reading file: {str(e)}"
+
 
 def summarize_text(text: str, max_length: int = 200) -> str:
     """Summarize provided text"""
@@ -87,13 +88,14 @@ def summarize_text(text: str, max_length: int = 200) -> str:
     print(f"[INFO] Summary length: {len(summary)} characters")
     return summary
 
+
 def main():
     """Main function for text summarization"""
     parser = argparse.ArgumentParser(description='Summarize text using AI')
     parser.add_argument('--file', '-f', help='Path to text file to summarize')
     parser.add_argument('--text', '-t', help='Text to summarize directly')
     parser.add_argument('--length', '-l', type=int, default=200,
-                       help='Maximum length of summary (default: 200)')
+                        help='Maximum length of summary (default: 200)')
     parser.add_argument('--output', '-o', help='Output file for summary')
 
     args = parser.parse_args()
@@ -143,6 +145,7 @@ def main():
             return 1
 
     return 0
+
 
 if __name__ == "__main__":
     try:

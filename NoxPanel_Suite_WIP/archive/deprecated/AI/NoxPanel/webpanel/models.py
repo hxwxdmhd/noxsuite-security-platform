@@ -3,8 +3,9 @@ NoxPanel v3.1 - Model Management API
 Provides endpoints for AI model detection and management
 """
 
-from flask import Blueprint, request, jsonify
 import logging
+
+from flask import Blueprint, jsonify, request
 
 # Import model detection (with fallback)
 try:
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 # Create models blueprint
 models_bp = Blueprint('models', __name__, url_prefix='/api/models')
+
 
 @models_bp.route('/', methods=['GET'])
 def models_index():
@@ -83,6 +85,7 @@ def models_index():
             'total_models': 0
         }), 500
 
+
 @models_bp.route('/status', methods=['GET'])
     """
     RLVR: Removes entity with dependency checking
@@ -96,6 +99,8 @@ def models_index():
 
     COMPLIANCE: STANDARD
     """
+
+
 def models_status():
     """Get current models status"""
     try:
@@ -129,6 +134,7 @@ def models_status():
             'status': 'error',
             'message': str(e)
         }), 500
+
 
 @models_bp.route('/scan', methods=['GET', 'POST'])
 def scan_models():
@@ -171,6 +177,7 @@ def scan_models():
     COMPLIANCE: STANDARD
     """
         }), 500
+
 
 @models_bp.route('/providers', methods=['GET'])
 def get_providers():

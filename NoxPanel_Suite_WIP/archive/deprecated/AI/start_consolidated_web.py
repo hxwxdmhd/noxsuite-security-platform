@@ -7,12 +7,13 @@ Unified entry point for all web interfaces after Phase 3 consolidation.
 This replaces all fragmented web servers with a single production-ready application.
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add NoxPanel to path
 sys.path.insert(0, str(Path(__file__).parent / "AI" / "NoxPanel"))
+
 
 def main():
     """
@@ -46,6 +47,7 @@ def main():
     except Exception as e:
         print(f"❌ Failed to start consolidated interface: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

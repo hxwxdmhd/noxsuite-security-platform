@@ -1,8 +1,8 @@
 import os
-import sys
-import subprocess
-import shutil
 import platform
+import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 # --- CONFIGURATION ---
@@ -1435,6 +1435,8 @@ config/noxpanel.json
 '''
 
 # --- UTILITIES ---
+
+
 def write_file(path, content):
     """
     RLVR: Implements write_file with error handling and validation
@@ -1535,22 +1537,29 @@ def write_file(path, content):
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
 
+
 def create_structure(base):
     for folder in FOLDERS:
         (base / folder).mkdir(parents=True, exist_ok=True)
 
+
 def install_python_requirements(venv_bin):
-    pip_exe = os.path.join(venv_bin, "pip") if platform.system() != "Windows" else os.path.join(venv_bin, "pip.exe")
+    pip_exe = os.path.join(venv_bin, "pip") if platform.system(
+    ) != "Windows" else os.path.join(venv_bin, "pip.exe")
     subprocess.run([pip_exe, "install", "-r", "requirements.txt"], check=True)
+
 
 def ask_yes_no(prompt):
     return input(f"{prompt} [y/N] ").strip().lower() == "y"
 
+
 def setup_react_frontend(base):
     frontend_dir = base / "webpanel" / "frontend"
     print(f"Creating React frontend at {frontend_dir} ...")
-    subprocess.run(["npx", "create-react-app", "frontend"], cwd=base / "webpanel", check=True)
+    subprocess.run(["npx", "create-react-app", "frontend"],
+                   cwd=base / "webpanel", check=True)
     print("React frontend created! (Integrate with Flask API as needed.)")
+
 
 def print_hosts_instructions():
     print(f"""
@@ -1579,6 +1588,7 @@ To access NoxPanel via {LOCAL_DOMAIN}:
 {'-'*60}
 """)
 
+
 def create_launch_script(base):
     """Create launch scripts for different platforms"""
     if platform.system() == "Windows":
@@ -1602,6 +1612,8 @@ python main.py
         launch_script.chmod(0o755)  # Make executable
 
 # --- MAIN ---
+
+
 def main():
     print(f"\n🌌 NoxPanel Bootstrap v2.0")
     print(f"{'='*50}")
@@ -1655,10 +1667,12 @@ def main():
 
     # Example scripts
     write_file(base/"scripts/example_script.py", EXAMPLE_SCRIPT)
-    write_file(base/"scripts/samples/system_diagnostic.py", SAMPLE_DIAGNOSTIC_SCRIPT)
+    write_file(base/"scripts/samples/system_diagnostic.py",
+               SAMPLE_DIAGNOSTIC_SCRIPT)
 
     # Configuration
-    write_file(base/"config/README.md", "# Configuration Files\n\nThis directory contains NoxPanel configuration files.\n")
+    write_file(base/"config/README.md",
+               "# Configuration Files\n\nThis directory contains NoxPanel configuration files.\n")
 
     # Tests
     write_file(base/"tests/__init__.py", "")
@@ -1671,11 +1685,13 @@ def main():
 
     # Try to upgrade pip, but don't fail if it doesn't work
     try:
-        subprocess.run([str(venv_bin/"pip"), "install", "--upgrade", "pip"], check=False, timeout=60)
+        subprocess.run([str(venv_bin/"pip"), "install",
+                       "--upgrade", "pip"], check=False, timeout=60)
     except Exception as e:
         print(f"⚠️  Warning: Could not upgrade pip: {e}")
 
-    subprocess.run([str(venv_bin/"pip"), "install", "-r", str(base/"requirements.txt")], check=True)
+    subprocess.run([str(venv_bin/"pip"), "install", "-r",
+                   str(base/"requirements.txt")], check=True)
 
     print("✅ Python environment ready.")
 
@@ -1715,6 +1731,7 @@ def main():
 
     print(f"\n🚀 NoxPanel is ready to rock! Enjoy your AI Command Center!")
 
+
 def validate_environment():
     """Validate the environment before setup"""
     print("🔍 Validating environment...")
@@ -1733,6 +1750,7 @@ def validate_environment():
 
     print("✅ Environment validation passed")
     return True
+
 
 if __name__ == "__main__":
     main()

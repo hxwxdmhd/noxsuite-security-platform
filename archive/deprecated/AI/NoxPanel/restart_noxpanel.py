@@ -8,6 +8,7 @@ import sys
 import time
 import os
 
+
 def main():
     """
     RLVR: Implements main with error handling and validation
@@ -27,7 +28,7 @@ def main():
     try:
         print("[RESTART] Stopping existing processes...")
         subprocess.run(['taskkill', '/F', '/IM', 'python.exe'],
-                      capture_output=True, check=False)
+                       capture_output=True, check=False)
         time.sleep(2)
     except Exception as e:
         print(f"[RESTART] Process stop error (non-critical): {e}")
@@ -50,9 +51,9 @@ def main():
         process = subprocess.Popen([
             sys.executable, 'webpanel/app_v5.py'
         ],
-        env=env,
-        cwd=os.getcwd(),
-        creationflags=subprocess.CREATE_NEW_CONSOLE if os.name == 'nt' else 0
+            env=env,
+            cwd=os.getcwd(),
+            creationflags=subprocess.CREATE_NEW_CONSOLE if os.name == 'nt' else 0
         )
 
         print(f"[RESTART] NoxPanel started with PID: {process.pid}")
@@ -73,6 +74,7 @@ def main():
     except Exception as e:
         print(f"[RESTART] Error starting server: {e}")
         return False
+
 
 if __name__ == "__main__":
     success = main()

@@ -4,15 +4,16 @@ Simple Multi-Tenant Enterprise Architecture Demo
 A lightweight demonstration of the complete enterprise system
 """
 
+import json
+import logging
 import os
 import sys
-import json
 import time
-import pymysql
-import logging
-from pathlib import Path
 from datetime import datetime
-from flask import Flask, render_template_string, jsonify, request
+from pathlib import Path
+
+import pymysql
+from flask import Flask, jsonify, render_template_string, request
 
 # Configure logging
 logging.basicConfig(
@@ -20,20 +21,21 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
+
 class EnterpriseDemo:
     """Simple enterprise multi-tenant demo"""
-    
+
     def __init__(self):
         self.db_path = "enterprise_demo.db"
         self.initialize_database()
         self.app = Flask(__name__)
         self.setup_routes()
-        
+
     def initialize_database(self):
         """Initialize the database with sample data"""
         conn = pymysql.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         # Create tables
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS tenants (
@@ -44,7 +46,7 @@ class EnterpriseDemo:
                 status TEXT DEFAULT 'active'
             )
         ''')
-        
+
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY,
@@ -55,7 +57,7 @@ class EnterpriseDemo:
                 FOREIGN KEY (tenant_id) REFERENCES tenants (id)
             )
         ''')
-        
+
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS resource_usage (
                 id INTEGER PRIMARY KEY,
@@ -66,42 +68,53 @@ class EnterpriseDemo:
                 FOREIGN KEY (tenant_id) REFERENCES tenants (id)
             )
         ''')
-        
+
         # Insert sample data
-        cursor.execute("INSERT OR IGNORE INTO tenants (id, name, subdomain, plan) VALUES (1, 'Acme Corp', 'acme', 'enterprise')")
-        cursor.execute("INSERT OR IGNORE INTO tenants (id, name, subdomain, plan) VALUES (2, 'TechStart', 'techstart', 'pro')")
-        cursor.execute("INSERT OR IGNORE INTO tenants (id, name, subdomain, plan) VALUES (3, 'GlobalTech', 'global', 'enterprise')")
-        
-        cursor.execute("INSERT OR IGNORE INTO users (tenant_id, username, email, role) VALUES (1, 'admin', 'admin@acme.com', 'admin')")
-        cursor.execute("INSERT OR IGNORE INTO users (tenant_id, username, email, role) VALUES (1, 'user1', 'user1@acme.com', 'user')")
-        cursor.execute("INSERT OR IGNORE INTO users (tenant_id, username, email, role) VALUES (2, 'startup_admin', 'admin@techstart.com', 'admin')")
-        cursor.execute("INSERT OR IGNORE INTO users (tenant_id, username, email, role) VALUES (3, 'global_admin', 'admin@global.com', 'admin')")
-        
+        cursor.execute(
+            "INSERT OR IGNORE INTO tenants (id, name, subdomain, plan) VALUES (1, 'Acme Corp', 'acme', 'enterprise')")
+        cursor.execute(
+            "INSERT OR IGNORE INTO tenants (id, name, subdomain, plan) VALUES (2, 'TechStart', 'techstart', 'pro')")
+        cursor.execute(
+            "INSERT OR IGNORE INTO tenants (id, name, subdomain, plan) VALUES (3, 'GlobalTech', 'global', 'enterprise')")
+
+        cursor.execute(
+            "INSERT OR IGNORE INTO users (tenant_id, username, email, role) VALUES (1, 'admin', 'admin@acme.com', 'admin')")
+        cursor.execute(
+            "INSERT OR IGNORE INTO users (tenant_id, username, email, role) VALUES (1, 'user1', 'user1@acme.com', 'user')")
+        cursor.execute(
+            "INSERT OR IGNORE INTO users (tenant_id, username, email, role) VALUES (2, 'startup_admin', 'admin@techstart.com', 'admin')")
+        cursor.execute(
+            "INSERT OR IGNORE INTO users (tenant_id, username, email, role) VALUES (3, 'global_admin', 'admin@global.com', 'admin')")
+
         # Insert sample resource usage
-        cursor.execute("INSERT OR IGNORE INTO resource_usage (tenant_id, cpu_usage, memory_usage) VALUES (1, 25.5, 512.0)")
-        cursor.execute("INSERT OR IGNORE INTO resource_usage (tenant_id, cpu_usage, memory_usage) VALUES (2, 15.2, 256.0)")
-        cursor.execute("INSERT OR IGNORE INTO resource_usage (tenant_id, cpu_usage, memory_usage) VALUES (3, 45.8, 1024.0)")
-        
+        cursor.execute(
+            "INSERT OR IGNORE INTO resource_usage (tenant_id, cpu_usage, memory_usage) VALUES (1, 25.5, 512.0)")
+        cursor.execute(
+            "INSERT OR IGNORE INTO resource_usage (tenant_id, cpu_usage, memory_usage) VALUES (2, 15.2, 256.0)")
+        cursor.execute(
+            "INSERT OR IGNORE INTO resource_usage (tenant_id, cpu_usage, memory_usage) VALUES (3, 45.8, 1024.0)")
+
         conn.commit()
         conn.close()
         logging.info("Database initialized with sample data")
-        
+
     def setup_routes(self):
         """Setup Flask routes"""
-        
+
         @self.app.route('/')
         def dashboard():
             """Main enterprise dashboard"""
             conn = pymysql.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             # Get statistics
-            cursor.execute("SELECT COUNT(*) FROM tenants WHERE status = 'active'")
+            cursor.execute(
+                "SELECT COUNT(*) FROM tenants WHERE status = 'active'")
             tenant_count = cursor.fetchone()[0]
-            
+
             cursor.execute("SELECT COUNT(*) FROM users")
             user_count = cursor.fetchone()[0]
-            
+
             cursor.execute("""
                 SELECT t.name, t.plan, t.status, u.cpu_usage, u.memory_usage
                 FROM tenants t
@@ -109,9 +122,9 @@ class EnterpriseDemo:
                 ORDER BY t.name
             """)
             tenants = cursor.fetchall()
-            
+
             conn.close()
-            
+
             template = '''
 <!DOCTYPE html>
 <html>
@@ -231,14 +244,14 @@ class EnterpriseDemo:
 </body>
 </html>
             '''
-            
+
             from jinja2 import Template
             return Template(template).render(
                 tenant_count=tenant_count,
                 user_count=user_count,
                 tenants=tenants
             )
-        
+
         @self.app.route('/api/tenants')
         def api_tenants():
             """Tenant management API"""
@@ -247,7 +260,7 @@ class EnterpriseDemo:
             cursor.execute("SELECT * FROM tenants")
             tenants = cursor.fetchall()
             conn.close()
-            
+
             return jsonify({
                 'tenants': [
                     {
@@ -259,7 +272,7 @@ class EnterpriseDemo:
                     } for t in tenants
                 ]
             })
-        
+
         @self.app.route('/api/users')
         def api_users():
             """User management API"""
@@ -272,7 +285,7 @@ class EnterpriseDemo:
             """)
             users = cursor.fetchall()
             conn.close()
-            
+
             return jsonify({
                 'users': [
                     {
@@ -284,7 +297,7 @@ class EnterpriseDemo:
                     } for u in users
                 ]
             })
-        
+
         @self.app.route('/api/metrics')
         def api_metrics():
             """Resource metrics API"""
@@ -297,7 +310,7 @@ class EnterpriseDemo:
             """)
             metrics = cursor.fetchall()
             conn.close()
-            
+
             return jsonify({
                 'metrics': [
                     {
@@ -308,7 +321,7 @@ class EnterpriseDemo:
                     } for m in metrics
                 ]
             })
-    
+
     def run(self):
         """Run the enterprise demo"""
         logging.info("Starting Heimnetz Enterprise Multi-Tenant Demo")
@@ -321,16 +334,18 @@ class EnterpriseDemo:
         logging.info("  - Users: http://localhost:5000/api/users")
         logging.info("  - Metrics: http://localhost:5000/api/metrics")
         logging.info("=" * 60)
-        
+
         try:
             self.app.run(host='0.0.0.0', port=5000, debug=False)
         except KeyboardInterrupt:
             logging.info("Demo stopped by user")
 
+
 def main():
     """Main function"""
     demo = EnterpriseDemo()
     demo.run()
+
 
 if __name__ == "__main__":
     main()

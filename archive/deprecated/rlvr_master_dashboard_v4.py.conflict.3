@@ -24,8 +24,10 @@ import threading
 import time
 
 # Configure dashboard logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - [RLVR-DASHBOARD] %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - [RLVR-DASHBOARD] %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class SystemMetrics:
@@ -38,6 +40,7 @@ class SystemMetrics:
     critical_issues: int
     test_coverage: float
     reasoning_quality: float
+
 
 class RLVRMasterDashboard:
     """Master dashboard for comprehensive RLVR system integrity monitoring"""
@@ -519,7 +522,8 @@ class RLVRMasterDashboard:
 
     <script>
         function runValidation() {{
-            alert('🔍 Initiating comprehensive RLVR validation scan across ' + {self.current_metrics.total_components} + ' components...');
+            alert('🔍 Initiating comprehensive RLVR validation scan across ' + \
+                  {self.current_metrics.total_components} + ' components...');
             addLogEntry('🔍 Full validation scan initiated by user');
         }}
 
@@ -531,7 +535,8 @@ class RLVRMasterDashboard:
         }}
 
         function runTests() {{
-            alert('🧪 Executing comprehensive test suite with Chain-of-Thought validation...');
+            alert(
+                '🧪 Executing comprehensive test suite with Chain-of-Thought validation...');
             addLogEntry('🧪 Test suite execution started');
         }}
 
@@ -571,18 +576,24 @@ class RLVRMasterDashboard:
 
     COMPLIANCE: STANDARD
     """
-            logEntry.innerHTML = '<span class="log-timestamp">[' + timestamp + ']</span> <span class="log-level-info">[USER]</span> ' + message;
+            logEntry.innerHTML = '<span class="log-timestamp">[' + timestamp + \
+                ']</span> <span class="log-level-info">[USER]</span> ' + message;
 
             logContainer.appendChild(logEntry);
             logContainer.scrollTop = logContainer.scrollHeight;
         }}
 
         // Initialize dashboard
-        console.log('🎯 RLVR Master Dashboard v4.0 - Total System Integrity Monitoring ACTIVE');
-        console.log('📊 Current Compliance: {self.current_metrics.compliance_rate:.3%}');
-        console.log('🔧 Components Monitored: {self.current_metrics.total_components:,}');
-        console.log('✅ Files Remediated: {self.current_metrics.remediated_files}');
-        console.log('🚨 Critical Issues: {self.current_metrics.critical_issues:,}');
+        console.log(
+            '🎯 RLVR Master Dashboard v4.0 - Total System Integrity Monitoring ACTIVE');
+        console.log(
+            '📊 Current Compliance: {self.current_metrics.compliance_rate:.3%}');
+        console.log(
+            '🔧 Components Monitored: {self.current_metrics.total_components:,}');
+        console.log(
+            '✅ Files Remediated: {self.current_metrics.remediated_files}');
+        console.log(
+            '🚨 Critical Issues: {self.current_metrics.critical_issues:,}');
 
         // Auto-refresh metrics every 30 seconds
         setInterval(function() {{
@@ -639,8 +650,10 @@ class RLVRMasterDashboard:
             with socketserver.TCPServer(("", self.port), handler) as httpd:
                 self.server = httpd
                 self.is_running = True
-                logger.info(f"RLVR Master Dashboard server started on port {self.port}")
-                logger.info(f"Access dashboard at: http://localhost:{self.port}")
+                logger.info(
+                    f"RLVR Master Dashboard server started on port {self.port}")
+                logger.info(
+                    f"Access dashboard at: http://localhost:{self.port}")
 
                 # Open browser
                 webbrowser.open(f"http://localhost:{self.port}")

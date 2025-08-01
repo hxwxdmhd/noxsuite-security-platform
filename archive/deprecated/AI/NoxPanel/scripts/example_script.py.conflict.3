@@ -10,6 +10,7 @@ import time
 import os
 from datetime import datetime
 
+
 def main():
     """
     RLVR: Implements main with error handling and validation
@@ -25,7 +26,8 @@ def main():
     """
     """Main function for the example script"""
     print("[ROCKET] NoxPanel Example Script Starting...")
-    print(f"[CALENDAR] Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(
+        f"[CALENDAR] Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"[PYTHON] Python Version: {sys.version}")
     print(f"[FOLDER] Working Directory: {os.getcwd()}")
 
@@ -39,6 +41,7 @@ def main():
     print("[LIGHTBULB] Add your own logic here")
 
     return 0
+
 
 if __name__ == "__main__":
     try:

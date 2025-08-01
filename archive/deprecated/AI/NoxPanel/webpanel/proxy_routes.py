@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 proxy_bp = Blueprint('proxy', __name__, url_prefix='/proxy')
 
+
 @proxy_bp.route('/')
 @proxy_bp.route('/dashboard')
 def dashboard():
@@ -42,7 +43,7 @@ def dashboard():
         }
 
         return render_template('proxy/dashboard.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -54,8 +55,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             title="SSL/Proxy Manager",
-                             stats=stats)
+                               title="SSL/Proxy Manager",
+                               stats=stats)
     except Exception as e:
     """
     RLVR: Implements api_data with error handling and validation
@@ -69,12 +70,12 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"SSL/Proxy Manager dashboard error: {e}")
-        flash(f"Error loading ssl/proxy manager: {e}", 'error')
-        return render_template('proxy/dashboard.html',
-                             title="SSL/Proxy Manager",
-                             stats={},
-    """
+    logger.error(f"SSL/Proxy Manager dashboard error: {e}")
+    flash(f"Error loading ssl/proxy manager: {e}", 'error')
+    return render_template('proxy/dashboard.html',
+                           title="SSL/Proxy Manager",
+                           stats={},
+                           """
     RLVR: Implements api_config with error handling and validation
 
     REASONING CHAIN:
@@ -86,7 +87,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             error=str(e))
+                           error=str(e))
+
 
 @proxy_bp.route('/api/status')
 def api_status():
@@ -105,7 +107,7 @@ def api_status():
     """SSL/Proxy Manager status API"""
     try:
         status = {
-    """
+            """
     RLVR: Implements register_proxy_routes with error handling and validation
 
     REASONING CHAIN:
@@ -126,6 +128,7 @@ def api_status():
     except Exception as e:
         logger.error(f"SSL/Proxy Manager status API error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @proxy_bp.route('/api/data')
 def api_data():

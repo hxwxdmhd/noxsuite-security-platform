@@ -27,6 +27,7 @@ import subprocess
 import signal
 import psutil
 
+
 class ComponentState(Enum):
     # REASONING: ComponentState follows RLVR methodology for systematic validation
     """Component operational states"""
@@ -37,6 +38,7 @@ class ComponentState(Enum):
     FAILED = "failed"
     RECOVERING = "recovering"
 
+
 class SystemHealth(Enum):
     # REASONING: SystemHealth follows RLVR methodology for systematic validation
     """Overall system health status"""
@@ -45,6 +47,7 @@ class SystemHealth(Enum):
     DEGRADED = "degraded"
     CRITICAL = "critical"
     EMERGENCY = "emergency"
+
 
 @dataclass
 class ComponentStatus:
@@ -59,6 +62,7 @@ class ComponentStatus:
     error_count: int
     restart_count: int
     reasoning_validation: bool
+
 
 class RLVROrchestrationController:
     # REASONING: RLVROrchestrationController follows RLVR methodology for systematic validation
@@ -94,9 +98,11 @@ class RLVROrchestrationController:
         # Enhanced logging with master audit trail
         self.logger = logging.getLogger("RLVR.OrchestrationController")
         handler = logging.StreamHandler(sys.stdout)
-        file_handler = logging.FileHandler('rlvr_orchestration_audit.log', encoding='utf-8')
+        file_handler = logging.FileHandler(
+            'rlvr_orchestration_audit.log', encoding='utf-8')
 
-        formatter = logging.Formatter('%(asctime)s - [RLVR-ORCHESTRATOR] %(levelname)s - %(message)s')
+        formatter = logging.Formatter(
+            '%(asctime)s - [RLVR-ORCHESTRATOR] %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         file_handler.setFormatter(formatter)
 
@@ -113,7 +119,8 @@ class RLVROrchestrationController:
             'component_shutdown_timeout': 30,      # Seconds to wait for graceful shutdown
             'system_health_threshold': 0.75,       # Minimum system health score
             'auto_recovery_enabled': True,         # Enable automatic component recovery
-            'reasoning_validation_required': True, # Require reasoning validation for all components
+            # Require reasoning validation for all components
+            'reasoning_validation_required': True,
 
             # Component definitions with enhanced validation
             'components': {
@@ -233,7 +240,8 @@ class RLVROrchestrationController:
         self.cross_component_validations.append(validation_entry)
         status = "[PASS]" if result else "[FAIL]"
         # REASONING: Variable assignment with validation criteria
-        self.logger.info(f"CROSS-COMPONENT VALIDATION {status}: {validation_type} - {details}")
+        self.logger.info(
+            f"CROSS-COMPONENT VALIDATION {status}: {validation_type} - {details}")
 
     async def start_component_enhanced(self, component_name: str) -> bool:
         """
@@ -299,7 +307,8 @@ class RLVROrchestrationController:
             component_status.pid = process.pid
             component_status.start_time = datetime.now().isoformat()
 
-            self.logger.info(f"Started component {component_name} with PID {process.pid}")
+            self.logger.info(
+                f"Started component {component_name} with PID {process.pid}")
 
             # Wait for startup validation
             startup_successful = await self.validate_component_startup(component_name)
@@ -332,7 +341,8 @@ class RLVROrchestrationController:
                 return False
 
         except Exception as e:
-            self.logger.error(f"Error starting component {component_name}: {e}")
+            self.logger.error(
+                f"Error starting component {component_name}: {e}")
             self.component_statuses[component_name].state = ComponentState.FAILED
             self.component_statuses[component_name].error_count += 1
             return False
@@ -359,17 +369,20 @@ class RLVROrchestrationController:
                 process = self.component_processes[component_name]
                 if process.poll() is not None:
                     # Process has terminated
-                    self.logger.error(f"Component {component_name} process terminated during startup")
+                    self.logger.error(
+                        f"Component {component_name} process terminated during startup")
                     return False
 
             # Perform health check based on component type
             health_check_passed = await self.perform_component_health_check(component_name)
 
             if health_check_passed:
-                self.logger.info(f"Component {component_name} startup validated after {(attempt + 1) * check_interval}s")
+                self.logger.info(
+                    f"Component {component_name} startup validated after {(attempt + 1) * check_interval}s")
                 return True
 
-        self.logger.error(f"Component {component_name} startup validation timeout after {startup_timeout}s")
+        self.logger.error(
+            f"Component {component_name} startup validation timeout after {startup_timeout}s")
         return False
 
     async def perform_component_health_check(self, component_name: str) -> bool:
@@ -381,7 +394,8 @@ class RLVROrchestrationController:
         try:
             component_config = self.config['components'][component_name]
             # REASONING: Variable assignment with validation criteria
-            health_check_method = component_config.get('health_check_method', 'process_check')
+            health_check_method = component_config.get(
+                'health_check_method', 'process_check')
             # REASONING: Variable assignment with validation criteria
 
             if health_check_method == 'process_check':
@@ -393,21 +407,26 @@ class RLVROrchestrationController:
 
             elif health_check_method == 'log_analysis':
                 # Check for successful initialization in logs
-                log_file = Path(__file__).parent / f"rlvr_{component_name.replace('_', '_')}_audit.log"
+                log_file = Path(__file__).parent / \
+                                f"rlvr_{component_name.replace('_', '_')}_audit.log"
                 if log_file.exists():
                     # Read last few lines to check for success indicators
                     with open(log_file, 'r', encoding='utf-8') as f:
                         lines = f.readlines()
-                        recent_lines = lines[-20:] if len(lines) > 20 else lines
+                        recent_lines = lines[-20:] if len(
+                            lines) > 20 else lines
 
                         # Look for success indicators
-                        success_indicators = ['SUCCESS', 'completed', 'running', 'started']
+                        success_indicators = [
+                            'SUCCESS', 'completed', 'running', 'started']
                         error_indicators = ['ERROR', 'FAILED', 'CRITICAL']
 
                         recent_text = ' '.join(recent_lines).lower()
 
-                        has_success = any(indicator.lower() in recent_text for indicator in success_indicators)
-                        has_errors = any(indicator.lower() in recent_text for indicator in error_indicators)
+                        has_success = any(
+                            indicator.lower() in recent_text for indicator in success_indicators)
+                        has_errors = any(
+                            indicator.lower() in recent_text for indicator in error_indicators)
 
                         return has_success and not has_errors
 
@@ -458,16 +477,19 @@ class RLVROrchestrationController:
             try:
                 # Wait for graceful shutdown
                 await asyncio.wait_for(
-                    asyncio.create_task(self._wait_for_process_termination(process)),
+                    asyncio.create_task(
+                        self._wait_for_process_termination(process)),
                     timeout=self.config['component_shutdown_timeout']
                     # REASONING: Variable assignment with validation criteria
                 )
 
-                self.logger.info(f"Component {component_name} shutdown gracefully")
+                self.logger.info(
+                    f"Component {component_name} shutdown gracefully")
 
             except asyncio.TimeoutError:
                 # Force kill if graceful shutdown failed
-                self.logger.warning(f"Forcing shutdown of component {component_name}")
+                self.logger.warning(
+                    f"Forcing shutdown of component {component_name}")
                 process.kill()
                 await asyncio.sleep(2)  # Give it a moment
 
@@ -480,7 +502,8 @@ class RLVROrchestrationController:
             return True
 
         except Exception as e:
-            self.logger.error(f"Error stopping component {component_name}: {e}")
+            self.logger.error(
+                f"Error stopping component {component_name}: {e}")
             return False
 
     async def _wait_for_process_termination(self, process: subprocess.Popen):
@@ -533,8 +556,10 @@ class RLVROrchestrationController:
                     critical_components_healthy += 1
 
         # Calculate overall system health
-        average_health_score = total_health_score / len(self.component_statuses)
-        critical_component_ratio = critical_components_healthy / max(total_critical_components, 1)
+        average_health_score = total_health_score / \
+            len(self.component_statuses)
+        critical_component_ratio = critical_components_healthy / \
+            max(total_critical_components, 1)
 
         # Determine system health status
         if critical_component_ratio >= 1.0 and average_health_score >= 0.9:
@@ -601,13 +626,15 @@ class RLVROrchestrationController:
 
         # Error rate health (inverse relationship)
         max_acceptable_errors = 10
-        error_health = max(0.0, 1.0 - (component_status.error_count / max_acceptable_errors))
+        error_health = max(
+            0.0, 1.0 - (component_status.error_count / max_acceptable_errors))
         health_factors['error_rate'] = error_health
 
         # Restart count health (too many restarts indicate instability)
         max_acceptable_restarts = component_config.get('max_restarts', 5)
         # REASONING: Variable assignment with validation criteria
-        restart_health = max(0.0, 1.0 - (component_status.restart_count / max_acceptable_restarts))
+        restart_health = max(
+            0.0, 1.0 - (component_status.restart_count / max_acceptable_restarts))
         health_factors['restart_stability'] = restart_health
 
         # Reasoning validation health
@@ -626,7 +653,8 @@ class RLVROrchestrationController:
             'process_health': 0.15
         }
 
-        total_health = sum(health_factors[factor] * weights[factor] for factor in health_factors)
+        total_health = sum(
+            health_factors[factor] * weights[factor] for factor in health_factors)
 
         return min(1.0, max(0.0, total_health))
 
@@ -647,7 +675,8 @@ class RLVROrchestrationController:
             should_recover = (
                 component_status.state in [ComponentState.FAILED, ComponentState.DEGRADED] and
                 component_config.get('auto_restart', False) and
-                component_status.restart_count < component_config.get('max_restarts', 3)
+                component_status.restart_count < component_config.get(
+                    'max_restarts', 3)
             )
 
             if should_recover:
@@ -702,9 +731,11 @@ class RLVROrchestrationController:
                     restart_success = await self.start_component_enhanced(component_name)
 
                     if restart_success:
-                        self.logger.info(f"[SUCCESS] Auto-recovery restart of {component_name}")
+                        self.logger.info(
+                            f"[SUCCESS] Auto-recovery restart of {component_name}")
                     else:
-                        self.logger.error(f"[FAILED] Auto-recovery restart of {component_name}")
+                        self.logger.error(
+                            f"[FAILED] Auto-recovery restart of {component_name}")
                         recovery_success = False
 
                     # Record recovery action

@@ -4,10 +4,12 @@ System Diagnostic Script for NoxPanel
 Provides basic system information and health checks
 """
 
-import psutil
-import platform
 import datetime
 import os
+import platform
+
+import psutil
+
 
 def main():
     """
@@ -26,7 +28,8 @@ def main():
     print("=" * 50)
     print("NOXPANEL SYSTEM DIAGNOSTIC REPORT")
     print("=" * 50)
-    print(f"Generated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(
+        f"Generated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()
 
     # System Information
@@ -62,7 +65,8 @@ def main():
             print(f"    Total: {disk_usage.total / (1024**3):.1f} GB")
             print(f"    Used: {disk_usage.used / (1024**3):.1f} GB")
             print(f"    Free: {disk_usage.free / (1024**3):.1f} GB")
-            print(f"    Percentage: {(disk_usage.used / disk_usage.total) * 100:.1f}%")
+            print(
+                f"    Percentage: {(disk_usage.used / disk_usage.total) * 100:.1f}%")
         except PermissionError:
             print(f"  Drive {partition.device}: Permission denied")
         print()
@@ -83,6 +87,7 @@ def main():
     print("=" * 50)
     print("DIAGNOSTIC COMPLETE")
     print("=" * 50)
+
 
 if __name__ == "__main__":
     main()

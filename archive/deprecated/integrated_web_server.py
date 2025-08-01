@@ -26,6 +26,7 @@ try:
 except:
     config = {"project": {"name": "Heimnetz", "version": "7.0-unified"}}
 
+
 @app.route('/')
 def home():
     """Main Heimnetz dashboard"""
@@ -253,6 +254,7 @@ def home():
 </html>
     """)
 
+
 @app.route('/api/status')
 def api_status():
     """API status endpoint"""
@@ -268,6 +270,7 @@ def api_status():
         },
         "config": config
     })
+
 
 @app.route('/api/devices')
 def api_devices():
@@ -303,13 +306,16 @@ def api_devices():
         }
     })
 
+
 @app.route('/heimnetz')
 def heimnetz_dashboard():
     """Alternative route for Heimnetz dashboard"""
     return home()
 
+
 if __name__ == '__main__':
-    print(f"🏠 Starting Heimnetz Integrated Web Server v{config['project']['version']}")
+    print(
+        f"🏠 Starting Heimnetz Integrated Web Server v{config['project']['version']}")
     print("🌐 Dashboard: http://localhost:5000")
     print("🔗 Heimnetz: http://localhost:5000/heimnetz")
     print("📡 API Status: http://localhost:5000/api/status")

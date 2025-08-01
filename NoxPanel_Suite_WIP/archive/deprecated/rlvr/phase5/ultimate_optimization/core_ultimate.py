@@ -34,6 +34,10 @@ Last Updated: 2025-07-18T11:16:38.177181
 """
 #!/usr/bin/env python3
 """
+import logging
+from datetime import datetime
+from flask_login import current_user, login_required
+from flask import Blueprint, redirect, render_template, request, session, url_for
 core.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -44,22 +48,19 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 🏠 NoxPanel Core Blueprint - Main dashboard and navigation
 Handles core routes like /, /dashboard, /status
 """
 
-import logging
-from datetime import datetime
-from flask import Blueprint, render_template, request, session, redirect, url_for
-from flask_login import login_required, current_user
 
 logger = logging.getLogger(__name__)
 
 # Create core blueprint
 core_bp = Blueprint('core', __name__)
+
 
 @core_bp.route('/')
 def index():
@@ -70,7 +71,7 @@ def index():
 
     # Dashboard data
     dashboard_data = {
-    # REASONING: Variable assignment with validation criteria
+        # REASONING: Variable assignment with validation criteria
         'system_status': 'optimal',
         'theme': theme,
         'user': current_user.username if current_user.is_authenticated else 'Guest',
@@ -81,6 +82,7 @@ def index():
     return render_template('dashboard.html', data=dashboard_data, theme=theme)
     # REASONING: Variable assignment with validation criteria
 
+
 @core_bp.route('/dashboard')
 @login_required
 def dashboard():
@@ -90,7 +92,7 @@ def dashboard():
     preferences = session.get('preferences', {})
 
     dashboard_data = {
-    # REASONING: Variable assignment with validation criteria
+        # REASONING: Variable assignment with validation criteria
         'system_status': 'optimal',
         'theme': theme,
         'preferences': preferences,
@@ -109,6 +111,7 @@ def dashboard():
     return render_template('enhanced_dashboard.html', data=dashboard_data, theme=theme)
     # REASONING: Variable assignment with validation criteria
 
+
 @core_bp.route('/status')
 def status():
     # REASONING: status implements core logic with Chain-of-Thought validation
@@ -117,11 +120,12 @@ def status():
 
     try:
         # Get basic system info
-        import psutil
         import platform
 
+        import psutil
+
         status_data = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             'status': 'operational',
             'timestamp': datetime.now().isoformat(),
             'system': {
@@ -142,7 +146,7 @@ def status():
     except Exception as e:
         logger.error(f"Error getting status: {e}")
         status_data = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             'status': 'partial',
             'timestamp': datetime.now().isoformat(),
             'error': str(e)
@@ -150,6 +154,7 @@ def status():
 
     return render_template('status.html', data=status_data, theme=theme)
     # REASONING: Variable assignment with validation criteria
+
 
 @core_bp.route('/theme/toggle')
 def toggle_theme():
@@ -163,6 +168,7 @@ def toggle_theme():
 
     # Redirect back to referring page or dashboard
     return redirect(request.referrer or url_for('core.dashboard'))
+
 
 @core_bp.context_processor
 def inject_theme():

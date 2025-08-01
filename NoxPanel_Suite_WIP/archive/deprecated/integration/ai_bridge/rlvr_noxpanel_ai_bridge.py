@@ -8,7 +8,8 @@ AI-powered infrastructure management bridge between RLVR and NoxPanel systems.
 
 import json
 from datetime import datetime
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+
 
 class RLVRNoxPanelAIBridge:
     """AI Bridge for RLVR-NoxPanel integration."""
@@ -43,6 +44,7 @@ class RLVRNoxPanelAIBridge:
             "Optimize plugin performance",
             "Enhance compliance monitoring"
         ]
+
 
 if __name__ == "__main__":
     bridge = RLVRNoxPanelAIBridge()

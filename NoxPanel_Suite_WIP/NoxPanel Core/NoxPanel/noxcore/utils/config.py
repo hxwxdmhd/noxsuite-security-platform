@@ -2,8 +2,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Dict, Any, Optional, Union
-
+from typing import Any, Dict, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +14,7 @@ class NoxConfig:
     2. Analysis: Class requires specific implementation patterns for NoxConfig functionality
     3. Solution: Implement NoxConfig with SOLID principles and enterprise patterns
     4. Validation: Test NoxConfig with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Configuration management for NoxPanel with robust error handling and validation."""
@@ -27,15 +26,15 @@ class NoxConfig:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Initialize configuration manager.
-        
+      """Initialize configuration manager.
+
         Args:
             config_dir: Directory path for configuration files
         """
-        self.config_dir = Path(config_dir)
+       self.config_dir = Path(config_dir)
         self.config_file = self.config_dir / "noxpanel.json"
         self.config: Dict[str, Any] = {}
         self.load_config()
@@ -47,11 +46,11 @@ class NoxConfig:
     2. Analysis: Implementation requires specific logic for load_config operation
     3. Solution: Implement load_config with enterprise-grade patterns and error handling
     4. Validation: Test load_config with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Load configuration from file with error handling."""
-        try:
+      """Load configuration from file with error handling."""
+       try:
             if self.config_file.exists():
                 with open(self.config_file, 'r', encoding='utf-8') as f:
                     self.config = json.load(f)
@@ -74,8 +73,8 @@ class NoxConfig:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Save configuration to file with error handling."""
-        try:
+      """Save configuration to file with error handling."""
+       try:
             self.config_dir.mkdir(parents=True, exist_ok=True)
             with open(self.config_file, 'w', encoding='utf-8') as f:
                 json.dump(self.config, f, indent=2, ensure_ascii=False)
@@ -94,12 +93,12 @@ class NoxConfig:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Get default configuration with comprehensive settings.
-        
+      """Get default configuration with comprehensive settings.
+
         Returns:
             Default configuration dictionary
         """
-        return {
+       return {
             "app": {
                 "name": "NoxPanel",
                 "version": "1.0.0",
@@ -148,16 +147,16 @@ class NoxConfig:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Get configuration value using dot notation.
-        
+      """Get configuration value using dot notation.
+
         Args:
             key: Configuration key using dot notation (e.g., 'app.debug')
             default: Default value if key not found
-            
+
         Returns:
             Configuration value or default
         """
-        try:
+       try:
             keys = key.split('.')
             value = self.config
             for k in keys:
@@ -167,7 +166,8 @@ class NoxConfig:
                     return default
             return value
         except (AttributeError, KeyError, TypeError):
-            logger.warning(f"Configuration key '{key}' not found, using default")
+            logger.warning(
+                f"Configuration key '{key}' not found, using default")
             return default
 
     def set(self, key: str, value: Any) -> None:
@@ -180,13 +180,13 @@ class NoxConfig:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Set configuration value using dot notation.
-        
+      """Set configuration value using dot notation.
+
         Args:
             key: Configuration key using dot notation (e.g., 'app.debug')
             value: Value to set
         """
-        try:
+       try:
             keys = key.split('.')
             config = self.config
             for k in keys[:-1]:
@@ -208,12 +208,12 @@ class NoxConfig:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Update configuration with new values.
-        
+      """Update configuration with new values.
+
         Args:
             new_config: Dictionary with new configuration values
         """
-        try:
+       try:
             self._deep_update(self.config, new_config)
             self.save_config()
             logger.info("Configuration updated successfully")
@@ -231,13 +231,13 @@ class NoxConfig:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Recursively update nested dictionaries.
-        
+      """Recursively update nested dictionaries.
+
         Args:
             base_dict: Base dictionary to update
             update_dict: Dictionary with updates
         """
-        for key, value in update_dict.items():
+       for key, value in update_dict.items():
             if key in base_dict and isinstance(base_dict[key], dict) and isinstance(value, dict):
                 self._deep_update(base_dict[key], value)
             else:
@@ -253,27 +253,28 @@ class NoxConfig:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Validate configuration integrity.
-        
+      """Validate configuration integrity.
+
         Returns:
             True if configuration is valid, False otherwise
         """
-        required_sections = ['app', 'security', 'logging']
-        
+       required_sections = ['app', 'security', 'logging']
+
         for section in required_sections:
             if section not in self.config:
-                logger.error(f"Missing required configuration section: {section}")
+                logger.error(
+                    f"Missing required configuration section: {section}")
                 return False
-        
+
         # Validate specific settings
         if not isinstance(self.get('app.port'), int) or not (1 <= self.get('app.port') <= 65535):
             logger.error("Invalid port configuration")
             return False
-            
+
         if not isinstance(self.get('security.max_script_runtime'), int) or self.get('security.max_script_runtime') <= 0:
             logger.error("Invalid script runtime configuration")
             return False
-        
+
         logger.debug("Configuration validation passed")
         return True
 
@@ -287,7 +288,7 @@ class NoxConfig:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Reset configuration to default values."""
-        self.config = self.get_default_config()
+      """Reset configuration to default values."""
+       self.config = self.get_default_config()
         self.save_config()
         logger.info("Configuration reset to defaults")

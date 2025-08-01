@@ -19,10 +19,13 @@ from pydantic import BaseModel, EmailStr, Field, validator
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 # Enhanced Authentication Schemas
 class UserCredentials(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50, regex=r"^[a-zA-Z0-9_]+$")
+    username: str = Field(..., min_length=3, max_length=50,
+                          regex=r"^[a-zA-Z0-9_]+$")
     password: str = Field(..., min_length=8, max_length=128)
+
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -32,6 +35,7 @@ class TokenResponse(BaseModel):
     user_id: str
     username: str
     roles: List[str]
+
 
 class UserProfile(BaseModel):
     id: str
@@ -43,18 +47,22 @@ class UserProfile(BaseModel):
     last_login: Optional[datetime] = None
     failed_attempts: int = 0
 
+
 class PasswordResetRequest(BaseModel):
     username: str
     new_password: str = Field(..., min_length=8)
+
 
 class EnhancedAuthManager:
     """Enhanced Authentication manager with security best practices"""
 
     def __init__(self):
         self.pwd_context = CryptContext(
-            schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12  # Stronger hashing
+            # Stronger hashing
+            schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12
         )
-        self.secret_key = os.getenv("JWT_SECRET_KEY", self._generate_secret_key())
+        self.secret_key = os.getenv(
+            "JWT_SECRET_KEY", self._generate_secret_key())
         self.algorithm = "HS256"
         self.access_token_expire_minutes = 30
         self.refresh_token_expire_days = 7
@@ -156,7 +164,8 @@ class EnhancedAuthManager:
             lock_time = datetime.fromisoformat(locked_until)
             return datetime.utcnow() < lock_time
         except (ValueError, TypeError) as e:
-            self.logger.warning(f"Invalid lock time format for user {username}: {e}")
+            self.logger.warning(
+                f"Invalid lock time format for user {username}: {e}")
             return False
 
     def _record_failed_attempt(self, username: str):
@@ -278,7 +287,8 @@ class EnhancedAuthManager:
 
         except Exception as e:
             self.logger.error(f"Access token creation error: {e}")
-            raise HTTPException(status_code=500, detail="Token creation failed")
+            raise HTTPException(
+                status_code=500, detail="Token creation failed")
 
     def create_refresh_token(self, data: Dict[str, Any]) -> str:
         """Create enhanced JWT refresh token"""
@@ -304,7 +314,8 @@ class EnhancedAuthManager:
 
         except Exception as e:
             self.logger.error(f"Refresh token creation error: {e}")
-            raise HTTPException(status_code=500, detail="Refresh token creation failed")
+            raise HTTPException(
+                status_code=500, detail="Refresh token creation failed")
 
     def verify_token(
         self, token: str, expected_type: str = "access_token"
@@ -378,8 +389,10 @@ class EnhancedAuthManager:
                 self.blacklisted_tokens.add(jti)
         except (jwt.InvalidTokenError, ValueError) as e:
             # If we can't decode, blacklist the full token
-            self.logger.warning(f"Could not decode token for blacklisting: {e}")
+            self.logger.warning(
+                f"Could not decode token for blacklisting: {e}")
             self.blacklisted_tokens.add(token)
+
 
 # Global enhanced auth manager
 auth_manager = EnhancedAuthManager()
@@ -387,6 +400,7 @@ security = HTTPBearer()
 
 # Authentication router
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
@@ -431,6 +445,7 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+
 # Enhanced Authentication Endpoints
 @router.post("/login", response_model=TokenResponse)
 async def login(credentials: UserCredentials, request: Request):
@@ -460,7 +475,8 @@ async def login(credentials: UserCredentials, request: Request):
 
         # Generate tokens
         access_token = auth_manager.create_access_token(token_data)
-        refresh_token = auth_manager.create_refresh_token({"sub": user["username"]})
+        refresh_token = auth_manager.create_refresh_token(
+            {"sub": user["username"]})
 
         return TokenResponse(
             access_token=access_token,
@@ -478,6 +494,7 @@ async def login(credentials: UserCredentials, request: Request):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Login failed"
         )
+
 
 @router.post("/refresh")
 async def refresh_token(refresh_token: str):
@@ -510,7 +527,8 @@ async def refresh_token(refresh_token: str):
         }
 
         new_access_token = auth_manager.create_access_token(token_data)
-        new_refresh_token = auth_manager.create_refresh_token({"sub": user["username"]})
+        new_refresh_token = auth_manager.create_refresh_token(
+            {"sub": user["username"]})
 
         # Blacklist old refresh token
         auth_manager.blacklist_token(refresh_token)
@@ -533,6 +551,7 @@ async def refresh_token(refresh_token: str):
             detail="Token refresh failed",
         )
 
+
 @router.post("/logout")
 async def logout(
     current_user: Dict[str, Any] = Depends(get_current_user),
@@ -552,6 +571,7 @@ async def logout(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Logout failed"
         )
+
 
 @router.get("/profile", response_model=UserProfile)
 async def get_profile(current_user: Dict[str, Any] = Depends(get_current_user)):
@@ -584,6 +604,7 @@ async def get_profile(current_user: Dict[str, Any] = Depends(get_current_user)):
             detail="Profile retrieval failed",
         )
 
+
 @router.get("/validate")
 async def validate_token(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Validate current token"""
@@ -593,6 +614,7 @@ async def validate_token(current_user: Dict[str, Any] = Depends(get_current_user
         "roles": current_user.get("roles", []),
         "message": "Token is valid",
     }
+
 
 # Health check for authentication system
 @router.get("/health")

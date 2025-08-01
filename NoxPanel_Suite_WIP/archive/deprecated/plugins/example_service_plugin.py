@@ -5,18 +5,19 @@ Example Service Plugin
 Demonstrates enhanced service plugin features for Audit 2 compliance
 """
 
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from unified_plugin_system_clean import ServicePlugin, PluginInfo
-from typing import Dict, Any, List
+from unified_plugin_system_clean import PluginInfo, ServicePlugin
+from typing import Any, Dict, List
 import time
 import threading
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 class ExampleServicePlugin(ServicePlugin):
     """Example service plugin demonstrating enhanced features"""
-    
+
     def __init__(self):
         super().__init__()
         self.service_name = "ExampleService"
@@ -24,7 +25,7 @@ class ExampleServicePlugin(ServicePlugin):
         self.service_running = False
         self.dependencies = []  # No dependencies for this example
         self.permissions = ["network.http", "filesystem.read"]
-        
+
     def get_info(self) -> PluginInfo:
         """Get plugin information"""
         return PluginInfo(
@@ -36,7 +37,7 @@ class ExampleServicePlugin(ServicePlugin):
             dependencies=self.dependencies,
             permissions=self.permissions
         )
-    
+
     def initialize(self, config: Dict[str, Any] = None) -> bool:
         """Initialize the service plugin"""
         try:
@@ -49,14 +50,14 @@ class ExampleServicePlugin(ServicePlugin):
             self.last_error = str(e)
             self.logger.error(f"Service plugin initialization failed: {e}")
             return False
-    
+
     def start(self) -> bool:
         """Start the service plugin"""
         try:
             if not self.initialized:
                 if not self.initialize():
                     return False
-            
+
             # Start the service
             if self.start_service():
                 self.running = True
@@ -65,12 +66,12 @@ class ExampleServicePlugin(ServicePlugin):
                 return True
             else:
                 return False
-                
+
         except Exception as e:
             self.last_error = str(e)
             self.logger.error(f"Service plugin start failed: {e}")
             return False
-    
+
     def stop(self) -> bool:
         """Stop the service plugin"""
         try:
@@ -86,7 +87,7 @@ class ExampleServicePlugin(ServicePlugin):
             self.last_error = str(e)
             self.logger.error(f"Service plugin stop failed: {e}")
             return False
-    
+
     def cleanup(self) -> bool:
         """Clean up service plugin resources"""
         try:
@@ -99,51 +100,51 @@ class ExampleServicePlugin(ServicePlugin):
             self.last_error = str(e)
             self.logger.error(f"Service plugin cleanup failed: {e}")
             return False
-    
+
     def get_status(self) -> str:
         """Get plugin status"""
         return self.status
-    
+
     def start_service(self) -> bool:
         """Start the service"""
         try:
             if self.service_running:
                 self.logger.warning("Service already running")
                 return True
-            
+
             # Start service thread
             self.service_thread = threading.Thread(target=self._service_worker)
             self.service_thread.daemon = True
             self.service_running = True
             self.service_thread.start()
-            
+
             self.logger.info(f"Service {self.service_name} started")
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Failed to start service: {e}")
             return False
-    
+
     def stop_service(self) -> bool:
         """Stop the service"""
         try:
             if not self.service_running:
                 self.logger.warning("Service not running")
                 return True
-            
+
             self.service_running = False
-            
+
             # Wait for service thread to finish
             if self.service_thread and self.service_thread.is_alive():
                 self.service_thread.join(timeout=5)
-            
+
             self.logger.info(f"Service {self.service_name} stopped")
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Failed to stop service: {e}")
             return False
-    
+
     def get_service_status(self) -> Dict[str, Any]:
         """Get service status"""
         return {
@@ -154,27 +155,27 @@ class ExampleServicePlugin(ServicePlugin):
             'requests_handled': getattr(self, 'requests_handled', 0),
             'last_activity': getattr(self, 'last_activity', time.time())
         }
-    
+
     def _service_worker(self):
         """Service worker thread"""
         self.start_time = time.time()
         self.requests_handled = 0
-        
+
         while self.service_running:
             try:
                 # Simulate service work
                 time.sleep(1)
                 self.requests_handled += 1
                 self.last_activity = time.time()
-                
+
                 # Update metrics
                 self.metrics['requests_handled'] = self.requests_handled
                 self.metrics['uptime'] = time.time() - self.start_time
-                
+
             except Exception as e:
                 self.logger.error(f"Service worker error: {e}")
                 break
-    
+
     def get_health(self) -> Dict[str, Any]:
         """Get plugin health status"""
         return {
@@ -191,6 +192,7 @@ class ExampleServicePlugin(ServicePlugin):
             'running': self.running,
             'service_status': self.get_service_status()
         }
+
 
 # Plugin entry point
 if __name__ == "__main__":

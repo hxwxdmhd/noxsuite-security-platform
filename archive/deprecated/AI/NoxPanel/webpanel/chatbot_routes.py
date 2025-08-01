@@ -17,6 +17,7 @@ chatbot_bp = Blueprint(
     static_folder='static'
 )
 
+
 @chatbot_bp.route('/')
 def dashboard():
     """
@@ -58,11 +59,12 @@ def dashboard():
     """
     try:
         return render_template('chatbot/dashboard.html',
-                             title='AI Chatbot',
-                             timestamp=datetime.now())
+                               title='AI Chatbot',
+                               timestamp=datetime.now())
     except Exception as e:
         logger.error(f"Error in AI Chatbot dashboard: {e}")
         return render_template('error.html', error=str(e)), 500
+
 
 @chatbot_bp.route('/api/status')
 def api_status():
@@ -77,6 +79,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Error in AI Chatbot API: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @chatbot_bp.route('/api/action', methods=['POST'])
 def api_action():

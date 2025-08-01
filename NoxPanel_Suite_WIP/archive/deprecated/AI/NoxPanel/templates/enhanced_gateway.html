@@ -13,90 +13,90 @@ Chain-of-Thought Implementation:
 Compliance: RLVR Methodology v4.0+ Applied
 """
 
-{% extends "base.html" %}
+{ % extends "base.html" % }
 
-{% block title %}NoxPanel Gateway v6.0 - Enhanced{% endblock %}
+{ % block title % }NoxPanel Gateway v6.0 - Enhanced{ % endblock % }
 
-{% block extra_css %}
-<style>
-/* ===== CSS VARIABLES & ROOT THEME SYSTEM ===== */
-:root {
-    /* Theme color variables for smooth transitions */
-    --primary-bg: #0f1419;
-    --secondary-bg: #1a1f2e;
-    --accent-color: #00d4ff;
-    --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
-    --card-bg: #242b3d;
-    --border-color: #2a3441;
-    --success-color: #00ff88;
-    --warning-color: #ffaa00;
-    --error-color: #ff4757;
-    --info-color: #00d4ff;
+{ % block extra_css % }
+<style >
+/* == == = CSS VARIABLES & ROOT THEME SYSTEM == == = */
+: root {
+    / * Theme color variables for smooth transitions * /
+    --primary-bg:  # 0f1419;
+    --secondary-bg:  # 1a1f2e;
+    --accent-color:  # 00d4ff;
+    --text-primary:  # ffffff;
+    --text-secondary:  # a0a0a0;
+    --card-bg:  # 242b3d;
+    --border-color:  # 2a3441;
+    --success-color:  # 00ff88;
+    --warning-color:  # ffaa00;
+    --error-color:  # ff4757;
+    --info-color:  # 00d4ff;
     --glow-color: rgba(0, 212, 255, 0.3);
-    
-    /* Animation durations */
-    --theme-transition: 0.4s ease-in-out;
+
+    / * Animation durations * /
+    --theme-transition: 0.4s ease-in -out;
     --hover-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --card-animation: 0.6s ease-out;
 }
 
-/* Alternative theme variables */
-[data-theme="gateway"] {
+/* Alternative theme variables * /
+[data-theme = "gateway"] {
 # REASONING: Variable assignment with validation criteria
-    --primary-bg: #0f1419;
-    --secondary-bg: #1a1f2e;
-    --accent-color: #00d4ff;
+    --primary-bg:  # 0f1419;
+    --secondary-bg:  # 1a1f2e;
+    --accent-color:  # 00d4ff;
     --glow-color: rgba(0, 212, 255, 0.3);
 }
 
-[data-theme="media"] {
+[data-theme = "media"] {
 # REASONING: Variable assignment with validation criteria
-    --primary-bg: #1a0f19;
-    --secondary-bg: #2e1a2f;
-    --accent-color: #ff00d4;
+    --primary-bg:  # 1a0f19;
+    --secondary-bg:  # 2e1a2f;
+    --accent-color:  # ff00d4;
     --glow-color: rgba(255, 0, 212, 0.3);
 }
 
-[data-theme="security"] {
+[data-theme = "security"] {
 # REASONING: Variable assignment with validation criteria
-    --primary-bg: #19140f;
-    --secondary-bg: #2f241a;
-    --accent-color: #ff4400;
+    --primary-bg:  # 19140f;
+    --secondary-bg:  # 2f241a;
+    --accent-color:  # ff4400;
     --glow-color: rgba(255, 68, 0, 0.3);
 }
 
-[data-theme="tools"] {
+[data-theme = "tools"] {
 # REASONING: Variable assignment with validation criteria
-    --primary-bg: #0f1914;
-    --secondary-bg: #1a2f24;
-    --accent-color: #44ff00;
+    --primary-bg:  # 0f1914;
+    --secondary-bg:  # 1a2f24;
+    --accent-color:  # 44ff00;
     --glow-color: rgba(68, 255, 0, 0.3);
 }
 
-/* ===== GLOBAL TRANSITIONS ===== */
+/* == == = GLOBAL TRANSITIONS == == = */
 * {
-    transition: color var(--theme-transition), 
-                background-color var(--theme-transition), 
-                border-color var(--theme-transition), 
+    transition: color var(--theme-transition),
+                background-color var(--theme-transition),
+                border-color var(--theme-transition),
                 box-shadow var(--theme-transition);
 }
 
 body {
-    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+    background: linear-gradient(135deg, var(--primary-bg) 0 % , var(--secondary-bg) 100%);
     color: var(--text-primary);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     overflow-x: hidden;
     position: relative;
 }
 
-/* ===== ANIMATED BACKGROUND ===== */
+/* == == = ANIMATED BACKGROUND == == = */
 .animated-bg {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100 % ;
+    height: 100 % ;
     z-index: -1;
     opacity: 0.1;
     pointer-events: none;
@@ -107,16 +107,16 @@ body {
     width: 2px;
     height: 2px;
     background: var(--accent-color);
-    border-radius: 50%;
-    animation: float 6s ease-in-out infinite;
+    border-radius: 50 % ;
+    animation: float 6s ease-in -out infinite;
 }
+
 
 @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
-    50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
+    0%, 100 % {transform: translateY(0px) rotate(0deg); opacity: 0; }
+    50 % {transform: translateY(-100px) rotate(180deg); opacity: 1; }
 }
-
-/* ===== THEME SWITCHER ===== */
+/* == == = THEME SWITCHER == == = */
 .theme-switcher {
     position: fixed;
     top: 20px;
@@ -135,7 +135,7 @@ body {
     width: 40px;
     height: 40px;
     border: none;
-    border-radius: 50%;
+    border-radius: 50 % ;
     cursor: pointer;
     transition: all var(--hover-transition);
     position: relative;
@@ -147,19 +147,19 @@ body {
     transform: scale(1.1);
 }
 
-.theme-btn:hover {
+.theme-btn: hover {
     transform: scale(1.05);
     box-shadow: 0 0 15px var(--glow-color);
 }
 
-.theme-btn.gateway { background: linear-gradient(45deg, #00d4ff, #0099cc); }
-.theme-btn.media { background: linear-gradient(45deg, #ff00d4, #cc0099); }
-.theme-btn.security { background: linear-gradient(45deg, #ff4400, #cc3300); }
-.theme-btn.tools { background: linear-gradient(45deg, #44ff00, #33cc00); }
+.theme-btn.gateway {background: linear-gradient(45deg,  # 00d4ff, #0099cc); }
+.theme-btn.media {background: linear-gradient(45deg,  # ff00d4, #cc0099); }
+.theme-btn.security {background: linear-gradient(45deg,  # ff4400, #cc3300); }
+.theme-btn.tools {background: linear-gradient(45deg,  # 44ff00, #33cc00); }
 
-/* ===== PLATFORM HEADER ===== */
+/ * == ===PLATFORM HEADER == ===* /
 .platform-header {
-    background: linear-gradient(135deg, var(--secondary-bg) 0%, var(--primary-bg) 100%);
+    background: linear-gradient(135deg, var(--secondary-bg) 0 % , var(--primary-bg) 100%);
     border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 3rem 2rem;
@@ -169,23 +169,24 @@ body {
     animation: slideInDown var(--card-animation);
 }
 
-.platform-header::before {
+.platform-header: : before {
     content: '';
     position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(var(--accent-color), transparent, var(--accent-color));
+    top: -50 % ;
+    right: -50 % ;
+    width: 200 % ;
+    height: 200 % ;
+    background: conic-gradient(var(--accent-color),
+                               transparent, var(--accent-color));
     animation: rotate 8s linear infinite;
     opacity: 0.1;
 }
 
-.platform-header::after {
+.platform-header: : after {
     content: '';
     position: absolute;
     inset: 1px;
-    background: linear-gradient(135deg, var(--secondary-bg) 0%, var(--primary-bg) 100%);
+    background: linear-gradient(135deg, var(--secondary-bg) 0 % , var(--primary-bg) 100%);
     border-radius: 19px;
     z-index: 1;
 }
@@ -195,12 +196,12 @@ body {
     z-index: 2;
 }
 
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+@ keyframes rotate {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
 }
 
-@keyframes slideInDown {
+@ keyframes slideInDown {
     from {
         opacity: 0;
         transform: translateY(-30px);
@@ -211,7 +212,7 @@ body {
     }
 }
 
-/* ===== STATS GRID ===== */
+/ * == ===STATS GRID == ===* /
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -230,7 +231,7 @@ body {
     animation-fill-mode: both;
 }
 
-.stat-card::before {
+.stat-card: : before {
     content: '';
     position: absolute;
     top: 0;
@@ -241,14 +242,14 @@ body {
     transition: all var(--hover-transition);
 }
 
-.stat-card:hover {
+.stat-card: hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
                 0 0 20px var(--glow-color);
     border-color: var(--accent-color);
 }
 
-.stat-card:hover::before {
+.stat-card: hover:: before {
     background: linear-gradient(90deg, var(--accent-color), var(--accent-color));
 }
 
@@ -277,7 +278,7 @@ body {
 }
 
 .progress-fill {
-    height: 100%;
+    height: 100 % ;
     background: linear-gradient(90deg, var(--accent-color), var(--success-color));
     border-radius: 3px;
     transition: width 1s ease;
@@ -285,23 +286,23 @@ body {
     overflow: hidden;
 }
 
-.progress-fill::after {
+.progress-fill: : after {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
+    left: -100 % ;
+    width: 100 % ;
+    height: 100 % ;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     animation: shimmer 2s infinite;
 }
 
-@keyframes shimmer {
-    from { left: -100%; }
-    to { left: 100%; }
+@ keyframes shimmer {
+    from {left: -100%;}
+    to {left: 100%;}
 }
 
-/* ===== FEATURE GRID ===== */
+/ * == ===FEATURE GRID == ===* /
 .feature-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -322,7 +323,7 @@ body {
     transition: all var(--hover-transition);
 }
 
-.feature-card::before {
+.feature-card: : before {
     content: '';
     position: absolute;
     top: 0;
@@ -334,18 +335,18 @@ body {
     transition: opacity var(--hover-transition);
 }
 
-.feature-card:hover {
+.feature-card: hover {
     transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4),
                 0 0 30px var(--glow-color);
     border-color: var(--accent-color);
 }
 
-.feature-card:hover::before {
+.feature-card: hover:: before {
     opacity: 0.05;
 }
 
-.feature-card:active {
+.feature-card: active {
     transform: translateY(-5px) scale(1.01);
 }
 
@@ -364,12 +365,12 @@ body {
     transition: all var(--hover-transition);
 }
 
-.feature-card:hover .feature-icon {
+.feature-card: hover .feature-icon {
     transform: scale(1.1) rotate(5deg);
     box-shadow: 0 0 25px var(--glow-color);
 }
 
-.feature-icon::after {
+.feature-icon: : after {
     content: '';
     position: absolute;
     inset: 0;
@@ -380,17 +381,17 @@ body {
     z-index: -1;
 }
 
-.status-healthy { 
-    background: linear-gradient(135deg, var(--success-color), #00cc66);
+.status-healthy {
+    background: linear-gradient(135deg, var(--success-color),  # 00cc66);
 }
-.status-warning { 
-    background: linear-gradient(135deg, var(--warning-color), #e6a700);
+.status-warning {
+    background: linear-gradient(135deg, var(--warning-color),  # e6a700);
 }
-.status-error { 
-    background: linear-gradient(135deg, var(--error-color), #e63946);
+.status-error {
+    background: linear-gradient(135deg, var(--error-color),  # e63946);
 }
-.status-info { 
-    background: linear-gradient(135deg, var(--info-color), #0099cc);
+.status-info {
+    background: linear-gradient(135deg, var(--info-color),  # 0099cc);
 }
 
 .feature-title {
@@ -421,7 +422,7 @@ body {
     overflow: hidden;
 }
 
-.feature-btn::before {
+.feature-btn: : before {
     content: '';
     position: absolute;
     inset: 0;
@@ -430,13 +431,13 @@ body {
     transition: opacity var(--hover-transition);
 }
 
-.feature-btn:hover {
+.feature-btn: hover {
     transform: scale(1.05);
     box-shadow: 0 5px 15px var(--glow-color);
     color: var(--primary-bg);
 }
 
-.feature-btn:hover::before {
+.feature-btn: hover:: before {
     opacity: 1;
 }
 
@@ -445,14 +446,14 @@ body {
     z-index: 1;
 }
 
-/* ===== STATUS INDICATORS ===== */
+/ * == == = STATUS INDICATORS == == = * /
 .status-indicator {
     position: absolute;
     top: 15px;
     right: 15px;
     width: 12px;
     height: 12px;
-    border-radius: 50%;
+    border-radius: 50 % ;
     animation: pulse 2s infinite;
 }
 
@@ -471,12 +472,12 @@ body {
     box-shadow: 0 0 10px var(--warning-color);
 }
 
-@keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.2); }
+@ keyframes pulse {
+    0%, 100 % {opacity: 1; transform: scale(1); }
+    50 % {opacity: 0.5; transform: scale(1.2); }
 }
 
-/* ===== QUICK ACCESS PANEL ===== */
+/ * == == = QUICK ACCESS PANEL == == = * /
 .quick-access {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -510,27 +511,27 @@ body {
     overflow: hidden;
 }
 
-.quick-btn::before {
+.quick-btn: : before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50 % ;
+    left: 50 % ;
     width: 0;
     height: 0;
     background: var(--accent-color);
-    border-radius: 50%;
+    border-radius: 50 % ;
     transition: all var(--hover-transition);
-    transform: translate(-50%, -50%);
+    transform: translate(-50 % , -50%);
 }
 
-.quick-btn:hover {
+.quick-btn: hover {
     color: var(--primary-bg);
     border-color: var(--accent-color);
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
-.quick-btn:hover::before {
+.quick-btn: hover:: before {
     width: 300px;
     height: 300px;
 }
@@ -540,7 +541,7 @@ body {
     z-index: 1;
 }
 
-/* ===== ANIMATION KEYFRAMES ===== */
+/ * == == = ANIMATION KEYFRAMES == == = * /
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -552,67 +553,67 @@ body {
     }
 }
 
-/* ===== MOBILE RESPONSIVENESS ===== */
-@media (max-width: 768px) {
-    .stats-grid, 
+/ * == == = MOBILE RESPONSIVENESS == == = * /
+@media(max-width: 768px) {
+    .stats-grid,
     .feature-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
+
     .platform-header {
         padding: 2rem 1rem;
         margin: 1rem 0;
     }
-    
+
     .theme-switcher {
         top: 10px;
         right: 10px;
         padding: 8px;
     }
-    
+
     .theme-btn {
         width: 35px;
         height: 35px;
     }
-    
+
     .feature-card {
         padding: 1rem;
     }
-    
+
     .quick-access-grid {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .quick-btn {
         justify-content: center;
     }
 }
 
-/* ===== LOADING STATES ===== */
+/ * == == = LOADING STATES == == = * /
 .loading {
     position: relative;
     overflow: hidden;
 }
 
-.loading::after {
+.loading: : after {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
+    left: -100 % ;
+    width: 100 % ;
+    height: 100 % ;
     background: linear-gradient(90deg, transparent, var(--glow-color), transparent);
     animation: loading 1.5s infinite;
 }
 
-@keyframes loading {
-    from { left: -100%; }
-    to { left: 100%; }
+@ keyframes loading {
+    from {left: -100%;}
+    to {left: 100%;}
 }
 
-/* ===== EXPANDABLE CARDS ===== */
+/ * == == = EXPANDABLE CARDS == == = * /
 .feature-card.expanded {
     grid-column: 1 / -1;
     max-width: none;
@@ -629,17 +630,17 @@ body {
     max-height: 200px;
 }
 
-/* ===== TOOLTIPS ===== */
+/ * == == = TOOLTIPS == == = * /
 .tooltip-wrapper {
     position: relative;
 }
 
-.tooltip-wrapper::after {
+.tooltip-wrapper: : after {
     content: attr(data-tooltip);
     position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 100 % ;
+    left: 50 % ;
+    transform: translateX(-50 % );
     background: var(--primary-bg);
     color: var(--text-primary);
     padding: 0.5rem;
@@ -653,345 +654,345 @@ body {
     z-index: 1000;
 }
 
-.tooltip-wrapper:hover::after {
+.tooltip-wrapper: hover:: after {
     opacity: 1;
 }
-</style>
-{% endblock %}
+< /style >
+{ % endblock % }
 
-{% block content %}
-<!-- Animated Background -->
-<div class="animated-bg" id="animatedBg"></div>
+{ % block content % }
+< !-- Animated Background - ->
+< div class = "animated-bg" id = "animatedBg" > </div >
 
-<!-- Theme Switcher -->
-<div class="theme-switcher">
-    <button class="theme-btn gateway active" data-theme="gateway" title="Gateway Mode"></button>
+< !-- Theme Switcher - ->
+< div class = "theme-switcher" >
+    < button class = "theme-btn gateway active" data-theme = "gateway" title = "Gateway Mode" > </button >
     # REASONING: Variable assignment with validation criteria
-    <button class="theme-btn media" data-theme="media" title="Media Mode"></button>
+    < button class = "theme-btn media" data-theme = "media" title = "Media Mode" > </button >
     # REASONING: Variable assignment with validation criteria
-    <button class="theme-btn security" data-theme="security" title="Security Mode"></button>
+    < button class = "theme-btn security" data-theme = "security" title = "Security Mode" > </button >
     # REASONING: Variable assignment with validation criteria
-    <button class="theme-btn tools" data-theme="tools" title="Tools Mode"></button>
+    < button class = "theme-btn tools" data-theme = "tools" title = "Tools Mode" > </button >
     # REASONING: Variable assignment with validation criteria
-</div>
+< / div >
 
-<div class="container-fluid">
-    <!-- Platform Header -->
-    <div class="row">
-        <div class="col-12">
-            <div class="platform-header text-center">
-                <h1 class="display-4 mb-3">
-                    <i class="fas fa-rocket me-3"></i>NoxPanel Gateway v6.0
-                </h1>
-                <p class="lead mb-2">AI-Powered Smart Home Command Center</p>
-                <small class="opacity-75">All systems operational • Enhanced with animations</small>
-            </div>
-        </div>
-    </div>
+< div class = "container-fluid" >
+    < !-- Platform Header - ->
+    < div class = "row" >
+        < div class = "col-12" >
+            < div class = "platform-header text-center" >
+                < h1 class = "display-4 mb-3" >
+                    < i class= "fas fa-rocket me-3" > </i > NoxPanel Gateway v6.0
+                < /h1 >
+                < p class = "lead mb-2" > AI-Powered Smart Home Command Center < /p >
+                < small class = "opacity-75" > All systems operational • Enhanced with animations < /small >
+            < / div >
+        < / div >
+    < / div >
 
-    <!-- System Stats -->
-    <div class="stats-grid">
-        <div class="stat-card" style="animation-delay: 0.1s;">
-            <div class="status-indicator online"></div>
-            <div class="stat-value" id="cpu-stat">{{ stats.cpu_percent|default(24)|round(1) }}%</div>
-            <div class="stat-label">CPU Usage</div>
-            <div class="progress-bar-animated">
-                <div class="progress-fill" style="width: {{ stats.cpu_percent|default(24) }}%"></div>
-            </div>
-        </div>
-        
-        <div class="stat-card" style="animation-delay: 0.2s;">
-            <div class="status-indicator online"></div>
-            <div class="stat-value" id="memory-stat">{{ stats.memory_percent|default(67)|round(1) }}%</div>
-            <div class="stat-label">Memory Usage</div>
-            <div class="progress-bar-animated">
-                <div class="progress-fill" style="width: {{ stats.memory_percent|default(67) }}%"></div>
-            </div>
-        </div>
-        
-        <div class="stat-card" style="animation-delay: 0.3s;">
-            <div class="status-indicator warning"></div>
-            <div class="stat-value" id="disk-stat">{{ stats.disk_percent|default(78)|round(1) }}%</div>
-            <div class="stat-label">Disk Usage</div>
-            <div class="progress-bar-animated">
-                <div class="progress-fill" style="width: {{ stats.disk_percent|default(78) }}%"></div>
-            </div>
-        </div>
-        
-        <div class="stat-card" style="animation-delay: 0.4s;">
-            <div class="status-indicator online"></div>
-            <div class="stat-value">{{ stats.features_available|default(13) }}</div>
-            <div class="stat-label">Features Active</div>
-            <div style="color: var(--success-color); font-size: 0.8rem; margin-top: 0.5rem;">
-                <i class="fas fa-check-circle me-1"></i>All Operational
-            </div>
-        </div>
-    </div>
+    < !-- System Stats - ->
+    < div class = "stats-grid" >
+        < div class = "stat-card" style = "animation-delay: 0.1s;" >
+            < div class = "status-indicator online" > </div >
+            < div class = "stat-value" id = "cpu-stat" > {{stats.cpu_percent | default(24) | round(1)}} % </div >
+            < div class = "stat-label" > CPU Usage < /div >
+            < div class = "progress-bar-animated" >
+                < div class = "progress-fill" style = "width: {{ stats.cpu_percent|default(24) }}%" > </div >
+            < / div >
+        < / div >
 
-    <!-- Feature Grid -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h3 class="mb-4" style="color: var(--text-primary);">
-                <i class="fas fa-th-large me-2" style="color: var(--accent-color);"></i>Platform Features
-            </h3>
-        </div>
-    </div>
+        < div class = "stat-card" style = "animation-delay: 0.2s;" >
+            < div class = "status-indicator online" > </div >
+            < div class = "stat-value" id = "memory-stat" > {{stats.memory_percent | default(67) | round(1)}} % </div >
+            < div class = "stat-label" > Memory Usage < /div >
+            < div class = "progress-bar-animated" >
+                < div class = "progress-fill" style = "width: {{ stats.memory_percent|default(67) }}%" > </div >
+            < / div >
+        < / div >
 
-    <div class="feature-grid">
-        <!-- VM Manager -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="Proxmox VM Management" style="animation-delay: 0.1s;">
+        < div class = "stat-card" style = "animation-delay: 0.3s;" >
+            < div class = "status-indicator warning" > </div >
+            < div class = "stat-value" id = "disk-stat" > {{stats.disk_percent | default(78) | round(1)}} % </div >
+            < div class = "stat-label" > Disk Usage < /div >
+            < div class = "progress-bar-animated" >
+                < div class = "progress-fill" style = "width: {{ stats.disk_percent|default(78) }}%" > </div >
+            < / div >
+        < / div >
+
+        < div class = "stat-card" style = "animation-delay: 0.4s;" >
+            < div class = "status-indicator online" > </div >
+            < div class = "stat-value" > {{stats.features_available | default(13)}} < /div >
+            < div class = "stat-label" > Features Active < /div >
+            < div style = "color: var(--success-color); font-size: 0.8rem; margin-top: 0.5rem;" >
+                < i class= "fas fa-check-circle me-1" > </i > All Operational
+            < /div >
+        < / div >
+    < / div >
+
+    < !-- Feature Grid - ->
+    < div class = "row mb-4" >
+        < div class = "col-12" >
+            < h3 class = "mb-4" style = "color: var(--text-primary);" >
+                < i class= "fas fa-th-large me-2" style = "color: var(--accent-color);" > </i > Platform Features
+            < /h3 >
+        < / div >
+    < / div >
+
+    < div class = "feature-grid" >
+        < !-- VM Manager - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "Proxmox VM Management" style = "animation-delay: 0.1s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator online"></div>
-            <div class="feature-icon status-info">
-                <i class="fas fa-server"></i>
-            </div>
-            <div class="feature-title">VM Manager</div>
-            <div class="feature-description">Proxmox VM management interface with real-time monitoring</div>
-            <a href="/vm" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-            <div class="feature-details">
-                <p>Manage virtual machines, containers, and resources with advanced monitoring capabilities.</p>
-            </div>
-        </div>
+            < div class = "status-indicator online" > </div >
+            < div class = "feature-icon status-info" >
+                < i class = "fas fa-server" > </i >
+            < / div >
+            < div class = "feature-title" > VM Manager < /div >
+            < div class = "feature-description" > Proxmox VM management interface with real-time monitoring < /div >
+            < a href = "/vm" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+            < div class = "feature-details" >
+                < p > Manage virtual machines, containers, and resources with advanced monitoring capabilities. < /p >
+            < / div >
+        < / div >
 
-        <!-- SSL/Proxy Manager -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="SSL Certificate Management" style="animation-delay: 0.2s;">
+        < !-- SSL/Proxy Manager - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "SSL Certificate Management" style = "animation-delay: 0.2s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator online"></div>
-            <div class="feature-icon status-healthy">
-                <i class="fas fa-shield-alt"></i>
-            </div>
-            <div class="feature-title">SSL/Proxy Manager</div>
-            <div class="feature-description">Certificate and reverse proxy configuration with auto-renewal</div>
+            < div class = "status-indicator online" > </div >
+            < div class = "feature-icon status-healthy" >
+                < i class = "fas fa-shield-alt" > </i >
+            < / div >
+            < div class = "feature-title" > SSL/Proxy Manager < /div >
+            < div class = "feature-description" > Certificate and reverse proxy configuration with auto-renewal < /div >
             # REASONING: Variable assignment with validation criteria
-            <a href="/proxy" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-        </div>
+            < a href = "/proxy" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+        < / div >
 
-        <!-- Script Runner -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="Automated Script Execution" style="animation-delay: 0.3s;">
+        < !-- Script Runner - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "Automated Script Execution" style = "animation-delay: 0.3s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator warning"></div>
-            <div class="feature-icon status-warning">
-                <i class="fas fa-terminal"></i>
-            </div>
-            <div class="feature-title">Script Runner</div>
-            <div class="feature-description">Enhanced script execution with logging and scheduling</div>
-            <a href="/scripts" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-        </div>
+            < div class = "status-indicator warning" > </div >
+            < div class = "feature-icon status-warning" >
+                < i class = "fas fa-terminal" > </i >
+            < / div >
+            < div class = "feature-title" > Script Runner < /div >
+            < div class = "feature-description" > Enhanced script execution with logging and scheduling < /div >
+            < a href = "/scripts" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+        < / div >
 
-        <!-- Media Center -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="Media & Download Management" style="animation-delay: 0.4s;">
+        < !-- Media Center - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "Media & Download Management" style = "animation-delay: 0.4s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator online"></div>
-            <div class="feature-icon status-error">
-                <i class="fas fa-film"></i>
-            </div>
-            <div class="feature-title">Media Center</div>
-            <div class="feature-description">Seedbox and download manager with streaming capabilities</div>
-            <a href="/media" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-        </div>
+            < div class = "status-indicator online" > </div >
+            < div class = "feature-icon status-error" >
+                < i class = "fas fa-film" > </i >
+            < / div >
+            < div class = "feature-title" > Media Center < /div >
+            < div class = "feature-description" > Seedbox and download manager with streaming capabilities < /div >
+            < a href = "/media" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+        < / div >
 
-        <!-- Pi Monitor -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="Raspberry Pi Network Monitoring" style="animation-delay: 0.5s;">
+        < !-- Pi Monitor - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "Raspberry Pi Network Monitoring" style = "animation-delay: 0.5s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator online"></div>
-            <div class="feature-icon status-healthy">
-                <i class="fas fa-microchip"></i>
-            </div>
-            <div class="feature-title">Pi Node Monitor</div>
-            <div class="feature-description">Raspberry Pi monitoring and control across your network</div>
-            <a href="/pi" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-        </div>
+            < div class = "status-indicator online" > </div >
+            < div class = "feature-icon status-healthy" >
+                < i class = "fas fa-microchip" > </i >
+            < / div >
+            < div class = "feature-title" > Pi Node Monitor < /div >
+            < div class = "feature-description" > Raspberry Pi monitoring and control across your network < /div >
+            < a href = "/pi" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+        < / div >
 
-        <!-- Setup Wizard -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="Platform Configuration Wizard" style="animation-delay: 0.6s;">
+        < !-- Setup Wizard - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "Platform Configuration Wizard" style = "animation-delay: 0.6s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator online"></div>
-            <div class="feature-icon status-info">
-                <i class="fas fa-magic"></i>
-            </div>
-            <div class="feature-title">Setup Wizard</div>
-            <div class="feature-description">First-time setup and configuration with guided steps</div>
+            < div class = "status-indicator online" > </div >
+            < div class = "feature-icon status-info" >
+                < i class = "fas fa-magic" > </i >
+            < / div >
+            < div class = "feature-title" > Setup Wizard < /div >
+            < div class = "feature-description" > First-time setup and configuration with guided steps < /div >
             # REASONING: Variable assignment with validation criteria
-            <a href="/setup" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-        </div>
+            < a href = "/setup" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+        < / div >
 
-        <!-- Analytics -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="System Analytics & Metrics" style="animation-delay: 0.7s;">
+        < !-- Analytics - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "System Analytics & Metrics" style = "animation-delay: 0.7s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator online"></div>
-            <div class="feature-icon status-healthy">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="feature-title">Analytics Dashboard</div>
-            <div class="feature-description">System metrics, AI logs, and performance analytics</div>
-            <a href="/analytics" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-        </div>
+            < div class = "status-indicator online" > </div >
+            < div class = "feature-icon status-healthy" >
+                < i class = "fas fa-chart-line" > </i >
+            < / div >
+            < div class = "feature-title" > Analytics Dashboard < /div >
+            < div class = "feature-description" > System metrics, AI logs, and performance analytics < /div >
+            < a href = "/analytics" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+        < / div >
 
-        <!-- AI Model Monitor -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="AI Model Health & Communication" style="animation-delay: 0.75s;">
+        < !-- AI Model Monitor - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "AI Model Health & Communication" style = "animation-delay: 0.75s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator online"></div>
-            <div class="feature-icon status-info">
-                <i class="fas fa-robot"></i>
-            </div>
-            <div class="feature-title">AI Model Monitor</div>
-            <div class="feature-description">Real-time AI model health, communication tests, and auto-recovery</div>
-            <div class="feature-details">
-                <p>Monitor Ollama, LM Studio, LocalAI, GPT4All, and Oobabooga models with automatic health checks and recovery.</p>
-                <ul>
-                    <li><i class="fas fa-heartbeat text-success"></i> Real-time health monitoring</li>
-                    <li><i class="fas fa-sync text-info"></i> Auto-restart failed services</li>
-                    <li><i class="fas fa-tachometer-alt text-warning"></i> Latency tracking</li>
-                    <li><i class="fas fa-bug text-danger"></i> Error logging & diagnostics</li>
-                </ul>
-            </div>
-            <a href="/ai" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Monitor</span>
-            </a>
-        </div>
+            < div class = "status-indicator online" > </div >
+            < div class = "feature-icon status-info" >
+                < i class = "fas fa-robot" > </i >
+            < / div >
+            < div class = "feature-title" > AI Model Monitor < /div >
+            < div class = "feature-description" > Real-time AI model health, communication tests, and auto-recovery < /div >
+            < div class = "feature-details" >
+                < p > Monitor Ollama, LM Studio, LocalAI, GPT4All, and Oobabooga models with automatic health checks and recovery. < /p >
+                < ul >
+                    < li > <i class= "fas fa-heartbeat text-success" > </i > Real-time health monitoring < /li >
+                    < li > <i class= "fas fa-sync text-info" > </i > Auto-restart failed services < /li >
+                    < li > <i class= "fas fa-tachometer-alt text-warning" > </i > Latency tracking < /li >
+                    < li > <i class= "fas fa-bug text-danger" > </i > Error logging & diagnostics < /li >
+                < / ul >
+            < / div >
+            < a href = "/ai" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Monitor < /span >
+            < / a >
+        < / div >
 
-        <!-- Security Center -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="Security Monitoring & Controls" style="animation-delay: 0.8s;">
+        < !-- Security Center - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "Security Monitoring & Controls" style = "animation-delay: 0.8s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator warning"></div>
-            <div class="feature-icon status-warning">
-                <i class="fas fa-lock"></i>
-            </div>
-            <div class="feature-title">Security Center</div>
-            <div class="feature-description">Security monitoring, threat detection, and access controls</div>
-            <a href="/security" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-        </div>
+            < div class = "status-indicator warning" > </div >
+            < div class = "feature-icon status-warning" >
+                < i class = "fas fa-lock" > </i >
+            < / div >
+            < div class = "feature-title" > Security Center < /div >
+            < div class = "feature-description" > Security monitoring, threat detection, and access controls < /div >
+            < a href = "/security" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+        < / div >
 
-        <!-- Platform Switcher -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="Multi-Platform Navigation" style="animation-delay: 0.9s;">
+        < !-- Platform Switcher - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "Multi-Platform Navigation" style = "animation-delay: 0.9s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator online"></div>
-            <div class="feature-icon status-info">
-                <i class="fas fa-th-large"></i>
-            </div>
-            <div class="feature-title">Platform Switcher</div>
-            <div class="feature-description">Visual platform navigation and environment switching</div>
-            <a href="/platforms" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-        </div>
+            < div class = "status-indicator online" > </div >
+            < div class = "feature-icon status-info" >
+                < i class = "fas fa-th-large" > </i >
+            < / div >
+            < div class = "feature-title" > Platform Switcher < /div >
+            < div class = "feature-description" > Visual platform navigation and environment switching < /div >
+            < a href = "/platforms" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+        < / div >
 
-        <!-- Updates Manager -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="System Update Management" style="animation-delay: 1.0s;">
+        < !-- Updates Manager - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "System Update Management" style = "animation-delay: 1.0s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator online"></div>
-            <div class="feature-icon status-healthy">
-                <i class="fas fa-sync"></i>
-            </div>
-            <div class="feature-title">Updates Manager</div>
-            <div class="feature-description">Git auto-update, versioning, and rollback capabilities</div>
-            <a href="/updates" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-        </div>
+            < div class = "status-indicator online" > </div >
+            < div class = "feature-icon status-healthy" >
+                < i class = "fas fa-sync" > </i >
+            < / div >
+            < div class = "feature-title" > Updates Manager < /div >
+            < div class = "feature-description" > Git auto-update, versioning, and rollback capabilities < /div >
+            < a href = "/updates" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+        < / div >
 
-        <!-- Backup Manager -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="Backup & Recovery System" style="animation-delay: 1.1s;">
+        < !-- Backup Manager - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "Backup & Recovery System" style = "animation-delay: 1.1s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator online"></div>
-            <div class="feature-icon status-healthy">
-                <i class="fas fa-archive"></i>
-            </div>
-            <div class="feature-title">Backup Manager</div>
-            <div class="feature-description">Automated backup status, scheduling, and restore operations</div>
-            <a href="/backups" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-        </div>
+            < div class = "status-indicator online" > </div >
+            < div class = "feature-icon status-healthy" >
+                < i class = "fas fa-archive" > </i >
+            < / div >
+            < div class = "feature-title" > Backup Manager < /div >
+            < div class = "feature-description" > Automated backup status, scheduling, and restore operations < /div >
+            < a href = "/backups" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+        < / div >
 
-        <!-- Notifications -->
-        <div class="feature-card tooltip-wrapper" data-tooltip="Notification Management Center" style="animation-delay: 1.2s;">
+        < !-- Notifications - ->
+        < div class = "feature-card tooltip-wrapper" data-tooltip = "Notification Management Center" style = "animation-delay: 1.2s;" >
         # REASONING: Variable assignment with validation criteria
-            <div class="status-indicator online"></div>
-            <div class="feature-icon status-info">
-                <i class="fas fa-bell"></i>
-            </div>
-            <div class="feature-title">Notifications Center</div>
-            <div class="feature-description">Centralized notification management and alert routing</div>
-            <a href="/notifications" class="feature-btn">
-                <i class="fas fa-arrow-right"></i>
-                <span>Access</span>
-            </a>
-        </div>
-    </div>
+            < div class = "status-indicator online" > </div >
+            < div class = "feature-icon status-info" >
+                < i class = "fas fa-bell" > </i >
+            < / div >
+            < div class = "feature-title" > Notifications Center < /div >
+            < div class = "feature-description" > Centralized notification management and alert routing < /div >
+            < a href = "/notifications" class = "feature-btn" >
+                < i class = "fas fa-arrow-right" > </i >
+                < span > Access < /span >
+            < / a >
+        < / div >
+    < / div >
 
-    <!-- Quick Access Panel -->
-    <div class="quick-access">
-        <h5 class="text-center mb-4" style="color: var(--text-primary);">
-            <i class="fas fa-bolt me-2" style="color: var(--accent-color);"></i>Quick Access
-        </h5>
-        <div class="quick-access-grid">
-            <a href="/ai" class="quick-btn tooltip-wrapper" data-tooltip="AI Model Monitor">
+    < !-- Quick Access Panel - ->
+    < div class = "quick-access" >
+        < h5 class = "text-center mb-4" style = "color: var(--text-primary);" >
+            < i class= "fas fa-bolt me-2" style = "color: var(--accent-color);" > </i > Quick Access
+        < /h5 >
+        < div class = "quick-access-grid" >
+            < a href = "/ai" class = "quick-btn tooltip-wrapper" data-tooltip = "AI Model Monitor" >
             # REASONING: Variable assignment with validation criteria
-                <i class="fas fa-robot"></i>
-                <span>AI Monitor</span>
-            </a>
-            <a href="/knowledge" class="quick-btn tooltip-wrapper" data-tooltip="AI Knowledge Base">
+                < i class = "fas fa-robot" > </i >
+                < span > AI Monitor < /span >
+            < / a >
+            < a href = "/knowledge" class = "quick-btn tooltip-wrapper" data-tooltip = "AI Knowledge Base" >
             # REASONING: Variable assignment with validation criteria
-                <i class="fas fa-brain"></i>
-                <span>Knowledge Base</span>
-            </a>
-            <a href="/admin" class="quick-btn tooltip-wrapper" data-tooltip="Administrative Controls">
+                < i class = "fas fa-brain" > </i >
+                < span > Knowledge Base < /span >
+            < / a >
+            < a href = "/admin" class = "quick-btn tooltip-wrapper" data-tooltip = "Administrative Controls" >
             # REASONING: Variable assignment with validation criteria
-                <i class="fas fa-cog"></i>
-                <span>Admin Panel</span>
-            </a>
-            <a href="/plugins" class="quick-btn tooltip-wrapper" data-tooltip="Plugin Management">
+                < i class = "fas fa-cog" > </i >
+                < span > Admin Panel < /span >
+            < / a >
+            < a href = "/plugins" class = "quick-btn tooltip-wrapper" data-tooltip = "Plugin Management" >
             # REASONING: Variable assignment with validation criteria
-                <i class="fas fa-plug"></i>
-                <span>Plugin Manager</span>
-            </a>
-            <a href="/api/health" class="quick-btn tooltip-wrapper" data-tooltip="System Health Check">
+                < i class = "fas fa-plug" > </i >
+                < span > Plugin Manager < /span >
+            < / a >
+            < a href = "/api/health" class = "quick-btn tooltip-wrapper" data-tooltip = "System Health Check" >
             # REASONING: Variable assignment with validation criteria
-                <i class="fas fa-heartbeat"></i>
-                <span>Health Check</span>
-            </a>
-            <a href="/api/docs" class="quick-btn tooltip-wrapper" data-tooltip="API Documentation">
+                < i class = "fas fa-heartbeat" > </i >
+                < span > Health Check < /span >
+            < / a >
+            < a href = "/api/docs" class = "quick-btn tooltip-wrapper" data-tooltip = "API Documentation" >
             # REASONING: Variable assignment with validation criteria
-                <i class="fas fa-code"></i>
-                <span>API Docs</span>
-            </a>
-        </div>
-    </div>
-</div>
-{% endblock %}
+                < i class = "fas fa-code" > </i >
+                < span > API Docs < /span >
+            < / a >
+        < / div >
+    < / div >
+< / div >
+{ % endblock % }
 
-{% block extra_js %}
-<script>
-// ===== ENHANCED JAVASCRIPT FOR ANIMATIONS & INTERACTIONS =====
+{ % block extra_js % }
+< script >
+// == == = ENHANCED JAVASCRIPT FOR ANIMATIONS & INTERACTIONS == == =
 
 class NoxPanelGateway {
     # REASONING: NoxPanelGateway { follows RLVR methodology for systematic validation
@@ -1011,12 +1012,12 @@ class NoxPanelGateway {
         this.observeIntersections();
     }
 
-    // ===== ANIMATED BACKGROUND =====
+    // == == = ANIMATED BACKGROUND == == =
     createAnimatedBackground() {
         const bg = document.getElementById('animatedBg');
         const particleCount = 20;
 
-        for (let i = 0; i < particleCount; i++) {
+        for (let i=0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
             particle.style.left = Math.random() * 100 + '%';
@@ -1026,35 +1027,35 @@ class NoxPanelGateway {
         }
     }
 
-    // ===== THEME SWITCHING =====
+    // == == = THEME SWITCHING == == =
     setupThemeSwitcher() {
         const themeButtons = document.querySelectorAll('.theme-btn');
         const html = document.documentElement;
 
-        themeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
+        themeButtons.forEach(btn= > {
+            btn.addEventListener('click', ()= > {
                 const newTheme = btn.dataset.theme;
                 # REASONING: Variable assignment with validation criteria
-                
+
                 // Update active state
-                themeButtons.forEach(b => b.classList.remove('active'));
+                themeButtons.forEach(b= > b.classList.remove('active'));
                 btn.classList.add('active');
-                
+
                 // Apply theme with transition
                 html.style.transition = 'none';
                 html.setAttribute('data-theme', newTheme);
-                
+
                 // Force reflow and re-enable transitions
-                setTimeout(() => {
+                setTimeout(()= > {
                     html.style.transition = '';
                 }, 10);
-                
+
                 this.currentTheme = newTheme;
                 this.updateParticleColors();
-                
+
                 // Store theme preference
                 localStorage.setItem('noxpanel-theme', newTheme);
-                
+
                 // Theme change feedback
                 this.showThemeChangeEffect(btn);
             });
@@ -1063,7 +1064,7 @@ class NoxPanelGateway {
         // Load saved theme
         const savedTheme = localStorage.getItem('noxpanel-theme');
         if (savedTheme) {
-            const themeBtn = document.querySelector(`[data-theme="${savedTheme}"]`);
+            const themeBtn = document.querySelector(`[data-theme = "${savedTheme}"]`);
             # REASONING: Variable assignment with validation criteria
             if (themeBtn) themeBtn.click();
         }
@@ -1071,33 +1072,33 @@ class NoxPanelGateway {
 
     showThemeChangeEffect(button) {
         button.style.transform = 'scale(1.3)';
-        setTimeout(() => {
+        setTimeout(()= > {
             button.style.transform = '';
         }, 200);
     }
 
     updateParticleColors() {
         const particles = document.querySelectorAll('.particle');
-        particles.forEach(particle => {
+        particles.forEach(particle= > {
             particle.style.background = getComputedStyle(document.documentElement)
                 .getPropertyValue('--accent-color');
         });
     }
 
-    // ===== CARD ANIMATIONS =====
+    // == == = CARD ANIMATIONS == == =
     setupCardAnimations() {
         const cards = document.querySelectorAll('.feature-card, .stat-card');
-        
-        cards.forEach((card, index) => {
+
+        cards.forEach((card, index)= > {
             // Staggered entrance animation
             card.style.animationDelay = (index * 0.1) + 's';
-            
+
             // Enhanced hover effects
-            card.addEventListener('mouseenter', () => {
+            card.addEventListener('mouseenter', ()= > {
                 this.cardHoverIn(card);
             });
-            
-            card.addEventListener('mouseleave', () => {
+
+            card.addEventListener('mouseleave', ()= > {
                 this.cardHoverOut(card);
             });
         });
@@ -1108,10 +1109,10 @@ class NoxPanelGateway {
         if (icon) {
             icon.style.transform = 'scale(1.1) rotate(5deg)';
         }
-        
+
         // Add glow effect
         card.style.boxShadow = `
-            0 25px 50px rgba(0, 0, 0, 0.4), 
+            0 25px 50px rgba(0, 0, 0, 0.4),
             0 0 30px var(--glow-color)
         `;
     }
@@ -1124,12 +1125,12 @@ class NoxPanelGateway {
         card.style.boxShadow = '';
     }
 
-    // ===== EXPANDABLE CARDS =====
+    // == == = EXPANDABLE CARDS == == =
     setupExpandableCards() {
         const cards = document.querySelectorAll('.feature-card');
-        
-        cards.forEach(card => {
-            card.addEventListener('dblclick', () => {
+
+        cards.forEach(card= > {
+            card.addEventListener('dblclick', ()= > {
                 this.toggleCardExpansion(card);
             });
         });
@@ -1137,11 +1138,11 @@ class NoxPanelGateway {
 
     toggleCardExpansion(card) {
         const isExpanded = card.classList.contains('expanded');
-        
+
         // Close all other expanded cards
         document.querySelectorAll('.feature-card.expanded')
-            .forEach(c => c.classList.remove('expanded'));
-        
+            .forEach(c= > c.classList.remove('expanded'));
+
         if (!isExpanded) {
             card.classList.add('expanded');
             this.animateCardExpansion(card);
@@ -1152,16 +1153,16 @@ class NoxPanelGateway {
         const details = card.querySelector('.feature-details');
         if (details) {
             details.style.maxHeight = details.scrollHeight + 'px';
-            setTimeout(() => {
+            setTimeout(()= > {
                 details.style.maxHeight = '';
             }, 300);
         }
     }
 
-    // ===== STATS REFRESH =====
+    // == == = STATS REFRESH == == =
     setupStatsRefresh() {
         this.refreshStats();
-        setInterval(() => this.refreshStats(), 30000);
+        setInterval(()= > this.refreshStats(), 30000);
     }
 
     async refreshStats() {
@@ -1170,13 +1171,13 @@ class NoxPanelGateway {
             # REASONING: Variable assignment with validation criteria
             const data = await response.json();
             # REASONING: Variable assignment with validation criteria
-            
+
             if (data.system) {
-                this.updateStatValue('cpu-stat', data.system.cpu?.percent || Math.random() * 40 + 10);
-                this.updateStatValue('memory-stat', data.system.memory?.percent || Math.random() * 30 + 40);
-                this.updateStatValue('disk-stat', data.system.disk?.percent || Math.random() * 20 + 60);
+                this.updateStatValue('cpu-stat', data.system.cpu?.percent | | Math.random() * 40 + 10);
+                this.updateStatValue('memory-stat', data.system.memory?.percent | | Math.random() * 30 + 40);
+                this.updateStatValue('disk-stat', data.system.disk?.percent | | Math.random() * 20 + 60);
             }
-        } catch (error) {
+        } catch(error) {
             // Fallback to random values for demo
             this.updateStatValue('cpu-stat', Math.random() * 40 + 10);
             this.updateStatValue('memory-stat', Math.random() * 30 + 40);
@@ -1187,13 +1188,14 @@ class NoxPanelGateway {
     updateStatValue(elementId, value) {
         const element = document.getElementById(elementId);
         const progressBar = element?.parentElement.querySelector('.progress-fill');
-        
-        if (element && progressBar) {
+
+        if (element & & progressBar) {
             // Animate value change
-            this.animateNumber(element, parseFloat(element.textContent), value);
-            
+            this.animateNumber(element, parseFloat(
+                element.textContent), value);
+
             // Animate progress bar
-            setTimeout(() => {
+            setTimeout(()= > {
                 progressBar.style.width = value + '%';
             }, 500);
         }
@@ -1202,19 +1204,19 @@ class NoxPanelGateway {
     animateNumber(element, start, end) {
         const duration = 1000;
         const startTime = performance.now();
-        
-        const animate = (currentTime) => {
+
+        const animate= (currentTime) = > {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            
+
             const current = start + (end - start) * this.easeOutCubic(progress);
             element.textContent = current.toFixed(1) + '%';
-            
+
             if (progress < 1) {
                 requestAnimationFrame(animate);
             }
         };
-        
+
         requestAnimationFrame(animate);
     }
 
@@ -1222,12 +1224,12 @@ class NoxPanelGateway {
         return 1 - Math.pow(1 - t, 3);
     }
 
-    // ===== LOADING STATES =====
+    // == == = LOADING STATES == == =
     setupLoadingStates() {
         const links = document.querySelectorAll('.feature-btn, .quick-btn');
-        
-        links.forEach(link => {
-            link.addEventListener('click', (e) => {
+
+        links.forEach(link= > {
+            link.addEventListener('click', (e)= > {
                 // Don't show loading for external links or hash links
                 if (link.hostname === window.location.hostname && !link.hash) {
                     this.showLoadingState(link);

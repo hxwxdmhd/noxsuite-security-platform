@@ -1,7 +1,7 @@
 """NoxCore AI Module - Ollama Integration & AI Assistant System"""
 
-from .ollama_client import OllamaClient
 from .nox_assistant import NoxAssistant
+from .ollama_client import OllamaClient
 from .task_registry import TaskRegistry
 
 __version__ = "1.0.0"
@@ -18,8 +18,8 @@ AI_CONFIG = {
         "neural-chat:7b",    # Natural conversations
         "starcode:7b",       # Code understanding
         "wizardcoder:7b",    # Programming assistance
-        "phind-codellama:34b", # Advanced code help
-        "deepseek-coder:6.7b", # Code analysis
+        "phind-codellama:34b",  # Advanced code help
+        "deepseek-coder:6.7b",  # Code analysis
         "magicoder:7b"       # Multi-language coding
     ],
     "conversation_history_limit": 20,

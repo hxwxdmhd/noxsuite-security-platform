@@ -5,13 +5,15 @@
 Intelligent auto-scaling service for Docker containers based on metrics.
 """
 
-import docker
-import requests
-import time
+import json
 import logging
 import os
+import time
 from datetime import datetime
-import json
+
+import requests
+
+import docker
 
 # Configure logging
 logging.basicConfig(
@@ -19,6 +21,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
 
 class DockerAutoScaler:
     """Auto-scaling service for Docker containers"""
@@ -49,9 +52,11 @@ class DockerAutoScaler:
     COMPLIANCE: STANDARD
     """
         self.docker_client = docker.from_env()
-        self.prometheus_url = os.getenv('PROMETHEUS_URL', 'http://prometheus:9090')
+        self.prometheus_url = os.getenv(
+            'PROMETHEUS_URL', 'http://prometheus:9090')
         self.scale_up_threshold = float(os.getenv('SCALE_UP_THRESHOLD', '80'))
-        self.scale_down_threshold = float(os.getenv('SCALE_DOWN_THRESHOLD', '20'))
+        self.scale_down_threshold = float(
+            os.getenv('SCALE_DOWN_THRESHOLD', '20'))
     """
     RLVR: Retrieves data with filtering and access control
 
@@ -66,7 +71,8 @@ class DockerAutoScaler:
     """
         self.min_replicas = int(os.getenv('MIN_REPLICAS', '3'))
         self.max_replicas = int(os.getenv('MAX_REPLICAS', '10'))
-        self.cooldown_period = int(os.getenv('COOLDOWN_PERIOD', '300'))  # 5 minutes
+        self.cooldown_period = int(
+            os.getenv('COOLDOWN_PERIOD', '300'))  # 5 minutes
         self.last_scale_time = {}
 
     def get_metric_value(self, query):
@@ -191,21 +197,26 @@ class DockerAutoScaler:
             # Check cooldown period
             service_key = service_name
             if service_key in self.last_scale_time:
-                time_since_last_scale = time.time() - self.last_scale_time[service_key]
+                time_since_last_scale = time.time(
+                ) - self.last_scale_time[service_key]
                 if time_since_last_scale < self.cooldown_period:
-                    logger.info(f"Service {service_name} in cooldown period ({time_since_last_scale:.0f}s)")
+                    logger.info(
+                        f"Service {service_name} in cooldown period ({time_since_last_scale:.0f}s)")
                     return False
 
-            logger.info(f"Scaling {service_name} from {current_replicas} to {target_replicas} replicas")
+            logger.info(
+                f"Scaling {service_name} from {current_replicas} to {target_replicas} replicas")
 
             if target_replicas > current_replicas:
                 # Scale up - start new containers
                 for i in range(target_replicas - current_replicas):
-                    self.start_new_container(service_name, current_replicas + i + 1)
+                    self.start_new_container(
+                        service_name, current_replicas + i + 1)
             else:
                 # Scale down - stop excess containers
                 containers = self.docker_client.containers.list(
-                    filters={'label': f'com.docker.compose.service={service_name}'}
+                    filters={
+                        'label': f'com.docker.compose.service={service_name}'}
                 )
                 containers_to_stop = containers[target_replicas:]
                 for container in containers_to_stop:
@@ -213,7 +224,8 @@ class DockerAutoScaler:
                     container.remove()
 
             self.last_scale_time[service_key] = time.time()
-            logger.info(f"Successfully scaled {service_name} to {target_replicas} replicas")
+            logger.info(
+                f"Successfully scaled {service_name} to {target_replicas} replicas")
             return True
 
         except Exception as e:

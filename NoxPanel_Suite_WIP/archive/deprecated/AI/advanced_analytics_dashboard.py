@@ -4,26 +4,29 @@ Real-time Analytics Dashboard v9.0
 Advanced system monitoring, performance analytics, and predictive insights
 """
 
-import asyncio
-import json
-import logging
-import time
-import threading
-import psutil
-import statistics
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, asdict
-from enum import Enum
-from collections import deque, defaultdict
-import pymysql
-import matplotlib
-matplotlib.use('Agg')  # Non-interactive backend
+from flask import jsonify
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import io
 import base64
-from flask import jsonify
+import asyncio
+import json
+import logging
+import statistics
+import threading
+import time
+from collections import defaultdict, deque
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple
+
+import matplotlib
+import psutil
+import pymysql
+
+matplotlib.use('Agg')  # Non-interactive backend
+
 
 class MetricType(Enum):
     SYSTEM = "system"
@@ -32,11 +35,13 @@ class MetricType(Enum):
     APPLICATION = "application"
     USER = "user"
 
+
 class AlertLevel(Enum):
     INFO = "info"
     WARNING = "warning"
     ERROR = "error"
     CRITICAL = "critical"
+
 
 @dataclass
 class Metric:
@@ -46,6 +51,7 @@ class Metric:
     timestamp: float
     metric_type: MetricType
     metadata: Dict[str, Any] = None
+
 
 @dataclass
 class Alert:
@@ -59,6 +65,7 @@ class Alert:
     timestamp: float
     acknowledged: bool = False
 
+
 @dataclass
 class PerformanceSnapshot:
     timestamp: float
@@ -69,6 +76,7 @@ class PerformanceSnapshot:
     active_connections: int
     running_processes: int
     system_load: float
+
 
 class AnalyticsDashboard:
     """Advanced real-time analytics and monitoring dashboard"""
@@ -94,7 +102,8 @@ class AnalyticsDashboard:
         # Data storage
         self.metrics_buffer = deque(maxlen=10000)
         self.alerts = {}
-        self.performance_history = deque(maxlen=2000)  # ~33 hours at 1min intervals
+        self.performance_history = deque(
+            maxlen=2000)  # ~33 hours at 1min intervals
 
         # Real-time data
         self.current_metrics = {}
@@ -194,9 +203,12 @@ class AnalyticsDashboard:
             """)
 
             # Create indexes for better performance
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON metrics(timestamp)")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_metrics_name ON metrics(name)")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_alerts_timestamp ON alerts(timestamp)")
+            cursor.execute(
+                "CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON metrics(timestamp)")
+            cursor.execute(
+                "CREATE INDEX IF NOT EXISTS idx_metrics_name ON metrics(name)")
+            cursor.execute(
+                "CREATE INDEX IF NOT EXISTS idx_alerts_timestamp ON alerts(timestamp)")
 
             conn.commit()
             conn.close()
@@ -238,7 +250,8 @@ class AnalyticsDashboard:
     COMPLIANCE: STANDARD
     """
         except Exception as e:
-            self.logger.error(f"❌ Failed to initialize analytics database: {e}")
+            self.logger.error(
+                f"❌ Failed to initialize analytics database: {e}")
 
     def _setup_default_thresholds(self):
         """Setup default alert thresholds"""

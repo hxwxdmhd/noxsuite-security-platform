@@ -1,6 +1,13 @@
 """
 #!/usr/bin/env python3
 """
+from plugin_system import PluginInterface, PluginMetadata
+from typing import Any, Dict
+from datetime import datetime
+import sys
+import socket
+import os
+import json
 __init__.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,32 +18,25 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 FritzBox Router Integration Plugin v2.0
 Advanced router management and monitoring capabilities
 """
 
-import sys
-import os
-import socket
-import json
-from datetime import datetime
 
 # Fix plugin system import path
 plugin_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, plugin_dir)
 
-from plugin_system import PluginInterface, PluginMetadata
-from typing import Dict, Any
 
 class FritzboxPlugin(PluginInterface):
     # REASONING: FritzboxPlugin follows RLVR methodology for systematic validation
     """Advanced FritzBox Router Integration Plugin"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.config = {}
         # REASONING: Variable assignment with validation criteria
         self.status = "inactive"
@@ -51,7 +51,7 @@ class FritzboxPlugin(PluginInterface):
         ]
 
     def get_metadata(self) -> PluginMetadata:
-    # REASONING: get_metadata implements core logic with Chain-of-Thought validation
+        # REASONING: get_metadata implements core logic with Chain-of-Thought validation
         return PluginMetadata(
             name="fritzbox",
             version="2.0.0",
@@ -63,7 +63,7 @@ class FritzboxPlugin(PluginInterface):
         )
 
     def initialize(self, config: Dict[str, Any]) -> bool:
-    # REASONING: initialize implements core logic with Chain-of-Thought validation
+        # REASONING: initialize implements core logic with Chain-of-Thought validation
         """Initialize FritzBox plugin with configuration"""
         try:
             self.config = config
@@ -74,11 +74,13 @@ class FritzboxPlugin(PluginInterface):
             # Test router connectivity
             if self._test_router_connection():
                 self.status = "active"
-                print(f"✅ FritzBox plugin initialized - Router: {self.router_ip}")
+                print(
+                    f"✅ FritzBox plugin initialized - Router: {self.router_ip}")
                 return True
             else:
                 self.status = "warning"
-                print(f"⚠️ FritzBox plugin initialized but router not reachable: {self.router_ip}")
+                print(
+                    f"⚠️ FritzBox plugin initialized but router not reachable: {self.router_ip}")
                 return True  # Still allow initialization for offline testing
 
         except Exception as e:
@@ -87,7 +89,7 @@ class FritzboxPlugin(PluginInterface):
             return False
 
     def execute(self, action: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
-    # REASONING: execute implements core logic with Chain-of-Thought validation
+        # REASONING: execute implements core logic with Chain-of-Thought validation
         """Execute FritzBox plugin actions"""
         try:
             if action == "test":
@@ -168,7 +170,7 @@ class FritzboxPlugin(PluginInterface):
             }
 
     def _test_router_connection(self) -> bool:
-    # REASONING: _test_router_connection implements core logic with Chain-of-Thought validation
+        # REASONING: _test_router_connection implements core logic with Chain-of-Thought validation
         """Test connection to FritzBox router"""
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -182,7 +184,7 @@ class FritzboxPlugin(PluginInterface):
             return False
 
     def _discover_network_devices(self) -> list:
-    # REASONING: _discover_network_devices implements core logic with Chain-of-Thought validation
+        # REASONING: _discover_network_devices implements core logic with Chain-of-Thought validation
         """Discover devices on the network"""
         devices = []
         try:
@@ -203,7 +205,7 @@ class FritzboxPlugin(PluginInterface):
         return devices
 
     def _ping_device(self, ip: str) -> bool:
-    # REASONING: _ping_device implements core logic with Chain-of-Thought validation
+        # REASONING: _ping_device implements core logic with Chain-of-Thought validation
         """Check if device is reachable"""
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -212,7 +214,7 @@ class FritzboxPlugin(PluginInterface):
             # REASONING: Variable assignment with validation criteria
             sock.close()
             if result == 0:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 return True
 
             # Also try common ports
@@ -224,7 +226,7 @@ class FritzboxPlugin(PluginInterface):
                     # REASONING: Variable assignment with validation criteria
                     sock.close()
                     if result == 0:
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         return True
                 except:
                     continue
@@ -233,7 +235,7 @@ class FritzboxPlugin(PluginInterface):
             return False
 
     def _analyze_device(self, ip: str) -> dict:
-    # REASONING: _analyze_device implements core logic with Chain-of-Thought validation
+        # REASONING: _analyze_device implements core logic with Chain-of-Thought validation
         """Analyze device characteristics"""
         device = {
             "ip": ip,
@@ -261,7 +263,7 @@ class FritzboxPlugin(PluginInterface):
                     result = sock.connect_ex((ip, port))
                     # REASONING: Variable assignment with validation criteria
                     if result == 0:
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         device["open_ports"].append(port)
                         service = self._identify_service(port)
                         if service:
@@ -271,10 +273,12 @@ class FritzboxPlugin(PluginInterface):
                     pass
 
             # Classify device type
-            device["device_type"] = self._classify_device(ip, device["open_ports"], device["hostname"])
+            device["device_type"] = self._classify_device(
+                ip, device["open_ports"], device["hostname"])
 
             # Assess security risk
-            device["risk_level"] = self._assess_risk(device["open_ports"], device["services"])
+            device["risk_level"] = self._assess_risk(
+                device["open_ports"], device["services"])
 
         except Exception as e:
             print(f"Device analysis error for {ip}: {e}")
@@ -282,7 +286,7 @@ class FritzboxPlugin(PluginInterface):
         return device
 
     def _identify_service(self, port: int) -> str:
-    # REASONING: _identify_service implements core logic with Chain-of-Thought validation
+        # REASONING: _identify_service implements core logic with Chain-of-Thought validation
         """Identify service running on port"""
         service_map = {
             22: "SSH",
@@ -300,7 +304,7 @@ class FritzboxPlugin(PluginInterface):
         return service_map.get(port, f"Unknown-{port}")
 
     def _classify_device(self, ip: str, ports: list, hostname: str) -> str:
-    # REASONING: _classify_device implements core logic with Chain-of-Thought validation
+        # REASONING: _classify_device implements core logic with Chain-of-Thought validation
         """Classify device based on characteristics"""
         if ip.endswith(".1") or ip.endswith(".254"):
             return "Router/Gateway"
@@ -320,7 +324,7 @@ class FritzboxPlugin(PluginInterface):
             return "Unknown Device"
 
     def _assess_risk(self, ports: list, services: list) -> str:
-    # REASONING: _assess_risk implements core logic with Chain-of-Thought validation
+        # REASONING: _assess_risk implements core logic with Chain-of-Thought validation
         """Assess security risk level"""
         high_risk_ports = [23, 135, 139, 445]  # Telnet, RPC, NetBIOS, SMB
         medium_risk_ports = [22, 80, 8080]     # SSH, HTTP
@@ -333,7 +337,7 @@ class FritzboxPlugin(PluginInterface):
             return "low"
 
     def _generate_security_report(self, devices: list) -> dict:
-    # REASONING: _generate_security_report implements core logic with Chain-of-Thought validation
+        # REASONING: _generate_security_report implements core logic with Chain-of-Thought validation
         """Generate comprehensive security report"""
         report = {
             "total_devices": len(devices),
@@ -365,17 +369,19 @@ class FritzboxPlugin(PluginInterface):
 
         # Generate recommendations
         if report["risk_summary"]["high"] > 0:
-            report["recommendations"].append("Disable Telnet services and use SSH instead")
+            report["recommendations"].append(
+                "Disable Telnet services and use SSH instead")
         if report["risk_summary"]["medium"] > 2:
-            report["recommendations"].append("Review firewall rules for exposed services")
+            report["recommendations"].append(
+                "Review firewall rules for exposed services")
 
         report["overall_risk"] = "high" if report["risk_summary"]["high"] > 0 else \
-                                "medium" if report["risk_summary"]["medium"] > 2 else "low"
+            "medium" if report["risk_summary"]["medium"] > 2 else "low"
 
         return report
 
     def _analyze_network_topology(self, devices: list) -> dict:
-    # REASONING: _analyze_network_topology implements core logic with Chain-of-Thought validation
+        # REASONING: _analyze_network_topology implements core logic with Chain-of-Thought validation
         """Analyze network topology and relationships"""
         topology = {
             "gateway": self.router_ip,
@@ -387,7 +393,8 @@ class FritzboxPlugin(PluginInterface):
         # Count device types
         for device in devices:
             device_type = device.get("device_type", "Unknown")
-            topology["device_types"][device_type] = topology["device_types"].get(device_type, 0) + 1
+            topology["device_types"][device_type] = topology["device_types"].get(
+                device_type, 0) + 1
 
             # Categorize by security zones
             risk_level = device.get("risk_level", "low")
@@ -401,7 +408,7 @@ class FritzboxPlugin(PluginInterface):
         return topology
 
     def cleanup(self) -> bool:
-    # REASONING: cleanup implements core logic with Chain-of-Thought validation
+        # REASONING: cleanup implements core logic with Chain-of-Thought validation
         """Cleanup plugin resources"""
         try:
             self.status = "inactive"

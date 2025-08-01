@@ -12,6 +12,7 @@ import requests
 from langflow.custom import CustomComponent
 from langflow.field_typing import Bool, Data, DropDown, Text
 
+
 class NoxSuiteMCPOrchestrator(CustomComponent):
     display_name = "NoxSuite MCP Orchestrator"
     description = "Orchestrate MCP server connections and manage workflow coordination"
@@ -117,7 +118,8 @@ class NoxSuiteMCPOrchestrator(CustomComponent):
                     "status_code": response.status_code,
                     "headers": dict(response.headers),
                     "connection_test": (
-                        "successful" if response.status_code in [200, 404] else "failed"
+                        "successful" if response.status_code in [
+                            200, 404] else "failed"
                     ),
                 }
             )
@@ -216,7 +218,8 @@ class NoxSuiteMCPOrchestrator(CustomComponent):
         """Execute an MCP workflow with provided data"""
         try:
             # Parse workflow data
-            workflow = json.loads(workflow_data) if workflow_data.strip() else {}
+            workflow = json.loads(
+                workflow_data) if workflow_data.strip() else {}
 
             # For now, simulate workflow execution
             result.update(

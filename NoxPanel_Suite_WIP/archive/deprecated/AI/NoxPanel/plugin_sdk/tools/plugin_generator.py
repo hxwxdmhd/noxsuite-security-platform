@@ -4,11 +4,12 @@ NoxPanel Plugin Generator
 Generates new plugin projects from templates
 """
 
-import os
-import json
 import argparse
-from pathlib import Path
+import json
+import os
 import shutil
+from pathlib import Path
+
 
 def generate_plugin(name: str, category: str, author: str, description: str):
     """Generate a new plugin from template"""
@@ -62,12 +63,15 @@ def generate_plugin(name: str, category: str, author: str, description: str):
         print(f"❌ Plugin generation failed: {str(e)}")
         raise
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate NoxPanel plugin")
     parser.add_argument("name", help="Plugin name")
-    parser.add_argument("--category", default="Utilities", help="Plugin category")
+    parser.add_argument("--category", default="Utilities",
+                        help="Plugin category")
     parser.add_argument("--author", default="Developer", help="Plugin author")
-    parser.add_argument("--description", default="A NoxPanel plugin", help="Plugin description")
+    parser.add_argument(
+        "--description", default="A NoxPanel plugin", help="Plugin description")
 
     args = parser.parse_args()
     generate_plugin(args.name, args.category, args.author, args.description)

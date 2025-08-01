@@ -1,20 +1,20 @@
 from datetime import datetime, timezone
+
 """
 Code Analysis and Validation Utilities for NoxPanel
 Provides static analysis, code quality checks, and deprecation detection
 """
 
 import ast
+import importlib.util
 import logging
 import re
 import sys
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Set, Tuple, Union
+import traceback
 from dataclasses import dataclass, field
 from enum import Enum
-import importlib.util
-import traceback
-
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
@@ -26,12 +26,12 @@ class IssueType(Enum):
     2. Analysis: Class requires specific implementation patterns for IssueType functionality
     3. Solution: Implement IssueType with SOLID principles and enterprise patterns
     4. Validation: Test IssueType with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Types of code issues that can be detected."""
     DEPRECATED = "deprecated"
-    SECURITY = "security"  
+    SECURITY = "security"
     PERFORMANCE = "performance"
     STYLE = "style"
     TYPE_HINT = "type_hint"
@@ -48,7 +48,7 @@ class IssueSeverity(Enum):
     2. Analysis: Class requires specific implementation patterns for IssueSeverity functionality
     3. Solution: Implement IssueSeverity with SOLID principles and enterprise patterns
     4. Validation: Test IssueSeverity with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Severity levels for code issues."""
@@ -67,7 +67,7 @@ class CodeIssue:
     2. Analysis: Class requires specific implementation patterns for CodeIssue functionality
     3. Solution: Implement CodeIssue with SOLID principles and enterprise patterns
     4. Validation: Test CodeIssue with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Represents a code issue found during analysis."""
@@ -81,7 +81,7 @@ class CodeIssue:
     suggestion: str = ""
     code_snippet: str = ""
     rule_id: str = ""
-    
+
     def to_dict(self) -> Dict[str, Any]:
     """
     REASONING CHAIN:
@@ -89,7 +89,7 @@ class CodeIssue:
     2. Analysis: Implementation requires specific logic for to_dict operation
     3. Solution: Implement to_dict with enterprise-grade patterns and error handling
     4. Validation: Test to_dict with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Convert issue to dictionary."""
@@ -114,11 +114,11 @@ class CodeAnalyzer:
     2. Analysis: Class requires specific implementation patterns for CodeAnalyzer functionality
     3. Solution: Implement CodeAnalyzer with SOLID principles and enterprise patterns
     4. Validation: Test CodeAnalyzer with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Static code analyzer for detecting issues and patterns."""
-    
+
     # Deprecated patterns to detect
     DEPRECATED_PATTERNS = {
         'datetime.now(timezone.utc)': {
@@ -137,7 +137,7 @@ class CodeAnalyzer:
             'severity': IssueSeverity.MEDIUM
         },
         'collections.MutableMapping': {
-            'replacement': 'collections.abc.MutableMapping', 
+            'replacement': 'collections.abc.MutableMapping',
             'reason': 'collections.MutableMapping moved to collections.abc',
             'severity': IssueSeverity.MEDIUM
         },
@@ -152,7 +152,7 @@ class CodeAnalyzer:
             'severity': IssueSeverity.CRITICAL
         }
     }
-    
+
     # Security patterns to detect
     SECURITY_PATTERNS = {
         'eval(': {
@@ -180,7 +180,7 @@ class CodeAnalyzer:
             'severity': IssueSeverity.HIGH
         }
     }
-    
+
     def __init__(self):
     """
     REASONING CHAIN:
@@ -188,14 +188,14 @@ class CodeAnalyzer:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Initialize code analyzer."""
         self.issues: List[CodeIssue] = []
         self.file_count = 0
         self.line_count = 0
-        
+
     def analyze_file(self, file_path: Path) -> List[CodeIssue]:
     """
     REASONING CHAIN:
@@ -203,30 +203,30 @@ class CodeAnalyzer:
     2. Analysis: Implementation requires specific logic for analyze_file operation
     3. Solution: Implement analyze_file with enterprise-grade patterns and error handling
     4. Validation: Test analyze_file with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Analyze a single Python file.
-        
+
         Args:
             file_path: Path to Python file
-            
+
         Returns:
             List of issues found in the file
         """
         issues = []
-        
+
         try:
             if not file_path.exists() or file_path.suffix != '.py':
                 return issues
-                
+
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
                 lines = content.splitlines()
-                
+
             self.file_count += 1
             self.line_count += len(lines)
-            
+
             # Analyze with AST
             try:
                 tree = ast.parse(content, filename=str(file_path))
@@ -242,16 +242,16 @@ class CodeAnalyzer:
                     description=f"Syntax error: {e.msg}",
                     rule_id="syntax-error"
                 ))
-            
+
             # Analyze line by line for patterns
             issues.extend(self._analyze_patterns(str(file_path), lines))
-            
+
             # Analyze imports
             issues.extend(self._analyze_imports(str(file_path), lines))
-            
+
             # Analyze logging usage
             issues.extend(self._analyze_logging(str(file_path), lines))
-            
+
         except Exception as e:
             logger.error(f"Error analyzing file {file_path}: {e}")
             issues.append(CodeIssue(
@@ -264,9 +264,9 @@ class CodeAnalyzer:
                 description=f"Could not analyze file: {e}",
                 rule_id="analysis-error"
             ))
-        
+
         return issues
-    
+
     def _analyze_ast(self, tree: ast.AST, file_path: str, lines: List[str]) -> List[CodeIssue]:
     """
     REASONING CHAIN:
@@ -274,43 +274,44 @@ class CodeAnalyzer:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _analyze_ast with enterprise-grade patterns and error handling
     4. Validation: Test _analyze_ast with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Analyze using AST.
-        
+
         Args:
             tree: AST tree
             file_path: File path
             lines: File lines
-            
+
         Returns:
             List of issues found
         """
         issues = []
-        
+
         class Visitor(ast.NodeVisitor):
     """
     Enhanced Visitor with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component Visitor needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for Visitor functionality
     3. Solution: Implement Visitor with SOLID principles and enterprise patterns
     4. Validation: Test Visitor with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
+
             def visit_FunctionDef(self, node):
     """
     Enhanced visit_FunctionDef with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Function visit_FunctionDef needs clear operational definition
     2. Analysis: Implementation requires specific logic for visit_FunctionDef operation
     3. Solution: Implement visit_FunctionDef with enterprise-grade patterns and error handling
     4. Validation: Test visit_FunctionDef with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
                 # Check for missing type hints
@@ -326,7 +327,7 @@ class CodeAnalyzer:
                         suggestion="Add return type annotation: def func() -> ReturnType:",
                         rule_id="missing-return-type"
                     ))
-                
+
                 # Check for missing parameter type hints
                 for arg in node.args.args:
                     if not arg.annotation and not arg.arg.startswith('_'):
@@ -341,9 +342,9 @@ class CodeAnalyzer:
                             suggestion="Add parameter type annotation: def func(param: ParamType):",
                             rule_id="missing-param-type"
                         ))
-                
+
                 self.generic_visit(node)
-            
+
             def visit_Try(self, node):
     """
     Enhanced visit_Try with AI-driven reasoning patterns

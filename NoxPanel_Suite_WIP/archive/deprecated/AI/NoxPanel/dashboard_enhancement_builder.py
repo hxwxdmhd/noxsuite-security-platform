@@ -10,12 +10,12 @@ and comprehensive tenant management interfaces.
 """
 
 import json
-import os
 import logging
-from datetime import datetime
-from typing import Dict, List, Optional, Any
-from pathlib import Path
+import os
 import secrets
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(
@@ -23,6 +23,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
 
 class DashboardEnhancementBuilder:
     """
@@ -67,10 +68,12 @@ class DashboardEnhancementBuilder:
             }
         }
 
-        self.output_directory = Path("k:/Project Heimnetz/AI/NoxPanel/webpanel/components")
+        self.output_directory = Path(
+            "k:/Project Heimnetz/AI/NoxPanel/webpanel/components")
         self.output_directory.mkdir(parents=True, exist_ok=True)
 
-        logger.info(f"Dashboard Enhancement Builder initialized: {self.builder_id}")
+        logger.info(
+            f"Dashboard Enhancement Builder initialized: {self.builder_id}")
 
     def generate_admin_plugin_manager(self) -> str:
         """Generate AdminPluginManager.tsx component"""
@@ -493,7 +496,8 @@ export default AdminPluginManager;'''
             return str(output_path)
 
         except Exception as e:
-            logger.error(f"❌ Failed to generate AdminPluginManager.tsx: {str(e)}")
+            logger.error(
+                f"❌ Failed to generate AdminPluginManager.tsx: {str(e)}")
             raise
 
     def generate_system_status_widget(self) -> str:
@@ -962,13 +966,15 @@ document.head.appendChild(style);'''
             return str(output_path)
 
         except Exception as e:
-            logger.error(f"❌ Failed to generate SystemStatusWidget.tsx: {str(e)}")
+            logger.error(
+                f"❌ Failed to generate SystemStatusWidget.tsx: {str(e)}")
             raise
 
     def generate_all_components(self) -> Dict[str, Any]:
         """Generate all dashboard components"""
         try:
-            logger.info("🚀 Starting comprehensive dashboard component generation")
+            logger.info(
+                "🚀 Starting comprehensive dashboard component generation")
 
             results = {
                 "builder_id": self.builder_id,
@@ -1015,12 +1021,14 @@ document.head.appendChild(style);'''
                 "output_directory": str(self.output_directory)
             }
 
-            logger.info(f"✅ Dashboard component generation completed: {results['summary']['success_rate']:.1f}% success rate")
+            logger.info(
+                f"✅ Dashboard component generation completed: {results['summary']['success_rate']:.1f}% success rate")
 
             return results
 
         except Exception as e:
-            logger.error(f"❌ Failed to generate dashboard components: {str(e)}")
+            logger.error(
+                f"❌ Failed to generate dashboard components: {str(e)}")
             raise
 
     def get_generation_status(self) -> Dict[str, Any]:
@@ -1037,6 +1045,7 @@ document.head.appendChild(style);'''
         except Exception as e:
             logger.error(f"❌ Failed to get generation status: {str(e)}")
             raise
+
 
 def main():
     """Main execution function"""
@@ -1073,6 +1082,7 @@ def main():
     except Exception as e:
         print(f"❌ Error: {str(e)}")
         raise
+
 
 if __name__ == "__main__":
     main()

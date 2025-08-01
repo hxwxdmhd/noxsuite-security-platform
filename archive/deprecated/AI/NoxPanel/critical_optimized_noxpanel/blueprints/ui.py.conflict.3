@@ -5,6 +5,7 @@ from flask import Blueprint, render_template
 
 ui_bp = Blueprint('ui', __name__)
 
+
 @ui_bp.route('/crawler')
 def crawler():
     """
@@ -57,26 +58,29 @@ def crawler():
     """
     """Web crawler interface"""
     return render_template('pages/crawler.html',
-                         page_title='Web Crawler',
-                         feature='crawler')
+                           page_title='Web Crawler',
+                           feature='crawler')
+
 
 @ui_bp.route('/plugins')
 def plugins():
     """Plugin management interface"""
     return render_template('pages/plugins.html',
-                         page_title='Plugin Management',
-                         feature='plugins')
+                           page_title='Plugin Management',
+                           feature='plugins')
+
 
 @ui_bp.route('/admin')
 def admin():
     """Admin panel interface"""
     return render_template('pages/admin.html',
-                         page_title='Admin Panel',
-                         feature='admin')
+                           page_title='Admin Panel',
+                           feature='admin')
+
 
 @ui_bp.route('/chat')
 def chat():
     """Chat interface"""
     return render_template('pages/chat.html',
-                         page_title='AI Chat',
-                         feature='chat')
+                           page_title='AI Chat',
+                           feature='chat')

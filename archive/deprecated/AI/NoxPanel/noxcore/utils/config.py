@@ -2,6 +2,7 @@ import os
 import json
 from pathlib import Path
 
+
 class NoxConfig:
     """Configuration management for NoxPanel"""
 
@@ -78,9 +79,9 @@ class NoxConfig:
 
     COMPLIANCE: STANDARD
     """
-        self.config_dir = Path(config_dir)
-        self.config_file = self.config_dir / "noxpanel.json"
-        self.load_config()
+    self.config_dir = Path(config_dir)
+    self.config_file = self.config_dir / "noxpanel.json"
+    self.load_config()
 
     def load_config(self):
         """Load configuration from file"""

@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Dict, List, Any
 import importlib.util
 
+
 def load_file_content(filepath: Path) -> str:
     """
     RLVR: Implements load_file_content with error handling and validation
@@ -55,6 +56,7 @@ def load_file_content(filepath: Path) -> str:
     except Exception as e:
         return f"ERROR: {e}"
 
+
 def extract_version_from_content(content: str) -> List[str]:
     """Extract version numbers from content"""
     version_patterns = [
@@ -70,6 +72,7 @@ def extract_version_from_content(content: str) -> List[str]:
         versions.extend(matches)
 
     return list(set(versions))
+
 
 def audit_project_structure():
     """Audit the current project structure"""
@@ -105,10 +108,12 @@ def audit_project_structure():
             audit_results["versions_found"][file_path] = versions
             audit_results["files_analyzed"] += 1
 
-            print(f"  📄 {file_path}: {versions if versions else 'No version found'}")
+            print(
+                f"  📄 {file_path}: {versions if versions else 'No version found'}")
         else:
             print(f"  ❌ {file_path}: FILE NOT FOUND")
-            audit_results["critical_issues"].append(f"Missing file: {file_path}")
+            audit_results["critical_issues"].append(
+                f"Missing file: {file_path}")
 
     # 2. Check plugin system
     print("\n🔌 PLUGIN SYSTEM ANALYSIS")
@@ -133,7 +138,8 @@ def audit_project_structure():
                         print(f"    ✅ {item.name}/metadata.json found")
                     else:
                         print(f"    ❌ {item.name}/metadata.json missing")
-                        audit_results["critical_issues"].append(f"Missing metadata.json in {item}")
+                        audit_results["critical_issues"].append(
+                            f"Missing metadata.json in {item}")
         else:
             audit_results["plugin_status"][plugin_dir] = {"exists": False}
             print(f"  ❌ {plugin_dir}: Directory not found")
@@ -178,9 +184,11 @@ def audit_project_structure():
         print(f"    {status} {template}")
 
         if not found:
-            audit_results["critical_issues"].append(f"Missing template: {template}")
+            audit_results["critical_issues"].append(
+                f"Missing template: {template}")
 
-    print(f"  📊 Template directories checked: {len([d for d in template_dirs if d.exists()])}")
+    print(
+        f"  📊 Template directories checked: {len([d for d in template_dirs if d.exists()])}")
 
     # Additional check for webpanel templates specifically
     webpanel_templates = base_path / "webpanel" / "templates"
@@ -240,7 +248,7 @@ def audit_project_structure():
                 config = json.load(f)
 
             enabled_features = sum(1 for feature in config.get("features", {}).values()
-                                 if feature.get("enabled", False))
+                                   if feature.get("enabled", False))
 
             audit_results["system_config"] = {
                 "exists": True,
@@ -249,7 +257,8 @@ def audit_project_structure():
             }
 
             print(f"  ✅ system.json found")
-            print(f"  📊 Enabled features: {enabled_features}/{len(config.get('features', {}))}")
+            print(
+                f"  📊 Enabled features: {enabled_features}/{len(config.get('features', {}))}")
 
         except Exception as e:
             print(f"  ❌ Error reading system.json: {e}")
@@ -295,7 +304,8 @@ def audit_project_structure():
     else:
         print("  ⚠️ VERSION MISMATCH DETECTED!")
         if "Version mismatch between components" not in audit_results["critical_issues"]:
-            audit_results["critical_issues"].append("Version mismatch between components")
+            audit_results["critical_issues"].append(
+                "Version mismatch between components")
 
     # 7. Final recommendations
     print("\n📋 AUDIT SUMMARY & RECOMMENDATIONS")
@@ -321,6 +331,7 @@ def audit_project_structure():
     print(f"\n💾 Audit results saved to: version_audit_results.json")
 
     return audit_results
+
 
 if __name__ == "__main__":
     try:

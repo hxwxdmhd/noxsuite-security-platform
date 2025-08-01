@@ -1,3 +1,12 @@
+import psutil
+from typing import Any, Dict, List
+from pathlib import Path
+import time
+import threading
+import random
+import json
+import datetime
+import concurrent.futures
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,17 +16,6 @@ logger = get_logger(__name__)
 Performance Load Scenarios Runner
 Simulates concurrent agent operations and performance testing
 """
-
-import concurrent.futures
-import datetime
-import json
-import random
-import threading
-import time
-from pathlib import Path
-from typing import Any, Dict, List
-
-import psutil
 
 
 class PerformanceLoadScenarios:
@@ -34,7 +32,8 @@ class PerformanceLoadScenarios:
 
     def simulate_concurrent_agents(self, num_agents: int = 10) -> Dict[str, Any]:
         """Simulate multiple autonomous agents working concurrently"""
-        logger.info(f"🤖 Simulating {num_agents} concurrent autonomous agents...")
+        logger.info(
+            f"🤖 Simulating {num_agents} concurrent autonomous agents...")
 
         def agent_task(agent_id: int) -> Dict[str, Any]:
             """Individual agent task simulation"""
@@ -74,7 +73,8 @@ class PerformanceLoadScenarios:
                     }
                 )
 
-            agent_results["execution_time"] = round(time.time() - start_time, 2)
+            agent_results["execution_time"] = round(
+                time.time() - start_time, 2)
             agent_results["success_rate"] = round(
                 len([t for t in agent_results["tasks_completed"] if t["success"]])
                 / len(tasks)
@@ -86,7 +86,8 @@ class PerformanceLoadScenarios:
 
         # Execute agents concurrently
         with concurrent.futures.ThreadPoolExecutor(max_workers=num_agents) as executor:
-            futures = [executor.submit(agent_task, i) for i in range(num_agents)]
+            futures = [executor.submit(agent_task, i)
+                       for i in range(num_agents)]
             agent_results = [
                 future.result() for future in concurrent.futures.as_completed(futures)
             ]
@@ -133,7 +134,8 @@ class PerformanceLoadScenarios:
             time.sleep(1)
 
         # Calculate averages
-        avg_cpu = sum([d["cpu_percent"] for d in resource_data]) / len(resource_data)
+        avg_cpu = sum([d["cpu_percent"]
+                      for d in resource_data]) / len(resource_data)
         avg_memory = sum([d["memory_percent"] for d in resource_data]) / len(
             resource_data
         )
@@ -189,7 +191,8 @@ class PerformanceLoadScenarios:
                 "efficiency": result["concurrent_efficiency"],
                 "throughput": round(scenario["agents"] / execution_time, 2),
                 "scalability_score": round(
-                    (result["avg_success_rate"] * result["concurrent_efficiency"])
+                    (result["avg_success_rate"] *
+                     result["concurrent_efficiency"])
                     / 100,
                     2,
                 ),

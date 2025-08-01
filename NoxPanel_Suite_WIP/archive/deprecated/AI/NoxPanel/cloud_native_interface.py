@@ -9,17 +9,18 @@ providing comprehensive cloud integration, Kubernetes orchestration, and
 container management capabilities.
 """
 
-import json
 import asyncio
+import json
 import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Union
-import yaml
 import secrets
-from pathlib import Path
 import subprocess
 import threading
 import time
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
+
+import yaml
 
 # Configure logging
 logging.basicConfig(
@@ -27,6 +28,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
 
 class CloudNativeInterfaceSystem:
     """
@@ -142,7 +144,8 @@ class CloudNativeInterfaceSystem:
             }
         }
 
-        logger.info(f"Cloud-Native Interface System initialized: {self.system_id}")
+        logger.info(
+            f"Cloud-Native Interface System initialized: {self.system_id}")
 
     def initialize_cloud_native_interface(self) -> Dict[str, Any]:
         """Initialize the cloud-native interface system"""
@@ -168,12 +171,14 @@ class CloudNativeInterfaceSystem:
             report = self._generate_system_report()
 
             self.status = "OPERATIONAL"
-            logger.info("✅ Cloud-Native Interface System initialized successfully")
+            logger.info(
+                "✅ Cloud-Native Interface System initialized successfully")
 
             return report
 
         except Exception as e:
-            logger.error(f"❌ Cloud-Native Interface initialization failed: {str(e)}")
+            logger.error(
+                f"❌ Cloud-Native Interface initialization failed: {str(e)}")
             self.status = "ERROR"
             raise
 
@@ -191,7 +196,8 @@ class CloudNativeInterfaceSystem:
                     provider_config["last_check"] = datetime.now().isoformat()
                 else:
                     provider_config["status"] = "CONFIGURATION_ERROR"
-                    logger.warning(f"⚠️ {provider_name} configuration incomplete")
+                    logger.warning(
+                        f"⚠️ {provider_name} configuration incomplete")
 
             logger.info("✅ Cloud provider initialization completed")
 
@@ -207,7 +213,8 @@ class CloudNativeInterfaceSystem:
 
             for field in required_fields:
                 if field not in config:
-                    logger.error(f"❌ Missing required field '{field}' for {name}")
+                    logger.error(
+                        f"❌ Missing required field '{field}' for {name}")
                     return False
 
             # Check if services are available
@@ -264,7 +271,8 @@ class CloudNativeInterfaceSystem:
 
                 if result.returncode == 0:
                     self.orchestration_services["docker"]["status"] = "ACTIVE"
-                    self.orchestration_services["docker"]["version"] = result.stdout.strip()
+                    self.orchestration_services["docker"]["version"] = result.stdout.strip(
+                    )
                     logger.info("✅ Docker is available and configured")
                 else:
                     self.orchestration_services["docker"]["status"] = "UNAVAILABLE"
@@ -423,13 +431,15 @@ class CloudNativeInterfaceSystem:
             }
 
             # Save configuration
-            config_path = Path("k:/Project Heimnetz/AI/NoxPanel/docker/docker-compose.cloud.yml")
+            config_path = Path(
+                "k:/Project Heimnetz/AI/NoxPanel/docker/docker-compose.cloud.yml")
             config_path.parent.mkdir(parents=True, exist_ok=True)
 
             with open(config_path, 'w') as f:
                 yaml.dump(docker_compose, f, default_flow_style=False)
 
-            logger.info(f"✅ Docker Compose configuration created: {config_path}")
+            logger.info(
+                f"✅ Docker Compose configuration created: {config_path}")
 
         except Exception as e:
             logger.error(f"❌ Docker configuration creation failed: {str(e)}")
@@ -565,7 +575,8 @@ class CloudNativeInterfaceSystem:
             logger.info(f"✅ Kubernetes configurations created in: {k8s_dir}")
 
         except Exception as e:
-            logger.error(f"❌ Kubernetes configuration creation failed: {str(e)}")
+            logger.error(
+                f"❌ Kubernetes configuration creation failed: {str(e)}")
             raise
 
     def _generate_deployment_manifests(self) -> None:
@@ -600,7 +611,8 @@ class CloudNativeInterfaceSystem:
                 }
 
                 # Save manifest
-                manifest_path = Path(f"k:/Project Heimnetz/AI/NoxPanel/manifests/{env_name}.json")
+                manifest_path = Path(
+                    f"k:/Project Heimnetz/AI/NoxPanel/manifests/{env_name}.json")
                 manifest_path.parent.mkdir(parents=True, exist_ok=True)
 
                 with open(manifest_path, 'w') as f:
@@ -709,6 +721,7 @@ class CloudNativeInterfaceSystem:
             logger.error(f"❌ Failed to get system status: {str(e)}")
             raise
 
+
 def main():
     """Main execution function"""
     try:
@@ -755,6 +768,7 @@ def main():
     except Exception as e:
         print(f"❌ Error: {str(e)}")
         raise
+
 
 if __name__ == "__main__":
     main()

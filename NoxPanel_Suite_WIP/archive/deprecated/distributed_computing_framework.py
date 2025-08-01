@@ -1,6 +1,30 @@
 """
 #!/usr/bin/env python3
 """
+import pymysql
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from queue import Empty, Queue
+from enum import Enum
+from datetime import datetime, timedelta
+from dataclasses import dataclass, field
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from abc import ABC, abstractmethod
+import zlib
+import weakref
+import uuid
+import time
+import threading
+import sys
+import struct
+import socket
+import signal
+import pickle
+import os
+import multiprocessing as mp
+import logging
+import json
+import hashlib
+import asyncio
 distributed_computing_framework.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,7 +35,7 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 Ultimate Suite v11.0 - Distributed Computing Framework
@@ -24,31 +48,6 @@ Author: GitHub Copilot
 Version: 11.0.0
 Sub-Milestone: 1/5 - Distributed Computing Framework
 """
-
-import os
-import sys
-import time
-import json
-import asyncio
-import logging
-import threading
-import hashlib
-import socket
-import struct
-import pickle
-import zlib
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional, Callable, Set, Tuple
-from enum import Enum
-import pymysql
-from datetime import datetime, timedelta
-import uuid
-import weakref
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
-import multiprocessing as mp
-from queue import Queue, Empty
-import signal
 
 
 class NodeRole(Enum):
@@ -165,13 +164,13 @@ class ITaskProcessor(ABC):
 
     @abstractmethod
     def get_supported_task_types(self) -> List[str]:
-    # REASONING: get_supported_task_types implements core logic with Chain-of-Thought validation
+        # REASONING: get_supported_task_types implements core logic with Chain-of-Thought validation
         """Get list of supported task types"""
         pass
 
     @abstractmethod
     def estimate_processing_time(self, task: DistributedTask) -> float:
-    # REASONING: estimate_processing_time implements core logic with Chain-of-Thought validation
+        # REASONING: estimate_processing_time implements core logic with Chain-of-Thought validation
         """Estimate processing time for a task"""
         pass
 
@@ -195,7 +194,7 @@ class NetworkProtocol:
 
     @staticmethod
     def encode_message(msg_type: int, data: Dict[str, Any]) -> bytes:
-    # REASONING: encode_message implements core logic with Chain-of-Thought validation
+        # REASONING: encode_message implements core logic with Chain-of-Thought validation
         """Encode a message for network transmission"""
         try:
             payload = json.dumps(data).encode('utf-8')
@@ -217,13 +216,14 @@ class NetworkProtocol:
 
     @staticmethod
     def decode_message(data: bytes) -> Tuple[int, Dict[str, Any]]:
-    # REASONING: decode_message implements core logic with Chain-of-Thought validation
+        # REASONING: decode_message implements core logic with Chain-of-Thought validation
         """Decode a network message"""
         try:
             if len(data) < 10:  # Minimum header size
                 raise ValueError("Message too short")
 
-            magic, version, msg_type, payload_length = struct.unpack('>4sBI', data[:10])
+            magic, version, msg_type, payload_length = struct.unpack(
+                '>4sBI', data[:10])
             # REASONING: Variable assignment with validation criteria
 
             if magic != NetworkProtocol.MAGIC_BYTES:
@@ -252,20 +252,22 @@ class LoadBalancer:
     """Intelligent load balancer for task distribution"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.logger = logging.getLogger("load_balancer")
         self.node_metrics: Dict[str, Dict[str, float]] = {}
-        self.task_history: List[Tuple[str, str, float]] = []  # (node_id, task_type, execution_time)
+        # (node_id, task_type, execution_time)
+        self.task_history: List[Tuple[str, str, float]] = []
 
     def select_best_node(self, task: DistributedTask, available_nodes: List[NodeInfo]) -> Optional[NodeInfo]:
-    # REASONING: select_best_node implements core logic with Chain-of-Thought validation
+        # REASONING: select_best_node implements core logic with Chain-of-Thought validation
         """Select the best node for task execution"""
         if not available_nodes:
             return None
 
         # Filter nodes by capabilities if specified
         if task.target_nodes:
-            available_nodes = [node for node in available_nodes if node.node_id in task.target_nodes]
+            available_nodes = [
+                node for node in available_nodes if node.node_id in task.target_nodes]
 
         if not available_nodes:
             return None
@@ -282,7 +284,7 @@ class LoadBalancer:
         return next(node for node in available_nodes if node.node_id == best_node_id)
 
     def _calculate_node_score(self, node: NodeInfo, task: DistributedTask) -> float:
-    # REASONING: _calculate_node_score implements core logic with Chain-of-Thought validation
+        # REASONING: _calculate_node_score implements core logic with Chain-of-Thought validation
         """Calculate a score for a node based on various factors"""
         score = 100.0  # Base score
 
@@ -293,9 +295,11 @@ class LoadBalancer:
         score -= node.tasks_running * 5
 
         # Reward based on historical performance
-        historical_performance = self._get_historical_performance(node.node_id, task.task_type)
+        historical_performance = self._get_historical_performance(
+            node.node_id, task.task_type)
         if historical_performance:
-            score += (1.0 / historical_performance) * 10  # Faster execution = higher score
+            score += (1.0 / historical_performance) * \
+                10  # Faster execution = higher score
 
         # Consider resource availability
         memory_utilization = node.metadata.get('memory_percent', 50) / 100.0
@@ -315,7 +319,7 @@ class LoadBalancer:
         return max(0.0, score)
 
     def _get_historical_performance(self, node_id: str, task_type: str) -> Optional[float]:
-    # REASONING: _get_historical_performance implements core logic with Chain-of-Thought validation
+        # REASONING: _get_historical_performance implements core logic with Chain-of-Thought validation
         """Get average execution time for a node and task type"""
         relevant_tasks = [
             exec_time for nid, ttype, exec_time in self.task_history
@@ -327,7 +331,7 @@ class LoadBalancer:
         return None
 
     def record_task_completion(self, node_id: str, task_type: str, execution_time: float):
-    # REASONING: record_task_completion implements core logic with Chain-of-Thought validation
+        # REASONING: record_task_completion implements core logic with Chain-of-Thought validation
         """Record task completion for future load balancing decisions"""
         self.task_history.append((node_id, task_type, execution_time))
 
@@ -341,7 +345,7 @@ class ClusterManager:
     """Central cluster management system"""
 
     def __init__(self, node_id: str = None, port: int = 8080):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.node_id = node_id or str(uuid.uuid4())
         self.port = port
         self.logger = logging.getLogger("cluster_manager")
@@ -380,7 +384,7 @@ class ClusterManager:
         }
 
     def initialize_cluster(self, role: NodeRole = NodeRole.WORKER) -> bool:
-    # REASONING: initialize_cluster implements core logic with Chain-of-Thought validation
+        # REASONING: initialize_cluster implements core logic with Chain-of-Thought validation
         """Initialize the cluster node"""
         try:
             # Create local node info
@@ -403,7 +407,8 @@ class ClusterManager:
             if role == NodeRole.MASTER:
                 self.is_master = True
 
-            self.logger.info(f"Initialized cluster node: {self.node_id} ({role.value})")
+            self.logger.info(
+                f"Initialized cluster node: {self.node_id} ({role.value})")
             return True
 
         except Exception as e:
@@ -411,7 +416,7 @@ class ClusterManager:
             return False
 
     def start_cluster(self) -> bool:
-    # REASONING: start_cluster implements core logic with Chain-of-Thought validation
+        # REASONING: start_cluster implements core logic with Chain-of-Thought validation
         """Start cluster operations"""
         if self.is_running:
             return True
@@ -423,8 +428,10 @@ class ClusterManager:
             self._start_network_server()
 
             # Start background threads
-            self.heartbeat_thread = threading.Thread(target=self._heartbeat_loop, daemon=True)
-            self.task_executor_thread = threading.Thread(target=self._task_executor_loop, daemon=True)
+            self.heartbeat_thread = threading.Thread(
+                target=self._heartbeat_loop, daemon=True)
+            self.task_executor_thread = threading.Thread(
+                target=self._task_executor_loop, daemon=True)
 
             self.heartbeat_thread.start()
             self.task_executor_thread.start()
@@ -433,7 +440,8 @@ class ClusterManager:
             if self.local_node:
                 self.local_node.status = NodeStatus.ACTIVE
 
-            self.logger.info(f"Cluster started on {self.local_node.ip_address}:{self.port}")
+            self.logger.info(
+                f"Cluster started on {self.local_node.ip_address}:{self.port}")
             return True
 
         except Exception as e:
@@ -441,7 +449,7 @@ class ClusterManager:
             return False
 
     def stop_cluster(self):
-    # REASONING: stop_cluster implements core logic with Chain-of-Thought validation
+        # REASONING: stop_cluster implements core logic with Chain-of-Thought validation
         """Stop cluster operations"""
         self.logger.info("Stopping cluster...")
 
@@ -463,15 +471,18 @@ class ClusterManager:
         self.logger.info("Cluster stopped")
 
     def _start_network_server(self):
-    # REASONING: _start_network_server implements core logic with Chain-of-Thought validation
+        # REASONING: _start_network_server implements core logic with Chain-of-Thought validation
         """Start the network server for cluster communication"""
         try:
-            self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.server_socket = socket.socket(
+                socket.AF_INET, socket.SOCK_STREAM)
+            self.server_socket.setsockopt(
+                socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.server_socket.bind(('0.0.0.0', self.port))
             self.server_socket.listen(10)
 
-            self.network_thread = threading.Thread(target=self._network_server_loop, daemon=True)
+            self.network_thread = threading.Thread(
+                target=self._network_server_loop, daemon=True)
             self.network_thread.start()
 
         except Exception as e:
@@ -479,7 +490,7 @@ class ClusterManager:
             raise
 
     def _network_server_loop(self):
-    # REASONING: _network_server_loop implements core logic with Chain-of-Thought validation
+        # REASONING: _network_server_loop implements core logic with Chain-of-Thought validation
         """Main network server loop"""
         while self.is_running:
             try:
@@ -499,7 +510,7 @@ class ClusterManager:
                     self.logger.error(f"Network server error: {e}")
 
     def _handle_client(self, client_socket: socket.socket, address: Tuple[str, int]):
-    # REASONING: _handle_client implements core logic with Chain-of-Thought validation
+        # REASONING: _handle_client implements core logic with Chain-of-Thought validation
         """Handle a client connection"""
         try:
             # Read message
@@ -510,12 +521,14 @@ class ClusterManager:
                 # REASONING: Variable assignment with validation criteria
 
                 # Process message
-                response = self._process_message(msg_type, message_data, address)
+                response = self._process_message(
+                    msg_type, message_data, address)
                 # REASONING: Variable assignment with validation criteria
 
                 # Send response
                 if response:
-                    response_data = NetworkProtocol.encode_message(msg_type, response)
+                    response_data = NetworkProtocol.encode_message(
+                        msg_type, response)
                     # REASONING: Variable assignment with validation criteria
                     client_socket.send(response_data)
 
@@ -525,7 +538,7 @@ class ClusterManager:
             client_socket.close()
 
     def _receive_message(self, client_socket: socket.socket) -> Optional[bytes]:
-    # REASONING: _receive_message implements core logic with Chain-of-Thought validation
+        # REASONING: _receive_message implements core logic with Chain-of-Thought validation
         """Receive a complete message from client"""
         try:
             # Read header first
@@ -540,7 +553,8 @@ class ClusterManager:
                 # REASONING: Variable assignment with validation criteria
 
             # Parse header
-            magic, version, msg_type, payload_length = struct.unpack('>4sBI', header_data)
+            magic, version, msg_type, payload_length = struct.unpack(
+                '>4sBI', header_data)
             # REASONING: Variable assignment with validation criteria
 
             # Read payload
@@ -561,7 +575,7 @@ class ClusterManager:
             return None
 
     def _process_message(self, msg_type: int, data: Dict[str, Any], address: Tuple[str, int]) -> Optional[Dict[str, Any]]:
-    # REASONING: _process_message implements core logic with Chain-of-Thought validation
+        # REASONING: _process_message implements core logic with Chain-of-Thought validation
         """Process a received message"""
         try:
             if msg_type == NetworkProtocol.HEARTBEAT:
@@ -581,7 +595,7 @@ class ClusterManager:
             return {"error": str(e)}
 
     def _handle_heartbeat(self, data: Dict[str, Any], address: Tuple[str, int]) -> Dict[str, Any]:
-    # REASONING: _handle_heartbeat implements core logic with Chain-of-Thought validation
+        # REASONING: _handle_heartbeat implements core logic with Chain-of-Thought validation
         """Handle heartbeat message"""
         node_id = data.get('node_id')
         # REASONING: Variable assignment with validation criteria
@@ -597,7 +611,7 @@ class ClusterManager:
         return {"status": "ok"}
 
     def _handle_node_registration(self, data: Dict[str, Any], address: Tuple[str, int]) -> Dict[str, Any]:
-    # REASONING: _handle_node_registration implements core logic with Chain-of-Thought validation
+        # REASONING: _handle_node_registration implements core logic with Chain-of-Thought validation
         """Handle node registration"""
         try:
             node_info = NodeInfo(**data)
@@ -605,7 +619,8 @@ class ClusterManager:
             self.nodes[node_info.node_id] = node_info
             self.stats['nodes_joined'] += 1
 
-            self.logger.info(f"Node registered: {node_info.node_id} ({node_info.hostname})")
+            self.logger.info(
+                f"Node registered: {node_info.node_id} ({node_info.hostname})")
 
             return {
                 "status": "registered",
@@ -620,13 +635,14 @@ class ClusterManager:
             return {"error": str(e)}
 
     def _handle_task_result(self, data: Dict[str, Any], address: Tuple[str, int]) -> Dict[str, Any]:
-    # REASONING: _handle_task_result implements core logic with Chain-of-Thought validation
+        # REASONING: _handle_task_result implements core logic with Chain-of-Thought validation
         """Handle task result"""
         task_id = data.get('task_id')
         # REASONING: Variable assignment with validation criteria
         if task_id in self.active_tasks:
             task = self.active_tasks[task_id]
-            task.status = TaskStatus.COMPLETED if data.get('success') else TaskStatus.FAILED
+            task.status = TaskStatus.COMPLETED if data.get(
+                'success') else TaskStatus.FAILED
             # REASONING: Variable assignment with validation criteria
             task.result = data.get('result')
             # REASONING: Variable assignment with validation criteria
@@ -650,12 +666,13 @@ class ClusterManager:
             else:
                 self.stats['tasks_failed'] += 1
 
-            self.logger.info(f"Task completed: {task_id} ({task.status.value})")
+            self.logger.info(
+                f"Task completed: {task_id} ({task.status.value})")
 
         return {"status": "acknowledged"}
 
     def _handle_cluster_status_request(self, data: Dict[str, Any], address: Tuple[str, int]) -> Dict[str, Any]:
-    # REASONING: _handle_cluster_status_request implements core logic with Chain-of-Thought validation
+        # REASONING: _handle_cluster_status_request implements core logic with Chain-of-Thought validation
         """Handle cluster status request"""
         return {
             "cluster_health": self.get_cluster_health().__dict__,
@@ -665,7 +682,7 @@ class ClusterManager:
         }
 
     def _heartbeat_loop(self):
-    # REASONING: _heartbeat_loop implements core logic with Chain-of-Thought validation
+        # REASONING: _heartbeat_loop implements core logic with Chain-of-Thought validation
         """Heartbeat loop for cluster health monitoring"""
         while self.is_running and not self.shutdown_event.wait(30.0):  # 30-second intervals
             try:
@@ -697,7 +714,7 @@ class ClusterManager:
                 self.logger.error(f"Heartbeat loop error: {e}")
 
     def _task_executor_loop(self):
-    # REASONING: _task_executor_loop implements core logic with Chain-of-Thought validation
+        # REASONING: _task_executor_loop implements core logic with Chain-of-Thought validation
         """Main task execution loop"""
         while self.is_running:
             try:
@@ -719,7 +736,8 @@ class ClusterManager:
                     available_nodes = [self.local_node]
 
                 if available_nodes:
-                    selected_node = self.load_balancer.select_best_node(task, available_nodes)
+                    selected_node = self.load_balancer.select_best_node(
+                        task, available_nodes)
                     if selected_node:
                         task.assigned_node = selected_node.node_id
                         task.status = TaskStatus.ASSIGNED
@@ -743,10 +761,10 @@ class ClusterManager:
                 self.logger.error(f"Task executor error: {e}")
 
     def _execute_task_locally(self, task: DistributedTask):
-    # REASONING: _execute_task_locally implements core logic with Chain-of-Thought validation
+        # REASONING: _execute_task_locally implements core logic with Chain-of-Thought validation
         """Execute a task locally"""
         def execute():
-    # REASONING: execute implements core logic with Chain-of-Thought validation
+            # REASONING: execute implements core logic with Chain-of-Thought validation
             try:
                 start_time = time.time()
                 task.status = TaskStatus.RUNNING
@@ -754,7 +772,8 @@ class ClusterManager:
                 # Find appropriate processor
                 processor = self.task_processors.get(task.task_type)
                 if not processor:
-                    raise ValueError(f"No processor for task type: {task.task_type}")
+                    raise ValueError(
+                        f"No processor for task type: {task.task_type}")
 
                 # Execute task
                 result = asyncio.run(processor.process_task(task))
@@ -784,18 +803,19 @@ class ClusterManager:
                     del self.active_tasks[task.task_id]
 
                 self.stats['tasks_failed'] += 1
-                self.logger.error(f"Local task execution failed: {task.task_id} - {e}")
+                self.logger.error(
+                    f"Local task execution failed: {task.task_id} - {e}")
 
         # Execute in thread pool
         executor = ThreadPoolExecutor(max_workers=4)
         executor.submit(execute)
 
     def _send_task_to_node(self, task: DistributedTask, node: NodeInfo):
-    # REASONING: _send_task_to_node implements core logic with Chain-of-Thought validation
+        # REASONING: _send_task_to_node implements core logic with Chain-of-Thought validation
         """Send a task to a remote node"""
         try:
             task_data = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 'task_id': task.task_id,
                 'task_type': task.task_type,
                 'payload': task.payload,
@@ -808,7 +828,8 @@ class ClusterManager:
             client_socket.connect((node.ip_address, node.port))
 
             # Send task assignment
-            message = NetworkProtocol.encode_message(NetworkProtocol.TASK_ASSIGNMENT, task_data)
+            message = NetworkProtocol.encode_message(
+                NetworkProtocol.TASK_ASSIGNMENT, task_data)
             # REASONING: Variable assignment with validation criteria
             client_socket.send(message)
 
@@ -816,11 +837,13 @@ class ClusterManager:
             response_data = self._receive_message(client_socket)
             # REASONING: Variable assignment with validation criteria
             if response_data:
-                msg_type, response = NetworkProtocol.decode_message(response_data)
+                msg_type, response = NetworkProtocol.decode_message(
+                    response_data)
                 # REASONING: Variable assignment with validation criteria
                 if response.get('status') == 'accepted':
-                # REASONING: Variable assignment with validation criteria
-                    self.logger.info(f"Task sent to node: {task.task_id} -> {node.node_id}")
+                    # REASONING: Variable assignment with validation criteria
+                    self.logger.info(
+                        f"Task sent to node: {task.task_id} -> {node.node_id}")
                 else:
                     self.logger.error(f"Task rejected by node: {task.task_id}")
                     task.status = TaskStatus.FAILED
@@ -834,7 +857,7 @@ class ClusterManager:
             task.error = str(e)
 
     def submit_task(self, task: DistributedTask) -> str:
-    # REASONING: submit_task implements core logic with Chain-of-Thought validation
+        # REASONING: submit_task implements core logic with Chain-of-Thought validation
         """Submit a task for distributed execution"""
         if not task.task_id:
             task.task_id = str(uuid.uuid4())
@@ -844,7 +867,7 @@ class ClusterManager:
         return task.task_id
 
     def get_task_status(self, task_id: str) -> Optional[DistributedTask]:
-    # REASONING: get_task_status implements core logic with Chain-of-Thought validation
+        # REASONING: get_task_status implements core logic with Chain-of-Thought validation
         """Get the status of a task"""
         if task_id in self.active_tasks:
             return self.active_tasks[task_id]
@@ -853,14 +876,15 @@ class ClusterManager:
         return None
 
     def register_task_processor(self, processor: ITaskProcessor):
-    # REASONING: register_task_processor implements core logic with Chain-of-Thought validation
+        # REASONING: register_task_processor implements core logic with Chain-of-Thought validation
         """Register a task processor"""
         for task_type in processor.get_supported_task_types():
             self.task_processors[task_type] = processor
-            self.logger.info(f"Registered processor for task type: {task_type}")
+            self.logger.info(
+                f"Registered processor for task type: {task_type}")
 
     def get_cluster_health(self) -> ClusterHealth:
-    # REASONING: get_cluster_health implements core logic with Chain-of-Thought validation
+        # REASONING: get_cluster_health implements core logic with Chain-of-Thought validation
         """Get comprehensive cluster health metrics"""
         current_time = time.time()
 
@@ -885,7 +909,8 @@ class ClusterManager:
         ])
 
         # Calculate average load
-        loads = [node.load_average for node in self.nodes.values() if node.load_average > 0]
+        loads = [node.load_average for node in self.nodes.values()
+                 if node.load_average > 0]
         average_load = sum(loads) / len(loads) if loads else 0.0
 
         # Calculate efficiency
@@ -912,7 +937,7 @@ class ClusterManager:
 
     # Utility methods
     def _get_local_ip(self) -> str:
-    # REASONING: _get_local_ip implements core logic with Chain-of-Thought validation
+        # REASONING: _get_local_ip implements core logic with Chain-of-Thought validation
         """Get local IP address"""
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -924,7 +949,7 @@ class ClusterManager:
             return "127.0.0.1"
 
     def _get_total_memory(self) -> int:
-    # REASONING: _get_total_memory implements core logic with Chain-of-Thought validation
+        # REASONING: _get_total_memory implements core logic with Chain-of-Thought validation
         """Get total system memory"""
         try:
             import psutil
@@ -933,7 +958,7 @@ class ClusterManager:
             return 8 * 1024 * 1024 * 1024  # Default 8GB
 
     def _get_disk_space(self) -> int:
-    # REASONING: _get_disk_space implements core logic with Chain-of-Thought validation
+        # REASONING: _get_disk_space implements core logic with Chain-of-Thought validation
         """Get available disk space"""
         try:
             import psutil
@@ -942,7 +967,7 @@ class ClusterManager:
             return 100 * 1024 * 1024 * 1024  # Default 100GB
 
     def _get_node_capabilities(self) -> List[str]:
-    # REASONING: _get_node_capabilities implements core logic with Chain-of-Thought validation
+        # REASONING: _get_node_capabilities implements core logic with Chain-of-Thought validation
         """Get node capabilities"""
         capabilities = ['general_computing']
 
@@ -959,7 +984,7 @@ class ClusterManager:
         return capabilities
 
     def _get_system_load(self) -> float:
-    # REASONING: _get_system_load implements core logic with Chain-of-Thought validation
+        # REASONING: _get_system_load implements core logic with Chain-of-Thought validation
         """Get current system load"""
         try:
             import psutil
@@ -991,11 +1016,11 @@ class ComputeTaskProcessor(ITaskProcessor):
             raise ValueError(f"Unknown compute operation: {task_type}")
 
     def get_supported_task_types(self) -> List[str]:
-    # REASONING: get_supported_task_types implements core logic with Chain-of-Thought validation
+        # REASONING: get_supported_task_types implements core logic with Chain-of-Thought validation
         return ['compute']
 
     def estimate_processing_time(self, task: DistributedTask) -> float:
-    # REASONING: estimate_processing_time implements core logic with Chain-of-Thought validation
+        # REASONING: estimate_processing_time implements core logic with Chain-of-Thought validation
         operation = task.payload.get('operation', 'unknown')
         if operation == 'fibonacci':
             n = task.payload.get('n', 10)
@@ -1005,14 +1030,14 @@ class ComputeTaskProcessor(ITaskProcessor):
         return 1.0
 
     def _fibonacci(self, n: int) -> int:
-    # REASONING: _fibonacci implements core logic with Chain-of-Thought validation
+        # REASONING: _fibonacci implements core logic with Chain-of-Thought validation
         """Calculate fibonacci number"""
         if n <= 1:
             return n
         return self._fibonacci(n-1) + self._fibonacci(n-2)
 
     def _is_prime(self, n: int) -> bool:
-    # REASONING: _is_prime implements core logic with Chain-of-Thought validation
+        # REASONING: _is_prime implements core logic with Chain-of-Thought validation
         """Check if number is prime"""
         if n < 2:
             return False
@@ -1048,11 +1073,11 @@ class DataProcessingTaskProcessor(ITaskProcessor):
             raise ValueError(f"Unknown data operation: {operation}")
 
     def get_supported_task_types(self) -> List[str]:
-    # REASONING: get_supported_task_types implements core logic with Chain-of-Thought validation
+        # REASONING: get_supported_task_types implements core logic with Chain-of-Thought validation
         return ['data_processing']
 
     def estimate_processing_time(self, task: DistributedTask) -> float:
-    # REASONING: estimate_processing_time implements core logic with Chain-of-Thought validation
+        # REASONING: estimate_processing_time implements core logic with Chain-of-Thought validation
         data_size = len(task.payload.get('data', []))
         # REASONING: Variable assignment with validation criteria
         return max(0.1, data_size * 0.0001)
@@ -1076,7 +1101,8 @@ if __name__ == "__main__":
             if cluster.start_cluster():
                 print(f"✅ Cluster started successfully")
                 print(f"📊 Node ID: {cluster.node_id}")
-                print(f"🌐 Listening on: {cluster.local_node.ip_address}:{cluster.port}")
+                print(
+                    f"🌐 Listening on: {cluster.local_node.ip_address}:{cluster.port}")
 
                 # Submit some test tasks
                 print("\n🎯 Submitting test tasks...")
@@ -1092,7 +1118,7 @@ if __name__ == "__main__":
 
                 # Data processing task
                 data_task = DistributedTask(
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     task_id="",
                     task_type="data_processing",
                     # REASONING: Variable assignment with validation criteria

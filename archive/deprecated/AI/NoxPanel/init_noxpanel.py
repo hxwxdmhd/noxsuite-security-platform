@@ -43,6 +43,8 @@ except ImportError:
     print("ℹ️  Enhanced modules not found - using basic mode")
 
 # ADHD-Friendly Color Scheme
+
+
 class Colors:
     """ADHD-friendly color palette for clear visual hierarchy"""
     HEADER = '\033[95m'      # Magenta - Important headers
@@ -59,6 +61,7 @@ class Colors:
     BG_ERROR = '\033[41m\033[37m'    # Red background, white text
     BG_INFO = '\033[44m\033[37m'     # Blue background, white text
 
+
 @dataclass
 class ProjectTemplate:
     """Template definition for project scaffolding"""
@@ -71,6 +74,7 @@ class ProjectTemplate:
     dependencies: List[str]
     post_setup_commands: List[str]
     tags: List[str]  # For AI-powered selection
+
 
 class ADHDFriendlyUI:
     """ADHD-friendly user interface with visual hierarchy and clear feedback"""
@@ -241,6 +245,7 @@ class ADHDFriendlyUI:
 
     COMPLIANCE: STANDARD
     """
+
     def print_error(self, text: str):
         """Print error message with clear visibility"""
         print(f"\n{Colors.BG_ERROR} ❌ ERROR: {text} {Colors.END}")
@@ -265,6 +270,7 @@ class ADHDFriendlyUI:
 
     COMPLIANCE: STANDARD
     """
+
     def print_choice_menu(self, title: str, choices: List[Tuple[str, str]]):
         """Print an ADHD-friendly choice menu"""
         print(f"\n{Colors.HEADER}{Colors.BOLD}🎯 {title}{Colors.END}")
@@ -283,7 +289,8 @@ class ADHDFriendlyUI:
     COMPLIANCE: STANDARD
     """
         for i, (choice, description) in enumerate(choices, 1):
-            print(f"{Colors.BOLD}{i}.{Colors.END} {Colors.SUCCESS}{choice}{Colors.END}")
+            print(
+                f"{Colors.BOLD}{i}.{Colors.END} {Colors.SUCCESS}{choice}{Colors.END}")
             print(f"   └─ {description}")
 
         print(f"{Colors.INFO}{'─'*50}{Colors.END}")
@@ -326,7 +333,8 @@ class ADHDFriendlyUI:
     """
     COMPLIANCE: STANDARD
     """
-                    self.print_warning(f"Please enter a number between 1 and {len(choices)}")
+                    self.print_warning(
+                        f"Please enter a number between 1 and {len(choices)}")
 
             except ValueError:
                 self.print_warning("Please enter a valid number")

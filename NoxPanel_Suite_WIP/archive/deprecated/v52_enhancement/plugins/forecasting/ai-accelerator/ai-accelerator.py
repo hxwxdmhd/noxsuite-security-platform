@@ -11,8 +11,9 @@ Reason: AI workload optimization opportunities detected
 """
 
 import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
 
 class AiacceleratorPlugin:
     """Auto-generated plugin scaffold."""
@@ -43,6 +44,7 @@ class AiacceleratorPlugin:
         import hashlib
         content = f"{self.plugin_name}-{self.version}-{datetime.now().date()}"
         return hashlib.sha512(content.encode()).hexdigest()
+
 
 if __name__ == "__main__":
     plugin = AiacceleratorPlugin(".")

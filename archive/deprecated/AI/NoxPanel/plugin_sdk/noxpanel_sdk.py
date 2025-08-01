@@ -9,6 +9,7 @@ from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from datetime import datetime
 
+
 @dataclass
 class PluginMetadata:
     """Plugin metadata structure"""
@@ -19,6 +20,7 @@ class PluginMetadata:
     category: str
     permissions: List[str]
     dependencies: List[str]
+
 
 @dataclass
 class PluginResponse:
@@ -31,6 +33,7 @@ class PluginResponse:
     def __post_init__(self):
         if self.timestamp is None:
             self.timestamp = datetime.now().isoformat()
+
 
 class PluginBase:
     """Base class for all NoxPanel plugins"""
@@ -60,6 +63,7 @@ class PluginBase:
             "status": "running",
             "uptime": str(datetime.now() - self.start_time)
         }
+
 
 class PluginAPIClient:
     """API client for plugin communication with NoxPanel"""

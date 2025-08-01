@@ -6,11 +6,12 @@ Simple Flask server that serves the ADHD-friendly frontend
 with AI-enhanced backend integration.
 """
 
-from flask import Flask, render_template_string, jsonify, send_from_directory
+import json
 import os
 import time
-import json
 from pathlib import Path
+
+from flask import Flask, jsonify, render_template_string, send_from_directory
 
 app = Flask(__name__)
 
@@ -25,6 +26,7 @@ try:
         config = json.load(f)
 except:
     config = {"project": {"name": "Heimnetz", "version": "7.0-unified"}}
+
 
 @app.route('/')
 def home():
@@ -253,6 +255,7 @@ def home():
 </html>
     """)
 
+
 @app.route('/api/status')
 def api_status():
     """API status endpoint"""
@@ -268,6 +271,7 @@ def api_status():
         },
         "config": config
     })
+
 
 @app.route('/api/devices')
 def api_devices():
@@ -303,13 +307,16 @@ def api_devices():
         }
     })
 
+
 @app.route('/heimnetz')
 def heimnetz_dashboard():
     """Alternative route for Heimnetz dashboard"""
     return home()
 
+
 if __name__ == '__main__':
-    print(f"🏠 Starting Heimnetz Integrated Web Server v{config['project']['version']}")
+    print(
+        f"🏠 Starting Heimnetz Integrated Web Server v{config['project']['version']}")
     print("🌐 Dashboard: http://localhost:5000")
     print("🔗 Heimnetz: http://localhost:5000/heimnetz")
     print("📡 API Status: http://localhost:5000/api/status")

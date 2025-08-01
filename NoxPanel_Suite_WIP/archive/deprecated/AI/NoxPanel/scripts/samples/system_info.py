@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """System Information Script - Displays basic system information"""
 
+import os
 import platform
 import sys
-import os
 from datetime import datetime
+
 
 def main():
     """
@@ -25,6 +26,7 @@ def main():
     print(f"Current Directory: {os.getcwd()}")
     print(f"Timestamp: {datetime.now()}")
     print("=== End ===")
+
 
 if __name__ == "__main__":
     main()

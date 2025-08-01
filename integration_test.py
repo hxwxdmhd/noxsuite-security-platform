@@ -1,3 +1,7 @@
+import requests
+from pathlib import Path
+import time
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -6,12 +10,6 @@ logger = get_logger(__name__)
 NoxSuite Workflow Integration Test
 Tests the custom automation scenarios with actual Langflow integration
 """
-
-import json
-import time
-from pathlib import Path
-
-import requests
 
 
 class NoxSuiteWorkflowTester:
@@ -30,7 +28,8 @@ class NoxSuiteWorkflowTester:
                 logger.info("✅ Langflow is responding")
                 return True
             else:
-                logger.info(f"❌ Langflow returned status: {response.status_code}")
+                logger.info(
+                    f"❌ Langflow returned status: {response.status_code}")
                 return False
         except Exception as e:
             logger.info(f"❌ Connection failed: {str(e)}")
@@ -68,7 +67,8 @@ class NoxSuiteWorkflowTester:
                 flow_data = json.load(f)
 
             required_keys = ["description", "name", "flow"]
-            missing_keys = [key for key in required_keys if key not in flow_data]
+            missing_keys = [
+                key for key in required_keys if key not in flow_data]
 
             if missing_keys:
                 logger.info(f"❌ Missing required keys: {missing_keys}")
@@ -111,7 +111,8 @@ class NoxSuiteWorkflowTester:
                 logger.info(f"   • {comp}")
 
             if standard_components:
-                logger.info(f"📦 Standard Components: {len(standard_components)}")
+                logger.info(
+                    f"📦 Standard Components: {len(standard_components)}")
                 for comp in set(standard_components):
                     logger.info(f"   • {comp}")
 
@@ -169,7 +170,8 @@ class NoxSuiteWorkflowTester:
 
         # Test 1: Langflow connectivity
         if not self.test_langflow_connection():
-            logger.info("❌ Integration test failed: Cannot connect to Langflow")
+            logger.info(
+                "❌ Integration test failed: Cannot connect to Langflow")
             return False
 
         # Test 2: List available workflows

@@ -13,19 +13,20 @@ Features:
 - Advanced authentication mechanisms
 """
 
-import os
-import time
 import hashlib
-import secrets
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-from functools import wraps
-from collections import defaultdict, deque
-import re
-import bleach
-from flask import request, session, abort, g, current_app, jsonify
-from werkzeug.exceptions import TooManyRequests
 import logging
+import os
+import re
+import secrets
+import time
+from collections import defaultdict, deque
+from datetime import datetime, timedelta
+from functools import wraps
+from typing import Any, Dict, List, Optional
+
+import bleach
+from flask import abort, current_app, g, jsonify, request, session
+from werkzeug.exceptions import TooManyRequests
 
 # Configure security logger
 security_logger = logging.getLogger('noxpanel.security')
@@ -35,6 +36,7 @@ security_handler.setFormatter(logging.Formatter(
 ))
 security_logger.addHandler(security_handler)
 security_logger.setLevel(logging.INFO)
+
 
 class SecurityManager:
     """Comprehensive security management for NoxPanel"""
@@ -120,10 +122,13 @@ class SecurityManager:
 
     COMPLIANCE: STANDARD
     """
+
     def generate_csrf_token(self, session_id: str) -> str:
         """Generate CSRF token for session"""
         token = secrets.token_urlsafe(32)
-        expires = datetime.now() + timedelta(seconds=self.config['csrf_token_expiry'])
+        expires = datetime.now() + \
+                               timedelta(
+                                   seconds=self.config['csrf_token_expiry'])
 
         self.csrf_tokens[session_id] = {
             'token': token,
@@ -404,7 +409,8 @@ class SecurityManager:
 
     COMPLIANCE: STANDARD
     """
-            result['errors'].append(f"Password must be at least {self.config['password_min_length']} characters")
+            result['errors'].append(
+                f"Password must be at least {self.config['password_min_length']} characters")
         else:
             result['score'] += 1
 

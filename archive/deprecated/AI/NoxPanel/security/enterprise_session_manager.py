@@ -1,6 +1,17 @@
 """
 #!/usr/bin/env python3
 """
+import logging
+import json
+import redis
+from flask import Flask, session, request, g
+from dataclasses import dataclass, asdict
+from datetime import datetime, timedelta
+from typing import Dict, Optional, List, Any
+import ipaddress
+import time
+import hashlib
+import secrets
 enterprise_session_manager.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,26 +22,16 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 Enterprise-Grade Session Security Manager
 Zero-tolerance security for 5,000+ concurrent users
 """
 
-import secrets
-import hashlib
-import time
-import ipaddress
-from typing import Dict, Optional, List, Any
-from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
-from flask import Flask, session, request, g
-import redis
-import json
-import logging
 
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class SessionMetadata:
@@ -50,7 +51,7 @@ class SessionMetadata:
     device_type: str
 
     def to_dict(self) -> Dict[str, Any]:
-    # REASONING: to_dict implements core logic with Chain-of-Thought validation
+        # REASONING: to_dict implements core logic with Chain-of-Thought validation
         data = asdict(self)
         # REASONING: Variable assignment with validation criteria
         # Convert datetime objects to ISO format
@@ -62,7 +63,7 @@ class SessionMetadata:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'SessionMetadata':
-    # REASONING: from_dict implements core logic with Chain-of-Thought validation
+        # REASONING: from_dict implements core logic with Chain-of-Thought validation
         # Convert ISO format back to datetime
         data['created_at'] = datetime.fromisoformat(data['created_at'])
         # REASONING: Variable assignment with validation criteria
@@ -70,18 +71,19 @@ class SessionMetadata:
         # REASONING: Variable assignment with validation criteria
         return cls(**data)
 
+
 class EnterpriseSessionManager:
     # REASONING: EnterpriseSessionManager follows RLVR methodology for systematic validation
     """Enterprise-grade session security with zero-trust principles"""
 
     def __init__(self, app: Flask = None, redis_client: redis.Redis = None):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.app = app
         self.redis_client = redis_client
 
         # Security configuration
         self.config = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             'SESSION_TIMEOUT': 1800,  # 30 minutes
             'MAX_CONCURRENT_SESSIONS': 3,  # Per user
             'SESSION_REGENERATE_INTERVAL': 600,  # 10 minutes
@@ -106,7 +108,7 @@ class EnterpriseSessionManager:
             self.init_app(app)
 
     def init_app(self, app: Flask) -> None:
-    # REASONING: init_app implements core logic with Chain-of-Thought validation
+        # REASONING: init_app implements core logic with Chain-of-Thought validation
         """Initialize session manager with Flask app"""
         self.app = app
 
@@ -126,12 +128,12 @@ class EnterpriseSessionManager:
         logger.info("🔒 Enterprise Session Manager initialized")
 
     def _generate_session_id(self) -> str:
-    # REASONING: _generate_session_id implements core logic with Chain-of-Thought validation
+        # REASONING: _generate_session_id implements core logic with Chain-of-Thought validation
         """Generate cryptographically secure session ID"""
         return secrets.token_urlsafe(32)
 
     def _generate_fingerprint(self, request_obj) -> str:
-    # REASONING: _generate_fingerprint implements core logic with Chain-of-Thought validation
+        # REASONING: _generate_fingerprint implements core logic with Chain-of-Thought validation
         """Generate device fingerprint for session validation"""
         components = [
             request_obj.headers.get('User-Agent', ''),
@@ -145,7 +147,7 @@ class EnterpriseSessionManager:
         return hashlib.sha256(fingerprint_string.encode()).hexdigest()
 
     def _get_location_hash(self, ip_address: str) -> str:
-    # REASONING: _get_location_hash implements core logic with Chain-of-Thought validation
+        # REASONING: _get_location_hash implements core logic with Chain-of-Thought validation
         """Generate location hash for geographic validation"""
         try:
             # In production, integrate with MaxMind GeoIP or similar
@@ -164,7 +166,7 @@ class EnterpriseSessionManager:
         return 'unknown_location'
 
     def _detect_device_type(self, user_agent: str) -> str:
-    # REASONING: _detect_device_type implements core logic with Chain-of-Thought validation
+        # REASONING: _detect_device_type implements core logic with Chain-of-Thought validation
         """Detect device type from user agent"""
         user_agent_lower = user_agent.lower()
 
@@ -176,27 +178,30 @@ class EnterpriseSessionManager:
             return 'desktop'
 
     def create_session(self, user_id: str) -> Optional[str]:
-    # REASONING: create_session implements core logic with Chain-of-Thought validation
+        # REASONING: create_session implements core logic with Chain-of-Thought validation
         """Create new authenticated session with comprehensive security"""
         try:
             # Check concurrent session limit
             existing_sessions = self._get_user_sessions(user_id)
             if len(existing_sessions) >= self.config['MAX_CONCURRENT_SESSIONS']:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 # Terminate oldest session
-                oldest_session = min(existing_sessions, key=lambda s: s.last_activity)
+                oldest_session = min(
+                    existing_sessions, key=lambda s: s.last_activity)
                 self.terminate_session(oldest_session.session_id)
-                logger.warning(f"🚨 Terminated oldest session for user {user_id} due to limit")
+                logger.warning(
+                    f"🚨 Terminated oldest session for user {user_id} due to limit")
 
             # Generate new session
             session_id = self._generate_session_id()
             fingerprint = self._generate_fingerprint(request)
             location_hash = self._get_location_hash(request.remote_addr)
-            device_type = self._detect_device_type(request.headers.get('User-Agent', ''))
+            device_type = self._detect_device_type(
+                request.headers.get('User-Agent', ''))
 
             # Create session metadata
             metadata = SessionMetadata(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 session_id=session_id,
                 user_id=user_id,
                 ip_address=request.remote_addr,
@@ -220,7 +225,8 @@ class EnterpriseSessionManager:
 
             # Add to user session index
             self.redis_client.sadd(f"user_sessions:{user_id}", session_id)
-            self.redis_client.expire(f"user_sessions:{user_id}", self.config['SESSION_TIMEOUT'])
+            self.redis_client.expire(
+                f"user_sessions:{user_id}", self.config['SESSION_TIMEOUT'])
 
             # Set Flask session
             session['session_id'] = session_id
@@ -230,7 +236,8 @@ class EnterpriseSessionManager:
             session.permanent = True
 
             # Log successful session creation
-            logger.info(f"✅ Session created for user {user_id}: {session_id[:8]}...")
+            logger.info(
+                f"✅ Session created for user {user_id}: {session_id[:8]}...")
 
             return session_id
 
@@ -239,7 +246,7 @@ class EnterpriseSessionManager:
             return None
 
     def validate_session(self, session_id: str) -> Optional[SessionMetadata]:
-    # REASONING: validate_session implements core logic with Chain-of-Thought validation
+        # REASONING: validate_session implements core logic with Chain-of-Thought validation
         """Comprehensive session validation with security checks"""
         try:
             # Retrieve session data
@@ -254,7 +261,7 @@ class EnterpriseSessionManager:
 
             # Check session timeout
             if datetime.utcnow() - metadata.last_activity > timedelta(seconds=self.config['SESSION_TIMEOUT']):
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 self.terminate_session(session_id)
                 logger.warning(f"🚨 Session expired: {session_id[:8]}...")
                 return None
@@ -263,26 +270,32 @@ class EnterpriseSessionManager:
             if self.config['FINGERPRINT_VALIDATION']:
                 current_fingerprint = self._generate_fingerprint(request)
                 if current_fingerprint != metadata.fingerprint:
-                # REASONING: Variable assignment with validation criteria
-                    self._log_suspicious_activity(metadata.user_id, 'fingerprint_mismatch')
-                    logger.warning(f"🚨 Fingerprint mismatch for session: {session_id[:8]}...")
+                    # REASONING: Variable assignment with validation criteria
+                    self._log_suspicious_activity(
+                        metadata.user_id, 'fingerprint_mismatch')
+                    logger.warning(
+                        f"🚨 Fingerprint mismatch for session: {session_id[:8]}...")
                     return None
 
             # Validate IP address
             if self.config['IP_VALIDATION']:
                 if request.remote_addr != metadata.ip_address:
-                # REASONING: Variable assignment with validation criteria
-                    self._log_suspicious_activity(metadata.user_id, 'ip_address_change')
-                    logger.warning(f"🚨 IP address change for session: {session_id[:8]}...")
+                    # REASONING: Variable assignment with validation criteria
+                    self._log_suspicious_activity(
+                        metadata.user_id, 'ip_address_change')
+                    logger.warning(
+                        f"🚨 IP address change for session: {session_id[:8]}...")
                     return None
 
             # Validate location consistency
             if self.config['LOCATION_TRACKING']:
                 current_location = self._get_location_hash(request.remote_addr)
                 if current_location != metadata.location_hash:
-                # REASONING: Variable assignment with validation criteria
-                    self._log_suspicious_activity(metadata.user_id, 'location_change')
-                    logger.warning(f"🚨 Location change detected for session: {session_id[:8]}...")
+                    # REASONING: Variable assignment with validation criteria
+                    self._log_suspicious_activity(
+                        metadata.user_id, 'location_change')
+                    logger.warning(
+                        f"🚨 Location change detected for session: {session_id[:8]}...")
 
             # Update last activity
             metadata.last_activity = datetime.utcnow()
@@ -296,11 +309,12 @@ class EnterpriseSessionManager:
             return metadata
 
         except Exception as e:
-            logger.error(f"❌ Session validation failed for {session_id[:8]}...: {e}")
+            logger.error(
+                f"❌ Session validation failed for {session_id[:8]}...: {e}")
             return None
 
     def regenerate_session(self, current_session_id: str) -> Optional[str]:
-    # REASONING: regenerate_session implements core logic with Chain-of-Thought validation
+        # REASONING: regenerate_session implements core logic with Chain-of-Thought validation
         """Regenerate session ID to prevent fixation attacks"""
         try:
             # Get current session data
@@ -329,13 +343,16 @@ class EnterpriseSessionManager:
             self.redis_client.delete(f"session:{current_session_id}")
 
             # Update user session index
-            self.redis_client.srem(f"user_sessions:{metadata.user_id}", current_session_id)
-            self.redis_client.sadd(f"user_sessions:{metadata.user_id}", new_session_id)
+            self.redis_client.srem(
+                f"user_sessions:{metadata.user_id}", current_session_id)
+            self.redis_client.sadd(
+                f"user_sessions:{metadata.user_id}", new_session_id)
 
             # Update Flask session
             session['session_id'] = new_session_id
 
-            logger.info(f"🔄 Session regenerated: {current_session_id[:8]}... → {new_session_id[:8]}...")
+            logger.info(
+                f"🔄 Session regenerated: {current_session_id[:8]}... → {new_session_id[:8]}...")
             return new_session_id
 
         except Exception as e:
@@ -343,7 +360,7 @@ class EnterpriseSessionManager:
             return None
 
     def terminate_session(self, session_id: str) -> bool:
-    # REASONING: terminate_session implements core logic with Chain-of-Thought validation
+        # REASONING: terminate_session implements core logic with Chain-of-Thought validation
         """Securely terminate session and cleanup"""
         try:
             # Get session metadata for cleanup
@@ -354,7 +371,8 @@ class EnterpriseSessionManager:
                 # REASONING: Variable assignment with validation criteria
 
                 # Remove from user session index
-                self.redis_client.srem(f"user_sessions:{metadata.user_id}", session_id)
+                self.redis_client.srem(
+                    f"user_sessions:{metadata.user_id}", session_id)
 
             # Delete session data
             self.redis_client.delete(f"session:{session_id}")
@@ -367,14 +385,16 @@ class EnterpriseSessionManager:
             return True
 
         except Exception as e:
-            logger.error(f"❌ Session termination failed for {session_id[:8]}...: {e}")
+            logger.error(
+                f"❌ Session termination failed for {session_id[:8]}...: {e}")
             return False
 
     def terminate_all_user_sessions(self, user_id: str) -> int:
-    # REASONING: terminate_all_user_sessions implements core logic with Chain-of-Thought validation
+        # REASONING: terminate_all_user_sessions implements core logic with Chain-of-Thought validation
         """Terminate all sessions for a specific user"""
         try:
-            session_ids = self.redis_client.smembers(f"user_sessions:{user_id}")
+            session_ids = self.redis_client.smembers(
+                f"user_sessions:{user_id}")
             terminated_count = 0
 
             for session_id_bytes in session_ids:
@@ -385,18 +405,21 @@ class EnterpriseSessionManager:
             # Clear user session index
             self.redis_client.delete(f"user_sessions:{user_id}")
 
-            logger.info(f"🗑️ Terminated {terminated_count} sessions for user {user_id}")
+            logger.info(
+                f"🗑️ Terminated {terminated_count} sessions for user {user_id}")
             return terminated_count
 
         except Exception as e:
-            logger.error(f"❌ Failed to terminate sessions for user {user_id}: {e}")
+            logger.error(
+                f"❌ Failed to terminate sessions for user {user_id}: {e}")
             return 0
 
     def _get_user_sessions(self, user_id: str) -> List[SessionMetadata]:
-    # REASONING: _get_user_sessions implements core logic with Chain-of-Thought validation
+        # REASONING: _get_user_sessions implements core logic with Chain-of-Thought validation
         """Get all active sessions for a user"""
         try:
-            session_ids = self.redis_client.smembers(f"user_sessions:{user_id}")
+            session_ids = self.redis_client.smembers(
+                f"user_sessions:{user_id}")
             sessions = []
 
             for session_id_bytes in session_ids:
@@ -405,12 +428,14 @@ class EnterpriseSessionManager:
                 # REASONING: Variable assignment with validation criteria
 
                 if session_data:
-                    metadata = SessionMetadata.from_dict(json.loads(session_data))
+                    metadata = SessionMetadata.from_dict(
+                        json.loads(session_data))
                     # REASONING: Variable assignment with validation criteria
                     sessions.append(metadata)
                 else:
                     # Cleanup stale session reference
-                    self.redis_client.srem(f"user_sessions:{user_id}", session_id)
+                    self.redis_client.srem(
+                        f"user_sessions:{user_id}", session_id)
 
             return sessions
 
@@ -419,7 +444,7 @@ class EnterpriseSessionManager:
             return []
 
     def _log_suspicious_activity(self, user_id: str, activity_type: str) -> None:
-    # REASONING: _log_suspicious_activity implements core logic with Chain-of-Thought validation
+        # REASONING: _log_suspicious_activity implements core logic with Chain-of-Thought validation
         """Log suspicious activity for security monitoring"""
         try:
             activity_key = f"suspicious:{user_id}:{activity_type}"
@@ -427,18 +452,20 @@ class EnterpriseSessionManager:
             self.redis_client.expire(activity_key, 3600)  # 1 hour window
 
             if current_count >= self.config['SUSPICIOUS_ACTIVITY_THRESHOLD']:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 # Trigger security alert
-                logger.critical(f"🚨 SECURITY ALERT: Suspicious activity for user {user_id}: {activity_type} (count: {current_count})")
+                logger.critical(
+                    f"🚨 SECURITY ALERT: Suspicious activity for user {user_id}: {activity_type} (count: {current_count})")
 
                 # In production, integrate with SIEM or alerting system
-                self._trigger_security_alert(user_id, activity_type, current_count)
+                self._trigger_security_alert(
+                    user_id, activity_type, current_count)
 
         except Exception as e:
             logger.error(f"❌ Failed to log suspicious activity: {e}")
 
     def _trigger_security_alert(self, user_id: str, activity_type: str, count: int) -> None:
-    # REASONING: _trigger_security_alert implements core logic with Chain-of-Thought validation
+        # REASONING: _trigger_security_alert implements core logic with Chain-of-Thought validation
         """Trigger security alert for suspicious activity"""
         # In production, integrate with:
         # - SIEM systems (Splunk, ELK)
@@ -446,7 +473,7 @@ class EnterpriseSessionManager:
         # - Security teams notification
 
         alert_data = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             'timestamp': datetime.utcnow().isoformat(),
             'user_id': user_id,
             'activity_type': activity_type,
@@ -460,7 +487,7 @@ class EnterpriseSessionManager:
         logger.critical(f"SECURITY_ALERT: {json.dumps(alert_data)}")
 
     def _before_request(self) -> None:
-    # REASONING: _before_request implements core logic with Chain-of-Thought validation
+        # REASONING: _before_request implements core logic with Chain-of-Thought validation
         """Pre-request session validation"""
         # Skip session validation for certain endpoints
         exempt_endpoints = ['/health', '/static', '/favicon.ico']
@@ -494,12 +521,12 @@ class EnterpriseSessionManager:
             g.current_user_id = None
 
     def _after_request(self, response):
-    # REASONING: _after_request implements core logic with Chain-of-Thought validation
+        # REASONING: _after_request implements core logic with Chain-of-Thought validation
         """Post-request session cleanup"""
         return response
 
     def get_session_info(self, user_id: str) -> Dict[str, Any]:
-    # REASONING: get_session_info implements core logic with Chain-of-Thought validation
+        # REASONING: get_session_info implements core logic with Chain-of-Thought validation
         """Get comprehensive session information for user"""
         try:
             sessions = self._get_user_sessions(user_id)
@@ -522,11 +549,14 @@ class EnterpriseSessionManager:
             }
 
         except Exception as e:
-            logger.error(f"❌ Failed to get session info for user {user_id}: {e}")
+            logger.error(
+                f"❌ Failed to get session info for user {user_id}: {e}")
             return {'error': str(e)}
+
 
 # Global session manager instance
 session_manager = None
+
 
 def init_session_manager(app: Flask, redis_client: redis.Redis) -> EnterpriseSessionManager:
     # REASONING: init_session_manager implements core logic with Chain-of-Thought validation
@@ -535,10 +565,12 @@ def init_session_manager(app: Flask, redis_client: redis.Redis) -> EnterpriseSes
     session_manager = EnterpriseSessionManager(app, redis_client)
     return session_manager
 
+
 def get_session_manager() -> EnterpriseSessionManager:
     # REASONING: get_session_manager implements core logic with Chain-of-Thought validation
     """Get global session manager instance"""
     global session_manager
     if session_manager is None:
-        raise RuntimeError("Session manager not initialized. Call init_session_manager() first.")
+        raise RuntimeError(
+            "Session manager not initialized. Call init_session_manager() first.")
     return session_manager

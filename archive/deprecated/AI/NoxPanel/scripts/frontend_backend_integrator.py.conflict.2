@@ -32,6 +32,7 @@ BACKEND_DIR = PROJECT_ROOT
 BUILD_DIR = FRONTEND_DIR / "build"
 STATIC_DIR = BACKEND_DIR / "webpanel" / "static"
 
+
 class FrontendBackendIntegrator:
     def __init__(self):
     """

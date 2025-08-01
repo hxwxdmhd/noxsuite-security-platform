@@ -12,6 +12,7 @@ from blueprints.api import api_bp
 from blueprints.ui import ui_bp
 from config.unified_config import UnifiedConfig
 
+
 def create_unified_app():
     """
     RLVR: Creates new entity with validation and error handling
@@ -73,6 +74,7 @@ def create_unified_app():
         return render_template('errors/500.html'), 500
 
     return app
+
 
 if __name__ == '__main__':
     app = create_unified_app()

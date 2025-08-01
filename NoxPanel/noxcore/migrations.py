@@ -6,11 +6,12 @@ Handles schema versioning and automated migrations
 import json
 import logging
 import os
-import pymysql
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+import pymysql
 
 logger = logging.getLogger(__name__)
 
@@ -160,7 +161,8 @@ class MigrationManager:
             current_version = self.get_current_version()
 
             if current_version >= target_version:
-                logger.info(f"Database is already at version {current_version}")
+                logger.info(
+                    f"Database is already at version {current_version}")
                 return True
 
             pending = [
@@ -211,7 +213,8 @@ class MigrationManager:
                         )
 
                     except Exception as e:
-                        logger.error(f"Migration {migration.version} failed: {e}")
+                        logger.error(
+                            f"Migration {migration.version} failed: {e}")
                         raise
 
             logger.info(
@@ -229,7 +232,8 @@ class MigrationManager:
             current_version = self.get_current_version()
 
             if current_version <= target_version:
-                logger.info(f"Database is already at or below version {target_version}")
+                logger.info(
+                    f"Database is already at or below version {target_version}")
                 return True
 
             # Get migrations to rollback (in reverse order)
@@ -311,7 +315,8 @@ class MigrationManager:
             logger.info("Database schema is up to date")
             return True
 
-        logger.info(f"Auto-migration: {status['pending_count']} pending migrations")
+        logger.info(
+            f"Auto-migration: {status['pending_count']} pending migrations")
         return self.migrate_up()
 
     def validate_schema(self) -> bool:
@@ -370,12 +375,14 @@ def main():
     """Command-line interface for migrations"""
     import argparse
 
-    parser = argparse.ArgumentParser(description="NoxGuard Database Migration Tool")
+    parser = argparse.ArgumentParser(
+        description="NoxGuard Database Migration Tool")
     parser.add_argument(
         "--db-path", default="data/db/noxpanel.db", help="Database path"
     )
 
-    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+    subparsers = parser.add_subparsers(
+        dest="command", help="Available commands")
 
     # Status command
     subparsers.add_parser("status", help="Show migration status")
@@ -387,7 +394,8 @@ def main():
     )
 
     # Rollback command
-    rollback_parser = subparsers.add_parser("rollback", help="Rollback migrations")
+    rollback_parser = subparsers.add_parser(
+        "rollback", help="Rollback migrations")
     rollback_parser.add_argument("version", type=int, help="Target version")
 
     # Validate command
@@ -416,7 +424,8 @@ def main():
         if status["pending_migrations"]:
             logger.info("Pending migrations:")
             for migration in status["pending_migrations"]:
-                logger.info(f"  {migration['version']}: {migration['description']}")
+                logger.info(
+                    f"  {migration['version']}: {migration['description']}")
 
     elif args.command == "migrate":
         success = manager.migrate_up(args.version)

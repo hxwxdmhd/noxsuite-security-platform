@@ -7,12 +7,13 @@ This script analyzes the current state and provides the roadmap for finishing
 all WIP components from your comprehensive Copilot prompt.
 """
 
-import os
 import json
-from pathlib import Path
-from typing import Dict, List, Optional
+import os
 import subprocess
 import time
+from pathlib import Path
+from typing import Dict, List, Optional
+
 
 class NoxPanelStatusAnalyzer:
     def __init__(self):

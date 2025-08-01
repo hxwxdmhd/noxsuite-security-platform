@@ -1,6 +1,16 @@
 """
 #!/usr/bin/env python3
 """
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime
+import time
+import tempfile
+import sys
+import subprocess
+import os
+import logging
+import json
 script_manager.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,32 +21,23 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel Script Manager v4.2
 PowerShell and Batch script execution support
 """
 
-import os
-import sys
-import subprocess
-import tempfile
-import json
-import time
-import logging
-from datetime import datetime
-from typing import Dict, List, Optional, Any
-from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
 
 class ScriptManager:
     # REASONING: ScriptManager follows RLVR methodology for systematic validation
     """Manages execution of PowerShell, Batch, and Python scripts"""
 
     def __init__(self, scripts_dir: str = "scripts"):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.scripts_dir = Path(scripts_dir)
         self.is_windows = os.name == 'nt'
         self.supported_extensions = {
@@ -54,7 +55,7 @@ class ScriptManager:
             (self.scripts_dir / script_type).mkdir(exist_ok=True)
 
     def discover_scripts(self) -> Dict[str, List[Dict]]:
-    # REASONING: discover_scripts implements core logic with Chain-of-Thought validation
+        # REASONING: discover_scripts implements core logic with Chain-of-Thought validation
         """Discover all supported scripts in the scripts directory"""
         scripts_by_type = {
             'python': [],
@@ -92,7 +93,7 @@ class ScriptManager:
         return scripts_by_type
 
     def _extract_description(self, script_path: Path) -> str:
-    # REASONING: _extract_description implements core logic with Chain-of-Thought validation
+        # REASONING: _extract_description implements core logic with Chain-of-Thought validation
         """Extract description from script comments"""
         try:
             with open(script_path, 'r', encoding='utf-8', errors='ignore') as f:
@@ -120,8 +121,8 @@ class ScriptManager:
         return "No description available"
 
     def execute_script(self, script_path: str, parameters: Optional[Dict] = None,
-    # REASONING: execute_script implements core logic with Chain-of-Thought validation
-                      timeout: int = 300) -> Dict:
+                       # REASONING: execute_script implements core logic with Chain-of-Thought validation
+                       timeout: int = 300) -> Dict:
         """Execute a script with optional parameters"""
         script_path_obj = Path(script_path)
 
@@ -171,8 +172,8 @@ class ScriptManager:
             }
 
     def _execute_python_script(self, script_path: Path, parameters: Optional[Dict],
-    # REASONING: _execute_python_script implements core logic with Chain-of-Thought validation
-                             timeout: int) -> Dict:
+                               # REASONING: _execute_python_script implements core logic with Chain-of-Thought validation
+                               timeout: int) -> Dict:
         """Execute Python script"""
         cmd = [sys.executable, str(script_path)]
 
@@ -184,8 +185,8 @@ class ScriptManager:
         return self._run_subprocess(cmd, timeout, str(script_path))
 
     def _execute_powershell_script(self, script_path: Path, parameters: Optional[Dict],
-    # REASONING: _execute_powershell_script implements core logic with Chain-of-Thought validation
-                                 timeout: int) -> Dict:
+                                   # REASONING: _execute_powershell_script implements core logic with Chain-of-Thought validation
+                                   timeout: int) -> Dict:
         """Execute PowerShell script"""
         if not self.is_windows:
             # Try PowerShell Core on non-Windows
@@ -194,7 +195,8 @@ class ScriptManager:
             # Windows PowerShell
             powershell_cmd = 'powershell'
 
-        cmd = [powershell_cmd, '-ExecutionPolicy', 'Bypass', '-File', str(script_path)]
+        cmd = [powershell_cmd, '-ExecutionPolicy',
+               'Bypass', '-File', str(script_path)]
 
         # Add parameters
         if parameters:
@@ -204,8 +206,8 @@ class ScriptManager:
         return self._run_subprocess(cmd, timeout, str(script_path))
 
     def _execute_batch_script(self, script_path: Path, parameters: Optional[Dict],
-    # REASONING: _execute_batch_script implements core logic with Chain-of-Thought validation
-                            timeout: int) -> Dict:
+                              # REASONING: _execute_batch_script implements core logic with Chain-of-Thought validation
+                              timeout: int) -> Dict:
         """Execute Batch script"""
         if not self.is_windows:
             return {
@@ -225,13 +227,13 @@ class ScriptManager:
         return self._run_subprocess(cmd, timeout, str(script_path))
 
     def _run_subprocess(self, cmd: List[str], timeout: int, script_path: str) -> Dict:
-    # REASONING: _run_subprocess implements core logic with Chain-of-Thought validation
+        # REASONING: _run_subprocess implements core logic with Chain-of-Thought validation
         """Run subprocess and capture output"""
         start_time = time.time()
 
         try:
             result = subprocess.run(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 cmd,
                 capture_output=True,
                 text=True,
@@ -276,7 +278,7 @@ class ScriptManager:
             }
 
     def create_sample_scripts(self) -> Dict:
-    # REASONING: create_sample_scripts implements core logic with Chain-of-Thought validation
+        # REASONING: create_sample_scripts implements core logic with Chain-of-Thought validation
         """Create sample scripts for testing"""
         samples = []
 
@@ -356,7 +358,7 @@ echo === End ===
             }
 
     def get_script_content(self, script_path: str) -> Dict:
-    # REASONING: get_script_content implements core logic with Chain-of-Thought validation
+        # REASONING: get_script_content implements core logic with Chain-of-Thought validation
         """Get the content of a script file"""
         try:
             script_path_obj = Path(script_path)
@@ -384,6 +386,7 @@ echo === End ===
                 'message': f'Error reading script: {str(e)}',
                 'content': ''
             }
+
 
 # Global instance
 script_manager = ScriptManager()

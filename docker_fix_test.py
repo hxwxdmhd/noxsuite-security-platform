@@ -1,3 +1,7 @@
+import sys
+import subprocess
+import platform
+import os
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,16 +11,13 @@ logger = get_logger(__name__)
 Docker Integration Fix and Test Script
 Diagnoses and repairs Docker SDK issues for NoxSuite MCP Agent
 """
-import os
-import platform
-import subprocess
-import sys
 
 
 def check_docker_daemon():
     """Check if Docker daemon is running"""
     try:
-        result = subprocess.run(["docker", "ps"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["docker", "ps"], capture_output=True, text=True)
         if result.returncode == 0:
             logger.info("✅ Docker daemon is running")
             return True
@@ -80,7 +81,8 @@ def install_correct_docker_sdk():
     )
 
     # Install the correct package
-    result = subprocess.run([sys.executable, "-m", "pip", "install", "docker==7.1.0"])
+    result = subprocess.run(
+        [sys.executable, "-m", "pip", "install", "docker==7.1.0"])
 
     if result.returncode == 0:
         logger.info("✅ Docker SDK installed successfully")
@@ -151,12 +153,15 @@ def check_noxsuite_containers(client):
             if container.name in required_containers:
                 status = "✅" if container.status == "running" else "⚠️"
                 required_containers[container.name] = container.status == "running"
-                logger.info(f"   {status} {container.name}: {container.status}")
+                logger.info(
+                    f"   {status} {container.name}: {container.status}")
 
         # Check for missing containers
-        missing = [name for name, found in required_containers.items() if not found]
+        missing = [name for name, found in required_containers.items()
+                   if not found]
         if missing:
-            logger.info(f"   ❌ Missing required containers: {', '.join(missing)}")
+            logger.info(
+                f"   ❌ Missing required containers: {', '.join(missing)}")
 
         return all(required_containers.values())
     except Exception as e:
@@ -171,7 +176,8 @@ def check_container_networking(client):
     try:
         # Check if network exists
         networks = client.networks.list(
-            names=["noxsuite-network", "noxguard---noxpanel-main_noxsuite-network"]
+            names=["noxsuite-network",
+                   "noxguard---noxpanel-main_noxsuite-network"]
         )
         if not networks:
             logger.info("   ⚠️ NoxSuite network not found")
@@ -255,10 +261,12 @@ def main():
                                     f"   ✅ Process handle count is normal: {handle_count}"
                                 )
                     except:
-                        logger.info("   ⚠️ Could not check Windows handle count")
+                        logger.info(
+                            "   ⚠️ Could not check Windows handle count")
                 else:
                     # On Linux/Unix, use ulimit
-                    logger.info("   🔍 Unix/Linux system detected - checking ulimit")
+                    logger.info(
+                        "   🔍 Unix/Linux system detected - checking ulimit")
                     ulimit_result = subprocess.run(
                         ["ulimit", "-n"], capture_output=True, text=True, shell=True
                     )
@@ -273,7 +281,8 @@ def main():
                                 f"   ✅ ulimit file descriptor limit adequate: {file_limit}"
                             )
             except Exception as e:
-                logger.info(f"   ⚠️ Could not check system resource limits: {e}")
+                logger.info(
+                    f"   ⚠️ Could not check system resource limits: {e}")
         except Exception as e:
             logger.info(f"⚠️ Could not list containers: {e}")
 

@@ -12,26 +12,28 @@ TESTING CHAIN:
 5. Enhancement: Self-correcting tests with failure analysis
 """
 
+from rlvr_production_deployer import RLVRProductionDeployer
 import asyncio
-import logging
-import unittest
-import pytest
 import json
-import time
-import sys
-import traceback
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass, asdict
-from unittest.mock import Mock, patch, AsyncMock
+import logging
 import subprocess
+import sys
+import time
+import traceback
+import unittest
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+from unittest.mock import AsyncMock, Mock, patch
+
 import psutil
+import pytest
 import requests
 
 # Import the modules we're testing
 sys.path.append(str(Path(__file__).parent))
-from rlvr_production_deployer import RLVRProductionDeployer
+
 
 class RLVRTestLogger:
     """Enhanced test logger with reasoning chain validation"""
@@ -54,9 +56,11 @@ class RLVRTestLogger:
 
         # Configure test-specific logging
         handler = logging.StreamHandler(sys.stdout)
-        file_handler = logging.FileHandler(f'tests/rlvr_{test_name}_test.log', encoding='utf-8')
+        file_handler = logging.FileHandler(
+            f'tests/rlvr_{test_name}_test.log', encoding='utf-8')
 
-        formatter = logging.Formatter('%(asctime)s - [RLVR-TEST-{test_name}] %(levelname)s - %(message)s'.format(test_name=test_name))
+        formatter = logging.Formatter(
+            '%(asctime)s - [RLVR-TEST-{test_name}] %(levelname)s - %(message)s'.format(test_name=test_name))
     """
     RLVR: Implements log_test_reasoning with error handling and validation
 
@@ -116,6 +120,7 @@ class RLVRTestLogger:
 
     COMPLIANCE: STANDARD
     """
+
     def log_test_reasoning(self, step: str, logic: str, evidence: str, confidence: float = 1.0):
         """Log test reasoning step with validation"""
         reasoning_entry = {
@@ -157,7 +162,8 @@ class RLVRTestLogger:
 
         self.test_validations.append(validation_entry)
         status = "[PASS]" if result else "[FAIL]"
-        self.logger.info(f"TEST VALIDATION {status}: {validation_type} - {details}")
+        self.logger.info(
+            f"TEST VALIDATION {status}: {validation_type} - {details}")
 
     def get_test_audit_trail(self) -> Dict:
         """Return complete test audit trail"""
@@ -179,6 +185,7 @@ class RLVRTestLogger:
             'validations': self.test_validations,
             'generated_at': datetime.now().isoformat()
         }
+
 
 class TestRLVRProductionDeployer(unittest.TestCase):
     """
@@ -251,7 +258,8 @@ class TestRLVRProductionDeployer(unittest.TestCase):
 
         # Generate test audit report
         audit_trail = self.test_logger.get_test_audit_trail()
-        audit_path = Path(__file__).parent / f"tests/audit_{self._testMethodName}.json"
+        audit_path = Path(__file__).parent / \
+                          f"tests/audit_{self._testMethodName}.json"
 
         with open(audit_path, 'w', encoding='utf-8') as f:
             json.dump(audit_trail, f, indent=2)
@@ -301,13 +309,17 @@ class TestRLVRProductionDeployer(unittest.TestCase):
         )
 
         # Test 2: Check reasoning flags are updated
-        self.assertIsInstance(self.deployer.reasoning_checks, dict, "Reasoning checks should be dictionary")
-        self.assertIn('architecture_validated', self.deployer.reasoning_checks, "Should have architecture validation flag")
+        self.assertIsInstance(self.deployer.reasoning_checks,
+                              dict, "Reasoning checks should be dictionary")
+        self.assertIn('architecture_validated', self.deployer.reasoning_checks,
+                      "Should have architecture validation flag")
 
         # Test 3: Validate reasoning chain structure
-        reasoning_keys = ['architecture_validated', 'load_balancer_logic_verified', 'scaling_logic_verified', 'monitoring_logic_verified']
+        reasoning_keys = ['architecture_validated', 'load_balancer_logic_verified',
+            'scaling_logic_verified', 'monitoring_logic_verified']
         for key in reasoning_keys:
-            self.assertIn(key, self.deployer.reasoning_checks, f"Should have {key} in reasoning checks")
+            self.assertIn(key, self.deployer.reasoning_checks,
+                          f"Should have {key} in reasoning checks")
 
         self.test_logger.log_test_validation(
             "Reasoning Structure Test",
@@ -354,9 +366,11 @@ class TestRLVRProductionDeployer(unittest.TestCase):
         )
 
         # Validate service configuration
-        expected_services = ['load_balancer', 'fastapi_1', 'fastapi_2', 'fastapi_3', 'prometheus', 'autoscaler']
+        expected_services = ['load_balancer', 'fastapi_1',
+            'fastapi_2', 'fastapi_3', 'prometheus', 'autoscaler']
         for service in expected_services:
-            self.assertIn(service, self.deployer.services, f"Should have {service} in service configuration")
+            self.assertIn(service, self.deployer.services,
+                          f"Should have {service} in service configuration")
 
         # Validate port assignments
         port_assignments = {
@@ -369,7 +383,8 @@ class TestRLVRProductionDeployer(unittest.TestCase):
 
         for service, expected_port in port_assignments.items():
             actual_port = self.deployer.services[service]['port']
-            self.assertEqual(actual_port, expected_port, f"{service} should be on port {expected_port}")
+            self.assertEqual(actual_port, expected_port,
+                             f"{service} should be on port {expected_port}")
 
         self.test_logger.log_test_validation(
             "Architecture Configuration Test",
@@ -410,7 +425,8 @@ class TestRLVRProductionDeployer(unittest.TestCase):
         asyncio.run(self.deployer.reason_architecture_design())
 
         # Execute load balancer reasoning
-        nginx_config_path = asyncio.run(self.deployer.reason_load_balancer_config())
+        nginx_config_path = asyncio.run(
+            self.deployer.reason_load_balancer_config())
 
         # Validate reasoning was executed
         self.assertTrue(
@@ -419,10 +435,12 @@ class TestRLVRProductionDeployer(unittest.TestCase):
         )
 
         # Validate NGINX config was created
-        self.assertIsInstance(nginx_config_path, str, "Should return nginx config path as string")
+        self.assertIsInstance(nginx_config_path, str,
+                              "Should return nginx config path as string")
 
         config_path = Path(nginx_config_path)
-        self.assertTrue(config_path.exists(), f"NGINX config file should exist at {nginx_config_path}")
+        self.assertTrue(config_path.exists(),
+                        f"NGINX config file should exist at {nginx_config_path}")
 
         # Validate NGINX config content
         with open(config_path, 'r', encoding='utf-8') as f:
@@ -440,7 +458,8 @@ class TestRLVRProductionDeployer(unittest.TestCase):
         ]
 
         for element in required_elements:
-            self.assertIn(element, config_content, f"NGINX config should contain '{element}'")
+            self.assertIn(element, config_content,
+                          f"NGINX config should contain '{element}'")
 
         # Check for reasoning annotations in config
         reasoning_annotations = [
@@ -450,7 +469,8 @@ class TestRLVRProductionDeployer(unittest.TestCase):
         ]
 
         for annotation in reasoning_annotations:
-            self.assertIn(annotation, config_content, f"NGINX config should contain reasoning annotation '{annotation}'")
+            self.assertIn(annotation, config_content,
+                          f"NGINX config should contain reasoning annotation '{annotation}'")
 
     """
     RLVR: Implements test_reasoning_failure_handling with error handling and validation
@@ -504,7 +524,8 @@ class TestRLVRProductionDeployer(unittest.TestCase):
         asyncio.run(self.deployer.reason_load_balancer_config())
 
         # Execute auto-scaling reasoning
-        autoscaler_path = asyncio.run(self.deployer.reason_auto_scaling_logic())
+        autoscaler_path = asyncio.run(
+            self.deployer.reason_auto_scaling_logic())
 
         # Validate reasoning was executed
         self.assertTrue(
@@ -513,10 +534,12 @@ class TestRLVRProductionDeployer(unittest.TestCase):
         )
 
         # Validate autoscaler code was created
-        self.assertIsInstance(autoscaler_path, str, "Should return autoscaler path as string")
+        self.assertIsInstance(autoscaler_path, str,
+                              "Should return autoscaler path as string")
 
         autoscaler_file = Path(autoscaler_path)
-        self.assertTrue(autoscaler_file.exists(), f"Autoscaler file should exist at {autoscaler_path}")
+        self.assertTrue(autoscaler_file.exists(),
+                        f"Autoscaler file should exist at {autoscaler_path}")
 
         # Validate autoscaler code content
         with open(autoscaler_file, 'r', encoding='utf-8') as f:

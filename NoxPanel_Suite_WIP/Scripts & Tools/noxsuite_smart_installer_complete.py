@@ -1,4 +1,27 @@
+from typing import Any, Dict, List, Optional, Tuple, Union
+from pathlib import Path
+from enum import Enum, auto
+from datetime import datetime, timezone
+from dataclasses import asdict, dataclass
+from contextlib import contextmanager
+import uuid
+import traceback
+import threading
+import tempfile
+import re
+import queue
+import logging
+import time
+import sys
+import subprocess
+import shutil
+import platform
+import os
+import json
+import hashlib
+import codecs
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -7,15 +30,6 @@ NoxSuite Smart Self-Healing Auto-Installer
 Intelligent cross-platform setup with AI-powered error recovery and learning capabilities
 """
 
-import os
-import sys
-import json
-import subprocess
-import platform
-import shutil
-import time
-import hashlib
-import codecs
 
 # Optional imports with fallbacks
 try:
@@ -23,27 +37,16 @@ try:
     HAS_REQUESTS = True
 except ImportError:
     HAS_REQUESTS = False
-    logger.info("Warning: requests module not available. Some features will be limited.")
+    logger.info(
+        "Warning: requests module not available. Some features will be limited.")
 
 try:
     import chardet
     HAS_CHARDET = True
 except ImportError:
     HAS_CHARDET = False
-    logger.info("Warning: chardet module not available. Using basic encoding detection.")
-import logging
-import tempfile
-import uuid
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any, Union
-from datetime import datetime, timezone
-from dataclasses import dataclass, asdict
-from enum import Enum, auto
-from contextlib import contextmanager
-import traceback
-import threading
-import queue
-import re
+    logger.info(
+        "Warning: chardet module not available. Using basic encoding detection.")
 
 # Force UTF-8 encoding for consistent cross-platform behavior
 if sys.platform.startswith('win'):
@@ -55,40 +58,42 @@ if sys.platform.startswith('win'):
     except locale.Error:
         # Fallback to system default
         pass
-    
+
     # Set console output to UTF-8
     if hasattr(sys.stdout, 'reconfigure'):
         sys.stdout.reconfigure(encoding='utf-8')
     if hasattr(sys.stderr, 'reconfigure'):
         sys.stderr.reconfigure(encoding='utf-8')
 
+
 class OSType(Enum):
     """
     Enhanced OSType with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component OSType needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for OSType functionality
     3. Solution: Implement OSType with SOLID principles and enterprise patterns
     4. Validation: Test OSType with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     WINDOWS = "windows"
-    LINUX = "linux" 
+    LINUX = "linux"
     MACOS = "macos"
     UNKNOWN = "unknown"
+
 
 class InstallMode(Enum):
     """
     Enhanced InstallMode with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component InstallMode needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for InstallMode functionality
     3. Solution: Implement InstallMode with SOLID principles and enterprise patterns
     4. Validation: Test InstallMode with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     GUIDED = "guided"
@@ -98,16 +103,17 @@ class InstallMode(Enum):
     RECOVERY = "recovery"
     AUDIT_HEAL = "audit_heal"
 
+
 class StepStatus(Enum):
     """
     Enhanced StepStatus with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component StepStatus needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for StepStatus functionality
     3. Solution: Implement StepStatus with SOLID principles and enterprise patterns
     4. Validation: Test StepStatus with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     PENDING = "pending"
@@ -117,35 +123,37 @@ class StepStatus(Enum):
     SKIPPED = "skipped"
     RETRYING = "retrying"
 
+
 class LogLevel(Enum):
     """
     Enhanced LogLevel with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component LogLevel needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for LogLevel functionality
     3. Solution: Implement LogLevel with SOLID principles and enterprise patterns
     4. Validation: Test LogLevel with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     DEBUG = "debug"
-    INFO = "info" 
+    INFO = "info"
     WARNING = "warning"
     ERROR = "error"
     CRITICAL = "critical"
+
 
 @dataclass
 class SystemInfo:
     """
     Enhanced SystemInfo with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component SystemInfo needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for SystemInfo functionality
     3. Solution: Implement SystemInfo with SOLID principles and enterprise patterns
     4. Validation: Test SystemInfo with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     os_type: OSType
@@ -160,17 +168,18 @@ class SystemInfo:
     encoding_support: Dict[str, bool] = None
     permissions: Dict[str, bool] = None
 
+
 @dataclass
 class InstallConfig:
     """
     Enhanced InstallConfig with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component InstallConfig needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for InstallConfig functionality
     3. Solution: Implement InstallConfig with SOLID principles and enterprise patterns
     4. Validation: Test InstallConfig with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     install_directory: Path
@@ -185,17 +194,18 @@ class InstallConfig:
     force_reinstall: bool = False
     backup_existing: bool = True
 
+
 @dataclass
 class InstallStep:
     """
     Enhanced InstallStep with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component InstallStep needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for InstallStep functionality
     3. Solution: Implement InstallStep with SOLID principles and enterprise patterns
     4. Validation: Test InstallStep with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     name: str
@@ -209,6 +219,7 @@ class InstallStep:
     dependencies: List[str] = None
     cleanup_actions: List[str] = None
 
+
 class SmartLogger:
     """
     REASONING CHAIN:
@@ -216,63 +227,63 @@ class SmartLogger:
     2. Analysis: Class requires specific implementation patterns for SmartLogger functionality
     3. Solution: Implement SmartLogger with SOLID principles and enterprise patterns
     4. Validation: Test SmartLogger with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Enhanced logging with UTF-8 support and structured output"""
-    
+
     def __init__(self, log_file: str = "noxsuite_installer.log"):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.log_file = Path(log_file)
         self.session_id = str(uuid.uuid4())[:8]
         self.start_time = datetime.now(timezone.utc)
-        
+
         # Create log directory if it doesn't exist
         self.log_file.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Setup structured logger
         self.logger = logging.getLogger('noxsuite_installer')
         self.logger.setLevel(logging.DEBUG)
-        
+
         # Clear existing handlers
         self.logger.handlers.clear()
-        
+
         # Console handler with UTF-8 support
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(logging.INFO)
-        
+
         # File handler with UTF-8 encoding
         file_handler = logging.FileHandler(
-            self.log_file, 
-            mode='a', 
+            self.log_file,
+            mode='a',
             encoding='utf-8'
         )
         file_handler.setLevel(logging.DEBUG)
-        
+
         # Formatters
         console_format = '%(message)s'
         file_format = '%(asctime)s [%(levelname)s] [%(session_id)s] %(message)s'
-        
+
         console_formatter = logging.Formatter(console_format)
         file_formatter = logging.Formatter(file_format)
-        
+
         console_handler.setFormatter(console_formatter)
         file_formatter = self._create_custom_formatter()
         file_handler.setFormatter(file_formatter)
-        
+
         self.logger.addHandler(console_handler)
         self.logger.addHandler(file_handler)
-        
+
         # Log session start
         self._log_structured({
             'event': 'session_start',
@@ -281,7 +292,7 @@ class SmartLogger:
             'platform': platform.platform(),
             'python_version': sys.version
         })
-    
+
     def _create_custom_formatter(self):
     """
     REASONING CHAIN:
@@ -289,7 +300,7 @@ class SmartLogger:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _create_custom_formatter with enterprise-grade patterns and error handling
     4. Validation: Test _create_custom_formatter with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Create custom formatter that includes session ID"""
@@ -297,25 +308,26 @@ class SmartLogger:
         class CustomFormatter(logging.Formatter):
     """
     Enhanced CustomFormatter with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component CustomFormatter needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for CustomFormatter functionality
     3. Solution: Implement CustomFormatter with SOLID principles and enterprise patterns
     4. Validation: Test CustomFormatter with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
+
             def format(self, record):
     """
     Enhanced format with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Function format needs clear operational definition
     2. Analysis: Implementation requires specific logic for format operation
     3. Solution: Implement format with enterprise-grade patterns and error handling
     4. Validation: Test format with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
                 record.session_id = session_id
@@ -3923,6 +3935,7 @@ class InstallationValidator:
             # Check Windows version (Docker Desktop requirements)
             try:
                 import winreg
+
                 # This is a simplified check - real implementation would be more thorough
                 pass
             except ImportError:
@@ -5347,8 +5360,8 @@ class SmartNoxSuiteInstaller:
                     failed_urls.append(url)
         else:
             # Fallback to urllib for basic connectivity check
-            import urllib.request
             import urllib.error
+            import urllib.request
             
             for url in test_urls:
                 try:

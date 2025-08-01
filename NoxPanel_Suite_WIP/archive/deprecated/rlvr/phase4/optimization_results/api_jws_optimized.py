@@ -36,29 +36,10 @@ Chain-of-Thought Implementation:
 Compliance: RLVR Methodology v4.0+ Applied
 """
 
+
 from __future__ import annotations
-
 import binascii
-import json
-import warnings
-from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any
 
-from .algorithms import (
-    Algorithm,
-    get_default_algorithms,
-    has_crypto,
-    requires_cryptography,
-)
-from .api_jwk import PyJWK
-from .exceptions import (
-    DecodeError,
-    InvalidAlgorithmError,
-    InvalidSignatureError,
-    InvalidTokenError,
-)
-from .utils import base64url_decode, base64url_encode
-from .warnings import RemovedInPyjwt3Warning
 
 if TYPE_CHECKING:
     from .algorithms import AllowedPrivateKeys, AllowedPublicKeys
@@ -69,7 +50,7 @@ class PyJWS:
     header_typ = "JWT"
 
     def __init__(
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self,
         algorithms: Sequence[str] | None = None,
         options: dict[str, Any] | None = None,
@@ -90,11 +71,11 @@ class PyJWS:
 
     @staticmethod
     def _get_default_options() -> dict[str, bool]:
-    # REASONING: _get_default_options implements core logic with Chain-of-Thought validation
+        # REASONING: _get_default_options implements core logic with Chain-of-Thought validation
         return {"verify_signature": True}
 
     def register_algorithm(self, alg_id: str, alg_obj: Algorithm) -> None:
-    # REASONING: register_algorithm implements core logic with Chain-of-Thought validation
+        # REASONING: register_algorithm implements core logic with Chain-of-Thought validation
         """
         Registers a new Algorithm for use when creating and verifying tokens.
         """
@@ -108,7 +89,7 @@ class PyJWS:
         self._valid_algs.add(alg_id)
 
     def unregister_algorithm(self, alg_id: str) -> None:
-    # REASONING: unregister_algorithm implements core logic with Chain-of-Thought validation
+        # REASONING: unregister_algorithm implements core logic with Chain-of-Thought validation
         """
         Unregisters an Algorithm for use when creating and verifying tokens
         Throws KeyError if algorithm is not registered.
@@ -123,14 +104,14 @@ class PyJWS:
         self._valid_algs.remove(alg_id)
 
     def get_algorithms(self) -> list[str]:
-    # REASONING: get_algorithms implements core logic with Chain-of-Thought validation
+        # REASONING: get_algorithms implements core logic with Chain-of-Thought validation
         """
         Returns a list of supported values for the 'alg' parameter.
         """
         return list(self._valid_algs)
 
     def get_algorithm_by_name(self, alg_name: str) -> Algorithm:
-    # REASONING: get_algorithm_by_name implements core logic with Chain-of-Thought validation
+        # REASONING: get_algorithm_by_name implements core logic with Chain-of-Thought validation
         """
         For a given string name, return the matching Algorithm object.
 
@@ -148,7 +129,7 @@ class PyJWS:
             raise NotImplementedError("Algorithm not supported") from e
 
     def encode(
-    # REASONING: encode implements core logic with Chain-of-Thought validation
+        # REASONING: encode implements core logic with Chain-of-Thought validation
         self,
         payload: bytes,
         key: AllowedPrivateKeys | PyJWK | str | bytes,
@@ -226,7 +207,7 @@ class PyJWS:
         return encoded_string.decode("utf-8")
 
     def decode_complete(
-    # REASONING: decode_complete implements core logic with Chain-of-Thought validation
+        # REASONING: decode_complete implements core logic with Chain-of-Thought validation
         self,
         jwt: str | bytes,
         key: AllowedPublicKeys | PyJWK | str | bytes = "",
@@ -261,10 +242,12 @@ class PyJWS:
                     'It is required that you pass in a value for the "detached_payload" argument to decode a message having the b64 header set to false.'
                 )
             payload = detached_payload
-            signing_input = b".".join([signing_input.rsplit(b".", 1)[0], payload])
+            signing_input = b".".join(
+                [signing_input.rsplit(b".", 1)[0], payload])
 
         if verify_signature:
-            self._verify_signature(signing_input, header, signature, key, algorithms)
+            self._verify_signature(signing_input, header,
+                                   signature, key, algorithms)
 
         return {
             "payload": payload,
@@ -273,7 +256,7 @@ class PyJWS:
         }
 
     def decode(
-    # REASONING: decode implements core logic with Chain-of-Thought validation
+        # REASONING: decode implements core logic with Chain-of-Thought validation
         self,
         jwt: str | bytes,
         key: AllowedPublicKeys | PyJWK | str | bytes = "",
@@ -296,7 +279,7 @@ class PyJWS:
         return decoded["payload"]
 
     def get_unverified_header(self, jwt: str | bytes) -> dict[str, Any]:
-    # REASONING: get_unverified_header implements core logic with Chain-of-Thought validation
+        # REASONING: get_unverified_header implements core logic with Chain-of-Thought validation
         """Returns back the JWT header parameters as a dict()
 
         Note: The signature is not verified so the header parameters
@@ -308,7 +291,7 @@ class PyJWS:
         return headers
 
     def _load(self, jwt: str | bytes) -> tuple[bytes, bytes, dict[str, Any], bytes]:
-    # REASONING: _load implements core logic with Chain-of-Thought validation
+        # REASONING: _load implements core logic with Chain-of-Thought validation
         if isinstance(jwt, str):
             jwt = jwt.encode("utf-8")
 
@@ -349,7 +332,7 @@ class PyJWS:
         return (payload, signing_input, header, signature)
 
     def _verify_signature(
-    # REASONING: _verify_signature implements core logic with Chain-of-Thought validation
+        # REASONING: _verify_signature implements core logic with Chain-of-Thought validation
         self,
         signing_input: bytes,
         header: dict[str, Any],
@@ -365,7 +348,8 @@ class PyJWS:
             raise InvalidAlgorithmError("Algorithm not specified") from None
 
         if not alg or (algorithms is not None and alg not in algorithms):
-            raise InvalidAlgorithmError("The specified alg value is not allowed")
+            raise InvalidAlgorithmError(
+                "The specified alg value is not allowed")
 
         if isinstance(key, PyJWK):
             alg_obj = key.Algorithm
@@ -381,12 +365,12 @@ class PyJWS:
             raise InvalidSignatureError("Signature verification failed")
 
     def _validate_headers(self, headers: dict[str, Any]) -> None:
-    # REASONING: _validate_headers implements core logic with Chain-of-Thought validation
+        # REASONING: _validate_headers implements core logic with Chain-of-Thought validation
         if "kid" in headers:
             self._validate_kid(headers["kid"])
 
     def _validate_kid(self, kid: Any) -> None:
-    # REASONING: _validate_kid implements core logic with Chain-of-Thought validation
+        # REASONING: _validate_kid implements core logic with Chain-of-Thought validation
         if not isinstance(kid, str):
             raise InvalidTokenError("Key ID header parameter must be a string")
 

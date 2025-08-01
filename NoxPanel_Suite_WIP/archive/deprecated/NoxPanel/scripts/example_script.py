@@ -4,10 +4,11 @@ NoxPanel Example Script
 Demonstrates basic script structure for NoxPanel integration
 """
 
+import os
 import sys
 import time
-import os
 from datetime import datetime
+
 
 def main():
     """
@@ -38,6 +39,7 @@ def main():
     print("💡 Add your own logic here")
 
     return 0
+
 
 if __name__ == "__main__":
     try:

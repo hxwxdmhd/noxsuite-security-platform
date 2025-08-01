@@ -4,12 +4,14 @@ Final Validation Script - Complete System Check
 Validates all Phase 2 components are working correctly
 """
 
+import logging
 import os
 import sys
 import time
-import requests
-import logging
 from pathlib import Path
+
+import requests
+
 
 def setup_logging():
     """
@@ -42,6 +44,7 @@ def setup_logging():
         format="%(asctime)s - [FINAL-VALIDATION] - %(message)s"
     )
     return logging.getLogger(__name__)
+
 
 def validate_sample_plugin():
     """Validate sample plugin exists and works"""
@@ -88,7 +91,8 @@ def validate_sample_plugin():
 
     COMPLIANCE: STANDARD
     """
-            logger.info(f"Sample plugin validation: PASS ({metadata['name']} v{metadata['version']})")
+            logger.info(
+                f"Sample plugin validation: PASS ({metadata['name']} v{metadata['version']})")
             return True
         else:
             logger.error(f"Sample plugin self-test failed: {self_test}")

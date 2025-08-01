@@ -522,7 +522,8 @@ class CodeAnalyzer:
             for pattern in exclude_patterns:
                 # Convert glob pattern to simple string matching
                 pattern_str = (
-                    pattern.replace("*/", "").replace("/*", "").replace("*", "")
+                    pattern.replace("*/", "").replace("/*",
+                                                      "").replace("*", "")
                 )
                 if pattern_str in file_str:
                     skip_file = True
@@ -562,7 +563,8 @@ class CodeAnalyzer:
             "top_issues": [
                 issue.to_dict()
                 for issue in sorted(
-                    self.issues, key=lambda x: (x.severity.value, x.issue_type.value)
+                    self.issues, key=lambda x: (
+                        x.severity.value, x.issue_type.value)
                 )[:10]
             ],
         }
@@ -612,7 +614,8 @@ class CodeAnalyzer:
             if summary["top_issues"]:
                 lines.extend(["", "## Top Issues", ""])
                 for issue in summary["top_issues"]:
-                    lines.append(f"### {issue['file_path']}:{issue['line_number']}")
+                    lines.append(
+                        f"### {issue['file_path']}:{issue['line_number']}")
                     lines.append(f"**{issue['title']}** ({issue['severity']})")
                     lines.append(f"{issue['description']}")
                     if issue["suggestion"]:
@@ -664,7 +667,8 @@ class CodeAnalyzer:
                     lines.append("")
 
                 if len(self.issues) > 20:
-                    lines.append(f"... and {len(self.issues) - 20} more issues")
+                    lines.append(
+                        f"... and {len(self.issues) - 20} more issues")
 
             return "\n".join(lines)
 

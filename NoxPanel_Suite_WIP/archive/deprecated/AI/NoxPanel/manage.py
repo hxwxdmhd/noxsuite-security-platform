@@ -4,22 +4,24 @@
 Command-line interface for NoxPanel development and maintenance
 """
 
-import os
-import sys
-import json
+from dev_scanner import NoxPanelDevScanner
 import argparse
-import subprocess
-from pathlib import Path
-from datetime import datetime
+import json
 import logging
+import os
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
 
 # Add current directory to Python path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from dev_scanner import NoxPanelDevScanner
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 
 class NoxPanelManager:
     def __init__(self):
@@ -107,8 +109,8 @@ class NoxPanelManager:
     """
     COMPLIANCE: STANDARD
     """
-        self.base_path = Path(".")
-        self.config_path = self.base_path / "config" / "system.json"
+     self.base_path = Path(".")
+      self.config_path = self.base_path / "config" / "system.json"
 
     def load_config(self):
         """Load system configuration"""
@@ -135,6 +137,7 @@ class NoxPanelManager:
 
     COMPLIANCE: STANDARD
     """
+
     def devscan(self):
     """
     RLVR: Implements disable_feature with error handling and validation
@@ -148,7 +151,7 @@ class NoxPanelManager:
 
     COMPLIANCE: STANDARD
     """
-        """🔍 Run development scanner"""
+     """🔍 Run development scanner"""
     """
     RLVR: Implements list_features with error handling and validation
 
@@ -161,7 +164,7 @@ class NoxPanelManager:
 
     COMPLIANCE: STANDARD
     """
-        print("🔥 Running NoxPanel Development Scanner...")
+     print("🔥 Running NoxPanel Development Scanner...")
     """
     RLVR: Implements logs with error handling and validation
 
@@ -174,13 +177,14 @@ class NoxPanelManager:
 
     COMPLIANCE: STANDARD
     """
-        scanner = NoxPanelDevScanner()
-        results = scanner.scan_project()
+     scanner = NoxPanelDevScanner()
+      results = scanner.scan_project()
 
-        if any(len(v) > 0 for v in results.values() if isinstance(v, list)):
+       if any(len(v) > 0 for v in results.values() if isinstance(v, list)):
             print("🛠️  Auto-generating missing components...")
             scanner.auto_generate_missing()
-            print(f"✅ Generated {len(scanner.scan_results['generated_files'])} files")
+            print(
+                f"✅ Generated {len(scanner.scan_results['generated_files'])} files")
 
         return scanner.scan_results
 
@@ -196,6 +200,7 @@ class NoxPanelManager:
 
     COMPLIANCE: STANDARD
     """
+
     def start(self, port=None, host=None, debug=None):
         """🚀 Start NoxPanel server"""
         config = self.load_config()
@@ -203,7 +208,8 @@ class NoxPanelManager:
         # Use provided values or defaults from config
         port = port or config.get('system', {}).get('port', 5004)
         host = host or config.get('system', {}).get('host', '127.0.0.1')
-        debug = debug if debug is not None else config.get('system', {}).get('debug', False)
+        debug = debug if debug is not None else config.get(
+            'system', {}).get('debug', False)
 
         print(f"🚀 Starting NoxPanel on {host}:{port}")
 
@@ -243,9 +249,9 @@ class NoxPanelManager:
 
     COMPLIANCE: STANDARD
     """
-        except Exception as e:
-            logger.error(f"Error stopping NoxPanel: {e}")
-            return False
+     except Exception as e:
+          logger.error(f"Error stopping NoxPanel: {e}")
+           return False
 
     def status(self):
         """📊 Show NoxPanel status"""
@@ -313,9 +319,11 @@ class NoxPanelManager:
         print("=" * 40)
 
         for feature, info in features.items():
-            status = "🟢 Enabled" if info.get('enabled', False) else "🔴 Disabled"
+            status = "🟢 Enabled" if info.get(
+                'enabled', False) else "🔴 Disabled"
             priority = info.get('priority', 'unknown')
-            print(f"{feature.replace('_', ' ').title():<25} {status:<12} ({priority})")
+            print(
+                f"{feature.replace('_', ' ').title():<25} {status:<12} ({priority})")
 
     def logs(self, lines=50):
         """📄 Show recent logs"""
@@ -342,7 +350,8 @@ class NoxPanelManager:
     def reset(self, confirm=False):
         """🔄 Reset NoxPanel to default state"""
         if not confirm:
-            response = input("⚠️  This will reset all configurations. Are you sure? (yes/no): ")
+            response = input(
+                "⚠️  This will reset all configurations. Are you sure? (yes/no): ")
             if response.lower() != 'yes':
                 print("❌ Reset cancelled")
                 return
@@ -411,6 +420,7 @@ class NoxPanelManager:
 
         print("🎉 Dependencies installation complete!")
 
+
 def main():
     """
     RLVR: Implements main with error handling and validation
@@ -439,13 +449,16 @@ Examples:
         '''
     )
 
-    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+    subparsers = parser.add_subparsers(
+        dest='command', help='Available commands')
 
     # Start command
-    start_parser = subparsers.add_parser('start', help='🚀 Start NoxPanel server')
+    start_parser = subparsers.add_parser(
+        'start', help='🚀 Start NoxPanel server')
     start_parser.add_argument('--port', type=int, help='Port to bind to')
     start_parser.add_argument('--host', help='Host to bind to')
-    start_parser.add_argument('--debug', action='store_true', help='Enable debug mode')
+    start_parser.add_argument(
+        '--debug', action='store_true', help='Enable debug mode')
 
     # Stop command
     subparsers.add_parser('stop', help='🛑 Stop NoxPanel server')
@@ -460,18 +473,22 @@ Examples:
     enable_parser = subparsers.add_parser('enable', help='✅ Enable a feature')
     enable_parser.add_argument('feature', help='Feature name to enable')
 
-    disable_parser = subparsers.add_parser('disable', help='❌ Disable a feature')
+    disable_parser = subparsers.add_parser(
+        'disable', help='❌ Disable a feature')
     disable_parser.add_argument('feature', help='Feature name to disable')
 
     subparsers.add_parser('features', help='📋 List all features')
 
     # Logs
     logs_parser = subparsers.add_parser('logs', help='📄 Show recent logs')
-    logs_parser.add_argument('--lines', type=int, default=50, help='Number of lines to show')
+    logs_parser.add_argument(
+        '--lines', type=int, default=50, help='Number of lines to show')
 
     # Reset
-    reset_parser = subparsers.add_parser('reset', help='🔄 Reset to default state')
-    reset_parser.add_argument('--confirm', action='store_true', help='Skip confirmation')
+    reset_parser = subparsers.add_parser(
+        'reset', help='🔄 Reset to default state')
+    reset_parser.add_argument(
+        '--confirm', action='store_true', help='Skip confirmation')
 
     # Install dependencies
     subparsers.add_parser('deps', help='📦 Install/update dependencies')
@@ -505,6 +522,7 @@ Examples:
         manager.reset(args.confirm)
     elif args.command == 'deps':
         manager.install_dependencies()
+
 
 if __name__ == "__main__":
     main()

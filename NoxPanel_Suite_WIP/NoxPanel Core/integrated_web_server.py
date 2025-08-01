@@ -1,4 +1,10 @@
+from flask import Flask, jsonify, render_template_string, send_from_directory
+from pathlib import Path
+import time
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 """
@@ -9,11 +15,6 @@ Simple Flask server that serves the ADHD-friendly frontend
 with AI-enhanced backend integration.
 """
 
-from flask import Flask, render_template_string, jsonify, send_from_directory
-import os
-import time
-import json
-from pathlib import Path
 
 app = Flask(__name__)
 
@@ -24,12 +25,13 @@ CONFIG_PATH = PROJECT_ROOT / "config" / "heimnetz_unified.json"
 
 # Load configuration
 try:
-    with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
+    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
         config = json.load(f)
 except:
     config = {"project": {"name": "Heimnetz", "version": "7.0-unified"}}
 
-@app.route('/')
+
+@app.route("/")
 def home():
     """
     REASONING CHAIN:
@@ -37,11 +39,12 @@ def home():
     2. Analysis: Implementation requires specific logic for home operation
     3. Solution: Implement home with enterprise-grade patterns and error handling
     4. Validation: Test home with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Main Heimnetz dashboard"""
-    return render_template_string("""
+    return render_template_string(
+        """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -263,9 +266,11 @@ def home():
     </script>
 </body>
 </html>
-    """)
+    """
+    )
 
-@app.route('/api/status')
+
+@app.route("/api/status")
 def api_status():
     """
     REASONING CHAIN:
@@ -273,24 +278,27 @@ def api_status():
     2. Analysis: Implementation requires specific logic for api_status operation
     3. Solution: Implement api_status with enterprise-grade patterns and error handling
     4. Validation: Test api_status with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """API status endpoint"""
-    return jsonify({
-        "status": "healthy",
-        "timestamp": time.time(),
-        "service": "Heimnetz Integrated v7.0",
-        "features": {
-            "ai_integration": True,
-            "network_scanning": True,
-            "adhd_friendly": True,
-            "real_time": True
-        },
-        "config": config
-    })
+    return jsonify(
+        {
+            "status": "healthy",
+            "timestamp": time.time(),
+            "service": "Heimnetz Integrated v7.0",
+            "features": {
+                "ai_integration": True,
+                "network_scanning": True,
+                "adhd_friendly": True,
+                "real_time": True,
+            },
+            "config": config,
+        }
+    )
 
-@app.route('/api/devices')
+
+@app.route("/api/devices")
 def api_devices():
     """
     REASONING CHAIN:
@@ -298,42 +306,41 @@ def api_devices():
     2. Analysis: Implementation requires specific logic for api_devices operation
     3. Solution: Implement api_devices with enterprise-grade patterns and error handling
     4. Validation: Test api_devices with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Device listing endpoint"""
-    return jsonify({
-        "devices": [
-            {
-                "name": "🌐 Router",
-                "ip": "192.168.1.1",
-                "status": "online",
-                "type": "gateway",
-                "lastSeen": "now"
-            },
-            {
-                "name": "💻 Desktop PC",
-                "ip": "192.168.1.100",
-                "status": "online",
-                "type": "computer",
-                "lastSeen": "2 min ago"
-            },
-            {
-                "name": "📱 Phone",
-                "ip": "192.168.1.150",
-                "status": "offline",
-                "type": "mobile",
-                "lastSeen": "1 hour ago"
-            }
-        ],
-        "summary": {
-            "total": 5,
-            "online": 3,
-            "offline": 2
+    return jsonify(
+        {
+            "devices": [
+                {
+                    "name": "🌐 Router",
+                    "ip": "192.168.1.1",
+                    "status": "online",
+                    "type": "gateway",
+                    "lastSeen": "now",
+                },
+                {
+                    "name": "💻 Desktop PC",
+                    "ip": "192.168.1.100",
+                    "status": "online",
+                    "type": "computer",
+                    "lastSeen": "2 min ago",
+                },
+                {
+                    "name": "📱 Phone",
+                    "ip": "192.168.1.150",
+                    "status": "offline",
+                    "type": "mobile",
+                    "lastSeen": "1 hour ago",
+                },
+            ],
+            "summary": {"total": 5, "online": 3, "offline": 2},
         }
-    })
+    )
 
-@app.route('/heimnetz')
+
+@app.route("/heimnetz")
 def heimnetz_dashboard():
     """
     REASONING CHAIN:
@@ -341,15 +348,18 @@ def heimnetz_dashboard():
     2. Analysis: Implementation requires specific logic for heimnetz_dashboard operation
     3. Solution: Implement heimnetz_dashboard with enterprise-grade patterns and error handling
     4. Validation: Test heimnetz_dashboard with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Alternative route for Heimnetz dashboard"""
     return home()
 
-if __name__ == '__main__':
-    logger.info(f"🏠 Starting Heimnetz Integrated Web Server v{config['project']['version']}")
+
+if __name__ == "__main__":
+    logger.info(
+        f"🏠 Starting Heimnetz Integrated Web Server v{config['project']['version']}"
+    )
     logger.info("🌐 Dashboard: http://localhost:5000")
     logger.info("🔗 Heimnetz: http://localhost:5000/heimnetz")
     logger.info("📡 API Status: http://localhost:5000/api/status")
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

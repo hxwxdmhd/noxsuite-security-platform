@@ -1,3 +1,12 @@
+from emergency_copilot_fix import throttler
+import docker
+import requests
+from typing import Any, Dict, List
+from datetime import datetime
+import time
+import subprocess
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,17 +16,6 @@ logger = get_logger(__name__)
 NoxSuite MCP Autonomous Agent - Main Orchestrator
 Operates within VS Code with 128-tools throttling
 """
-import json
-import os
-import subprocess
-import time
-from datetime import datetime
-from typing import Any, Dict, List
-
-import requests
-
-import docker
-from emergency_copilot_fix import throttler
 
 
 class NoxSuiteMCPAgent:
@@ -52,7 +50,8 @@ class NoxSuiteMCPAgent:
                 client = docker.from_env()
                 containers = client.containers.list(all=True)
 
-                noxsuite_containers = [c for c in containers if "noxsuite" in c.name]
+                noxsuite_containers = [
+                    c for c in containers if "noxsuite" in c.name]
 
                 results = {
                     "timestamp": datetime.now().isoformat(),
@@ -84,7 +83,8 @@ class NoxSuiteMCPAgent:
         def langflow_check():
             try:
                 # Health check
-                health_response = requests.get(f"{self.langflow_url}/health", timeout=5)
+                health_response = requests.get(
+                    f"{self.langflow_url}/health", timeout=5)
 
                 # API check
                 api_response = requests.get(
@@ -123,7 +123,8 @@ class NoxSuiteMCPAgent:
                     "endpoint": mcp_endpoint,
                     "status_code": response.status_code,
                     "status": (
-                        "accessible" if response.status_code in [200, 404] else "error"
+                        "accessible" if response.status_code in [
+                            200, 404] else "error"
                     ),
                 }
 
@@ -223,7 +224,8 @@ class NoxSuiteMCPAgent:
                 summary["recommendations"].append("Address identified issues")
             else:
                 summary["overall_status"] = "critical"
-                summary["recommendations"].append("Emergency intervention required")
+                summary["recommendations"].append(
+                    "Emergency intervention required")
 
             return summary
 
@@ -253,7 +255,8 @@ class NoxSuiteMCPAgent:
         # Step 3: MCP Integration Test (30s cooldown)
         logger.info("\n🔗 Step 3/5: MCP Integration Test")
         self.audit_results["mcp"] = self.test_mcp_integration()
-        logger.info(f"   Status: {self.audit_results['mcp'].get('status', 'unknown')}")
+        logger.info(
+            f"   Status: {self.audit_results['mcp'].get('status', 'unknown')}")
         time.sleep(30)
 
         # Step 4: GitHub MCP Check (30s cooldown)
@@ -296,7 +299,8 @@ class NoxSuiteMCPAgent:
 
 def main():
     """Main autonomous agent execution"""
-    logger.info("🚀 NoxSuite MCP Autonomous Agent - Starting Autonomous Operation")
+    logger.info(
+        "🚀 NoxSuite MCP Autonomous Agent - Starting Autonomous Operation")
 
     # Initialize agent
     agent = NoxSuiteMCPAgent()

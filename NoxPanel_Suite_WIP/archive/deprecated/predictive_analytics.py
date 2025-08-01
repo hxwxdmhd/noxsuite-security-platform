@@ -12,17 +12,19 @@ POST-GATE-6 CAPABILITY: Predictive diagnostics and failure prediction system
 """
 
 import json
+import warnings
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
 import numpy as np
 import pymysql
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
-from dataclasses import dataclass
-from enum import Enum
-import warnings
 
 # Suppress numpy warnings for cleaner output
 warnings.filterwarnings('ignore')
+
 
 class PredictionType(Enum):
     """Prediction type enumeration."""
@@ -32,12 +34,14 @@ class PredictionType(Enum):
     SECURITY_INCIDENT = "security_incident"
     COMPLIANCE_VIOLATION = "compliance_violation"
 
+
 class RiskLevel(Enum):
     """Risk level enumeration."""
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
     LOW = "low"
+
 
 @dataclass
 class PredictionResult:
@@ -52,6 +56,7 @@ class PredictionResult:
     prevention_measures: List[str]
     timestamp: datetime
 
+
 @dataclass
 class SystemMetrics:
     """System metrics for prediction."""
@@ -65,6 +70,7 @@ class SystemMetrics:
     active_connections: int
     security_events: int
 
+
 class PredictiveAnalytics:
     """Predictive analytics and failure prediction system."""
 
@@ -74,7 +80,8 @@ class PredictiveAnalytics:
         self.setup_analytics_infrastructure()
 
         # Initialize analytics database
-        self.analytics_db = self.workspace_path / "predictive_analytics" / "analytics.db"
+        self.analytics_db = self.workspace_path / \
+            "predictive_analytics" / "analytics.db"
         self.init_analytics_database()
 
         # Load historical data
@@ -219,7 +226,7 @@ class PredictiveAnalytics:
 
             for row in cursor.fetchall():
                 timestamp, cpu_usage, memory_usage, disk_usage, network_latency, \
-                error_rate, response_time, active_connections, security_events = row
+                    error_rate, response_time, active_connections, security_events = row
 
                 metrics = SystemMetrics(
                     timestamp=datetime.fromisoformat(timestamp),
@@ -273,22 +280,26 @@ class PredictiveAnalytics:
 
         # Check CPU usage
         if current_metrics.cpu_usage > model["threshold_cpu"]:
-            failure_indicators.append(f"High CPU usage: {current_metrics.cpu_usage:.1f}%")
+            failure_indicators.append(
+                f"High CPU usage: {current_metrics.cpu_usage:.1f}%")
             risk_score += 30
 
         # Check memory usage
         if current_metrics.memory_usage > model["threshold_memory"]:
-            failure_indicators.append(f"High memory usage: {current_metrics.memory_usage:.1f}%")
+            failure_indicators.append(
+                f"High memory usage: {current_metrics.memory_usage:.1f}%")
             risk_score += 35
 
         # Check disk usage
         if current_metrics.disk_usage > model["threshold_disk"]:
-            failure_indicators.append(f"High disk usage: {current_metrics.disk_usage:.1f}%")
+            failure_indicators.append(
+                f"High disk usage: {current_metrics.disk_usage:.1f}%")
             risk_score += 25
 
         # Check error rate
         if current_metrics.error_rate > model["threshold_error_rate"]:
-            failure_indicators.append(f"High error rate: {current_metrics.error_rate:.3f}")
+            failure_indicators.append(
+                f"High error rate: {current_metrics.error_rate:.3f}")
             risk_score += 40
 
         if risk_score == 0:
@@ -350,21 +361,26 @@ class PredictiveAnalytics:
 
         # Check response time
         if current_metrics.response_time > model["threshold_response_time"]:
-            degradation_indicators.append(f"High response time: {current_metrics.response_time:.1f}ms")
+            degradation_indicators.append(
+                f"High response time: {current_metrics.response_time:.1f}ms")
             risk_score += 25
 
         # Check network latency
         if current_metrics.network_latency > model["threshold_network_latency"]:
-            degradation_indicators.append(f"High network latency: {current_metrics.network_latency:.1f}ms")
+            degradation_indicators.append(
+                f"High network latency: {current_metrics.network_latency:.1f}ms")
             risk_score += 20
 
         # Analyze trends if historical data available
         if len(self.historical_data) >= 10:
-            recent_response_times = [m.response_time for m in self.historical_data[:10]]
+            recent_response_times = [
+                m.response_time for m in self.historical_data[:10]]
             if len(recent_response_times) > 1:
-                trend = np.polyfit(range(len(recent_response_times)), recent_response_times, 1)[0]
+                trend = np.polyfit(
+                    range(len(recent_response_times)), recent_response_times, 1)[0]
                 if trend > 2.0:  # Increasing trend
-                    degradation_indicators.append(f"Increasing response time trend: +{trend:.1f}ms/sample")
+                    degradation_indicators.append(
+                        f"Increasing response time trend: +{trend:.1f}ms/sample")
                     risk_score += 15
 
         if risk_score == 0:
@@ -426,17 +442,21 @@ class PredictiveAnalytics:
             if cpu_trend > 0:
                 hours_to_100 = (100 - current_metrics.cpu_usage) / cpu_trend
                 if hours_to_100 <= model["prediction_horizon_hours"]:
-                    exhaustion_predictions.append(f"CPU exhaustion in {hours_to_100:.1f} hours")
+                    exhaustion_predictions.append(
+                        f"CPU exhaustion in {hours_to_100:.1f} hours")
                     risk_score += 30
 
         # Analyze memory trend
         recent_memory = [m.memory_usage for m in self.historical_data[:10]]
         if len(recent_memory) > 1:
-            memory_trend = np.polyfit(range(len(recent_memory)), recent_memory, 1)[0]
+            memory_trend = np.polyfit(
+                range(len(recent_memory)), recent_memory, 1)[0]
             if memory_trend > 0:
-                hours_to_100 = (100 - current_metrics.memory_usage) / memory_trend
+                hours_to_100 = (
+                    100 - current_metrics.memory_usage) / memory_trend
                 if hours_to_100 <= model["prediction_horizon_hours"]:
-                    exhaustion_predictions.append(f"Memory exhaustion in {hours_to_100:.1f} hours")
+                    exhaustion_predictions.append(
+                        f"Memory exhaustion in {hours_to_100:.1f} hours")
                     risk_score += 35
 
         # Analyze disk trend
@@ -446,7 +466,8 @@ class PredictiveAnalytics:
             if disk_trend > 0:
                 hours_to_100 = (100 - current_metrics.disk_usage) / disk_trend
                 if hours_to_100 <= model["prediction_horizon_hours"]:
-                    exhaustion_predictions.append(f"Disk exhaustion in {hours_to_100:.1f} hours")
+                    exhaustion_predictions.append(
+                        f"Disk exhaustion in {hours_to_100:.1f} hours")
                     risk_score += 25
 
         if risk_score == 0:
@@ -507,7 +528,8 @@ class PredictiveAnalytics:
             predictions.append(failure_pred)
 
         # Performance degradation prediction
-        performance_pred = self.predict_performance_degradation(current_metrics)
+        performance_pred = self.predict_performance_degradation(
+            current_metrics)
         if performance_pred:
             predictions.append(performance_pred)
 
@@ -602,6 +624,7 @@ Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
         return str(report_file)
 
+
 def main():
     """Main predictive analytics execution."""
     try:
@@ -635,10 +658,12 @@ def main():
                     RiskLevel.LOW: "ℹ️"
                 }.get(prediction.risk_level, "❓")
 
-                print(f"  {risk_emoji} {prediction.prediction_type.value.replace('_', ' ').title()}")
+                print(
+                    f"  {risk_emoji} {prediction.prediction_type.value.replace('_', ' ').title()}")
                 print(f"     Risk: {prediction.risk_level.value.upper()}")
                 print(f"     Confidence: {prediction.confidence:.1%}")
-                print(f"     Predicted: {prediction.predicted_time.strftime('%H:%M:%S')}")
+                print(
+                    f"     Predicted: {prediction.predicted_time.strftime('%H:%M:%S')}")
         else:
             print("No predictions generated - system appears healthy")
 
@@ -652,6 +677,7 @@ def main():
 
     except Exception as e:
         print(f"Predictive analytics error: {str(e)}")
+
 
 if __name__ == "__main__":
     main()

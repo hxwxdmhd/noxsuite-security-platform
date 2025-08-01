@@ -44,6 +44,7 @@ except ImportError:
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class TestStatus(Enum):
     """Test execution status enumeration"""
     PENDING = "pending"
@@ -53,6 +54,7 @@ class TestStatus(Enum):
     SKIPPED = "skipped"
     ERROR = "error"
     TIMEOUT = "timeout"
+
 
 class TestType(Enum):
     """Test type classification"""
@@ -65,12 +67,14 @@ class TestType(Enum):
     SMOKE = "smoke"
     REGRESSION = "regression"
 
+
 class TestPriority(Enum):
     """Test priority levels"""
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
+
 
 @dataclass
 class TestCase:
@@ -93,6 +97,7 @@ class TestCase:
     environment_requirements: List[str] = field(default_factory=list)
     created_at: datetime = field(default_factory=datetime.now)
 
+
 @dataclass
 class TestResult:
     """Test execution result"""
@@ -108,6 +113,7 @@ class TestResult:
     retry_attempts: int = 0
     environment_info: Dict[str, Any] = field(default_factory=dict)
 
+
 @dataclass
 class TestSuite:
     """Test suite containing multiple test cases"""
@@ -121,6 +127,7 @@ class TestSuite:
     max_workers: int = 4
     timeout_seconds: int = 300
     tags: List[str] = field(default_factory=list)
+
 
 @dataclass
 class TestReport:
@@ -136,41 +143,44 @@ class TestReport:
     coverage_data: Dict[str, Any] = field(default_factory=dict)
     performance_summary: Dict[str, Any] = field(default_factory=dict)
 
+
 class TestEnvironment:
     """Test environment management and isolation"""
-    
+
     def __init__(self, environment_id: str = None):
         self.environment_id = environment_id or f"test_env_{int(time.time())}"
         self.temp_directory = None
         self.setup_complete = False
         self.cleanup_functions = []
-        
+
     async def __aenter__(self):
         """Enter test environment context"""
         await self.setup_environment()
         return self
-        
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         """Exit test environment context"""
         await self.cleanup_environment()
-        
+
     async def setup_environment(self):
         """Set up isolated test environment"""
-        self.temp_directory = Path(tempfile.mkdtemp(prefix=f"test_{self.environment_id}_"))
-        
+        self.temp_directory = Path(tempfile.mkdtemp(
+            prefix=f"test_{self.environment_id}_"))
+
         # Create standard test directories
         test_dirs = ["data", "config", "logs", "temp", "output"]
         for dir_name in test_dirs:
             (self.temp_directory / dir_name).mkdir(exist_ok=True)
-        
+
         # Set environment variables
         os.environ["TEST_ENVIRONMENT_ID"] = self.environment_id
         os.environ["TEST_DATA_DIR"] = str(self.temp_directory / "data")
         os.environ["TEST_OUTPUT_DIR"] = str(self.temp_directory / "output")
-        
+
         self.setup_complete = True
-        logger.info(f"🧪 Test environment setup complete: {self.environment_id}")
-        
+        logger.info(
+            f"🧪 Test environment setup complete: {self.environment_id}")
+
     async def cleanup_environment(self):
         """Clean up test environment"""
         # Run registered cleanup functions
@@ -182,36 +192,38 @@ class TestEnvironment:
                     cleanup_func()
             except Exception as e:
                 logger.warning(f"Cleanup function failed: {e}")
-        
+
         # Clean up temporary directory
         if self.temp_directory and self.temp_directory.exists():
             import shutil
             try:
                 shutil.rmtree(self.temp_directory)
-                logger.debug(f"🧹 Test environment cleaned up: {self.environment_id}")
+                logger.debug(
+                    f"🧹 Test environment cleaned up: {self.environment_id}")
             except Exception as e:
                 logger.warning(f"Failed to clean up test environment: {e}")
-        
+
         # Clean up environment variables
         for var in ["TEST_ENVIRONMENT_ID", "TEST_DATA_DIR", "TEST_OUTPUT_DIR"]:
             os.environ.pop(var, None)
-    
+
     def register_cleanup(self, cleanup_func: Callable):
         """Register a cleanup function to run during teardown"""
         self.cleanup_functions.append(cleanup_func)
 
+
 class TestExecutor:
     """Enhanced test execution engine with parallel and isolated execution"""
-    
+
     def __init__(self):
         self.execution_history = []
         self.active_executions = {}
-        
-    async def execute_test_case(self, test_case: TestCase, 
-                               environment: TestEnvironment = None) -> TestResult:
+
+    async def execute_test_case(self, test_case: TestCase,
+                                environment: TestEnvironment = None) -> TestResult:
         """Execute a single test case with comprehensive error handling"""
         start_time = datetime.now()
-        
+
         result = TestResult(
             test_case=test_case,
             status=TestStatus.RUNNING,
@@ -222,55 +234,57 @@ class TestExecutor:
                 "platform": sys.platform
             }
         )
-        
+
         try:
             logger.info(f"🧪 Executing test: {test_case.name}")
-            
+
             # Check dependencies
             for dependency in test_case.dependencies:
                 if not await self._check_dependency(dependency):
                     result.status = TestStatus.SKIPPED
                     result.error_message = f"Missing dependency: {dependency}"
                     return result
-            
+
             # Execute with timeout
             if test_case.test_function:
                 try:
                     test_output = await asyncio.wait_for(
-                        self._run_test_function(test_case.test_function, test_case.test_data),
+                        self._run_test_function(
+                            test_case.test_function, test_case.test_data),
                         timeout=test_case.timeout_seconds
                     )
-                    
+
                     result.output = str(test_output) if test_output else ""
                     result.status = TestStatus.PASSED
-                    
+
                 except asyncio.TimeoutError:
                     result.status = TestStatus.TIMEOUT
                     result.error_message = f"Test exceeded timeout of {test_case.timeout_seconds}s"
-                    
+
                 except AssertionError as e:
                     result.status = TestStatus.FAILED
                     result.error_message = str(e)
                     result.stack_trace = traceback.format_exc()
-                    
+
                 except Exception as e:
                     result.status = TestStatus.ERROR
                     result.error_message = str(e)
                     result.stack_trace = traceback.format_exc()
-            
+
             else:
                 result.status = TestStatus.SKIPPED
                 result.error_message = "No test function provided"
-                
+
         except Exception as e:
             result.status = TestStatus.ERROR
             result.error_message = f"Unexpected error during test execution: {e}"
             result.stack_trace = traceback.format_exc()
-            
+
         finally:
             result.end_time = datetime.now()
-            result.duration_seconds = (result.end_time - result.start_time).total_seconds()
-            
+            result.duration_seconds = (
+                result.end_time - result.start_time).total_seconds()
+
         # Log result
         status_emoji = {
             TestStatus.PASSED: "✅",
@@ -279,22 +293,22 @@ class TestExecutor:
             TestStatus.TIMEOUT: "⏰",
             TestStatus.SKIPPED: "⏭️"
         }
-        
+
         logger.info(f"{status_emoji.get(result.status, '❓')} {test_case.name}: "
-                   f"{result.status.value} ({result.duration_seconds:.2f}s)")
-                   
+                    f"{result.status.value} ({result.duration_seconds:.2f}s)")
+
         if result.error_message:
             logger.debug(f"Error details: {result.error_message}")
-            
+
         return result
-    
+
     async def _run_test_function(self, test_function: Callable, test_data: Dict[str, Any]) -> Any:
         """Execute test function with proper handling of sync/async functions"""
         if asyncio.iscoroutinefunction(test_function):
             return await test_function(test_data)
         else:
             return test_function(test_data)
-    
+
     async def _check_dependency(self, dependency: str) -> bool:
         """Check if a test dependency is available"""
         # Simple dependency checking - can be enhanced
@@ -313,12 +327,13 @@ class TestExecutor:
             return True
         else:
             return True
-    
+
     async def execute_test_suite(self, test_suite: TestSuite) -> TestReport:
         """Execute a complete test suite with reporting"""
-        execution_id = hashlib.md5(f"{test_suite.id}_{datetime.now().isoformat()}".encode()).hexdigest()[:12]
+        execution_id = hashlib.md5(
+            f"{test_suite.id}_{datetime.now().isoformat()}".encode()).hexdigest()[:12]
         start_time = datetime.now()
-        
+
         report = TestReport(
             execution_id=execution_id,
             suite_name=test_suite.name,
@@ -330,11 +345,11 @@ class TestExecutor:
                 "environment_variables": {k: v for k, v in os.environ.items() if k.startswith("TEST_")}
             }
         )
-        
+
         logger.info(f"🚀 Starting test suite execution: {test_suite.name}")
         logger.info(f"📊 Execution ID: {execution_id}")
         logger.info(f"🧪 Test count: {len(test_suite.test_cases)}")
-        
+
         # Set up test environment
         async with TestEnvironment(f"suite_{execution_id}") as test_env:
             # Run suite setup
@@ -347,16 +362,16 @@ class TestExecutor:
                 except Exception as e:
                     logger.error(f"Suite setup failed: {e}")
                     # Continue with tests even if setup fails
-            
+
             # Execute tests
             if test_suite.parallel_execution:
-                results = await self._execute_parallel(test_suite.test_cases, test_env, 
-                                                     test_suite.max_workers)
+                results = await self._execute_parallel(test_suite.test_cases, test_env,
+                                                       test_suite.max_workers)
             else:
                 results = await self._execute_sequential(test_suite.test_cases, test_env)
-            
+
             report.test_results = results
-            
+
             # Run suite teardown
             for teardown_func in test_suite.teardown_functions:
                 try:
@@ -366,62 +381,67 @@ class TestExecutor:
                         teardown_func()
                 except Exception as e:
                     logger.error(f"Suite teardown failed: {e}")
-        
+
         # Generate summary
         report.end_time = datetime.now()
-        report.total_duration_seconds = (report.end_time - report.start_time).total_seconds()
+        report.total_duration_seconds = (
+            report.end_time - report.start_time).total_seconds()
         report.summary = self._generate_summary(results)
-        report.performance_summary = self._generate_performance_summary(results)
-        
+        report.performance_summary = self._generate_performance_summary(
+            results)
+
         # Log summary
         self._log_execution_summary(report)
-        
+
         return report
-    
-    async def _execute_sequential(self, test_cases: List[TestCase], 
-                                 test_env: TestEnvironment) -> List[TestResult]:
+
+    async def _execute_sequential(self, test_cases: List[TestCase],
+                                  test_env: TestEnvironment) -> List[TestResult]:
         """Execute test cases sequentially"""
         results = []
-        
+
         for test_case in test_cases:
             result = await self.execute_test_case(test_case, test_env)
             results.append(result)
-            
+
             # Early termination on critical failures if needed
             if test_case.priority == TestPriority.CRITICAL and result.status == TestStatus.FAILED:
-                logger.warning(f"Critical test failed: {test_case.name}. Continuing with remaining tests.")
-        
+                logger.warning(
+                    f"Critical test failed: {test_case.name}. Continuing with remaining tests.")
+
         return results
-    
-    async def _execute_parallel(self, test_cases: List[TestCase], 
-                               test_env: TestEnvironment, max_workers: int) -> List[TestResult]:
+
+    async def _execute_parallel(self, test_cases: List[TestCase],
+                                test_env: TestEnvironment, max_workers: int) -> List[TestResult]:
         """Execute test cases in parallel"""
         results = []
-        
+
         # Group tests by priority to ensure critical tests run first
-        critical_tests = [tc for tc in test_cases if tc.priority == TestPriority.CRITICAL]
-        other_tests = [tc for tc in test_cases if tc.priority != TestPriority.CRITICAL]
-        
+        critical_tests = [
+            tc for tc in test_cases if tc.priority == TestPriority.CRITICAL]
+        other_tests = [tc for tc in test_cases if tc.priority !=
+                       TestPriority.CRITICAL]
+
         # Execute critical tests first (sequential)
         for test_case in critical_tests:
             result = await self.execute_test_case(test_case, test_env)
             results.append(result)
-        
+
         # Execute other tests in parallel
         if other_tests:
             semaphore = asyncio.Semaphore(max_workers)
-            
+
             async def run_with_semaphore(test_case):
                 async with semaphore:
                     return await self.execute_test_case(test_case, test_env)
-            
+
             parallel_results = await asyncio.gather(*[
                 run_with_semaphore(tc) for tc in other_tests
             ])
             results.extend(parallel_results)
-        
+
         return results
-    
+
     def _generate_summary(self, results: List[TestResult]) -> Dict[str, int]:
         """Generate test execution summary statistics"""
         summary = {
@@ -432,7 +452,7 @@ class TestExecutor:
             "skipped": 0,
             "timeout": 0
         }
-        
+
         for result in results:
             if result.status == TestStatus.PASSED:
                 summary["passed"] += 1
@@ -444,36 +464,38 @@ class TestExecutor:
                 summary["skipped"] += 1
             elif result.status == TestStatus.TIMEOUT:
                 summary["timeout"] += 1
-        
+
         # Calculate success rate
         successful = summary["passed"]
         total = summary["total"]
-        summary["success_rate_percent"] = round((successful / total * 100), 2) if total > 0 else 0
-        
+        summary["success_rate_percent"] = round(
+            (successful / total * 100), 2) if total > 0 else 0
+
         return summary
-    
+
     def _generate_performance_summary(self, results: List[TestResult]) -> Dict[str, Any]:
         """Generate performance metrics summary"""
-        durations = [r.duration_seconds for r in results if r.duration_seconds > 0]
-        
+        durations = [
+            r.duration_seconds for r in results if r.duration_seconds > 0]
+
         if not durations:
             return {"no_performance_data": True}
-        
+
         return {
             "total_execution_time": sum(durations),
             "average_test_duration": sum(durations) / len(durations),
             "fastest_test": min(durations),
             "slowest_test": max(durations),
             "tests_over_expected_duration": len([
-                r for r in results 
+                r for r in results
                 if r.duration_seconds > r.test_case.expected_duration_seconds
             ])
         }
-    
+
     def _log_execution_summary(self, report: TestReport):
         """Log comprehensive test execution summary"""
         summary = report.summary
-        
+
         logger.info("🎯 Test Execution Summary")
         logger.info("=" * 50)
         logger.info(f"📊 Total Tests: {summary['total']}")
@@ -484,7 +506,7 @@ class TestExecutor:
         logger.info(f"⏰ Timeouts: {summary['timeout']}")
         logger.info(f"📈 Success Rate: {summary['success_rate_percent']}%")
         logger.info(f"⏱️ Total Duration: {report.total_duration_seconds:.2f}s")
-        
+
         if summary["success_rate_percent"] == 100:
             logger.info("🎉 All tests passed successfully!")
         elif summary["success_rate_percent"] >= 90:
@@ -492,25 +514,27 @@ class TestExecutor:
         elif summary["success_rate_percent"] >= 70:
             logger.warning("⚠️ Some test failures detected")
         else:
-            logger.error("❌ Significant test failures - investigation required")
+            logger.error(
+                "❌ Significant test failures - investigation required")
+
 
 class AutomatedTestingFramework:
     """Main automated testing framework with plugin integration"""
-    
+
     def __init__(self):
         self.version = "1.0.0"
         self.test_suites: Dict[str, TestSuite] = {}
         self.executor = TestExecutor()
         self.reports_directory = Path("test_reports")
         self.reports_directory.mkdir(exist_ok=True)
-        
+
         # Integration components
         self.plugin_framework = None
         self.sysadmin_copilot = None
-        
+
         self._initialize_integrations()
         self._register_builtin_tests()
-    
+
     def _initialize_integrations(self):
         """Initialize integration with other framework components"""
         # Plugin Framework integration
@@ -520,15 +544,16 @@ class AutomatedTestingFramework:
                 logger.info("✅ Plugin Framework v2.0 integrated for testing")
             except Exception as e:
                 logger.warning(f"Plugin Framework integration failed: {e}")
-        
+
         # SysAdmin Copilot integration
         if SYSADMIN_COPILOT_AVAILABLE:
             try:
-                self.sysadmin_copilot = SysAdminCopilotV2("plugins/testing/sysadmin")
+                self.sysadmin_copilot = SysAdminCopilotV2(
+                    "plugins/testing/sysadmin")
                 logger.info("✅ SysAdmin Copilot v2.0 integrated for testing")
             except Exception as e:
                 logger.warning(f"SysAdmin Copilot integration failed: {e}")
-    
+
     def _register_builtin_tests(self):
         """Register built-in test suites"""
         # Framework Component Tests
@@ -538,13 +563,14 @@ class AutomatedTestingFramework:
         self.register_test_suite(self._create_performance_tests())
         self.register_test_suite(self._create_security_tests())
         self.register_test_suite(self._create_enhanced_sandbox_tests())
-        
-        logger.info(f"🧪 Registered {len(self.test_suites)} built-in test suites")
-    
+
+        logger.info(
+            f"🧪 Registered {len(self.test_suites)} built-in test suites")
+
     def _create_plugin_framework_tests(self) -> TestSuite:
         """Create test suite for Plugin Framework v2.0"""
         test_cases = []
-        
+
         # Plugin Framework Initialization Test
         test_cases.append(TestCase(
             id="plugin_framework_init",
@@ -556,7 +582,7 @@ class AutomatedTestingFramework:
             test_function=self._test_plugin_framework_init,
             tags=["plugin_framework", "initialization"]
         ))
-        
+
         # Plugin Discovery Test
         test_cases.append(TestCase(
             id="plugin_discovery",
@@ -567,7 +593,7 @@ class AutomatedTestingFramework:
             test_function=self._test_plugin_discovery,
             tags=["plugin_framework", "discovery"]
         ))
-        
+
         # Plugin Security Sandbox Test
         test_cases.append(TestCase(
             id="plugin_security_sandbox",
@@ -578,7 +604,7 @@ class AutomatedTestingFramework:
             test_function=self._test_plugin_security_sandbox,
             tags=["plugin_framework", "security", "sandbox"]
         ))
-        
+
         # Plugin Resource Limits Test
         test_cases.append(TestCase(
             id="plugin_resource_limits",
@@ -590,7 +616,7 @@ class AutomatedTestingFramework:
             test_function=self._test_plugin_resource_limits,
             tags=["plugin_framework", "performance", "limits"]
         ))
-        
+
         return TestSuite(
             id="plugin_framework_tests",
             name="Plugin Framework v2.0 Tests",
@@ -598,11 +624,11 @@ class AutomatedTestingFramework:
             test_cases=test_cases,
             tags=["plugin_framework", "integration"]
         )
-    
+
     def _create_sysadmin_copilot_tests(self) -> TestSuite:
         """Create test suite for SysAdmin Copilot v2.0"""
         test_cases = []
-        
+
         # SysAdmin Copilot Initialization
         test_cases.append(TestCase(
             id="sysadmin_copilot_init",
@@ -613,7 +639,7 @@ class AutomatedTestingFramework:
             test_function=self._test_sysadmin_copilot_init,
             tags=["sysadmin_copilot", "initialization"]
         ))
-        
+
         # System Health Analysis Test
         test_cases.append(TestCase(
             id="system_health_analysis",
@@ -625,7 +651,7 @@ class AutomatedTestingFramework:
             test_function=self._test_system_health_analysis,
             tags=["sysadmin_copilot", "health", "system"]
         ))
-        
+
         # Administrative Task Execution Test
         test_cases.append(TestCase(
             id="admin_task_execution",
@@ -636,7 +662,7 @@ class AutomatedTestingFramework:
             test_function=self._test_admin_task_execution,
             tags=["sysadmin_copilot", "tasks", "execution"]
         ))
-        
+
         return TestSuite(
             id="sysadmin_copilot_tests",
             name="SysAdmin Copilot v2.0 Tests",
@@ -644,11 +670,11 @@ class AutomatedTestingFramework:
             test_cases=test_cases,
             tags=["sysadmin_copilot", "integration"]
         )
-    
+
     def _create_system_integration_tests(self) -> TestSuite:
         """Create system integration test suite"""
         test_cases = []
-        
+
         # Framework Component Integration
         test_cases.append(TestCase(
             id="framework_integration",
@@ -659,7 +685,7 @@ class AutomatedTestingFramework:
             test_function=self._test_framework_integration,
             tags=["integration", "system"]
         ))
-        
+
         # End-to-End Workflow Test
         test_cases.append(TestCase(
             id="e2e_workflow",
@@ -671,7 +697,7 @@ class AutomatedTestingFramework:
             test_function=self._test_e2e_workflow,
             tags=["e2e", "workflow", "integration"]
         ))
-        
+
         return TestSuite(
             id="system_integration_tests",
             name="System Integration Tests",
@@ -679,11 +705,11 @@ class AutomatedTestingFramework:
             test_cases=test_cases,
             tags=["integration", "system"]
         )
-    
+
     def _create_performance_tests(self) -> TestSuite:
         """Create performance test suite"""
         test_cases = []
-        
+
         # Plugin Loading Performance
         test_cases.append(TestCase(
             id="plugin_loading_performance",
@@ -696,7 +722,7 @@ class AutomatedTestingFramework:
             test_function=self._test_plugin_loading_performance,
             tags=["performance", "plugins", "loading"]
         ))
-        
+
         # System Health Analysis Performance
         test_cases.append(TestCase(
             id="health_analysis_performance",
@@ -708,7 +734,7 @@ class AutomatedTestingFramework:
             test_function=self._test_health_analysis_performance,
             tags=["performance", "health", "analysis"]
         ))
-        
+
         return TestSuite(
             id="performance_tests",
             name="Performance Tests",
@@ -716,11 +742,11 @@ class AutomatedTestingFramework:
             test_cases=test_cases,
             tags=["performance"]
         )
-    
+
     def _create_security_tests(self) -> TestSuite:
         """Create security test suite"""
         test_cases = []
-        
+
         # Plugin Sandbox Security Test
         test_cases.append(TestCase(
             id="plugin_sandbox_security",
@@ -731,7 +757,7 @@ class AutomatedTestingFramework:
             test_function=self._test_plugin_sandbox_security,
             tags=["security", "sandbox", "isolation"]
         ))
-        
+
         # Administrative Privilege Test
         test_cases.append(TestCase(
             id="admin_privilege_test",
@@ -742,7 +768,7 @@ class AutomatedTestingFramework:
             test_function=self._test_admin_privilege_control,
             tags=["security", "privileges", "admin"]
         ))
-        
+
         return TestSuite(
             id="security_tests",
             name="Security Tests",
@@ -750,11 +776,11 @@ class AutomatedTestingFramework:
             test_cases=test_cases,
             tags=["security"]
         )
-    
+
     def _create_enhanced_sandbox_tests(self) -> TestSuite:
         """Create enhanced sandbox isolation test suite"""
         test_cases = []
-        
+
         # Enhanced Sandbox Initialization Test
         test_cases.append(TestCase(
             id="enhanced_sandbox_init",
@@ -765,7 +791,7 @@ class AutomatedTestingFramework:
             test_function=self._test_enhanced_sandbox_init,
             tags=["enhanced_sandbox", "initialization", "task5"]
         ))
-        
+
         # Enhanced Isolation Features Test
         test_cases.append(TestCase(
             id="enhanced_isolation_features",
@@ -777,7 +803,7 @@ class AutomatedTestingFramework:
             test_function=self._test_enhanced_isolation_features,
             tags=["enhanced_sandbox", "isolation", "security", "task5"]
         ))
-        
+
         # Resource Monitoring Enhancement Test
         test_cases.append(TestCase(
             id="enhanced_resource_monitoring",
@@ -789,7 +815,7 @@ class AutomatedTestingFramework:
             test_function=self._test_enhanced_resource_monitoring,
             tags=["enhanced_sandbox", "monitoring", "performance", "task5"]
         ))
-        
+
         # Auto Recovery Test
         test_cases.append(TestCase(
             id="sandbox_auto_recovery",
@@ -800,7 +826,7 @@ class AutomatedTestingFramework:
             test_function=self._test_sandbox_auto_recovery,
             tags=["enhanced_sandbox", "recovery", "automation", "task5"]
         ))
-        
+
         return TestSuite(
             id="enhanced_sandbox_tests",
             name="Enhanced Sandbox Isolation Tests - Task 5",
@@ -808,202 +834,210 @@ class AutomatedTestingFramework:
             test_cases=test_cases,
             tags=["enhanced_sandbox", "task5", "isolation"]
         )
-    
+
     # Test Implementation Methods
     async def _test_plugin_framework_init(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test Plugin Framework v2.0 initialization"""
         if not PLUGIN_FRAMEWORK_AVAILABLE:
             raise AssertionError("Plugin Framework v2.0 not available")
-        
+
         # Test framework initialization
         test_framework = PluginFrameworkV2("test_plugins")
         assert test_framework is not None, "Plugin Framework failed to initialize"
         assert test_framework.plugin_directory.exists(), "Plugin directory not created"
-        
+
         return {"status": "passed", "framework_initialized": True}
-    
+
     async def _test_plugin_discovery(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test plugin discovery functionality"""
         if not self.plugin_framework:
             raise AssertionError("Plugin Framework not available for testing")
-        
+
         # Discover existing plugins
         plugins = self.plugin_framework.discover_plugins()
-        assert isinstance(plugins, list), "Plugin discovery should return a list"
-        
+        assert isinstance(
+            plugins, list), "Plugin discovery should return a list"
+
         return {"status": "passed", "plugins_discovered": len(plugins)}
-    
+
     async def _test_plugin_security_sandbox(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test plugin security sandbox functionality"""
         if not PLUGIN_FRAMEWORK_AVAILABLE:
-            raise AssertionError("Plugin Framework not available for sandbox testing")
-        
+            raise AssertionError(
+                "Plugin Framework not available for sandbox testing")
+
         # Create a test plugin sandbox
         from plugin_framework_v2 import PluginLimitsV2, PluginPermissionsV2
-        
-        limits = PluginLimitsV2(max_memory_mb=64, max_execution_time_seconds=10)
-        permissions = PluginPermissionsV2(can_read_files=True, can_write_files=False)
-        
+
+        limits = PluginLimitsV2(
+            max_memory_mb=64, max_execution_time_seconds=10)
+        permissions = PluginPermissionsV2(
+            can_read_files=True, can_write_files=False)
+
         sandbox = PluginSandboxV2(limits, permissions)
         assert sandbox is not None, "Plugin sandbox failed to initialize"
-        
+
         return {"status": "passed", "sandbox_created": True}
-    
+
     async def _test_plugin_resource_limits(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test plugin resource limit enforcement"""
         if not PLUGIN_FRAMEWORK_AVAILABLE:
-            raise AssertionError("Plugin Framework not available for resource testing")
-        
+            raise AssertionError(
+                "Plugin Framework not available for resource testing")
+
         # Test resource monitoring
         from plugin_framework_v2 import ResourceMonitorV2, PluginLimitsV2
-        
+
         limits = PluginLimitsV2(max_memory_mb=32, max_execution_time_seconds=5)
         monitor = ResourceMonitorV2(limits)
-        
+
         monitor.start_monitoring()
         await asyncio.sleep(1)  # Brief monitoring test
         monitor.stop_monitoring()
-        
+
         return {"status": "passed", "resource_monitoring": True}
-    
+
     async def _test_sysadmin_copilot_init(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test SysAdmin Copilot initialization"""
         if not SYSADMIN_COPILOT_AVAILABLE:
             raise AssertionError("SysAdmin Copilot not available")
-        
+
         # Test copilot initialization
         from sysadmin_copilot_v2 import SysAdminCopilotV2
         test_copilot = SysAdminCopilotV2("test_sysadmin_plugins")
-        
+
         assert test_copilot is not None, "SysAdmin Copilot failed to initialize"
         assert test_copilot.version == "2.0.0", "Incorrect version"
-        
+
         return {"status": "passed", "copilot_version": test_copilot.version}
-    
+
     async def _test_system_health_analysis(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test system health analysis functionality"""
         if not self.sysadmin_copilot:
-            raise AssertionError("SysAdmin Copilot not available for health testing")
-        
+            raise AssertionError(
+                "SysAdmin Copilot not available for health testing")
+
         # Test health analysis
         health_data = await self.sysadmin_copilot.get_system_health_comprehensive()
-        
+
         assert "timestamp" in health_data, "Health data missing timestamp"
         assert "sources" in health_data, "Health data missing sources"
-        
+
         return {"status": "passed", "health_sources": len(health_data["sources"])}
-    
+
     async def _test_admin_task_execution(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test administrative task execution"""
         if not self.sysadmin_copilot:
-            raise AssertionError("SysAdmin Copilot not available for task testing")
-        
+            raise AssertionError(
+                "SysAdmin Copilot not available for task testing")
+
         # List available tasks
         tasks = self.sysadmin_copilot.list_available_tasks()
         assert len(tasks) > 0, "No administrative tasks available"
-        
+
         return {"status": "passed", "available_tasks": len(tasks)}
-    
+
     async def _test_framework_integration(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test integration between framework components"""
         plugin_available = PLUGIN_FRAMEWORK_AVAILABLE and self.plugin_framework
         copilot_available = SYSADMIN_COPILOT_AVAILABLE and self.sysadmin_copilot
-        
+
         if not (plugin_available or copilot_available):
-            raise AssertionError("Neither framework component available for integration testing")
-        
+            raise AssertionError(
+                "Neither framework component available for integration testing")
+
         integration_score = 0
         if plugin_available:
             integration_score += 50
         if copilot_available:
             integration_score += 50
-        
+
         return {"status": "passed", "integration_score": integration_score}
-    
+
     async def _test_e2e_workflow(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test end-to-end administrative workflow"""
         workflow_steps = []
-        
+
         # Step 1: Initialize components
         if self.plugin_framework:
             workflow_steps.append("plugin_framework_ready")
-        
+
         if self.sysadmin_copilot:
             workflow_steps.append("sysadmin_copilot_ready")
-            
+
             # Step 2: Run health analysis
             health_data = await self.sysadmin_copilot.get_system_health_comprehensive()
             if "timestamp" in health_data:
                 workflow_steps.append("health_analysis_completed")
-        
+
         assert len(workflow_steps) > 0, "No workflow steps completed"
-        
+
         return {"status": "passed", "workflow_steps": workflow_steps}
-    
+
     async def _test_plugin_loading_performance(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test plugin loading performance"""
         if not self.plugin_framework:
             return {"status": "skipped", "reason": "Plugin Framework not available"}
-        
+
         start_time = time.time()
         plugins = self.plugin_framework.discover_plugins()
         end_time = time.time()
-        
+
         load_time = end_time - start_time
-        
+
         # Performance assertion: plugin discovery should complete within 5 seconds
         assert load_time < 5.0, f"Plugin discovery too slow: {load_time:.2f}s"
-        
+
         return {"status": "passed", "load_time_seconds": load_time, "plugins_loaded": len(plugins)}
-    
+
     async def _test_health_analysis_performance(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test system health analysis performance"""
         if not self.sysadmin_copilot:
             return {"status": "skipped", "reason": "SysAdmin Copilot not available"}
-        
+
         start_time = time.time()
         health_data = await self.sysadmin_copilot.get_system_health_comprehensive()
         end_time = time.time()
-        
+
         analysis_time = end_time - start_time
-        
+
         # Performance assertion: health analysis should complete within 30 seconds
         assert analysis_time < 30.0, f"Health analysis too slow: {analysis_time:.2f}s"
-        
+
         return {"status": "passed", "analysis_time_seconds": analysis_time}
-    
+
     async def _test_plugin_sandbox_security(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test plugin sandbox security isolation"""
         if not PLUGIN_FRAMEWORK_AVAILABLE:
             return {"status": "skipped", "reason": "Plugin Framework not available"}
-        
+
         from plugin_framework_v2 import PluginSandboxV2, PluginLimitsV2
-        
+
         # Test that sandbox properly isolates plugin execution
         limits = PluginLimitsV2(max_memory_mb=32)
         sandbox = PluginSandboxV2(limits)
-        
+
         # Sandbox should initialize without errors
         assert sandbox is not None, "Sandbox failed to initialize"
-        
+
         return {"status": "passed", "sandbox_isolation": True}
-    
+
     async def _test_admin_privilege_control(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test administrative privilege enforcement"""
         if not self.sysadmin_copilot:
             return {"status": "skipped", "reason": "SysAdmin Copilot not available"}
-        
+
         # Test privilege distinction
         tasks = self.sysadmin_copilot.list_available_tasks()
         admin_tasks = [t for t in tasks if t.get("requires_admin", False)]
         user_tasks = [t for t in tasks if not t.get("requires_admin", False)]
-        
+
         # Should have both admin and user tasks
         assert len(admin_tasks) > 0, "No admin tasks found"
         assert len(user_tasks) > 0, "No user tasks found"
-        
+
         return {"status": "passed", "admin_tasks": len(admin_tasks), "user_tasks": len(user_tasks)}
-    
+
     # Enhanced Sandbox Isolation Test Methods (Task 5)
     async def _test_enhanced_sandbox_init(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test enhanced sandbox initialization"""
@@ -1012,33 +1046,34 @@ class AutomatedTestingFramework:
             from plugin_sandbox_isolation_enhanced import (
                 EnhancedPluginFramework, IsolationConfig, IsolationLevel
             )
-            
+
             # Create isolation configuration
             config = IsolationConfig(
                 level=IsolationLevel.STANDARD,
                 enable_real_time_monitoring=True,
                 auto_recovery_enabled=True
             )
-            
+
             # Initialize enhanced framework
             framework = EnhancedPluginFramework("test_plugins", config)
-            
+
             assert framework.isolation_config.level == IsolationLevel.STANDARD
             assert framework.recovery_manager is not None
             assert framework.isolation_config.enable_real_time_monitoring == True
-            
+
             return {
                 "status": "passed",
                 "enhanced_framework_initialized": True,
                 "isolation_level": config.level.value,
                 "monitoring_enabled": config.enable_real_time_monitoring
             }
-            
+
         except ImportError:
             return {"status": "skipped", "reason": "Enhanced sandbox components not available"}
         except Exception as e:
-            raise AssertionError(f"Enhanced sandbox initialization failed: {e}")
-    
+            raise AssertionError(
+                f"Enhanced sandbox initialization failed: {e}")
+
     async def _test_enhanced_isolation_features(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test enhanced isolation features"""
         try:
@@ -1046,24 +1081,26 @@ class AutomatedTestingFramework:
                 EnhancedPluginSandbox, IsolationConfig, IsolationLevel
             )
             from plugin_framework_v2 import PluginLimitsV2, PluginPermissionsV2
-            
+
             # Create enhanced sandbox with strict isolation
-            limits = PluginLimitsV2(max_memory_mb=64, max_execution_time_seconds=30)
-            permissions = PluginPermissionsV2(can_read_files=True, can_write_files=False)
+            limits = PluginLimitsV2(
+                max_memory_mb=64, max_execution_time_seconds=30)
+            permissions = PluginPermissionsV2(
+                can_read_files=True, can_write_files=False)
             config = IsolationConfig(
                 level=IsolationLevel.STRICT,
                 enable_process_isolation=True,
                 enable_network_isolation=True,
                 enable_filesystem_isolation=True
             )
-            
+
             sandbox = EnhancedPluginSandbox(limits, permissions, config)
-            
+
             # Test isolation configuration
             assert sandbox.config.level == IsolationLevel.STRICT
             assert sandbox.config.enable_process_isolation == True
             assert sandbox.config.enable_network_isolation == True
-            
+
             return {
                 "status": "passed",
                 "isolation_features_tested": True,
@@ -1071,12 +1108,13 @@ class AutomatedTestingFramework:
                 "network_isolation": config.enable_network_isolation,
                 "filesystem_isolation": config.enable_filesystem_isolation
             }
-            
+
         except ImportError:
             return {"status": "skipped", "reason": "Enhanced sandbox components not available"}
         except Exception as e:
-            raise AssertionError(f"Enhanced isolation features test failed: {e}")
-    
+            raise AssertionError(
+                f"Enhanced isolation features test failed: {e}")
+
     async def _test_enhanced_resource_monitoring(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test enhanced resource monitoring"""
         try:
@@ -1085,59 +1123,63 @@ class AutomatedTestingFramework:
             )
             from plugin_framework_v2 import PluginLimitsV2, PluginPermissionsV2
             import asyncio
-            
+
             # Create sandbox with monitoring enabled but more lenient limits
-            limits = PluginLimitsV2(max_memory_mb=256, max_execution_time_seconds=10)
+            limits = PluginLimitsV2(
+                max_memory_mb=256, max_execution_time_seconds=10)
             permissions = PluginPermissionsV2()
             config = IsolationConfig(
                 level=IsolationLevel.STANDARD,
                 enable_real_time_monitoring=True,
                 resource_check_interval_seconds=0.5
             )
-            
+
             sandbox = EnhancedPluginSandbox(limits, permissions, config)
-            
+
             telemetry_data = None
             result = None
-            
+
             async with sandbox:
                 # Simple, lightweight test function
                 def monitored_function(env):
                     # Minimal work to avoid CPU violations
                     data = {"result": "success", "items": list(range(10))}
                     return data
-                
+
                 result = await sandbox.execute_plugin_safe(monitored_function)
-                
+
                 # Give monitoring time to collect data
                 await asyncio.sleep(0.2)
-                
+
                 # Get telemetry while still in context
                 telemetry_data = sandbox.get_telemetry()
-            
+
             # Verify basic functionality
             assert result is not None, "Plugin execution should return a result"
             assert telemetry_data is not None, "Telemetry data should be available"
-            assert hasattr(telemetry_data, 'sandbox_id'), "Telemetry should have sandbox_id"
-            
+            assert hasattr(
+                telemetry_data, 'sandbox_id'), "Telemetry should have sandbox_id"
+
             # Basic telemetry validation
             peak_memory = getattr(telemetry_data, 'peak_memory_mb', 0.0)
             violations_count = len(getattr(telemetry_data, 'violations', []))
-            
+
             return {
                 "status": "passed",
                 "monitoring_active": True,
                 "plugin_executed": result is not None,
                 "telemetry_available": telemetry_data is not None,
-                "peak_memory_mb": max(peak_memory, 0.1),  # Ensure positive value
+                # Ensure positive value
+                "peak_memory_mb": max(peak_memory, 0.1),
                 "violations_detected": violations_count
             }
-            
+
         except ImportError:
             return {"status": "skipped", "reason": "Enhanced sandbox components not available"}
         except Exception as e:
-            raise AssertionError(f"Enhanced resource monitoring test failed: {e}")
-    
+            raise AssertionError(
+                f"Enhanced resource monitoring test failed: {e}")
+
     async def _test_sandbox_auto_recovery(self, test_data: Dict[str, Any]) -> Dict[str, Any]:
         """Test sandbox automatic recovery"""
         try:
@@ -1146,16 +1188,16 @@ class AutomatedTestingFramework:
                 SandboxViolationType, IsolationConfig, IsolationLevel
             )
             from datetime import datetime
-            
+
             # Create recovery manager
             config = IsolationConfig(
                 level=IsolationLevel.STANDARD,
                 auto_recovery_enabled=True,
                 violation_threshold=3
             )
-            
+
             recovery_manager = SandboxRecoveryManager(config)
-            
+
             # Create test violation
             violation = SandboxViolation(
                 type=SandboxViolationType.RESOURCE_EXCEEDED,
@@ -1165,77 +1207,78 @@ class AutomatedTestingFramework:
                 description="Test resource violation for recovery testing",
                 severity="medium"
             )
-            
+
             # Test auto recovery
             recovery_success = await recovery_manager.auto_recovery_violation(violation)
-            
+
             assert len(recovery_manager.recovery_history) > 0
-            
+
             return {
                 "status": "passed",
                 "auto_recovery_tested": True,
                 "recovery_successful": recovery_success,
                 "recovery_history_count": len(recovery_manager.recovery_history)
             }
-            
+
         except ImportError:
             return {"status": "skipped", "reason": "Enhanced sandbox components not available"}
         except Exception as e:
             raise AssertionError(f"Sandbox auto recovery test failed: {e}")
-    
+
     def register_test_suite(self, test_suite: TestSuite):
         """Register a test suite for execution"""
         self.test_suites[test_suite.id] = test_suite
         logger.debug(f"Registered test suite: {test_suite.name}")
-    
+
     async def run_test_suite(self, suite_id: str, save_report: bool = True) -> TestReport:
         """Execute a specific test suite"""
         if suite_id not in self.test_suites:
             raise ValueError(f"Test suite '{suite_id}' not found")
-        
+
         test_suite = self.test_suites[suite_id]
         report = await self.executor.execute_test_suite(test_suite)
-        
+
         # Save report if requested
         if save_report:
             await self.save_test_report(report)
-        
+
         return report
-    
+
     async def run_all_tests(self, parallel_suites: bool = False) -> Dict[str, TestReport]:
         """Execute all registered test suites"""
-        logger.info(f"🚀 Running all test suites ({len(self.test_suites)} suites)")
-        
+        logger.info(
+            f"🚀 Running all test suites ({len(self.test_suites)} suites)")
+
         reports = {}
-        
+
         if parallel_suites:
             # Run test suites in parallel
-            tasks = [self.run_test_suite(suite_id, save_report=False) 
-                    for suite_id in self.test_suites.keys()]
-            
+            tasks = [self.run_test_suite(suite_id, save_report=False)
+                     for suite_id in self.test_suites.keys()]
+
             suite_reports = await asyncio.gather(*tasks)
-            
+
             for suite_id, report in zip(self.test_suites.keys(), suite_reports):
                 reports[suite_id] = report
                 await self.save_test_report(report)
-        
+
         else:
             # Run test suites sequentially
             for suite_id in self.test_suites.keys():
                 report = await self.run_test_suite(suite_id, save_report=True)
                 reports[suite_id] = report
-        
+
         # Generate combined report
         await self.generate_combined_report(reports)
-        
+
         return reports
-    
+
     async def save_test_report(self, report: TestReport):
         """Save test report to file"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         report_filename = f"test_report_{report.suite_name}_{timestamp}.json"
         report_path = self.reports_directory / report_filename
-        
+
         # Convert report to JSON-serializable format
         report_data = {
             "execution_id": report.execution_id,
@@ -1248,7 +1291,7 @@ class AutomatedTestingFramework:
             "performance_summary": report.performance_summary,
             "test_results": []
         }
-        
+
         # Add test results
         for result in report.test_results:
             result_data = {
@@ -1263,18 +1306,19 @@ class AutomatedTestingFramework:
                 "retry_attempts": result.retry_attempts
             }
             report_data["test_results"].append(result_data)
-        
+
         # Save to file
         with open(report_path, 'w') as f:
             json.dump(report_data, f, indent=2)
-        
+
         logger.info(f"📄 Test report saved: {report_path}")
-    
+
     async def generate_combined_report(self, reports: Dict[str, TestReport]):
         """Generate combined report for all test suites"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        combined_report_path = self.reports_directory / f"combined_test_report_{timestamp}.json"
-        
+        combined_report_path = self.reports_directory / \
+            f"combined_test_report_{timestamp}.json"
+
         combined_data = {
             "generated_at": datetime.now().isoformat(),
             "framework_version": self.version,
@@ -1290,11 +1334,11 @@ class AutomatedTestingFramework:
                 "total_duration_seconds": 0.0
             }
         }
-        
+
         # Aggregate data from all reports
         for suite_name, report in reports.items():
             combined_data["suite_summaries"][suite_name] = report.summary
-            
+
             # Add to overall summary
             overall = combined_data["overall_summary"]
             overall["total_tests"] += report.summary["total"]
@@ -1304,64 +1348,72 @@ class AutomatedTestingFramework:
             overall["skipped"] += report.summary["skipped"]
             overall["timeout"] += report.summary["timeout"]
             overall["total_duration_seconds"] += report.total_duration_seconds
-        
+
         # Calculate overall success rate
         total_tests = combined_data["overall_summary"]["total_tests"]
         passed_tests = combined_data["overall_summary"]["passed"]
-        
+
         if total_tests > 0:
             success_rate = (passed_tests / total_tests) * 100
-            combined_data["overall_summary"]["success_rate_percent"] = round(success_rate, 2)
+            combined_data["overall_summary"]["success_rate_percent"] = round(
+                success_rate, 2)
         else:
             combined_data["overall_summary"]["success_rate_percent"] = 0
-        
+
         # Save combined report
         with open(combined_report_path, 'w') as f:
             json.dump(combined_data, f, indent=2)
-        
+
         logger.info(f"📊 Combined test report saved: {combined_report_path}")
-        
+
         # Log overall summary
         overall = combined_data["overall_summary"]
         logger.info("🎯 Overall Test Summary")
         logger.info("=" * 50)
         logger.info(f"🧪 Total Test Suites: {len(reports)}")
         logger.info(f"📊 Total Tests: {overall['total_tests']}")
-        logger.info(f"✅ Overall Success Rate: {overall['success_rate_percent']}%")
-        logger.info(f"⏱️ Total Execution Time: {overall['total_duration_seconds']:.2f}s")
+        logger.info(
+            f"✅ Overall Success Rate: {overall['success_rate_percent']}%")
+        logger.info(
+            f"⏱️ Total Execution Time: {overall['total_duration_seconds']:.2f}s")
+
 
 # Global testing framework instance
 testing_framework = AutomatedTestingFramework()
 
+
 async def main():
     """Example usage and testing"""
     framework = AutomatedTestingFramework()
-    
+
     print("🧪 Automated Testing Framework - NoxPanel/NoxGuard/Heimnetz Suite")
     print("=" * 70)
     print(f"📊 Framework Version: {framework.version}")
     print(f"🧪 Available Test Suites: {len(framework.test_suites)}")
-    
+
     # List available test suites
     print("\n📋 Available Test Suites:")
     for suite_id, suite in framework.test_suites.items():
         test_count = len(suite.test_cases)
         print(f"  • {suite.name}: {test_count} tests")
-    
+
     # Run a sample test suite
     print("\n🚀 Running Plugin Framework Tests...")
     try:
         report = await framework.run_test_suite("plugin_framework_tests")
-        print(f"✅ Test execution completed: {report.summary['success_rate_percent']}% success rate")
+        print(
+            f"✅ Test execution completed: {report.summary['success_rate_percent']}% success rate")
     except Exception as e:
         print(f"❌ Test execution failed: {e}")
-    
+
     # Run all tests
     print("\n🔄 Running all test suites...")
     try:
         all_reports = await framework.run_all_tests()
-        successful_suites = sum(1 for r in all_reports.values() if r.summary['success_rate_percent'] == 100)
-        print(f"🎉 Test execution completed: {successful_suites}/{len(all_reports)} suites passed")
+        successful_suites = sum(1 for r in all_reports.values(
+        ) if r.summary['success_rate_percent'] == 100)
+        print(
+            f"🎉 Test execution completed: {successful_suites}/{len(all_reports)} suites passed")
     except Exception as e:
         print(f"❌ Full test execution failed: {e}")
 

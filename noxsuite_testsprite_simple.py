@@ -1,3 +1,11 @@
+import requests
+from pathlib import Path
+from datetime import datetime
+import time
+import sys
+import subprocess
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -6,16 +14,6 @@ logger = get_logger(__name__)
 """
 🧪 NoxSuite TestSprite Autonomous Testing - Simplified Version
 """
-
-import json
-import os
-import subprocess
-import sys
-import time
-from datetime import datetime
-from pathlib import Path
-
-import requests
 
 
 class NoxSuiteTestRunner:
@@ -113,7 +111,8 @@ class NoxSuiteTestRunner:
             ],
         }
 
-        self.log(f"Generated {sum(len(suite) for suite in tests.values())} test cases")
+        self.log(
+            f"Generated {sum(len(suite) for suite in tests.values())} test cases")
         return tests
 
     def execute_tests(self, tests):
@@ -145,7 +144,8 @@ class NoxSuiteTestRunner:
                     "status": status,
                     "duration": duration,
                     "error": (
-                        self.get_error_message(test_case) if status == "FAIL" else None
+                        self.get_error_message(
+                            test_case) if status == "FAIL" else None
                     ),
                 }
 
@@ -154,7 +154,8 @@ class NoxSuiteTestRunner:
                 time.sleep(0.05)  # Simulate execution time
 
             # Calculate suite summary
-            passed_in_suite = sum(1 for r in suite_results if r["status"] == "PASS")
+            passed_in_suite = sum(
+                1 for r in suite_results if r["status"] == "PASS")
             pass_rate = round((passed_in_suite / len(suite_results)) * 100, 1)
 
             results[suite_name] = {
@@ -236,7 +237,8 @@ class NoxSuiteTestRunner:
         for suite_name, suite_data in results.items():
             for test_result in suite_data["tests"]:
                 if test_result["status"] == "FAIL":
-                    priority = self.get_priority(test_result["test"], suite_name)
+                    priority = self.get_priority(
+                        test_result["test"], suite_name)
 
                     task = {
                         "id": f"TASK-{task_id:03d}",
@@ -384,12 +386,14 @@ class NoxSuiteTestRunner:
         }
 
         # Save JSON results
-        results_file = self.logs_dir / f"testsprite_results_{self.timestamp}.json"
+        results_file = self.logs_dir / \
+            f"testsprite_results_{self.timestamp}.json"
         with open(results_file, "w", encoding="utf-8") as f:
             json.dump(comprehensive, f, indent=2)
 
         # Save markdown summary
-        markdown_file = self.logs_dir / f"testsprite_summary_{self.timestamp}.md"
+        markdown_file = self.logs_dir / \
+            f"testsprite_summary_{self.timestamp}.md"
         with open(markdown_file, "w", encoding="utf-8") as f:
             f.write(self.create_markdown_summary(report))
 
@@ -464,11 +468,13 @@ class NoxSuiteTestRunner:
             logger.info(
                 f"Overall Health: {report['EXECUTIVE_SUMMARY']['overall_health']}"
             )
-            logger.info(f"Pass Rate: {report['EXECUTIVE_SUMMARY']['pass_rate']}")
+            logger.info(
+                f"Pass Rate: {report['EXECUTIVE_SUMMARY']['pass_rate']}")
             logger.info(
                 f"Critical Issues: {report['EXECUTIVE_SUMMARY']['critical_issues']}"
             )
-            logger.info(f"Total Tasks: {report['EXECUTIVE_SUMMARY']['total_tasks']}")
+            logger.info(
+                f"Total Tasks: {report['EXECUTIVE_SUMMARY']['total_tasks']}")
             logger.info(f"Results File: {results_file}")
             logger.info("=" * 60)
 

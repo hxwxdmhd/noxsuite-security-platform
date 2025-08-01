@@ -4,22 +4,23 @@
 Handles /api/* routes for script execution, metrics, and AI advisor
 """
 
-import os
 import json
-import subprocess
 import logging
-from pathlib import Path
+import os
+import subprocess
 from datetime import datetime
-from typing import Dict, List, Optional, Any
-import requests
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from flask import Blueprint, request, jsonify, current_app, session
-from flask_login import login_required, current_user
+import requests
+from flask import Blueprint, current_app, jsonify, request, session
+from flask_login import current_user, login_required
 
 logger = logging.getLogger(__name__)
 
 # Create API blueprint
 api_bp = Blueprint('api', __name__, url_prefix='/api')
+
 
 class ScriptManager:
     """Enhanced script management with execution tracking"""
@@ -65,6 +66,7 @@ class ScriptManager:
 
     COMPLIANCE: STANDARD
     """
+
     def get_available_scripts(self) -> List[Dict]:
         """Get list of available scripts with metadata"""
         scripts = []
@@ -603,6 +605,7 @@ def get_system_info():
     """Get system information"""
     try:
         import platform
+
         import psutil
 
         info = {

@@ -10,6 +10,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def main():
     """
     RLVR: Implements main with error handling and validation
@@ -39,7 +40,8 @@ def main():
             # Log periodic status
             status = saver.get_status()
             if status["running"] and status["last_save"]:
-                logger.info(f"Service active - Last save: {status['last_save']}")
+                logger.info(
+                    f"Service active - Last save: {status['last_save']}")
 
     except KeyboardInterrupt:
         logger.info("Service interrupted by user")
@@ -48,6 +50,7 @@ def main():
     finally:
         saver.stop()
         logger.info("Status saver service stopped")
+
 
 if __name__ == "__main__":
     main()

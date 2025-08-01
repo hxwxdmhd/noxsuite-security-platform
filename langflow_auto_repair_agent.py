@@ -1,3 +1,10 @@
+import requests
+from pathlib import Path
+from datetime import datetime
+import time
+import subprocess
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,15 +14,6 @@ logger = get_logger(__name__)
 🔧 Langflow Auto-Repair Agent for TestSprite Failures
 Monitors TestSprite results and triggers automated repairs
 """
-
-import json
-import os
-import subprocess
-import time
-from datetime import datetime
-from pathlib import Path
-
-import requests
 
 
 class LangflowAutoRepairAgent:
@@ -84,7 +82,8 @@ class LangflowAutoRepairAgent:
             self.log("✅ No critical issues found - auto-repair not needed")
             return None
 
-        self.log(f"🚨 Found {critical_issues} critical issues requiring auto-repair")
+        self.log(
+            f"🚨 Found {critical_issues} critical issues requiring auto-repair")
 
         # Categorize failures for targeted repair
         repair_strategy = {
@@ -122,7 +121,8 @@ class LangflowAutoRepairAgent:
             if not failures:
                 continue
 
-            self.log(f"🔧 Triggering repair for {category}: {len(failures)} issues")
+            self.log(
+                f"🔧 Triggering repair for {category}: {len(failures)} issues")
 
             # Prepare repair payload
             repair_payload = {
@@ -134,7 +134,8 @@ class LangflowAutoRepairAgent:
             }
 
             # Trigger specific Langflow workflow
-            workflow_result = self._execute_langflow_workflow(category, repair_payload)
+            workflow_result = self._execute_langflow_workflow(
+                category, repair_payload)
             repair_results[category] = workflow_result
 
             # Add delay between repair attempts
@@ -289,7 +290,8 @@ class LangflowAutoRepairAgent:
                 self.log("✅ Post-repair TestSprite re-test completed successfully")
                 return {"status": "success", "output": result.stdout}
             else:
-                self.log(f"❌ Post-repair TestSprite re-test failed: {result.stderr}")
+                self.log(
+                    f"❌ Post-repair TestSprite re-test failed: {result.stderr}")
                 return {"status": "failed", "error": result.stderr}
 
         except Exception as e:
@@ -309,15 +311,18 @@ class LangflowAutoRepairAgent:
         }
 
         # Save repair report
-        report_file = self.logs_dir / f"auto_repair_report_{self.timestamp}.json"
+        report_file = self.logs_dir / \
+            f"auto_repair_report_{self.timestamp}.json"
         with open(report_file, "w", encoding="utf-8") as f:
             json.dump(repair_report, f, indent=2)
 
         # Create GitHub-friendly summary
-        github_summary = self._create_github_summary(repair_summary, retest_results)
+        github_summary = self._create_github_summary(
+            repair_summary, retest_results)
 
         # Save GitHub summary
-        github_file = self.logs_dir / f"github_auto_repair_summary_{self.timestamp}.md"
+        github_file = self.logs_dir / \
+            f"github_auto_repair_summary_{self.timestamp}.md"
         with open(github_file, "w", encoding="utf-8") as f:
             f.write(github_summary)
 
@@ -326,7 +331,8 @@ class LangflowAutoRepairAgent:
 
     def _create_github_summary(self, repair_summary, retest_results):
         """Create GitHub-friendly auto-repair summary"""
-        success_emoji = "✅" if repair_summary.get("validation_score", 0) > 70 else "⚠️"
+        success_emoji = "✅" if repair_summary.get(
+            "validation_score", 0) > 70 else "⚠️"
 
         summary = f"""# 🔧 Langflow Auto-Repair Report
 
@@ -379,7 +385,8 @@ class LangflowAutoRepairAgent:
             retest_results = self.trigger_retest()
 
             # Phase 6: Sync to GitHub
-            final_report = self.sync_to_github(validation_summary, retest_results)
+            final_report = self.sync_to_github(
+                validation_summary, retest_results)
 
             # Final summary
             logger.info("\n" + "=" * 60)
@@ -419,4 +426,5 @@ if __name__ == "__main__":
     elif result["status"] == "no_action":
         logger.info(f"\n✅ No action needed: {result['message']}")
     else:
-        logger.info(f"\n❌ Auto-repair failed: {result.get('error', 'Unknown error')}")
+        logger.info(
+            f"\n❌ Auto-repair failed: {result.get('error', 'Unknown error')}")

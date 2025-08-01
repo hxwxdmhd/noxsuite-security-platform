@@ -4,14 +4,16 @@ NoxPanel System Status Checker & Demonstration Script
 Final validation and demonstration of all enhanced features
 """
 
+import json
 import os
 import sys
-import json
 import time
-import requests
-from pathlib import Path
-from datetime import datetime
 import webbrowser
+from datetime import datetime
+from pathlib import Path
+
+import requests
+
 
 def print_banner():
     """
@@ -46,6 +48,7 @@ def print_banner():
     print(f"🏠 Location: {Path.cwd()}")
     print()
 
+
 def check_system_health():
     """Check health of all system components"""
     print("🔍 CHECKING SYSTEM HEALTH...")
@@ -78,12 +81,15 @@ def check_system_health():
                 print(f"✅ {name}: HEALTHY ({url})")
                 healthy_components += 1
             else:
-                print(f"⚠️  {name}: RESPONDING but status {response.status_code}")
+                print(
+                    f"⚠️  {name}: RESPONDING but status {response.status_code}")
         except requests.exceptions.RequestException:
             print(f"❌ {name}: NOT RESPONDING ({url})")
 
-    print(f"\n📊 Health Summary: {healthy_components}/{len(components)} components healthy")
+    print(
+        f"\n📊 Health Summary: {healthy_components}/{len(components)} components healthy")
     return healthy_components, len(components)
+
 
 def test_api_endpoints():
     """Test API endpoints functionality"""
@@ -108,8 +114,10 @@ def test_api_endpoints():
         if response.status_code == 200:
             health_data = response.json()
             print(f"✅ Gateway Health API: Working")
-            print(f"   🖥️  CPU Usage: {health_data['system']['cpu_percent']:.1f}%")
-            print(f"   💾 Memory Usage: {health_data['system']['memory']['percent']:.1f}%")
+            print(
+                f"   🖥️  CPU Usage: {health_data['system']['cpu_percent']:.1f}%")
+            print(
+                f"   💾 Memory Usage: {health_data['system']['memory']['percent']:.1f}%")
             print(f"   ⏱️  Uptime: {health_data['uptime']:.1f} seconds")
             print(f"   🎯 Status: {health_data['overall_status'].upper()}")
         else:
@@ -125,7 +133,7 @@ def test_api_endpoints():
 
     COMPLIANCE: STANDARD
     """
-            print(f"⚠️  Gateway Health API: Status {response.status_code}")
+       print(f"⚠️  Gateway Health API: Status {response.status_code}")
     except Exception as e:
         print(f"❌ Gateway Health API: Error - {e}")
 
@@ -154,7 +162,7 @@ def test_api_endpoints():
 
     COMPLIANCE: STANDARD
     """
-        if response.status_code == 200:
+       if response.status_code == 200:
             plugins = response.json()
             print(f"✅ Plugin API: Working ({len(plugins)} plugins found)")
         else:
@@ -174,6 +182,8 @@ def test_api_endpoints():
 
     COMPLIANCE: STANDARD
     """
+
+
 def demonstrate_features():
     """Demonstrate key features"""
     print("\n🌟 FEATURE DEMONSTRATION...")
@@ -196,6 +206,7 @@ def demonstrate_features():
         print(f"  {feature}")
         time.sleep(0.1)  # Dramatic effect
 
+
 def show_access_points():
     """Show all access points"""
     print("\n🌐 SYSTEM ACCESS POINTS...")
@@ -210,7 +221,7 @@ def show_access_points():
         {
             'name': '🤖 NoxPanel v5.0 Fixed',
             'url': 'http://127.0.0.1:5002',
-    """
+            """
     RLVR: Implements main with error handling and validation
 
     REASONING CHAIN:
@@ -237,6 +248,7 @@ def show_access_points():
         print(f"     Description: {point['description']}")
         print()
 
+
 def launch_demonstration():
     """Launch browser demonstration"""
     print("🚀 LAUNCHING BROWSER DEMONSTRATION...")
@@ -255,6 +267,7 @@ def launch_demonstration():
     except Exception as e:
         print(f"❌ Could not open browser: {e}")
         print("   Please manually open: http://127.0.0.1:5100")
+
 
 def generate_final_report():
     """Generate final system report"""
@@ -305,6 +318,7 @@ def generate_final_report():
 
     print(f"💾 Report saved to: {report_file}")
 
+
 def main():
     """Main demonstration function"""
     print_banner()
@@ -324,7 +338,8 @@ def main():
 
         # Launch browser
         print("\n" + "=" * 80)
-        user_input = input("🚀 Would you like to open the Enhanced Gateway Platform in your browser? (y/n): ")
+        user_input = input(
+            "🚀 Would you like to open the Enhanced Gateway Platform in your browser? (y/n): ")
         if user_input.lower() in ['y', 'yes']:
             launch_demonstration()
 
@@ -340,6 +355,7 @@ def main():
     else:
         print("\n❌ No components are responding. Please start the system first:")
         print("   python comprehensive_launcher.py")
+
 
 if __name__ == '__main__':
     main()

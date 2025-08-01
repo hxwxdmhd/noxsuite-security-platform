@@ -5,13 +5,15 @@ Unified architecture targeting 95%+ success rate
 """
 
 import logging
-from flask import Flask, render_template, jsonify
-from blueprints.core import core_bp
+
 from blueprints.api import api_bp
+from blueprints.core import core_bp
 from blueprints.ui import ui_bp
+from flask import Flask, jsonify, render_template
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 def create_app():
     """
@@ -73,6 +75,7 @@ def create_app():
 
     logger.info("✅ NoxPanel Optimized initialized")
     return app
+
 
 if __name__ == '__main__':
     app = create_app()

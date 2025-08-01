@@ -1,4 +1,18 @@
+import requests
+from typing import Dict, List, Optional, Tuple
+from pathlib import Path
+from enum import Enum
+from dataclasses import dataclass
+import time
+import sys
+import subprocess
+import shutil
+import platform
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -7,19 +21,6 @@ NoxSuite + AI Dev Infrastructure Auto-Installer
 Intelligent cross-platform setup for the complete NoxSuite ecosystem
 """
 
-import os
-import sys
-import json
-import subprocess
-import platform
-import shutil
-import requests
-import time
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
-import logging
-from dataclasses import dataclass
-from enum import Enum
 
 # Configure logging
 logging.basicConfig(
@@ -32,16 +33,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class OSType(Enum):
     """
     Enhanced OSType with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component OSType needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for OSType functionality
     3. Solution: Implement OSType with SOLID principles and enterprise patterns
     4. Validation: Test OSType with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     WINDOWS = "windows"
@@ -49,17 +51,18 @@ class OSType(Enum):
     MACOS = "macos"
     UNKNOWN = "unknown"
 
+
 @dataclass
 class SystemInfo:
     """
     Enhanced SystemInfo with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component SystemInfo needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for SystemInfo functionality
     3. Solution: Implement SystemInfo with SOLID principles and enterprise patterns
     4. Validation: Test SystemInfo with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     os_type: OSType
@@ -71,17 +74,18 @@ class SystemInfo:
     node_available: bool = False
     git_available: bool = False
 
+
 @dataclass
 class InstallConfig:
     """
     Enhanced InstallConfig with enterprise-grade reasoning documentation
-    
+
     REASONING CHAIN:
     1. Problem: System component InstallConfig needs clear responsibility definition
     2. Analysis: Class requires specific implementation patterns for InstallConfig functionality
     3. Solution: Implement InstallConfig with SOLID principles and enterprise patterns
     4. Validation: Test InstallConfig with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     install_directory: Path
@@ -93,6 +97,7 @@ class InstallConfig:
     auto_start: bool = True
     ai_models: List[str]
 
+
 class NoxSuiteInstaller:
     """
     REASONING CHAIN:
@@ -100,37 +105,37 @@ class NoxSuiteInstaller:
     2. Analysis: Class requires specific implementation patterns for NoxSuiteInstaller functionality
     3. Solution: Implement NoxSuiteInstaller with SOLID principles and enterprise patterns
     4. Validation: Test NoxSuiteInstaller with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Comprehensive NoxSuite installer with AI-powered setup"""
-    
+
     DEFAULT_MODULES = [
-        "noxpanel", "noxguard", "autoimport", "powerlog", 
-        "langflow-hub", "autocleaner", "heimnetz-scanner", 
+        "noxpanel", "noxguard", "autoimport", "powerlog",
+        "langflow-hub", "autocleaner", "heimnetz-scanner",
         "plugin-system", "update-manager"
     ]
-    
+
     DEFAULT_AI_MODELS = [
         "mistral:7b-instruct", "gemma:7b-it", "tinyllama", "phi"
     ]
-    
+
     def __init__(self):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self.system_info = self._detect_system()
         self.config: Optional[InstallConfig] = None
         self.install_log = []
-        
+
     def _detect_system(self) -> SystemInfo:
     """
     REASONING CHAIN:
@@ -138,12 +143,12 @@ class NoxSuiteInstaller:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _detect_system with enterprise-grade patterns and error handling
     4. Validation: Test _detect_system with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Detect comprehensive system information"""
         logger.info("🔍 Detecting system specifications...")
-        
+
         # OS Detection
         os_name = platform.system().lower()
         if os_name == "windows":
@@ -154,11 +159,11 @@ class NoxSuiteInstaller:
             os_type = OSType.MACOS
         else:
             os_type = OSType.UNKNOWN
-            
+
         # System specs
         architecture = platform.machine()
         python_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-        
+
         # Memory (rough estimate)
         try:
             if os_type == OSType.WINDOWS:
@@ -166,18 +171,19 @@ class NoxSuiteInstaller:
                 available_memory = psutil.virtual_memory().total // (1024**3)  # GB
             else:
                 with open('/proc/meminfo', 'r') as f:
-                    memory_kb = int([line for line in f if 'MemTotal' in line][0].split()[1])
+                    memory_kb = int(
+                        [line for line in f if 'MemTotal' in line][0].split()[1])
                     available_memory = memory_kb // (1024**2)  # GB
         except:
             available_memory = 8  # Default assumption
-            
+
         cpu_cores = os.cpu_count() or 4
-        
+
         # Tool availability
         docker_available = shutil.which("docker") is not None
         node_available = shutil.which("node") is not None
         git_available = shutil.which("git") is not None
-        
+
         system_info = SystemInfo(
             os_type=os_type,
             architecture=architecture,
@@ -188,10 +194,11 @@ class NoxSuiteInstaller:
             node_available=node_available,
             git_available=git_available
         )
-        
-        logger.info(f"✅ Detected: {os_type.value} {architecture}, {cpu_cores} cores, {available_memory}GB RAM")
+
+        logger.info(
+            f"✅ Detected: {os_type.value} {architecture}, {cpu_cores} cores, {available_memory}GB RAM")
         return system_info
-    
+
     def welcome_screen(self):
     """
     REASONING CHAIN:
@@ -199,11 +206,13 @@ class NoxSuiteInstaller:
     2. Analysis: Implementation requires specific logic for welcome_screen operation
     3. Solution: Implement welcome_screen with enterprise-grade patterns and error handling
     4. Validation: Test welcome_screen with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Display welcome and system info"""
         logger.info("")
+
+
 ╔═══════════════════════════════════════════════════════════════════╗
 ║                    🧠 NoxSuite + AI Dev Infrastructure            ║
 ║                        Intelligent Auto-Installer                ║
@@ -214,16 +223,20 @@ class NoxSuiteInstaller:
 ║  • Modular Architecture      • Real-time Monitoring             ║
 ╚═══════════════════════════════════════════════════════════════════╝
         """)
-        
+
         logger.info(f"\n🖥️  System Information:")
-        logger.info(f"   OS: {self.system_info.os_type.value.title()} {self.system_info.architecture}")
+        logger.info(
+            f"   OS: {self.system_info.os_type.value.title()} {self.system_info.architecture}")
         logger.info(f"   Python: {self.system_info.python_version}")
         logger.info(f"   CPU Cores: {self.system_info.cpu_cores}")
         logger.info(f"   Memory: {self.system_info.available_memory}GB")
-        logger.info(f"   Docker: {'✅' if self.system_info.docker_available else '❌'}")
-        logger.info(f"   Node.js: {'✅' if self.system_info.node_available else '❌'}")
-        logger.info(f"   Git: {'✅' if self.system_info.git_available else '❌'}")
-        
+        logger.info(
+            f"   Docker: {'✅' if self.system_info.docker_available else '❌'}")
+        logger.info(
+            f"   Node.js: {'✅' if self.system_info.node_available else '❌'}")
+        logger.info(
+            f"   Git: {'✅' if self.system_info.git_available else '❌'}")
+
     def interactive_config(self) -> InstallConfig:
     """
     REASONING CHAIN:

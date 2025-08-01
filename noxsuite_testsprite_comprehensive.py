@@ -1,3 +1,11 @@
+from typing import Any, Dict, List
+from pathlib import Path
+import time
+import subprocess
+import random
+import json
+import datetime
+import argparse
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,15 +15,6 @@ logger = get_logger(__name__)
 NoxSuite Comprehensive TestSprite Runner
 Expanded test coverage for edge cases, security templates, and chaos networking
 """
-
-import argparse
-import datetime
-import json
-import random
-import subprocess
-import time
-from pathlib import Path
-from typing import Any, Dict, List
 
 
 class ComprehensiveTestSpriteRunner:
@@ -152,7 +151,8 @@ class ComprehensiveTestSpriteRunner:
                 "resilience_score": round(resilience_score * 100, 1),
                 "execution_time": round(time.time() - start_time, 2),
                 "recovery_time": (
-                    round(random.uniform(1.0, 30.0), 2) if resilience_score < 0.7 else 0
+                    round(random.uniform(1.0, 30.0),
+                          2) if resilience_score < 0.7 else 0
                 ),
                 "stability": "STABLE" if resilience_score > 0.85 else "UNSTABLE",
             }
@@ -231,7 +231,8 @@ class ComprehensiveTestSpriteRunner:
             ]
         )
 
-        overall_score = (passed_tests / total_tests * 100) if total_tests > 0 else 0
+        overall_score = (passed_tests / total_tests *
+                         100) if total_tests > 0 else 0
 
         return {
             "total_tests": total_tests,
@@ -258,7 +259,8 @@ class ComprehensiveTestSpriteRunner:
         logs_dir.mkdir(parents=True, exist_ok=True)
 
         # Save detailed results
-        results_file = logs_dir / f"comprehensive_results_{self.timestamp}.json"
+        results_file = logs_dir / \
+            f"comprehensive_results_{self.timestamp}.json"
         with open(results_file, "w", encoding="utf-8") as f:
             json.dump(self.results, f, indent=2, ensure_ascii=False)
 
@@ -381,16 +383,19 @@ Based on comprehensive testing results:
 
         logger.info("=" * 60)
         logger.info(f"🎉 COMPREHENSIVE TESTING COMPLETE")
-        logger.info(f"Overall Health: {self.results['summary']['overall_health']}")
+        logger.info(
+            f"Overall Health: {self.results['summary']['overall_health']}")
         logger.info(f"Pass Rate: {self.results['summary']['pass_rate']}%")
-        logger.info(f"Critical Issues: {self.results['summary']['critical_issues']}")
+        logger.info(
+            f"Critical Issues: {self.results['summary']['critical_issues']}")
         logger.info("=" * 60)
 
         return self.results
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Comprehensive TestSprite Testing")
+    parser = argparse.ArgumentParser(
+        description="Comprehensive TestSprite Testing")
     parser.add_argument(
         "--mode",
         default="comprehensive",

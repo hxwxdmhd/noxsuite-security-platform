@@ -13,11 +13,12 @@ Chain-of-Thought Implementation:
 Compliance: RLVR Methodology v4.0+ Applied
 """
 
-import subprocess
 import logging
+import subprocess
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
 
 def run_script(script_path, args=None):
     """
@@ -46,7 +47,7 @@ def run_script(script_path, args=None):
 
     try:
         result = subprocess.run(
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             ["python", str(script_path)] + args,
             capture_output=True,
             text=True,

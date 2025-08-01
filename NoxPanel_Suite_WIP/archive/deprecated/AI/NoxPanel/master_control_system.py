@@ -15,19 +15,20 @@ Master Features:
 - Enterprise-grade security and compliance
 """
 
+import json
+import logging
 import os
 import sys
-import json
-import time
 import threading
+import time
 from datetime import datetime
-from typing import Dict, List, Any, Optional
-import logging
+from typing import Any, Dict, List, Optional
+
 from flask import Flask, jsonify, render_template_string, request
 
 # Import enhanced modules
 try:
-    from enhanced_plugin_system import EnhancedPluginManager, AIPluginOptimizer
+    from enhanced_plugin_system import AIPluginOptimizer, EnhancedPluginManager
     ENHANCED_PLUGINS_AVAILABLE = True
 except ImportError:
     print("Enhanced plugin system not available")
@@ -58,6 +59,7 @@ except ImportError:
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 class NoxPanelMasterControl:
     """Master Control System for NoxPanel Advanced Capabilities"""
@@ -122,7 +124,8 @@ class NoxPanelMasterControl:
         # Enhanced Plugin System
         if ENHANCED_PLUGINS_AVAILABLE:
             self.plugin_manager = EnhancedPluginManager()
-            self.system_status["active_modules"].append("Enhanced Plugin System")
+            self.system_status["active_modules"].append(
+                "Enhanced Plugin System")
             logger.info("✅ Enhanced Plugin System initialized")
 
         # ChatGPT Infrastructure Integration
@@ -140,7 +143,8 @@ class NoxPanelMasterControl:
     """
         if CHATGPT_INTEGRATION_AVAILABLE:
             self.ai_agent = ChatGPTInfrastructureAgent()
-            self.system_status["active_modules"].append("ChatGPT AI Integration")
+            self.system_status["active_modules"].append(
+                "ChatGPT AI Integration")
             logger.info("✅ ChatGPT Infrastructure Integration initialized")
 
         # Gate 5 Progression
@@ -159,7 +163,8 @@ class NoxPanelMasterControl:
     COMPLIANCE: STANDARD
     """
                 self.gate5_orchestrator = Gate5SecurityOrchestrator()
-                self.system_status["active_modules"].append("Gate 5 Security Orchestration")
+                self.system_status["active_modules"].append(
+                    "Gate 5 Security Orchestration")
                 logger.info("✅ Gate 5 Security Orchestrator initialized")
             except Exception as e:
                 logger.error(f"❌ Failed to initialize Gate 5 orchestrator: {e}")

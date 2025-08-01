@@ -1,3 +1,8 @@
+from typing import Dict, List
+from datetime import datetime
+import zipfile
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,12 +12,6 @@ logger = get_logger(__name__)
 Manual Langflow Workflow Importer
 Creates importable workflow packages for manual upload to Langflow
 """
-
-import json
-import os
-import zipfile
-from datetime import datetime
-from typing import Dict, List
 
 
 class LangflowWorkflowPackager:
@@ -221,7 +220,8 @@ class {node_type}(CustomComponent):
         """Create Langflow packages for all workflows"""
         logger.info("📦 LANGFLOW WORKFLOW PACKAGER")
         logger.info("=" * 60)
-        logger.info(f"🕐 Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        logger.info(
+            f"🕐 Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
         workflow_files = [
             "enhanced_coding_engineer.json",
@@ -292,7 +292,8 @@ class {node_type}(CustomComponent):
         logger.info(f"   1. Open Langflow at http://localhost:7860")
         logger.info(f"   2. Navigate to the Flows section")
         logger.info(f"   3. Click 'Import Flow' or 'Upload'")
-        logger.info(f"   4. Select individual JSON files from {self.export_dir}")
+        logger.info(
+            f"   4. Select individual JSON files from {self.export_dir}")
         logger.info(f"   5. Or extract and import from {zip_filename}")
 
         if successful_packages == len(workflow_files):

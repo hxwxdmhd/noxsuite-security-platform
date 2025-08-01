@@ -1,3 +1,8 @@
+import requests
+from datetime import datetime
+import time
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,13 +12,6 @@ logger = get_logger(__name__)
 Enhanced Coding Engineer Integration Tester
 Validates the enhanced coding and engineering workflow integration
 """
-
-import json
-import os
-import time
-from datetime import datetime
-
-import requests
 
 
 class EnhancedCodingEngineerTester:
@@ -191,7 +189,8 @@ class EnhancedCodingEngineerTester:
     def test_langflow_integration(self):
         """Test integration with Langflow platform"""
         try:
-            response = requests.get(f"{self.langflow_url}/api/v1/flows", timeout=10)
+            response = requests.get(
+                f"{self.langflow_url}/api/v1/flows", timeout=10)
             if response.status_code == 200:
                 return {
                     "integrated": True,
@@ -210,15 +209,18 @@ class EnhancedCodingEngineerTester:
         """Run comprehensive tests on enhanced coding engineer workflow"""
         logger.info("🧪 ENHANCED CODING ENGINEER INTEGRATION TESTING")
         logger.info("=" * 70)
-        logger.info(f"🕐 Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        logger.info(
+            f"🕐 Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
         # Test workflow structure
-        logger.info("\n1. Testing Enhanced Coding Engineer workflow structure...")
+        logger.info(
+            "\n1. Testing Enhanced Coding Engineer workflow structure...")
         structure_result = self.test_workflow_structure()
 
         if structure_result["valid"]:
             logger.info(f"✅ Structure: Valid")
-            logger.info(f"   • Components: {structure_result['components_count']}")
+            logger.info(
+                f"   • Components: {structure_result['components_count']}")
             logger.info(f"   • Edges: {structure_result['edges_count']}")
             logger.info(
                 f"   • Engineering Features: {structure_result['engineering_features']}"
@@ -245,7 +247,8 @@ class EnhancedCodingEngineerTester:
                 "detailed_capabilities"
             ].items():
                 status = "✅" if enabled else "❌"
-                logger.info(f"   {status} {capability.replace('_', ' ').title()}")
+                logger.info(
+                    f"   {status} {capability.replace('_', ' ').title()}")
         else:
             logger.info(f"❌ Capabilities: {capabilities_result['error']}")
             return False
@@ -256,7 +259,8 @@ class EnhancedCodingEngineerTester:
 
         if integration_result["integrated"]:
             logger.info(f"✅ Langflow: Connected and accessible")
-            logger.info(f"   • Status: {integration_result['langflow_status']}")
+            logger.info(
+                f"   • Status: {integration_result['langflow_status']}")
             logger.info(
                 f"   • API: {'Accessible' if integration_result['api_accessible'] else 'Not accessible'}"
             )
@@ -290,7 +294,8 @@ class EnhancedCodingEngineerTester:
             logger.info(
                 f"   • Workflow Components: {structure_result['components_count']}/6 (100%)"
             )
-            logger.info(f"   • Connection Edges: {structure_result['edges_count']}")
+            logger.info(
+                f"   • Connection Edges: {structure_result['edges_count']}")
         if "error" not in capabilities_result:
             logger.info(
                 f"   • Engineering Capabilities: {capabilities_result['capabilities_enabled']}/{capabilities_result['total_capabilities']} ({capabilities_result['capability_coverage']:.0f}%)"
@@ -323,11 +328,13 @@ class EnhancedCodingEngineerTester:
         logger.info(f"\n💾 Test report saved: {report_filename}")
 
         if overall_success:
-            logger.info("\n🎉 ENHANCED CODING ENGINEER WORKFLOW PASSED ALL TESTS!")
+            logger.info(
+                "\n🎉 ENHANCED CODING ENGINEER WORKFLOW PASSED ALL TESTS!")
             logger.info(
                 "🚀 Ready for production deployment and AI-powered development assistance"
             )
-            logger.info("🔧 All engineering capabilities validated and operational")
+            logger.info(
+                "🔧 All engineering capabilities validated and operational")
         else:
             logger.info(
                 "\n⚠️ Enhanced Coding Engineer workflow needs attention before deployment"

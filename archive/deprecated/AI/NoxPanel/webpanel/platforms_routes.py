@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 platforms_bp = Blueprint('platforms', __name__, url_prefix='/platforms')
 
+
 @platforms_bp.route('/')
 @platforms_bp.route('/dashboard')
 def dashboard():
@@ -42,7 +43,7 @@ def dashboard():
         }
 
         return render_template('platforms/switcher.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -54,8 +55,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             title="Platform Switcher",
-                             stats=stats)
+                               title="Platform Switcher",
+                               stats=stats)
     except Exception as e:
     """
     RLVR: Implements api_data with error handling and validation
@@ -69,12 +70,12 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"Platform Switcher dashboard error: {e}")
-        flash(f"Error loading platform switcher: {e}", 'error')
-        return render_template('platforms/switcher.html',
-                             title="Platform Switcher",
-                             stats={},
-    """
+    logger.error(f"Platform Switcher dashboard error: {e}")
+    flash(f"Error loading platform switcher: {e}", 'error')
+    return render_template('platforms/switcher.html',
+                           title="Platform Switcher",
+                           stats={},
+                           """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -86,7 +87,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             error=str(e))
+                           error=str(e))
+
 
 @platforms_bp.route('/api/status')
 def api_status():
@@ -105,7 +107,7 @@ def api_status():
     """Platform Switcher status API"""
     try:
         status = {
-    """
+            """
     RLVR: Implements register_platforms_routes with error handling and validation
 
     REASONING CHAIN:
@@ -126,6 +128,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Platform Switcher status API error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @platforms_bp.route('/api/data')
 def api_data():

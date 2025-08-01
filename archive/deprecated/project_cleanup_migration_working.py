@@ -46,10 +46,12 @@ AGENT_TASKS = [
     "Validate migration completeness"
 ]
 
+
 def write_log(message):
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(message + "\n")
     print(message)
+
 
 def is_protected(path):
     for keep in KEEP_PATHS:
@@ -57,8 +59,10 @@ def is_protected(path):
             return True
     return False
 
+
 def backup_and_delete(path):
-    backup_path = os.path.join(BACKUP_DIR, os.path.relpath(path, start=os.getcwd()))
+    backup_path = os.path.join(
+        BACKUP_DIR, os.path.relpath(path, start=os.getcwd()))
     os.makedirs(os.path.dirname(backup_path), exist_ok=True)
     try:
         if os.path.isdir(path):
@@ -73,6 +77,7 @@ def backup_and_delete(path):
         write_log(f"❌ Failed to delete: {path} - Error: {e}")
         return False
 
+
 def find_targets():
     items = []
     for target in DELETE_TARGETS:
@@ -83,6 +88,7 @@ def find_targets():
                 items.append(target)
     return items
 
+
 def cleanup_diagnostics():
     diag_files = []
     for root, dirs, files in os.walk('.'):
@@ -91,6 +97,7 @@ def cleanup_diagnostics():
                 if not any(x in root for x in ["node_modules", "essential", "config"]):
                     diag_files.append(os.path.join(root, file))
     return diag_files
+
 
 def generate_todo(deleted, skipped):
     lines = [
@@ -113,6 +120,7 @@ def generate_todo(deleted, skipped):
         f.write("\n".join(lines))
     write_log(f"📝 TODO checklist generated: {TODO_FILE}")
 
+
 def generate_rollback():
     lines = [
         "import shutil, os",
@@ -129,6 +137,7 @@ def generate_rollback():
         f.write("\n".join(lines))
     write_log(f"🔄 Rollback script generated: {ROLLBACK_FILE}")
 
+
 def main():
     print("\n=== PROJECT CLEANUP MIGRATION ===\n")
     print(f"Backup directory: {BACKUP_DIR}")
@@ -138,8 +147,10 @@ def main():
     diagnostics = cleanup_diagnostics()
     deleted = []
     skipped = []
-    print(f"Found {len(targets)} cleanup targets and {len(diagnostics)} diagnostic files.")
-    confirm = input("Proceed with deletion and backup? (y/N): ").strip().lower()
+    print(
+        f"Found {len(targets)} cleanup targets and {len(diagnostics)} diagnostic files.")
+    confirm = input(
+        "Proceed with deletion and backup? (y/N): ").strip().lower()
     if confirm != 'y':
         print("Aborted by user.")
         return
@@ -157,6 +168,7 @@ def main():
     generate_todo(deleted, skipped)
     generate_rollback()
     print("\nCleanup complete. See log and TODO checklist for details.")
+
 
 if __name__ == "__main__":
     main()

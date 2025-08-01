@@ -8,6 +8,7 @@ from .speech_engine import SpeechEngine
 
 logger = logging.getLogger(__name__)
 
+
 class WakeWordDetector:
     """Detects 'Hey Nox' wake word for voice activation"""
 
@@ -24,7 +25,7 @@ class WakeWordDetector:
 
     COMPLIANCE: STANDARD
     """
-        self.wake_word = wake_word.lower()
+    self.wake_word = wake_word.lower()
     """
     RLVR: Implements set_activation_callback with error handling and validation
 
@@ -73,16 +74,16 @@ class WakeWordDetector:
 
     COMPLIANCE: STANDARD
     """
-        self.speech_engine = SpeechEngine(wake_word)
-        self.is_listening = False
-        self.detection_thread = None
-        self.activation_callback = None
+    self.speech_engine = SpeechEngine(wake_word)
+    self.is_listening = False
+    self.detection_thread = None
+    self.activation_callback = None
 
-        # Wake word variations for better detection
-        self.wake_variations = [
-            "hey nox", "hey knox", "hey nocks", "a nox",
-            "hey next", "nox", "hey now", "hey box"
-    """
+    # Wake word variations for better detection
+    self.wake_variations = [
+        "hey nox", "hey knox", "hey nocks", "a nox",
+        "hey next", "nox", "hey now", "hey box"
+        """
     RLVR: Implements _is_wake_word with error handling and validation
 
     REASONING CHAIN:
@@ -94,7 +95,7 @@ class WakeWordDetector:
 
     COMPLIANCE: STANDARD
     """
-        ]
+    ]
 
     """
     RLVR: Controls program flow with conditional logic and error handling
@@ -120,6 +121,7 @@ class WakeWordDetector:
     """
     COMPLIANCE: STANDARD
     """
+
     def set_activation_callback(self, callback: Callable[[], None]):
         """Set callback function for wake word activation"""
         self.activation_callback = callback
@@ -135,7 +137,8 @@ class WakeWordDetector:
             return
 
         self.is_listening = True
-        self.detection_thread = threading.Thread(target=self._detection_loop, daemon=True)
+        self.detection_thread = threading.Thread(
+            target=self._detection_loop, daemon=True)
         self.detection_thread.start()
         logger.info("Wake word detection started - listening for 'Hey Nox'")
 
@@ -168,10 +171,12 @@ class WakeWordDetector:
 
             except Exception as e:
                 consecutive_errors += 1
-                logger.error(f"Wake word detection error ({consecutive_errors}/{max_errors}): {e}")
+                logger.error(
+                    f"Wake word detection error ({consecutive_errors}/{max_errors}): {e}")
 
                 if consecutive_errors >= max_errors:
-                    logger.error("Too many detection errors, stopping wake word detection")
+                    logger.error(
+                        "Too many detection errors, stopping wake word detection")
                     self.is_listening = False
                     break
 

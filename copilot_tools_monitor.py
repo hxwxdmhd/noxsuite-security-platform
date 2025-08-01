@@ -1,3 +1,18 @@
+import requests
+from typing import Any, Dict, List, Optional, Tuple, Union
+from pathlib import Path
+from datetime import datetime, timedelta
+import uuid
+import time
+import threading
+import sys
+import subprocess
+import re
+import random
+import queue
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -8,28 +23,14 @@ VS Code Copilot Tools Usage Monitor and Throttling System
 Prevents exceeding the 128 tools usage limit in VS Code Copilot through
 automated monitoring, throttling, and task splitting.
 """
-import json
-import logging
-import os
-import queue
-import random
-import re
-import subprocess
-import sys
-import threading
-import time
-import uuid
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
 
-import requests
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("copilot_tools_usage.log"), logging.StreamHandler()],
+    handlers=[logging.FileHandler(
+        "copilot_tools_usage.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger("CopilotToolsMonitor")
 
@@ -175,7 +176,8 @@ class CopilotToolsMonitor:
                 with open(self.context_file, "r") as f:
                     data = json.load(f)
                     self.tools_used = data.get("tools_used", [])
-                    self.tool_usage_timestamps = data.get("tool_usage_timestamps", {})
+                    self.tool_usage_timestamps = data.get(
+                        "tool_usage_timestamps", {})
                     self.current_count = len(self.tools_used)
                     logger.info(
                         f"Loaded existing context. Current tools count: {self.current_count}"
@@ -216,7 +218,8 @@ class CopilotToolsMonitor:
     def _start_worker(self):
         """Start background worker thread for processing tasks"""
         if self.worker_thread is None or not self.worker_thread.is_alive():
-            self.worker_thread = threading.Thread(target=self._worker_loop, daemon=True)
+            self.worker_thread = threading.Thread(
+                target=self._worker_loop, daemon=True)
             self.worker_thread.start()
             logger.debug("Background worker thread started")
 
@@ -238,11 +241,13 @@ class CopilotToolsMonitor:
 
                     # Process task
                     if task["type"] == "register_tool":
-                        self._register_tool(task["tool_name"], task["category"])
+                        self._register_tool(
+                            task["tool_name"], task["category"])
                     elif task["type"] == "cleanup":
                         self._cleanup_expired_tools()
                     elif task["type"] == "exit":
-                        logger.debug("Received exit signal, terminating worker thread")
+                        logger.debug(
+                            "Received exit signal, terminating worker thread")
                         break
 
                     # Mark task as done
@@ -316,7 +321,8 @@ class CopilotToolsMonitor:
             # Update count and save
             self.current_count = len(self.tools_used)
             if expired_tools:
-                logger.info(f"Cleaned up {len(expired_tools)} expired tool records")
+                logger.info(
+                    f"Cleaned up {len(expired_tools)} expired tool records")
                 self.save_context()
 
     def register_tool(self, tool_name: str, category: str = "default"):
@@ -389,7 +395,8 @@ class CopilotToolsMonitor:
 
     def _initiate_task_splitting(self):
         """Initiate task splitting to avoid exceeding the limit"""
-        logger.warning("Initiating task splitting to avoid exceeding tool limit")
+        logger.warning(
+            "Initiating task splitting to avoid exceeding tool limit")
         # In a real implementation, this would split the current task
         # across multiple agents
 
@@ -456,11 +463,13 @@ def monitor_command_line():
     """Command line interface for the monitor"""
     import argparse
 
-    parser = argparse.ArgumentParser(description="VS Code Copilot Tools Usage Monitor")
+    parser = argparse.ArgumentParser(
+        description="VS Code Copilot Tools Usage Monitor")
     parser.add_argument(
         "--reset", action="store_true", help="Reset the tools usage counter"
     )
-    parser.add_argument("--status", action="store_true", help="Show current status")
+    parser.add_argument("--status", action="store_true",
+                        help="Show current status")
     parser.add_argument("--register", help="Register a tool usage")
     parser.add_argument("--category", default="default", help="Tool category")
     parser.add_argument(
@@ -501,7 +510,8 @@ def monitor_command_line():
         logger.info(
             f"Session duration: {stats['session_duration_seconds']:.1f} seconds"
         )
-        logger.info(f"Usage rate: {stats['usage_rate_per_second']:.4f} tools/second")
+        logger.info(
+            f"Usage rate: {stats['usage_rate_per_second']:.4f} tools/second")
 
         # Show estimated time to limit
         if stats["estimated_seconds_to_limit"] == float("inf"):
@@ -531,7 +541,8 @@ if __name__ == "__main__":
         """Register a tool usage, with optional throttling"""
         with self.lock:
             timestamp = datetime.now().isoformat()
-            tool_entry = {"tool": tool_name, "timestamp": timestamp, "params": params}
+            tool_entry = {"tool": tool_name,
+                          "timestamp": timestamp, "params": params}
             self.tools_used.append(tool_entry)
             self.current_count = len(self.tools_used)
 
@@ -550,7 +561,8 @@ if __name__ == "__main__":
             if self.throttle_enabled and self.current_count >= self.WARNING_THRESHOLD:
                 delay = self._calculate_throttle_delay()
                 if delay > 0:
-                    logger.info(f"Throttling tool usage - applying {delay}ms delay")
+                    logger.info(
+                        f"Throttling tool usage - applying {delay}ms delay")
                     time.sleep(delay / 1000.0)  # Convert ms to seconds
 
             self.save_context()
@@ -692,7 +704,8 @@ if __name__ == "__main__":
 
         # Final context save
         self.save_context()
-        logger.info(f"Monitor shutdown. Final tools count: {self.current_count}")
+        logger.info(
+            f"Monitor shutdown. Final tools count: {self.current_count}")
 
 
 def main():
@@ -712,8 +725,10 @@ def main():
     logger.info(
         f"📊 Current usage: {stats['current_count']}/{stats['max_limit']} tools"
     )
-    logger.info(f"📈 Usage rate: {stats['usage_rate_per_second']:.2f} tools/sec")
-    logger.info(f"⏳ Time to limit: {stats['estimated_seconds_to_limit']:.1f} seconds")
+    logger.info(
+        f"📈 Usage rate: {stats['usage_rate_per_second']:.2f} tools/sec")
+    logger.info(
+        f"⏳ Time to limit: {stats['estimated_seconds_to_limit']:.1f} seconds")
 
     # Test batch processing
     batch_tools = [

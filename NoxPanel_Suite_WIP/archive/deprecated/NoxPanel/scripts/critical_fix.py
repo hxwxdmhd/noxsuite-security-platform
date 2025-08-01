@@ -4,10 +4,11 @@ Critical Fix Script - Resolve All Phase 2 Module Issues
 Fixes missing modules, import errors, and validation issues
 """
 
+import logging
 import os
 import sys
-import logging
 from pathlib import Path
+
 
 def setup_unicode_logging():
     """
@@ -42,13 +43,15 @@ def setup_unicode_logging():
             format="%(asctime)s - [CRITICAL-FIX] - %(message)s",
             handlers=[
                 logging.StreamHandler(sys.stdout),
-                logging.FileHandler("data/logs/critical_fix.log", encoding='utf-8')
+                logging.FileHandler(
+                    "data/logs/critical_fix.log", encoding='utf-8')
             ]
         )
         return logging.getLogger(__name__)
     except Exception as e:
         print(f"Logging setup failed: {e}")
         return None
+
 
 def verify_module_structure():
     """Verify all required modules exist"""
@@ -130,10 +133,10 @@ def test_imports():
         sys.path.insert(0, str(project_root))
 
         # Test imports
-        from noxcore.websocket.manager import WebSocketManager
-        from noxcore.tasks.manager import TaskManager
-        from noxcore.plugins import PluginManager
         from noxcore.database import NoxDatabase
+        from noxcore.plugins import PluginManager
+        from noxcore.tasks.manager import TaskManager
+        from noxcore.websocket.manager import WebSocketManager
 
         if logger:
             logger.info("All critical imports successful")

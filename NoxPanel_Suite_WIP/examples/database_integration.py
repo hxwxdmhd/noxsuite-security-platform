@@ -1,4 +1,16 @@
+from NoxPanel.noxcore.database_service import (
+    close_database_service,
+    get_database_service,
+)
+from NoxPanel.noxcore.database_admin import DatabaseAdmin
+from typing import Any, Dict, List, Optional
+from datetime import datetime, timedelta
+import sys
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 """
@@ -6,22 +18,15 @@ Example usage and integration code for NoxGuard Database System
 Demonstrates how to integrate the database with existing NoxPanel components
 """
 
-import os
-import sys
-import json
-import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
 
 # Add the project root to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from NoxPanel.noxcore.database_service import get_database_service, close_database_service
-from NoxPanel.noxcore.database_admin import DatabaseAdmin
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 class NoxPanelIntegration:
     """
@@ -30,11 +35,11 @@ class NoxPanelIntegration:
     2. Analysis: Class requires specific implementation patterns for NoxPanelIntegration functionality
     3. Solution: Implement NoxPanelIntegration with SOLID principles and enterprise patterns
     4. Validation: Test NoxPanelIntegration with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Integration layer for NoxPanel with enhanced database"""
-    
+
     def __init__(self, db_path: str = None):
     """
     REASONING CHAIN:
@@ -42,13 +47,13 @@ class NoxPanelIntegration:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Initialize with database service"""
-        self.db = get_database_service(db_path)
-        self.admin = DatabaseAdmin(db_path)
-    
+     """Initialize with database service"""
+      self.db = get_database_service(db_path)
+       self.admin = DatabaseAdmin(db_path)
+
     def setup_system(self):
     """
     REASONING CHAIN:
@@ -56,27 +61,27 @@ class NoxPanelIntegration:
     2. Analysis: Implementation requires specific logic for setup_system operation
     3. Solution: Implement setup_system with enterprise-grade patterns and error handling
     4. Validation: Test setup_system with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Setup initial system configuration"""
-        logger.info("Setting up NoxPanel system...")
-        
-        # Check database health
-        health = self.admin.health_check()
+     """Setup initial system configuration"""
+      logger.info("Setting up NoxPanel system...")
+
+       # Check database health
+       health = self.admin.health_check()
         if health['health_status'] != 'healthy':
             logger.warning(f"Database health issue: {health}")
             return False
-        
+
         # Ensure required settings exist
         self._setup_default_settings()
-        
+
         # Create sample data if empty
         self._create_sample_data()
-        
+
         logger.info("System setup completed successfully")
         return True
-    
+
     def _setup_default_settings(self):
     """
     REASONING CHAIN:
@@ -84,12 +89,12 @@ class NoxPanelIntegration:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _setup_default_settings with enterprise-grade patterns and error handling
     4. Validation: Test _setup_default_settings with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Setup default system settings"""
-        default_settings = {
-            'system_name': 'NoxGuard Panel',
+     """Setup default system settings"""
+      default_settings = {
+           'system_name': 'NoxGuard Panel',
             'version': '1.0.0',
             'theme': 'dark',
             'auto_discovery': 'true',
@@ -102,15 +107,15 @@ class NoxPanelIntegration:
             'knowledge_categories': json.dumps([
                 'network', 'security', 'troubleshooting', 'documentation'
             ])
-        }
-        
-        with self.db.db.get_connection() as conn:
+           }
+
+       with self.db.db.get_connection() as conn:
             for key, value in default_settings.items():
                 conn.execute("""
                     INSERT OR IGNORE INTO settings (key, value, category, description)
                     VALUES (?, ?, 'system', ?)
                 """, (key, value, f"Default {key} setting"))
-    
+
     def _create_sample_data(self):
     """
     REASONING CHAIN:
@@ -118,25 +123,25 @@ class NoxPanelIntegration:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _create_sample_data with enterprise-grade patterns and error handling
     4. Validation: Test _create_sample_data with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Create sample data if database is empty"""
-        # Check if we need sample data
-        with self.db.db.get_connection() as conn:
-            cursor = conn.cursor()
+     """Create sample data if database is empty"""
+      # Check if we need sample data
+      with self.db.db.get_connection() as conn:
+           cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM knowledge_items")
             knowledge_count = cursor.fetchone()[0]
-            
+
             if knowledge_count == 0:
                 self._create_sample_knowledge()
-            
+
             cursor.execute("SELECT COUNT(*) FROM tags")
             tag_count = cursor.fetchone()[0]
-            
+
             if tag_count == 0:
                 self._create_sample_tags()
-    
+
     def _create_sample_knowledge(self):
     """
     REASONING CHAIN:
@@ -144,14 +149,14 @@ class NoxPanelIntegration:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _create_sample_knowledge with enterprise-grade patterns and error handling
     4. Validation: Test _create_sample_knowledge with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Create sample knowledge items"""
-        admin_user = self.db.users.get_user(username='admin')
-        if not admin_user:
+     """Create sample knowledge items"""
+      admin_user = self.db.users.get_user(username='admin')
+       if not admin_user:
             return
-        
+
         sample_knowledge = [
             {
                 'title': 'Network Discovery Best Practices',
@@ -237,7 +242,7 @@ netstat -rn
                 'search_keywords': 'troubleshooting connectivity ping dns routing'
             }
         ]
-        
+
         for item in sample_knowledge:
             knowledge_id = self.db.knowledge.create_knowledge_item(
                 title=item['title'],
@@ -247,8 +252,9 @@ netstat -rn
                 content_type=item['content_type'],
                 search_keywords=item['search_keywords']
             )
-            logger.info(f"Created knowledge item: {item['title']} (ID: {knowledge_id})")
-    
+            logger.info(
+                f"Created knowledge item: {item['title']} (ID: {knowledge_id})")
+
     def _create_sample_tags(self):
     """
     REASONING CHAIN:
@@ -259,22 +265,30 @@ netstat -rn
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Create sample tags"""
-        admin_user = self.db.users.get_user(username='admin')
-        if not admin_user:
+     """Create sample tags"""
+      admin_user = self.db.users.get_user(username='admin')
+       if not admin_user:
             return
-        
+
         sample_tags = [
-            {'name': 'network', 'description': 'Network-related content', 'color': '#2196F3'},
-            {'name': 'security', 'description': 'Security-related content', 'color': '#F44336'},
-            {'name': 'troubleshooting', 'description': 'Troubleshooting guides', 'color': '#FF9800'},
-            {'name': 'documentation', 'description': 'General documentation', 'color': '#4CAF50'},
-            {'name': 'monitoring', 'description': 'Monitoring and alerting', 'color': '#9C27B0'},
-            {'name': 'automation', 'description': 'Automation scripts and tools', 'color': '#00BCD4'},
-            {'name': 'urgent', 'description': 'Urgent/critical information', 'color': '#FF5722'},
-            {'name': 'tutorial', 'description': 'Step-by-step tutorials', 'color': '#607D8B'}
+            {'name': 'network', 'description': 'Network-related content',
+                'color': '#2196F3'},
+            {'name': 'security', 'description': 'Security-related content',
+                'color': '#F44336'},
+            {'name': 'troubleshooting',
+                'description': 'Troubleshooting guides', 'color': '#FF9800'},
+            {'name': 'documentation',
+                'description': 'General documentation', 'color': '#4CAF50'},
+            {'name': 'monitoring', 'description': 'Monitoring and alerting',
+                'color': '#9C27B0'},
+            {'name': 'automation',
+                'description': 'Automation scripts and tools', 'color': '#00BCD4'},
+            {'name': 'urgent', 'description': 'Urgent/critical information',
+                'color': '#FF5722'},
+            {'name': 'tutorial', 'description': 'Step-by-step tutorials',
+                'color': '#607D8B'}
         ]
-        
+
         for tag in sample_tags:
             tag_id = self.db.tags.create_tag(
                 name=tag['name'],
@@ -283,7 +297,7 @@ netstat -rn
                 created_by=admin_user['id']
             )
             logger.info(f"Created tag: {tag['name']} (ID: {tag_id})")
-    
+
     def close(self):
     """
     REASONING CHAIN:
@@ -294,8 +308,9 @@ netstat -rn
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Close database connections"""
-        close_database_service()
+     """Close database connections"""
+      close_database_service()
+
 
 def example_usage():
     """
@@ -304,62 +319,65 @@ def example_usage():
     2. Analysis: Implementation requires specific logic for example_usage operation
     3. Solution: Implement example_usage with enterprise-grade patterns and error handling
     4. Validation: Test example_usage with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Example usage of the integrated database system"""
-    import tempfile
     import shutil
-    
+    import tempfile
+
     temp_dir = tempfile.mkdtemp()
     try:
         db_path = os.path.join(temp_dir, 'noxpanel.db')
-        
+
         # Initialize the integration
         integration = NoxPanelIntegration(db_path)
-        
+
         # Setup the system
         integration.setup_system()
-        
+
         # Get admin user
         admin_user = integration.db.users.get_user(username='admin')
         if admin_user:
             # Search knowledge
-            results = integration.db.knowledge.search_knowledge_items('network')
+            results = integration.db.knowledge.search_knowledge_items(
+                'network')
             logger.info(f"Found {len(results)} knowledge items")
-            
+
             # Create conversation
             conv_id = integration.db.conversations.create_conversation(
                 user_id=admin_user['id'],
                 title="Test Chat"
             )
             logger.info(f"Created conversation: {conv_id}")
-            
+
             # Add messages
             integration.db.conversations.add_message(
                 conversation_id=conv_id,
                 role='user',
                 content='How do I troubleshoot network connectivity?'
             )
-            
+
             integration.db.conversations.add_message(
                 conversation_id=conv_id,
-                role='assistant', 
+                role='assistant',
                 content='Here is a step-by-step approach to troubleshoot network connectivity...'
             )
-            
+
             logger.info("Added messages to conversation")
-            
+
             # Generate report
             status = integration.admin.status()
-            logger.info(f"Database has {status['table_counts']['knowledge_items']} knowledge items")
-        
+            logger.info(
+                f"Database has {status['table_counts']['knowledge_items']} knowledge items")
+
         logger.info("Example completed successfully!")
-        
+
         integration.close()
-        
+
     finally:
         shutil.rmtree(temp_dir)
+
 
 if __name__ == '__main__':
     example_usage()

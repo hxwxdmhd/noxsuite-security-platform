@@ -11,34 +11,36 @@ SELF-CORRECTION CHAIN:
 4. Enhancement: Maintain all Chain-of-Thought logic while ensuring cross-platform compatibility
 """
 
+from rlvr_production_deployer import RLVRProductionDeployer
 import asyncio
-import logging
-import unittest
 import json
-import time
-import sys
-import traceback
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass, asdict
-from unittest.mock import Mock, patch, AsyncMock
+import logging
 import subprocess
+import sys
+import time
+import traceback
+import unittest
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+from unittest.mock import AsyncMock, Mock, patch
 
 # Import the modules we're testing
 sys.path.append(str(Path(__file__).parent))
-from rlvr_production_deployer import RLVRProductionDeployer
 
 # Configure logging for Windows compatibility
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - [RLVR-WINDOWS] %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('tests/rlvr_windows_compatible.log', encoding='utf-8'),
+        logging.FileHandler(
+            'tests/rlvr_windows_compatible.log', encoding='utf-8'),
         logging.StreamHandler(sys.stdout)
     ]
 )
 logger = logging.getLogger(__name__)
+
 
 class RLVRWindowsTestLogger:
     """Windows-compatible test logger with reasoning chain validation"""
@@ -56,14 +58,16 @@ class RLVRWindowsTestLogger:
 
     COMPLIANCE: STANDARD
     """
-        self.test_name = test_name
-        self.logger = logging.getLogger(f"RLVR.Test.{test_name}")
+    self.test_name = test_name
+    self.logger = logging.getLogger(f"RLVR.Test.{test_name}")
 
-        # Configure test-specific logging with Windows encoding
-        handler = logging.StreamHandler(sys.stdout)
-        file_handler = logging.FileHandler(f'tests/rlvr_{test_name}_test.log', encoding='utf-8')
+    # Configure test-specific logging with Windows encoding
+    handler = logging.StreamHandler(sys.stdout)
+    file_handler = logging.FileHandler(
+        f'tests/rlvr_{test_name}_test.log', encoding='utf-8')
 
-        formatter = logging.Formatter('%(asctime)s - [RLVR-TEST-{test_name}] %(levelname)s - %(message)s'.format(test_name=test_name))
+    formatter = logging.Formatter(
+         '%(asctime)s - [RLVR-TEST-{test_name}] %(levelname)s - %(message)s'.format(test_name=test_name))
     """
     RLVR: Implements log_test_reasoning with error handling and validation
 
@@ -76,11 +80,11 @@ class RLVRWindowsTestLogger:
 
     COMPLIANCE: STANDARD
     """
-        handler.setFormatter(formatter)
-        file_handler.setFormatter(formatter)
+    handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
 
-        self.logger.addHandler(handler)
-        self.logger.addHandler(file_handler)
+    self.logger.addHandler(handler)
+    self.logger.addHandler(file_handler)
     """
     RLVR: Implements log_test_validation with error handling and validation
 
@@ -93,7 +97,7 @@ class RLVRWindowsTestLogger:
 
     COMPLIANCE: STANDARD
     """
-        self.logger.setLevel(logging.INFO)
+    self.logger.setLevel(logging.INFO)
 
     """
     RLVR: Retrieves data with filtering and access control
@@ -107,9 +111,9 @@ class RLVRWindowsTestLogger:
 
     COMPLIANCE: STANDARD
     """
-        # Test reasoning chain
-        self.test_reasoning_chain: List[Dict] = []
-        self.test_validations: List[Dict] = []
+    # Test reasoning chain
+    self.test_reasoning_chain: List[Dict] = []
+    self.test_validations: List[Dict] = []
 
     """
     RLVR: Implements setUp with error handling and validation
@@ -123,6 +127,7 @@ class RLVRWindowsTestLogger:
 
     COMPLIANCE: STANDARD
     """
+
     def log_test_reasoning(self, step: str, logic: str, evidence: str, confidence: float = 1.0):
         """Log test reasoning step with validation (Windows-compatible)"""
         reasoning_entry = {
@@ -153,16 +158,16 @@ class RLVRWindowsTestLogger:
 
     COMPLIANCE: STANDARD
     """
-        """Log test validation with outcome (Windows-compatible)"""
-        validation_entry = {
-            'timestamp': datetime.now().isoformat(),
-            'type': validation_type,
-            'result': result,
-            'details': details,
-            'test_name': self.test_name
-        }
+    """Log test validation with outcome (Windows-compatible)"""
+    validation_entry = {
+        'timestamp': datetime.now().isoformat(),
+        'type': validation_type,
+        'result': result,
+        'details': details,
+        'test_name': self.test_name
+    }
 
-        self.test_validations.append(validation_entry)
+    self.test_validations.append(validation_entry)
     """
     RLVR: Implements test_reasoning_validation_integrity_windows with error handling and validation
 
@@ -175,8 +180,9 @@ class RLVRWindowsTestLogger:
 
     COMPLIANCE: STANDARD
     """
-        status = "[PASS]" if result else "[FAIL]"
-        self.logger.info(f"[VALIDATION] {status}: {validation_type} - {details}")
+    status = "[PASS]" if result else "[FAIL]"
+    self.logger.info(
+        f"[VALIDATION] {status}: {validation_type} - {details}")
 
     def get_test_audit_trail(self) -> Dict:
         """Return complete test audit trail"""
@@ -186,6 +192,7 @@ class RLVRWindowsTestLogger:
             'validations': self.test_validations,
             'generated_at': datetime.now().isoformat()
         }
+
 
 class TestRLVRProductionDeployerWindows(unittest.TestCase):
     """
@@ -222,17 +229,17 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
 
     COMPLIANCE: STANDARD
     """
-        self.mock_requests_patch = patch('rlvr_production_deployer.requests')
+    self.mock_requests_patch = patch('rlvr_production_deployer.requests')
 
-        self.mock_psutil = self.mock_psutil_patch.start()
-        self.mock_requests = self.mock_requests_patch.start()
+    self.mock_psutil = self.mock_psutil_patch.start()
+    self.mock_requests = self.mock_requests_patch.start()
 
-        # Set up controlled mock responses
-        self.mock_psutil.cpu_percent.return_value = 50.0  # 50% CPU usage
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.text = "OK"
-        self.mock_requests.get.return_value = mock_response
+    # Set up controlled mock responses
+    self.mock_psutil.cpu_percent.return_value = 50.0  # 50% CPU usage
+    mock_response = Mock()
+     mock_response.status_code = 200
+      mock_response.text = "OK"
+       self.mock_requests.get.return_value = mock_response
 
         self.test_start_time = time.time()
 
@@ -252,7 +259,8 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
 
         # Generate test audit report
         audit_trail = self.test_logger.get_test_audit_trail()
-        audit_path = Path(__file__).parent / f"tests/audit_{self._testMethodName}_windows.json"
+        audit_path = Path(__file__).parent / \
+            f"tests/audit_{self._testMethodName}_windows.json"
         audit_path.parent.mkdir(exist_ok=True)
 
         with open(audit_path, 'w', encoding='utf-8') as f:
@@ -280,36 +288,40 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
         3. Ensure Windows encoding compatibility -> prevent Unicode errors
         4. Validate reasoning chain consistency -> logical flow
         """
-        self.test_logger.log_test_reasoning(
-            "Windows Reasoning Validation Test",
-            "Validate core reasoning validation mechanism with Windows terminal compatibility",
-            "Self-validation prevents circular reasoning errors and ensures cross-platform operation",
-            0.90
+    self.test_logger.log_test_reasoning(
+        "Windows Reasoning Validation Test",
+        "Validate core reasoning validation mechanism with Windows terminal compatibility",
+        "Self-validation prevents circular reasoning errors and ensures cross-platform operation",
+        0.90
+    )
+
+    # Test 1: Valid reasoning should pass
+    valid_result = self.deployer.validate_reasoning_step(
+        "Test Valid Step",
+        "Problem -> Analysis -> Solution -> Validation",
+        "Clear logical progression with evidence backing"
+    )
+
+    self.assertTrue(valid_result, "Valid reasoning should pass validation")
+
+    self.test_logger.log_test_validation(
+        "Valid Reasoning Test",
+        valid_result,
+        "Clear logical progression was correctly validated"
         )
 
-        # Test 1: Valid reasoning should pass
-        valid_result = self.deployer.validate_reasoning_step(
-            "Test Valid Step",
-            "Problem -> Analysis -> Solution -> Validation",
-            "Clear logical progression with evidence backing"
-        )
+    # Test 2: Check reasoning flags are updated
+    self.assertIsInstance(self.deployer.reasoning_checks,
+                           dict, "Reasoning checks should be dictionary")
+     self.assertIn('architecture_validated', self.deployer.reasoning_checks,
+                    "Should have architecture validation flag")
 
-        self.assertTrue(valid_result, "Valid reasoning should pass validation")
-
-        self.test_logger.log_test_validation(
-            "Valid Reasoning Test",
-            valid_result,
-            "Clear logical progression was correctly validated"
-        )
-
-        # Test 2: Check reasoning flags are updated
-        self.assertIsInstance(self.deployer.reasoning_checks, dict, "Reasoning checks should be dictionary")
-        self.assertIn('architecture_validated', self.deployer.reasoning_checks, "Should have architecture validation flag")
-
-        # Test 3: Validate reasoning chain structure
-        reasoning_keys = ['architecture_validated', 'load_balancer_logic_verified', 'scaling_logic_verified', 'monitoring_logic_verified']
-        for key in reasoning_keys:
-            self.assertIn(key, self.deployer.reasoning_checks, f"Should have {key} in reasoning checks")
+      # Test 3: Validate reasoning chain structure
+      reasoning_keys = ['architecture_validated', 'load_balancer_logic_verified',
+                         'scaling_logic_verified', 'monitoring_logic_verified']
+       for key in reasoning_keys:
+            self.assertIn(key, self.deployer.reasoning_checks,
+                          f"Should have {key} in reasoning checks")
 
         self.test_logger.log_test_validation(
             "Reasoning Structure Test",
@@ -329,7 +341,7 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
         """
         self.test_logger.log_test_reasoning(
             "Windows Architecture Design Test",
-    """
+            """
     RLVR: Implements test_complete_deployment_chain_windows with error handling and validation
 
     REASONING CHAIN:
@@ -356,9 +368,11 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
         )
 
         # Validate service configuration
-        expected_services = ['load_balancer', 'fastapi_1', 'fastapi_2', 'fastapi_3', 'prometheus', 'autoscaler']
+        expected_services = ['load_balancer', 'fastapi_1',
+                             'fastapi_2', 'fastapi_3', 'prometheus', 'autoscaler']
         for service in expected_services:
-            self.assertIn(service, self.deployer.services, f"Should have {service} in service configuration")
+            self.assertIn(service, self.deployer.services,
+                          f"Should have {service} in service configuration")
 
         # Validate port assignments
         port_assignments = {
@@ -371,7 +385,8 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
 
         for service, expected_port in port_assignments.items():
             actual_port = self.deployer.services[service]['port']
-            self.assertEqual(actual_port, expected_port, f"{service} should be on port {expected_port}")
+            self.assertEqual(actual_port, expected_port,
+                             f"{service} should be on port {expected_port}")
 
         self.test_logger.log_test_validation(
             "Architecture Configuration Test",
@@ -400,7 +415,8 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
         asyncio.run(self.deployer.reason_architecture_design())
 
         # Execute load balancer reasoning
-        nginx_config_path = asyncio.run(self.deployer.reason_load_balancer_config())
+        nginx_config_path = asyncio.run(
+            self.deployer.reason_load_balancer_config())
 
         # Validate reasoning was executed
         self.assertTrue(
@@ -409,10 +425,12 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
         )
 
         # Validate NGINX config was created
-        self.assertIsInstance(nginx_config_path, str, "Should return nginx config path as string")
+        self.assertIsInstance(nginx_config_path, str,
+                              "Should return nginx config path as string")
 
         config_path = Path(nginx_config_path)
-        self.assertTrue(config_path.exists(), f"NGINX config file should exist at {nginx_config_path}")
+        self.assertTrue(config_path.exists(),
+                        f"NGINX config file should exist at {nginx_config_path}")
 
         # Validate NGINX config content with Windows encoding
         with open(config_path, 'r', encoding='utf-8') as f:
@@ -430,7 +448,8 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
         ]
 
         for element in required_elements:
-            self.assertIn(element, config_content, f"NGINX config should contain '{element}'")
+            self.assertIn(element, config_content,
+                          f"NGINX config should contain '{element}'")
 
         # Check for reasoning annotations in config
         reasoning_annotations = [
@@ -440,7 +459,8 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
         ]
 
         for annotation in reasoning_annotations:
-            self.assertIn(annotation, config_content, f"NGINX config should contain reasoning annotation '{annotation}'")
+            self.assertIn(annotation, config_content,
+                          f"NGINX config should contain reasoning annotation '{annotation}'")
 
         self.test_logger.log_test_validation(
             "NGINX Configuration Test",
@@ -466,14 +486,17 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
         )
 
         # Execute complete deployment reasoning
-        deployment_result = asyncio.run(self.deployer.deploy_with_reasoning_validation())
+        deployment_result = asyncio.run(
+            self.deployer.deploy_with_reasoning_validation())
 
         # Validate deployment result
-        self.assertIsInstance(deployment_result, dict, "Deployment should return summary dictionary")
+        self.assertIsInstance(deployment_result, dict,
+                              "Deployment should return summary dictionary")
 
         # Validate all reasoning checks passed
         for check_name, check_status in self.deployer.reasoning_checks.items():
-            self.assertTrue(check_status, f"Reasoning check '{check_name}' should be validated")
+            self.assertTrue(
+                check_status, f"Reasoning check '{check_name}' should be validated")
 
         # Validate deployment summary structure
         required_keys = [
@@ -485,7 +508,8 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
         ]
 
         for key in required_keys:
-            self.assertIn(key, deployment_result, f"Deployment summary should contain '{key}'")
+            self.assertIn(key, deployment_result,
+                          f"Deployment summary should contain '{key}'")
 
         # Validate reasoning chain integrity flag
         self.assertEqual(
@@ -506,6 +530,7 @@ class TestRLVRProductionDeployerWindows(unittest.TestCase):
             True,
             f"Complete deployment chain executed with all {len(self.deployer.reasoning_checks)} reasoning checks validated"
         )
+
 
 def generate_windows_compatible_test_report():
     """
@@ -537,7 +562,8 @@ def generate_windows_compatible_test_report():
     test_suite = unittest.TestSuite()
 
     # Add Windows-compatible test classes
-    test_suite.addTests(test_loader.loadTestsFromTestCase(TestRLVRProductionDeployerWindows))
+    test_suite.addTests(test_loader.loadTestsFromTestCase(
+        TestRLVRProductionDeployerWindows))
 
     # Run tests with detailed reporting
     test_runner = unittest.TextTestRunner(verbosity=2, stream=sys.stdout)
@@ -586,7 +612,8 @@ def generate_windows_compatible_test_report():
     }
 
     # Save test report with Windows compatibility
-    report_path = Path(__file__).parent / "tests/rlvr_windows_compatible_test_report.json"
+    report_path = Path(__file__).parent / \
+        "tests/rlvr_windows_compatible_test_report.json"
     report_path.parent.mkdir(exist_ok=True)
 
     with open(report_path, 'w', encoding='utf-8') as f:
@@ -597,6 +624,7 @@ def generate_windows_compatible_test_report():
         'test_result': test_result,
         'summary': report
     }
+
 
 if __name__ == "__main__":
     # Create tests directory
@@ -611,7 +639,8 @@ if __name__ == "__main__":
 
     print("\n[TEST EXECUTION COMPLETE]")
     print(f"Report: {test_results['report_path']}")
-    print(f"Success Rate: {test_results['summary']['test_execution_summary']['success_rate']:.1%}")
+    print(
+        f"Success Rate: {test_results['summary']['test_execution_summary']['success_rate']:.1%}")
     print()
     print("[SELF-CORRECTION APPLIED] Unicode encoding issues resolved!")
     print("[REASONING VALIDATION] All Chain-of-Thought tests passed!")

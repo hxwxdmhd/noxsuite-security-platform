@@ -1,13 +1,14 @@
 """Background task manager"""
 
-import threading
-import queue
-import time
 import logging
+import queue
+import threading
+import time
 from datetime import datetime
-from typing import Callable, Any, Dict
+from typing import Any, Callable, Dict
 
 logger = logging.getLogger(__name__)
+
 
 class TaskManager:
     """Manage background tasks and job queues"""

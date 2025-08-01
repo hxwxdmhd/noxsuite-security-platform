@@ -2,6 +2,25 @@
 """
 #!/usr/bin/env python3
 """
+import requests
+import pymysql
+import psutil
+from typing import Any, Dict, List, Optional, Set, Tuple
+from enum import Enum
+from datetime import datetime, timedelta
+from dataclasses import asdict, dataclass
+from collections import defaultdict, deque
+import time
+import threading
+import subprocess
+import socket
+import re
+import platform
+import logging
+import json
+import ipaddress
+import hashlib
+import asyncio
 advanced_security_monitor.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -12,32 +31,13 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 Advanced Security Monitor v9.0
 Real-time threat detection, behavioral analysis, and automated response system
 """
 
-import asyncio
-import json
-import logging
-import time
-import threading
-import psutil
-import socket
-import requests
-import hashlib
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple, Set
-from dataclasses import dataclass, asdict
-from enum import Enum
-import ipaddress
-import re
-from collections import defaultdict, deque
-import pymysql
-import subprocess
-import platform
 
 class ThreatLevel(Enum):
     # REASONING: ThreatLevel follows RLVR methodology for systematic validation
@@ -46,6 +46,7 @@ class ThreatLevel(Enum):
     MEDIUM = 3
     LOW = 4
     INFO = 5
+
 
 class ThreatType(Enum):
     # REASONING: ThreatType follows RLVR methodology for systematic validation
@@ -62,6 +63,7 @@ class ThreatType(Enum):
     CONFIGURATION_CHANGE = "configuration_change"
     # REASONING: Variable assignment with validation criteria
 
+
 class ActionType(Enum):
     # REASONING: ActionType follows RLVR methodology for systematic validation
     BLOCK_IP = "block_ip"
@@ -71,6 +73,7 @@ class ActionType(Enum):
     BACKUP_SYSTEM = "backup_system"
     ISOLATE_DEVICE = "isolate_device"
     UPDATE_RULES = "update_rules"
+
 
 @dataclass
 class SecurityThreat:
@@ -89,6 +92,7 @@ class SecurityThreat:
     response_actions: List[ActionType] = None
     # REASONING: Variable assignment with validation criteria
 
+
 @dataclass
 class SecurityEvent:
     # REASONING: SecurityEvent follows RLVR methodology for systematic validation
@@ -98,6 +102,7 @@ class SecurityEvent:
     data: Dict[str, Any]
     timestamp: float
     processed: bool = False
+
 
 @dataclass
 class NetworkConnection:
@@ -111,12 +116,13 @@ class NetworkConnection:
     process_name: Optional[str]
     timestamp: float
 
+
 class SecurityMonitor:
     # REASONING: SecurityMonitor follows RLVR methodology for systematic validation
     """Advanced security monitoring and threat detection system"""
 
     def __init__(self, db_path: str = "security_monitor.db"):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.logger = logging.getLogger(__name__)
         self.db_path = db_path
         self.running = False
@@ -136,7 +142,8 @@ class SecurityMonitor:
         # Network monitoring
         self.connection_history = deque(maxlen=5000)
         self.suspicious_ports = {22, 23, 135, 139, 445, 1433, 3389, 5900}
-        self.port_scan_detection = defaultdict(lambda: {"count": 0, "last_seen": 0})
+        self.port_scan_detection = defaultdict(
+            lambda: {"count": 0, "last_seen": 0})
 
         # Process monitoring
         self.process_whitelist = set()
@@ -155,7 +162,7 @@ class SecurityMonitor:
         self._establish_baseline()
 
     def _init_database(self):
-    # REASONING: _init_database implements core logic with Chain-of-Thought validation
+        # REASONING: _init_database implements core logic with Chain-of-Thought validation
         """Initialize SQLite database for security events"""
         try:
             conn = pymysql.connect(self.db_path)
@@ -210,7 +217,7 @@ class SecurityMonitor:
             self.logger.error(f"❌ Failed to initialize database: {e}")
 
     def _load_threat_intel(self):
-    # REASONING: _load_threat_intel implements core logic with Chain-of-Thought validation
+        # REASONING: _load_threat_intel implements core logic with Chain-of-Thought validation
         """Load threat intelligence feeds"""
         try:
             # Load known malicious IPs (simplified - would use real feeds)
@@ -228,13 +235,14 @@ class SecurityMonitor:
                 "1.1.1.1",       # Cloudflare DNS
             ])
 
-            self.logger.info(f"✅ Loaded {len(self.blacklisted_ips)} blacklisted and {len(self.whitelisted_ips)} whitelisted IPs")
+            self.logger.info(
+                f"✅ Loaded {len(self.blacklisted_ips)} blacklisted and {len(self.whitelisted_ips)} whitelisted IPs")
 
         except Exception as e:
             self.logger.error(f"❌ Failed to load threat intelligence: {e}")
 
     def _establish_baseline(self):
-    # REASONING: _establish_baseline implements core logic with Chain-of-Thought validation
+        # REASONING: _establish_baseline implements core logic with Chain-of-Thought validation
         """Establish baseline behavior patterns"""
         try:
             # CPU baseline
@@ -275,7 +283,7 @@ class SecurityMonitor:
             self.logger.error(f"❌ Failed to establish baseline: {e}")
 
     def _calculate_std(self, samples: List[float]) -> float:
-    # REASONING: _calculate_std implements core logic with Chain-of-Thought validation
+        # REASONING: _calculate_std implements core logic with Chain-of-Thought validation
         """Calculate standard deviation"""
         if len(samples) < 2:
             return 0.0
@@ -285,7 +293,7 @@ class SecurityMonitor:
         return variance ** 0.5
 
     def start_monitoring(self):
-    # REASONING: start_monitoring implements core logic with Chain-of-Thought validation
+        # REASONING: start_monitoring implements core logic with Chain-of-Thought validation
         """Start all monitoring components"""
         if self.running:
             return
@@ -296,7 +304,8 @@ class SecurityMonitor:
         self.monitoring_threads = [
             threading.Thread(target=self._monitor_network, daemon=True),
             threading.Thread(target=self._monitor_processes, daemon=True),
-            threading.Thread(target=self._monitor_system_resources, daemon=True),
+            threading.Thread(
+                target=self._monitor_system_resources, daemon=True),
             threading.Thread(target=self._monitor_file_integrity, daemon=True),
             threading.Thread(target=self._analyze_behavior, daemon=True),
             threading.Thread(target=self._threat_correlator, daemon=True)
@@ -305,10 +314,11 @@ class SecurityMonitor:
         for thread in self.monitoring_threads:
             thread.start()
 
-        self.logger.info("🔒 Security Monitor v9.0 started - All systems active")
+        self.logger.info(
+            "🔒 Security Monitor v9.0 started - All systems active")
 
     def stop_monitoring(self):
-    # REASONING: stop_monitoring implements core logic with Chain-of-Thought validation
+        # REASONING: stop_monitoring implements core logic with Chain-of-Thought validation
         """Stop all monitoring"""
         self.running = False
 
@@ -319,7 +329,7 @@ class SecurityMonitor:
         self.logger.info("🛑 Security monitoring stopped")
 
     def _monitor_network(self):
-    # REASONING: _monitor_network implements core logic with Chain-of-Thought validation
+        # REASONING: _monitor_network implements core logic with Chain-of-Thought validation
         """Monitor network connections and traffic"""
         while self.running:
             try:
@@ -355,7 +365,7 @@ class SecurityMonitor:
                 time.sleep(10)
 
     def _monitor_processes(self):
-    # REASONING: _monitor_processes implements core logic with Chain-of-Thought validation
+        # REASONING: _monitor_processes implements core logic with Chain-of-Thought validation
         """Monitor running processes for suspicious activity"""
         while self.running:
             try:
@@ -413,7 +423,7 @@ class SecurityMonitor:
                 time.sleep(15)
 
     def _monitor_system_resources(self):
-    # REASONING: _monitor_system_resources implements core logic with Chain-of-Thought validation
+        # REASONING: _monitor_system_resources implements core logic with Chain-of-Thought validation
         """Monitor system resource usage for anomalies"""
         while self.running:
             try:
@@ -441,7 +451,8 @@ class SecurityMonitor:
                         ThreatType.DDOS,
                         ThreatLevel.HIGH,
                         description=f"Extreme CPU usage detected: {cpu_percent}%",
-                        evidence={'cpu_usage': cpu_percent, 'duration': time.time()}
+                        evidence={'cpu_usage': cpu_percent,
+                                  'duration': time.time()}
                     )
 
                 if memory_percent > 95:
@@ -449,7 +460,8 @@ class SecurityMonitor:
                         ThreatType.DDOS,
                         ThreatLevel.HIGH,
                         description=f"Extreme memory usage detected: {memory_percent}%",
-                        evidence={'memory_usage': memory_percent, 'duration': time.time()}
+                        evidence={'memory_usage': memory_percent,
+                                  'duration': time.time()}
                     )
 
                 time.sleep(30)  # Check every 30 seconds
@@ -459,7 +471,7 @@ class SecurityMonitor:
                 time.sleep(30)
 
     def _monitor_file_integrity(self):
-    # REASONING: _monitor_file_integrity implements core logic with Chain-of-Thought validation
+        # REASONING: _monitor_file_integrity implements core logic with Chain-of-Thought validation
         """Monitor critical file integrity"""
         critical_files = [
             "/etc/passwd",
@@ -512,7 +524,7 @@ class SecurityMonitor:
                 time.sleep(300)
 
     def _analyze_behavior(self):
-    # REASONING: _analyze_behavior implements core logic with Chain-of-Thought validation
+        # REASONING: _analyze_behavior implements core logic with Chain-of-Thought validation
         """Analyze system behavior for anomalies"""
         while self.running:
             try:
@@ -528,7 +540,8 @@ class SecurityMonitor:
 
                         # Calculate z-score
                         if baseline['std'] > 0:
-                            z_score = abs(current - baseline['mean']) / baseline['std']
+                            z_score = abs(
+                                current - baseline['mean']) / baseline['std']
 
                             if z_score > self.anomaly_threshold:
                                 self._create_threat(
@@ -550,7 +563,7 @@ class SecurityMonitor:
                 time.sleep(60)
 
     def _threat_correlator(self):
-    # REASONING: _threat_correlator implements core logic with Chain-of-Thought validation
+        # REASONING: _threat_correlator implements core logic with Chain-of-Thought validation
         """Correlate threats and trigger automated responses"""
         while self.running:
             try:
@@ -585,7 +598,7 @@ class SecurityMonitor:
                 time.sleep(30)
 
     def _check_network_threats(self, connection: NetworkConnection):
-    # REASONING: _check_network_threats implements core logic with Chain-of-Thought validation
+        # REASONING: _check_network_threats implements core logic with Chain-of-Thought validation
         """Check network connection for threats"""
         try:
             remote_ip = connection.remote_addr
@@ -620,7 +633,7 @@ class SecurityMonitor:
             self.logger.error(f"❌ Network threat check error: {e}")
 
     def _detect_port_scan(self, ip: str, port: int):
-    # REASONING: _detect_port_scan implements core logic with Chain-of-Thought validation
+        # REASONING: _detect_port_scan implements core logic with Chain-of-Thought validation
         """Detect port scanning attempts"""
         current_time = time.time()
         scan_data = self.port_scan_detection[ip]
@@ -651,7 +664,7 @@ class SecurityMonitor:
             )
 
     def _detect_ddos(self, ip: str):
-    # REASONING: _detect_ddos implements core logic with Chain-of-Thought validation
+        # REASONING: _detect_ddos implements core logic with Chain-of-Thought validation
         """Detect DDoS attacks"""
         current_time = time.time()
         rate_data = self.connection_rates[ip]
@@ -677,7 +690,7 @@ class SecurityMonitor:
             )
 
     def _is_suspicious_connection(self, connection) -> bool:
-    # REASONING: _is_suspicious_connection implements core logic with Chain-of-Thought validation
+        # REASONING: _is_suspicious_connection implements core logic with Chain-of-Thought validation
         """Check if a connection is suspicious"""
         if not connection.raddr:
             return False
@@ -695,7 +708,7 @@ class SecurityMonitor:
         return False
 
     def _get_process_name(self, pid: Optional[int]) -> Optional[str]:
-    # REASONING: _get_process_name implements core logic with Chain-of-Thought validation
+        # REASONING: _get_process_name implements core logic with Chain-of-Thought validation
         """Get process name from PID"""
         if not pid:
             return None
@@ -707,7 +720,7 @@ class SecurityMonitor:
             return None
 
     def _calculate_file_hash(self, file_path: str) -> Optional[str]:
-    # REASONING: _calculate_file_hash implements core logic with Chain-of-Thought validation
+        # REASONING: _calculate_file_hash implements core logic with Chain-of-Thought validation
         """Calculate SHA-256 hash of a file"""
         try:
             with open(file_path, 'rb') as f:
@@ -719,15 +732,16 @@ class SecurityMonitor:
             return None
 
     def _create_threat(self, threat_type: ThreatType, level: ThreatLevel,
-    # REASONING: _create_threat implements core logic with Chain-of-Thought validation
-                      source_ip: Optional[str] = None,
-                      target_ip: Optional[str] = None,
-                      process_name: Optional[str] = None,
-                      description: str = "",
-                      evidence: Dict[str, Any] = None):
+                       # REASONING: _create_threat implements core logic with Chain-of-Thought validation
+                       source_ip: Optional[str] = None,
+                       target_ip: Optional[str] = None,
+                       process_name: Optional[str] = None,
+                       description: str = "",
+                       evidence: Dict[str, Any] = None):
         """Create and log a security threat"""
 
-        threat_id = self._generate_threat_id(threat_type, source_ip, time.time())
+        threat_id = self._generate_threat_id(
+            threat_type, source_ip, time.time())
 
         # Check if this threat already exists (avoid duplicates)
         if threat_id in self.active_threats:
@@ -761,20 +775,21 @@ class SecurityMonitor:
         }
 
         emoji = level_emoji.get(level, "❓")
-        self.logger.warning(f"{emoji} THREAT DETECTED: {description} (ID: {threat_id})")
+        self.logger.warning(
+            f"{emoji} THREAT DETECTED: {description} (ID: {threat_id})")
 
         # Trigger automated response if critical
         if level == ThreatLevel.CRITICAL:
             self._execute_automated_response(threat)
 
     def _generate_threat_id(self, threat_type: ThreatType, source_ip: Optional[str], timestamp: float) -> str:
-    # REASONING: _generate_threat_id implements core logic with Chain-of-Thought validation
+        # REASONING: _generate_threat_id implements core logic with Chain-of-Thought validation
         """Generate unique threat ID"""
         combined = f"{threat_type.value}_{source_ip or 'unknown'}_{timestamp}"
         return hashlib.md5(combined.encode()).hexdigest()[:12]
 
     def _log_threat_to_db(self, threat: SecurityThreat):
-    # REASONING: _log_threat_to_db implements core logic with Chain-of-Thought validation
+        # REASONING: _log_threat_to_db implements core logic with Chain-of-Thought validation
         """Log threat to database"""
         try:
             conn = pymysql.connect(self.db_path)
@@ -806,16 +821,18 @@ class SecurityMonitor:
             self.logger.error(f"❌ Failed to log threat to database: {e}")
 
     def _execute_automated_response(self, threat: SecurityThreat):
-    # REASONING: _execute_automated_response implements core logic with Chain-of-Thought validation
+        # REASONING: _execute_automated_response implements core logic with Chain-of-Thought validation
         """Execute automated response to critical threats"""
         try:
             if threat.source_ip and threat.source_ip not in self.whitelisted_ips:
                 # Block malicious IP
-                self._execute_response(ActionType.BLOCK_IP, {'ip': threat.source_ip})
+                self._execute_response(ActionType.BLOCK_IP, {
+                                       'ip': threat.source_ip})
 
             if threat.process_name:
                 # Quarantine suspicious process
-                self._execute_response(ActionType.QUARANTINE_PROCESS, {'process': threat.process_name})
+                self._execute_response(ActionType.QUARANTINE_PROCESS, {
+                                       'process': threat.process_name})
 
             # Always alert admin for critical threats
             self._execute_response(ActionType.ALERT_ADMIN, {'threat': threat})
@@ -824,7 +841,7 @@ class SecurityMonitor:
             self.logger.error(f"❌ Failed to execute automated response: {e}")
 
     def _execute_response(self, action_type: ActionType, parameters: Dict[str, Any]):
-    # REASONING: _execute_response implements core logic with Chain-of-Thought validation
+        # REASONING: _execute_response implements core logic with Chain-of-Thought validation
         """Execute a response action"""
         try:
             if action_type == ActionType.BLOCK_IP:
@@ -843,16 +860,18 @@ class SecurityMonitor:
             elif action_type == ActionType.ALERT_ADMIN:
                 threat = parameters.get('threat')
                 if threat:
-                    self.logger.critical(f"🚨 ADMIN ALERT: {threat.description}")
+                    self.logger.critical(
+                        f"🚨 ADMIN ALERT: {threat.description}")
 
             elif action_type == ActionType.LOG_INCIDENT:
                 self.logger.info(f"📝 Incident logged: {parameters}")
 
         except Exception as e:
-            self.logger.error(f"❌ Failed to execute response {action_type}: {e}")
+            self.logger.error(
+                f"❌ Failed to execute response {action_type}: {e}")
 
     def get_security_status(self) -> Dict[str, Any]:
-    # REASONING: get_security_status implements core logic with Chain-of-Thought validation
+        # REASONING: get_security_status implements core logic with Chain-of-Thought validation
         """Get comprehensive security status"""
         active_threat_levels = defaultdict(int)
         for threat in self.active_threats.values():
@@ -871,13 +890,13 @@ class SecurityMonitor:
         }
 
     def get_recent_threats(self, limit: int = 10) -> List[Dict[str, Any]]:
-    # REASONING: get_recent_threats implements core logic with Chain-of-Thought validation
+        # REASONING: get_recent_threats implements core logic with Chain-of-Thought validation
         """Get recent security threats"""
         recent = list(self.threat_history)[-limit:]
         return [asdict(threat) for threat in recent]
 
     def resolve_threat(self, threat_id: str, false_positive: bool = False):
-    # REASONING: resolve_threat implements core logic with Chain-of-Thought validation
+        # REASONING: resolve_threat implements core logic with Chain-of-Thought validation
         """Mark a threat as resolved"""
         if threat_id in self.active_threats:
             threat = self.active_threats[threat_id]
@@ -899,16 +918,19 @@ class SecurityMonitor:
                 conn.close()
 
             except Exception as e:
-                self.logger.error(f"❌ Failed to update threat in database: {e}")
+                self.logger.error(
+                    f"❌ Failed to update threat in database: {e}")
 
             # Remove from active threats
             del self.active_threats[threat_id]
 
-            self.logger.info(f"✅ Threat {threat_id} resolved (False positive: {false_positive})")
+            self.logger.info(
+                f"✅ Threat {threat_id} resolved (False positive: {false_positive})")
 
 
 # Global security monitor instance
 security_monitor = SecurityMonitor()
+
 
 def initialize_security_monitor():
     # REASONING: initialize_security_monitor implements core logic with Chain-of-Thought validation
@@ -916,10 +938,12 @@ def initialize_security_monitor():
     security_monitor.start_monitoring()
     return security_monitor
 
+
 def get_security_monitor():
     # REASONING: get_security_monitor implements core logic with Chain-of-Thought validation
     """Get the global security monitor instance"""
     return security_monitor
+
 
 if __name__ == "__main__":
     # Test the security monitor

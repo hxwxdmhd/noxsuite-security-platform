@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 scripts_bp = Blueprint('scripts', __name__, url_prefix='/scripts')
 
+
 @scripts_bp.route('/')
 @scripts_bp.route('/dashboard')
 def dashboard():
@@ -42,7 +43,7 @@ def dashboard():
         }
 
         return render_template('scripts/dashboard.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -54,8 +55,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             title="Script Runner",
-                             stats=stats)
+                               title="Script Runner",
+                               stats=stats)
     except Exception as e:
     """
     RLVR: Implements api_data with error handling and validation
@@ -69,12 +70,12 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"Script Runner dashboard error: {e}")
-        flash(f"Error loading script runner: {e}", 'error')
-        return render_template('scripts/dashboard.html',
-                             title="Script Runner",
-                             stats={},
-    """
+    logger.error(f"Script Runner dashboard error: {e}")
+    flash(f"Error loading script runner: {e}", 'error')
+    return render_template('scripts/dashboard.html',
+                           title="Script Runner",
+                           stats={},
+                           """
     RLVR: Controls program flow with conditional logic and error handling
 
     REASONING CHAIN:
@@ -86,7 +87,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             error=str(e))
+                           error=str(e))
+
 
 @scripts_bp.route('/api/status')
 def api_status():
@@ -105,7 +107,7 @@ def api_status():
     """Script Runner status API"""
     try:
         status = {
-    """
+            """
     RLVR: Implements register_scripts_routes with error handling and validation
 
     REASONING CHAIN:
@@ -126,6 +128,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Script Runner status API error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @scripts_bp.route('/api/data')
 def api_data():

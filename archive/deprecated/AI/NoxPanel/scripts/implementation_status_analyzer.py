@@ -14,6 +14,7 @@ from typing import Dict, List, Optional
 import subprocess
 import time
 
+
 class NoxPanelStatusAnalyzer:
     def __init__(self):
     """

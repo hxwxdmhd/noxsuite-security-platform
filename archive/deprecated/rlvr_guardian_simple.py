@@ -30,6 +30,7 @@ import os
 import sys
 import yaml
 
+
 class RLVRGuardianSimple:
     """RLVR Guardian - Post-Certification Monitoring System."""
 
@@ -72,7 +73,8 @@ class RLVRGuardianSimple:
 
     def setup_logging(self):
         """Set up Guardian logging system."""
-        log_file = self.workspace_path / "compliance" / f"rlvr_guardian_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        log_file = self.workspace_path / "compliance" / \
+            f"rlvr_guardian_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
         logging.basicConfig(
             level=logging.INFO,
@@ -133,7 +135,8 @@ class RLVRGuardianSimple:
         with open(report_file, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
-        print(f"Compliance monitoring completed - Status: {report['compliance_status']}")
+        print(
+            f"Compliance monitoring completed - Status: {report['compliance_status']}")
         return report
 
     async def generate_monitoring_outputs(self) -> Dict[str, Any]:
@@ -266,7 +269,8 @@ if __name__ == "__main__":
             yaml.dump(ci_config, f, default_flow_style=False)
 
         # Also save GitHub Actions workflow
-        github_workflow = self.workspace_path / ".github" / "workflows" / "rlvr_validate.yml"
+        github_workflow = self.workspace_path / \
+            ".github" / "workflows" / "rlvr_validate.yml"
         with open(github_workflow, 'w', encoding='utf-8') as f:
             yaml.dump(ci_config, f, default_flow_style=False)
 
@@ -314,6 +318,7 @@ if __name__ == "__main__":
         print("Adaptive strategy adjustments completed")
         return strategy_adjustments
 
+
 async def main():
     """Main execution function for RLVR Guardian."""
     try:
@@ -331,9 +336,11 @@ async def main():
 
         compliance_report = guardian_report["compliance_report"]
         print(f"Compliance Status: {compliance_report['compliance_status']}")
-        print(f"Current Compliance: {compliance_report['current_compliance']:.2f}%")
+        print(
+            f"Current Compliance: {compliance_report['current_compliance']:.2f}%")
         print(f"Target Compliance: 98.0%")
-        print(f"Improvement Opportunities: {len(compliance_report['improvement_opportunities'])}")
+        print(
+            f"Improvement Opportunities: {len(compliance_report['improvement_opportunities'])}")
 
         monitoring_outputs = guardian_report["monitoring_outputs"]
         print(f"\nMonitoring Outputs Generated:")
@@ -342,8 +349,10 @@ async def main():
 
         strategy_adjustments = guardian_report["strategy_adjustments"]
         print(f"\nAdaptive Strategy Adjustments:")
-        print(f"  Platform: {strategy_adjustments['current_context']['platform']}")
-        print(f"  Strategy Changes: {len(strategy_adjustments['strategy_changes'])}")
+        print(
+            f"  Platform: {strategy_adjustments['current_context']['platform']}")
+        print(
+            f"  Strategy Changes: {len(strategy_adjustments['strategy_changes'])}")
 
         print("\n" + "="*80)
         print("RLVR GUARDIAN MONITORING CYCLE COMPLETED SUCCESSFULLY")

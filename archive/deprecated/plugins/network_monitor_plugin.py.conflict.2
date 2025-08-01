@@ -11,9 +11,10 @@ import random
 from typing import Dict, Any, List
 from unified_plugin_system_clean import ServicePlugin, PluginInfo
 
+
 class NetworkMonitorPlugin(ServicePlugin):
     """Example network monitoring service plugin"""
-    
+
     def __init__(self):
         super().__init__()
         self.monitoring_active = False
@@ -24,7 +25,7 @@ class NetworkMonitorPlugin(ServicePlugin):
             'latency_ms': 0
         }
         self.dependencies = []
-    
+
     def get_info(self) -> PluginInfo:
         """Get plugin information"""
         return PluginInfo(
@@ -36,7 +37,7 @@ class NetworkMonitorPlugin(ServicePlugin):
             dependencies=[],
             permissions=["network.monitor", "system.read"]
         )
-    
+
     def start_service(self) -> bool:
         """Start the network monitoring service"""
         try:
@@ -46,7 +47,7 @@ class NetworkMonitorPlugin(ServicePlugin):
         except Exception as e:
             self.logger.error(f"Failed to start network monitoring: {e}")
             return False
-    
+
     def stop_service(self) -> bool:
         """Stop the network monitoring service"""
         try:
@@ -56,7 +57,7 @@ class NetworkMonitorPlugin(ServicePlugin):
         except Exception as e:
             self.logger.error(f"Failed to stop network monitoring: {e}")
             return False
-    
+
     def get_service_status(self) -> Dict[str, Any]:
         """Get service status"""
         return {
@@ -64,7 +65,7 @@ class NetworkMonitorPlugin(ServicePlugin):
             'stats': self.network_stats,
             'uptime': time.time() - getattr(self, '_start_time', time.time())
         }
-    
+
     def get_network_metrics(self) -> Dict[str, Any]:
         """Get current network metrics (simulated)"""
         if self.monitoring_active:
@@ -75,21 +76,22 @@ class NetworkMonitorPlugin(ServicePlugin):
                 'connections': random.randint(10, 100),
                 'latency_ms': random.randint(10, 200)
             })
-        
+
         return self.network_stats
-    
+
     def get_health(self) -> Dict[str, Any]:
         """Get plugin health status"""
         health = super().get_health()
-        
+
         # Add network-specific health metrics
         health['metrics'].update({
             'monitoring_active': self.monitoring_active,
             'network_stats': self.network_stats,
             'service_type': 'network_monitor'
         })
-        
+
         return health
+
 
 # Make plugin discoverable
 __plugin_class__ = NetworkMonitorPlugin

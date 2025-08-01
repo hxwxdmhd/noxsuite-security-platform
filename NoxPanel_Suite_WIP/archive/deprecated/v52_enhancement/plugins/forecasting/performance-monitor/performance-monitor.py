@@ -11,8 +11,9 @@ Reason: System monitoring needed for 98% compliance target
 """
 
 import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
 
 class PerformancemonitorPlugin:
     """Auto-generated plugin scaffold."""
@@ -43,6 +44,7 @@ class PerformancemonitorPlugin:
         import hashlib
         content = f"{self.plugin_name}-{self.version}-{datetime.now().date()}"
         return hashlib.sha512(content.encode()).hexdigest()
+
 
 if __name__ == "__main__":
     plugin = PerformancemonitorPlugin(".")

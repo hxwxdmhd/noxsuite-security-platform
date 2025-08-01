@@ -27,12 +27,14 @@ import secrets
 # Logging
 logger = logging.getLogger(__name__)
 
+
 class UserRole(Enum):
     """User roles enumeration"""
     ADMIN = "admin"
     MODERATOR = "moderator"
     USER = "user"
     GUEST = "guest"
+
 
 class AuditAction(Enum):
     """Audit action types"""
@@ -45,12 +47,14 @@ class AuditAction(Enum):
     SYSTEM = "system"
     PLUGIN = "plugin"
 
+
 class AuditResult(Enum):
     """Audit result types"""
     SUCCESS = "success"
     FAILED = "failed"
     WARNING = "warning"
     ERROR = "error"
+
 
 @dataclass
 class User:
@@ -70,25 +74,25 @@ class User:
     two_factor_secret: str = ""
     preferences: Dict[str, Any] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.utcnow()
-    
+
     def set_password(self, password: str) -> None:
         """Set password with hashing"""
         self.password_hash = hashlib.sha256(password.encode()).hexdigest()
-    
+
     def check_password(self, password: str) -> bool:
         """Check password against hash"""
         return self.password_hash == hashlib.sha256(password.encode()).hexdigest()
-    
+
     def is_locked(self) -> bool:
         """Check if account is locked"""
         if self.locked_until:
             return datetime.utcnow() < self.locked_until
         return False
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
         return {
@@ -106,6 +110,7 @@ class User:
             'preferences': self.preferences,
             'metadata': self.metadata
         }
+
 
 @dataclass
 class SystemMetrics:
@@ -125,11 +130,11 @@ class SystemMetrics:
     system_load: float = 0.0
     temperature: float = 0.0
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         if self.timestamp is None:
             self.timestamp = datetime.utcnow()
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
         return {
@@ -150,6 +155,7 @@ class SystemMetrics:
             'metadata': self.metadata
         }
 
+
 @dataclass
 class AuditLog:
     """Audit log model"""
@@ -165,11 +171,11 @@ class AuditLog:
     details: Dict[str, Any] = field(default_factory=dict)
     risk_score: int = 0
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         if self.timestamp is None:
             self.timestamp = datetime.utcnow()
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
         return {
@@ -186,6 +192,7 @@ class AuditLog:
             'risk_score': self.risk_score,
             'metadata': self.metadata
         }
+
 
 @dataclass
 class Plugin:
@@ -206,11 +213,11 @@ class Plugin:
     install_date: datetime = None
     update_date: datetime = None
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         if self.install_date is None:
             self.install_date = datetime.utcnow()
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
         return {
@@ -232,6 +239,7 @@ class Plugin:
             'metadata': self.metadata
         }
 
+
 @dataclass
 class Session:
     """Session model"""
@@ -244,7 +252,7 @@ class Session:
     user_agent: str = ""
     is_active: bool = True
     data: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         if not self.id:
             self.id = secrets.token_hex(32)
@@ -254,16 +262,16 @@ class Session:
             self.last_activity = datetime.utcnow()
         if self.expires_at is None:
             self.expires_at = datetime.utcnow() + timedelta(hours=24)
-    
+
     def is_expired(self) -> bool:
         """Check if session is expired"""
         return datetime.utcnow() > self.expires_at
-    
+
     def extend_session(self, hours: int = 24) -> None:
         """Extend session expiration"""
         self.expires_at = datetime.utcnow() + timedelta(hours=hours)
         self.last_activity = datetime.utcnow()
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary"""
         return {
@@ -278,19 +286,20 @@ class Session:
             'data': self.data
         }
 
+
 class UnifiedDatabase:
     """Unified database manager for all models"""
-    
+
     def __init__(self, db_path: str = "unified_heimnetz.db"):
         self.db_path = db_path
         self.init_database()
-    
+
     def init_database(self) -> None:
         """Initialize database with all tables"""
         try:
             with pymysql.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                
+
                 # Users table
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS users (
@@ -311,7 +320,7 @@ class UnifiedDatabase:
                         metadata TEXT DEFAULT '{}'
                     )
                 ''')
-                
+
                 # System metrics table
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS system_metrics (
@@ -332,7 +341,7 @@ class UnifiedDatabase:
                         metadata TEXT DEFAULT '{}'
                     )
                 ''')
-                
+
                 # Audit log table
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS audit_log (
@@ -350,7 +359,7 @@ class UnifiedDatabase:
                         metadata TEXT DEFAULT '{}'
                     )
                 ''')
-                
+
                 # Plugins table
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS plugins (
@@ -372,7 +381,7 @@ class UnifiedDatabase:
                         metadata TEXT DEFAULT '{}'
                     )
                 ''')
-                
+
                 # Sessions table
                 cursor.execute('''
                     CREATE TABLE IF NOT EXISTS sessions (
@@ -387,20 +396,30 @@ class UnifiedDatabase:
                         data TEXT DEFAULT '{}'
                     )
                 ''')
-                
+
                 # Create indexes for performance
-                cursor.execute('CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)')
-                cursor.execute('CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)')
-                cursor.execute('CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON system_metrics(timestamp)')
-                cursor.execute('CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_log(timestamp)')
-                cursor.execute('CREATE INDEX IF NOT EXISTS idx_audit_user_id ON audit_log(user_id)')
-                cursor.execute('CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id)')
-                cursor.execute('CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at)')
-                cursor.execute('CREATE INDEX IF NOT EXISTS idx_plugins_name ON plugins(name)')
-                cursor.execute('CREATE INDEX IF NOT EXISTS idx_plugins_enabled ON plugins(enabled)')
-                
+                cursor.execute(
+                    'CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)')
+                cursor.execute(
+                    'CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)')
+                cursor.execute(
+                    'CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON system_metrics(timestamp)')
+                cursor.execute(
+                    'CREATE INDEX IF NOT EXISTS idx_audit_timestamp ON audit_log(timestamp)')
+                cursor.execute(
+                    'CREATE INDEX IF NOT EXISTS idx_audit_user_id ON audit_log(user_id)')
+                cursor.execute(
+                    'CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions(user_id)')
+                cursor.execute(
+                    'CREATE INDEX IF NOT EXISTS idx_sessions_expires_at ON sessions(expires_at)')
+                cursor.execute(
+                    'CREATE INDEX IF NOT EXISTS idx_plugins_name ON plugins(name)')
+                cursor.execute(
+                    'CREATE INDEX IF NOT EXISTS idx_plugins_enabled ON plugins(enabled)')
+
                 # Create default admin user if not exists
-                cursor.execute('SELECT COUNT(*) FROM users WHERE username = ?', ('admin',))
+                cursor.execute(
+                    'SELECT COUNT(*) FROM users WHERE username = ?', ('admin',))
                 if cursor.fetchone()[0] == 0:
                     admin_user = User(
                         username='admin',
@@ -411,13 +430,13 @@ class UnifiedDatabase:
                     )
                     admin_user.set_password('admin123')
                     self.create_user(admin_user)
-                
+
                 conn.commit()
                 logger.info("Unified database initialized successfully")
         except Exception as e:
             logger.error(f"Database initialization failed: {e}")
             raise
-    
+
     def create_user(self, user: User) -> Optional[User]:
         """Create a new user"""
         try:
@@ -439,13 +458,14 @@ class UnifiedDatabase:
         except Exception as e:
             logger.error(f"Error creating user: {e}")
             return None
-    
+
     def get_user_by_username(self, username: str) -> Optional[User]:
         """Get user by username"""
         try:
             with pymysql.connect(self.db_path) as conn:
                 cursor = conn.cursor()
-                cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
+                cursor.execute(
+                    'SELECT * FROM users WHERE username = ?', (username,))
                 row = cursor.fetchone()
                 if row:
                     return self._row_to_user(row)
@@ -453,7 +473,7 @@ class UnifiedDatabase:
         except Exception as e:
             logger.error(f"Error getting user by username: {e}")
             return None
-    
+
     def get_user_by_id(self, user_id: int) -> Optional[User]:
         """Get user by ID"""
         try:
@@ -467,7 +487,7 @@ class UnifiedDatabase:
         except Exception as e:
             logger.error(f"Error getting user by ID: {e}")
             return None
-    
+
     def log_system_metrics(self, metrics: SystemMetrics) -> bool:
         """Log system metrics"""
         try:
@@ -491,7 +511,7 @@ class UnifiedDatabase:
         except Exception as e:
             logger.error(f"Error logging system metrics: {e}")
             return False
-    
+
     def log_audit_event(self, audit_log: AuditLog) -> bool:
         """Log audit event"""
         try:
@@ -504,7 +524,8 @@ class UnifiedDatabase:
                 ''', (
                     audit_log.timestamp, audit_log.user_id, audit_log.session_id,
                     audit_log.action.value, audit_log.result.value, audit_log.resource,
-                    audit_log.ip_address, audit_log.user_agent, json.dumps(audit_log.details),
+                    audit_log.ip_address, audit_log.user_agent, json.dumps(
+                        audit_log.details),
                     audit_log.risk_score, json.dumps(audit_log.metadata)
                 ))
                 conn.commit()
@@ -512,7 +533,7 @@ class UnifiedDatabase:
         except Exception as e:
             logger.error(f"Error logging audit event: {e}")
             return False
-    
+
     def _row_to_user(self, row) -> User:
         """Convert database row to User object"""
         return User(
@@ -533,8 +554,10 @@ class UnifiedDatabase:
             metadata=json.loads(row[14]) if row[14] else {}
         )
 
+
 # Global database instance
 db = None
+
 
 def init_db(db_path: str = "unified_heimnetz.db") -> UnifiedDatabase:
     """Initialize the global database instance"""
@@ -543,12 +566,14 @@ def init_db(db_path: str = "unified_heimnetz.db") -> UnifiedDatabase:
         db = UnifiedDatabase(db_path)
     return db
 
+
 def get_db() -> UnifiedDatabase:
     """Get the global database instance"""
     global db
     if db is None:
         db = init_db()
     return db
+
 
 # Compatibility aliases for legacy code
 DatabaseManager = UnifiedDatabase

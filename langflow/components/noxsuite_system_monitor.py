@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+from langflow.field_typing import Bool, Data, DropDown, Number, Text
+from langflow.custom import CustomComponent
+import docker
+import requests
+import psutil
+from typing import Any, Dict, List, Optional
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -6,15 +13,7 @@ logger = logging.getLogger(__name__)
 NoxSuite System Monitor Component for Langflow
 Comprehensive system monitoring with intelligent alerting
 """
-from datetime import datetime
-from typing import Any, Dict, List, Optional
 
-import psutil
-import requests
-
-import docker
-from langflow.custom import CustomComponent
-from langflow.field_typing import Bool, Data, DropDown, Number, Text
 
 class NoxSuiteSystemMonitor(CustomComponent):
     display_name = "NoxSuite System Monitor"
@@ -27,7 +26,8 @@ class NoxSuiteSystemMonitor(CustomComponent):
         DropDown(
             name="monitor_type",
             display_name="Monitor Type",
-            options=["full_system", "performance", "services", "alerts", "resources"],
+            options=["full_system", "performance",
+                     "services", "alerts", "resources"],
             value="full_system",
             info="Choose the type of monitoring to perform",
         ),
@@ -328,7 +328,8 @@ class NoxSuiteSystemMonitor(CustomComponent):
             },
             "disk": {
                 "usage_percent": round(
-                    (system_metrics["disk"]["used"] / system_metrics["disk"]["total"])
+                    (system_metrics["disk"]["used"] /
+                     system_metrics["disk"]["total"])
                     * 100,
                     1,
                 ),
@@ -340,9 +341,11 @@ class NoxSuiteSystemMonitor(CustomComponent):
 
         # Performance alerts
         if performance_data["cpu"]["status"] == "high":
-            alerts.append(f"High CPU: {performance_data['cpu']['current']:.1f}%")
+            alerts.append(
+                f"High CPU: {performance_data['cpu']['current']:.1f}%")
         if performance_data["memory"]["status"] == "high":
-            alerts.append(f"High Memory: {performance_data['memory']['current']:.1f}%")
+            alerts.append(
+                f"High Memory: {performance_data['memory']['current']:.1f}%")
 
         status = "optimal" if not alerts else "degraded"
 
@@ -393,13 +396,15 @@ class NoxSuiteSystemMonitor(CustomComponent):
         if cpu_percent > cpu_threshold:
             alerts.append(f"CPU: {cpu_percent:.1f}% > {cpu_threshold}%")
         if memory_percent > memory_threshold:
-            alerts.append(f"Memory: {memory_percent:.1f}% > {memory_threshold}%")
+            alerts.append(
+                f"Memory: {memory_percent:.1f}% > {memory_threshold}%")
 
         # Quick service check
         try:
             response = requests.get("http://localhost:7860/health", timeout=3)
             if response.status_code != 200:
-                alerts.append(f"Langflow unhealthy: HTTP {response.status_code}")
+                alerts.append(
+                    f"Langflow unhealthy: HTTP {response.status_code}")
         except Exception as e:
             logger.warning(f"Unexpected error: {e}")
             alerts.append("Langflow unreachable")

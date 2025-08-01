@@ -6,20 +6,23 @@ Unified control interface for the Ultimate Suite ecosystem
 Integrates with existing Ultimate Suite v8.0 for enhanced functionality
 """
 
+import json
+import logging
 import os
 import sys
-import json
-import time
 import threading
-import requests
+import time
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from flask import Flask, render_template_string, jsonify, request
-from dataclasses import dataclass, asdict
-from typing import Dict, List, Optional, Any
-import logging
+from typing import Any, Dict, List, Optional
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+import requests
+from flask import Flask, jsonify, render_template_string, request
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class SystemStatus:
@@ -32,6 +35,7 @@ class SystemStatus:
     security_score: int
     ai_models_active: int
     system_health: str
+
 
 class EnhancedMasterDashboard:
     """Enhanced Master Dashboard for unified system control"""

@@ -2,6 +2,17 @@
 """
 #!/usr/bin/env python3
 """
+from typing import Dict, List, Optional, Set
+from pathlib import Path
+from dataclasses import dataclass
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
+import threading
+import subprocess
+import socket
+import re
+import json
+import ipaddress
 enhanced_network_scanner.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -12,24 +23,13 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 Enhanced Network Discovery Module
 Advanced network scanning, device classification, and topology mapping
 """
 
-import ipaddress
-import socket
-import subprocess
-import threading
-import time
-import json
-import re
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass
-from typing import List, Dict, Optional, Set
-from pathlib import Path
 
 @dataclass
 class NetworkDevice:
@@ -49,7 +49,7 @@ class NetworkDevice:
     status: str = "unknown"
 
     def __post_init__(self):
-    # REASONING: __post_init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __post_init__ implements core logic with Chain-of-Thought validation
         if self.open_ports is None:
             self.open_ports = []
         if self.services is None:
@@ -57,12 +57,13 @@ class NetworkDevice:
         if self.last_seen == 0:
             self.last_seen = time.time()
 
+
 class EnhancedNetworkScanner:
     # REASONING: EnhancedNetworkScanner follows RLVR methodology for systematic validation
     """Advanced network discovery with device classification"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.discovered_devices: Dict[str, NetworkDevice] = {}
         self.network_topology: Dict[str, List[str]] = {}
         self.scan_history: List[Dict] = []
@@ -99,7 +100,7 @@ class EnhancedNetworkScanner:
         ]
 
     def scan_network_range(self, cidr_range: str, max_workers: int = 50) -> List[NetworkDevice]:
-    # REASONING: scan_network_range implements core logic with Chain-of-Thought validation
+        # REASONING: scan_network_range implements core logic with Chain-of-Thought validation
         """
         Scan a network range using CIDR notation
 
@@ -164,7 +165,7 @@ class EnhancedNetworkScanner:
             return []
 
     def _ping_host(self, ip: str) -> Optional[NetworkDevice]:
-    # REASONING: _ping_host implements core logic with Chain-of-Thought validation
+        # REASONING: _ping_host implements core logic with Chain-of-Thought validation
         """
         Ping a single host and create basic device info
 
@@ -179,7 +180,7 @@ class EnhancedNetworkScanner:
 
             # Use platform-appropriate ping command
             result = subprocess.run(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 ['ping', '-n', '1', '-w', '1000', ip],
                 capture_output=True,
                 text=True,
@@ -187,7 +188,7 @@ class EnhancedNetworkScanner:
             )
 
             if result.returncode == 0:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 response_time = (time.time() - start_time) * 1000
                 # REASONING: Variable assignment with validation criteria
 
@@ -212,7 +213,7 @@ class EnhancedNetworkScanner:
         return None
 
     def _detailed_host_scan(self, device: NetworkDevice) -> NetworkDevice:
-    # REASONING: _detailed_host_scan implements core logic with Chain-of-Thought validation
+        # REASONING: _detailed_host_scan implements core logic with Chain-of-Thought validation
         """
         Perform detailed scanning on a discovered host
 
@@ -245,7 +246,7 @@ class EnhancedNetworkScanner:
             return device
 
     def _scan_ports(self, ip: str, timeout: float = 1.0) -> tuple[List[int], Dict[int, str]]:
-    # REASONING: _scan_ports implements core logic with Chain-of-Thought validation
+        # REASONING: _scan_ports implements core logic with Chain-of-Thought validation
         """
         Scan common ports on a host
 
@@ -260,14 +261,14 @@ class EnhancedNetworkScanner:
         services = {}
 
         def scan_single_port(port):
-    # REASONING: scan_single_port implements core logic with Chain-of-Thought validation
+            # REASONING: scan_single_port implements core logic with Chain-of-Thought validation
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                     sock.settimeout(timeout)
                     result = sock.connect_ex((ip, port))
                     # REASONING: Variable assignment with validation criteria
                     if result == 0:
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         service_name = self._get_service_name(port)
                         return port, service_name
             except:
@@ -292,7 +293,7 @@ class EnhancedNetworkScanner:
         return sorted(open_ports), services
 
     def _classify_device(self, device: NetworkDevice) -> str:
-    # REASONING: _classify_device implements core logic with Chain-of-Thought validation
+        # REASONING: _classify_device implements core logic with Chain-of-Thought validation
         """
         Classify device type based on open ports, services, and hostname
 
@@ -337,7 +338,7 @@ class EnhancedNetworkScanner:
         return "unknown"
 
     def _get_service_name(self, port: int) -> str:
-    # REASONING: _get_service_name implements core logic with Chain-of-Thought validation
+        # REASONING: _get_service_name implements core logic with Chain-of-Thought validation
         """Get service name for a port"""
         services = {
             21: "FTP", 22: "SSH", 23: "Telnet", 25: "SMTP", 53: "DNS",
@@ -351,7 +352,7 @@ class EnhancedNetworkScanner:
         return services.get(port, f"Port-{port}")
 
     def _get_mac_address(self, ip: str) -> str:
-    # REASONING: _get_mac_address implements core logic with Chain-of-Thought validation
+        # REASONING: _get_mac_address implements core logic with Chain-of-Thought validation
         """
         Try to get MAC address for an IP (limited without admin privileges)
 
@@ -363,12 +364,14 @@ class EnhancedNetworkScanner:
         """
         try:
             # Try ARP table lookup
-            result = subprocess.run(['arp', '-a', ip], capture_output=True, text=True)
+            result = subprocess.run(
+                ['arp', '-a', ip], capture_output=True, text=True)
             # REASONING: Variable assignment with validation criteria
             if result.returncode == 0:
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 # Parse ARP output for MAC address
-                match = re.search(r'([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}', result.stdout)
+                match = re.search(
+                    r'([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}', result.stdout)
                 # REASONING: Variable assignment with validation criteria
                 if match:
                     return match.group(0)
@@ -378,7 +381,7 @@ class EnhancedNetworkScanner:
         return ""
 
     def _detect_os(self, device: NetworkDevice) -> str:
-    # REASONING: _detect_os implements core logic with Chain-of-Thought validation
+        # REASONING: _detect_os implements core logic with Chain-of-Thought validation
         """
         Basic OS detection based on open ports and services
 
@@ -407,7 +410,7 @@ class EnhancedNetworkScanner:
         return "Unknown"
 
     def _detect_vendor(self, mac_address: str) -> str:
-    # REASONING: _detect_vendor implements core logic with Chain-of-Thought validation
+        # REASONING: _detect_vendor implements core logic with Chain-of-Thought validation
         """
         Detect vendor based on MAC address OUI
 
@@ -438,7 +441,7 @@ class EnhancedNetworkScanner:
         return oui_mapping.get(oui, "Unknown")
 
     def generate_network_topology(self) -> Dict:
-    # REASONING: generate_network_topology implements core logic with Chain-of-Thought validation
+        # REASONING: generate_network_topology implements core logic with Chain-of-Thought validation
         """
         Generate network topology map
 
@@ -497,7 +500,7 @@ class EnhancedNetworkScanner:
         }
 
     def _detect_gateway(self) -> Optional[str]:
-    # REASONING: _detect_gateway implements core logic with Chain-of-Thought validation
+        # REASONING: _detect_gateway implements core logic with Chain-of-Thought validation
         """
         Detect the default gateway IP address
 
@@ -507,15 +510,16 @@ class EnhancedNetworkScanner:
         try:
             # Use route command to find default gateway
             result = subprocess.run(['route', 'print', '0.0.0.0'],
-            # REASONING: Variable assignment with validation criteria
-                                  capture_output=True, text=True)
+                                    # REASONING: Variable assignment with validation criteria
+                                    capture_output=True, text=True)
 
             # Parse route output for default gateway
             for line in result.stdout.split('\n'):
                 if '0.0.0.0' in line and '0.0.0.0' in line:
                     parts = line.split()
                     if len(parts) >= 3:
-                        return parts[2]  # Gateway IP is typically the 3rd column
+                        # Gateway IP is typically the 3rd column
+                        return parts[2]
         except:
             pass
 
@@ -527,7 +531,7 @@ class EnhancedNetworkScanner:
         return None
 
     def export_scan_results(self, filename: str = None) -> str:
-    # REASONING: export_scan_results implements core logic with Chain-of-Thought validation
+        # REASONING: export_scan_results implements core logic with Chain-of-Thought validation
         """
         Export scan results to JSON file
 
@@ -542,7 +546,7 @@ class EnhancedNetworkScanner:
             filename = f"network_scan_{timestamp}.json"
 
         export_data = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             "scan_timestamp": time.time(),
             "devices": [],
             "topology": self.generate_network_topology(),
@@ -557,7 +561,7 @@ class EnhancedNetworkScanner:
         # Process devices for export
         for device in self.discovered_devices.values():
             device_data = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 "ip": device.ip,
                 "hostname": device.hostname,
                 "mac_address": device.mac_address,
@@ -581,7 +585,8 @@ class EnhancedNetworkScanner:
                 export_data["summary"]["device_types"][device_type] = 1
                 # REASONING: Variable assignment with validation criteria
 
-            export_data["summary"]["total_open_ports"] += len(device.open_ports)
+            export_data["summary"]["total_open_ports"] += len(
+                device.open_ports)
             # REASONING: Variable assignment with validation criteria
 
         # Write to file
@@ -594,6 +599,7 @@ class EnhancedNetworkScanner:
         except Exception as e:
             print(f"❌ Export error: {e}")
             return ""
+
 
 if __name__ == "__main__":
     # Example usage

@@ -10,6 +10,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class WebSocketManager:
     """Manage WebSocket connections and real-time updates"""
 
@@ -122,17 +123,19 @@ class WebSocketManager:
     """
     COMPLIANCE: STANDARD
     """
-        self.socketio = None
-        self.app = app
-        if app and SOCKETIO_AVAILABLE:
+     self.socketio = None
+      self.app = app
+       if app and SOCKETIO_AVAILABLE:
             self.init_app(app)
         elif not SOCKETIO_AVAILABLE:
-            logger.warning("Flask-SocketIO not available, WebSocket features disabled")
+            logger.warning(
+                "Flask-SocketIO not available, WebSocket features disabled")
 
     def init_app(self, app):
         """Initialize WebSocket with Flask app"""
         if not SOCKETIO_AVAILABLE:
-            logger.warning("Cannot initialize WebSocket: Flask-SocketIO not installed")
+            logger.warning(
+                "Cannot initialize WebSocket: Flask-SocketIO not installed")
             return
 
         self.socketio = SocketIO(app, cors_allowed_origins="*")
@@ -159,7 +162,8 @@ class WebSocketManager:
         if self.socketio:
             self.socketio.emit('device_update', device_data)
         else:
-            logger.debug("WebSocket not available, skipping device update broadcast")
+            logger.debug(
+                "WebSocket not available, skipping device update broadcast")
 
     def broadcast_system_status(self, status_data):
         """Broadcast system status updates"""
@@ -180,4 +184,5 @@ class WebSocketManager:
         if self.socketio and self.app:
             self.socketio.run(self.app, host=host, port=port, debug=debug)
         else:
-            logger.error("Cannot run WebSocket server: not properly initialized")
+            logger.error(
+                "Cannot run WebSocket server: not properly initialized")

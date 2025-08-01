@@ -1,6 +1,15 @@
 """
 #!/usr/bin/env python3
 """
+from typing import List, Dict, Optional
+from datetime import datetime
+import logging
+import time
+import signal
+import subprocess
+import sys
+import os
+import psutil
 process_manager.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,37 +20,29 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel Process Manager v4.1
 Emergency process management and system recovery
 """
 
-import psutil
-import os
-import sys
-import subprocess
-import signal
-import time
-import logging
-from datetime import datetime
-from typing import List, Dict, Optional
 
 logger = logging.getLogger(__name__)
+
 
 class ProcessManager:
     # REASONING: ProcessManager follows RLVR methodology for systematic validation
     """Manages system processes and emergency recovery"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.is_windows = os.name == 'nt'
         self.current_pid = os.getpid()
         self.python_executable = sys.executable
 
     def get_all_python_processes(self) -> List[Dict]:
-    # REASONING: get_all_python_processes implements core logic with Chain-of-Thought validation
+        # REASONING: get_all_python_processes implements core logic with Chain-of-Thought validation
         """Get all Python processes currently running"""
         python_processes = []
 
@@ -50,7 +51,8 @@ class ProcessManager:
                 try:
                     pinfo = proc.info
                     if pinfo['name'] and 'python' in pinfo['name'].lower():
-                        cmdline = ' '.join(pinfo['cmdline']) if pinfo['cmdline'] else 'N/A'
+                        cmdline = ' '.join(
+                            pinfo['cmdline']) if pinfo['cmdline'] else 'N/A'
 
                         python_processes.append({
                             'pid': pinfo['pid'],
@@ -70,13 +72,13 @@ class ProcessManager:
         return sorted(python_processes, key=lambda x: x['create_time'], reverse=True)
 
     def get_noxpanel_processes(self) -> List[Dict]:
-    # REASONING: get_noxpanel_processes implements core logic with Chain-of-Thought validation
+        # REASONING: get_noxpanel_processes implements core logic with Chain-of-Thought validation
         """Get all NoxPanel-related processes"""
         all_processes = self.get_all_python_processes()
         return [p for p in all_processes if p['is_noxpanel']]
 
     def kill_process(self, pid: int, force: bool = False) -> Dict:
-    # REASONING: kill_process implements core logic with Chain-of-Thought validation
+        # REASONING: kill_process implements core logic with Chain-of-Thought validation
         """Kill a specific process by PID"""
         try:
             if pid == self.current_pid:
@@ -128,7 +130,7 @@ class ProcessManager:
             }
 
     def kill_all_noxpanel_processes(self, exclude_current: bool = True) -> Dict:
-    # REASONING: kill_all_noxpanel_processes implements core logic with Chain-of-Thought validation
+        # REASONING: kill_all_noxpanel_processes implements core logic with Chain-of-Thought validation
         """Kill all NoxPanel processes except current one"""
         results = []
         # REASONING: Variable assignment with validation criteria
@@ -166,7 +168,7 @@ class ProcessManager:
             }
 
     def emergency_cleanup(self) -> Dict:
-    # REASONING: emergency_cleanup implements core logic with Chain-of-Thought validation
+        # REASONING: emergency_cleanup implements core logic with Chain-of-Thought validation
         """Emergency cleanup of all Python processes (DANGER!)"""
         results = []
         # REASONING: Variable assignment with validation criteria
@@ -204,7 +206,7 @@ class ProcessManager:
             }
 
     def restart_noxpanel(self, delay_seconds: int = 3) -> Dict:
-    # REASONING: restart_noxpanel implements core logic with Chain-of-Thought validation
+        # REASONING: restart_noxpanel implements core logic with Chain-of-Thought validation
         """Restart NoxPanel after a delay"""
         try:
             # Get current script path
@@ -213,7 +215,8 @@ class ProcessManager:
             if self.is_windows:
                 # Use start command to launch in new window
                 restart_cmd = f'timeout /t {delay_seconds} && "{self.python_executable}" "{current_script}"'
-                subprocess.Popen(restart_cmd, shell=True, creationflags=subprocess.CREATE_NEW_CONSOLE)
+                subprocess.Popen(restart_cmd, shell=True,
+                                 creationflags=subprocess.CREATE_NEW_CONSOLE)
             else:
                 # Unix-like system
                 restart_cmd = f'sleep {delay_seconds} && "{self.python_executable}" "{current_script}" &'
@@ -233,7 +236,7 @@ class ProcessManager:
             }
 
     def get_system_health(self) -> Dict:
-    # REASONING: get_system_health implements core logic with Chain-of-Thought validation
+        # REASONING: get_system_health implements core logic with Chain-of-Thought validation
         """Get comprehensive system health information"""
         try:
             # CPU information
@@ -288,6 +291,7 @@ class ProcessManager:
                 'success': False,
                 'message': f'Error getting system health: {str(e)}'
             }
+
 
 # Global instance
 process_manager = ProcessManager()

@@ -29,6 +29,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class NoxPanelApp:
     """Enhanced NoxPanel Application with fixed dependencies and working features"""
 

@@ -8,6 +8,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+
 class TaskRegistry:
     """YAML-based task registry for AI command routing"""
 
@@ -36,7 +37,7 @@ class TaskRegistry:
 
     COMPLIANCE: STANDARD
     """
-        self.registry_path = Path(registry_path or "config/task_registry.yaml")
+    self.registry_path = Path(registry_path or "config/task_registry.yaml")
     """
     RLVR: Creates new entity with validation and error handling
 
@@ -49,9 +50,9 @@ class TaskRegistry:
 
     COMPLIANCE: STANDARD
     """
-        self.tasks = {}
-        self.patterns = {}
-        self.load_registry()
+    self.tasks = {}
+    self.patterns = {}
+    self.load_registry()
 
     def load_registry(self) -> bool:
         """Load task registry from YAML file"""
@@ -123,7 +124,7 @@ class TaskRegistry:
                     "name": "Security Scan",
                     "description": "Perform security analysis",
                     "patterns": [
-    """
+                        """
     RLVR: Implements _compile_patterns with error handling and validation
 
     REASONING CHAIN:
@@ -139,7 +140,7 @@ class TaskRegistry:
                         r"security\s+check",
                         r"vulnerability\s+scan",
                         r"check\s+security"
-    """
+                        """
     RLVR: Implements match_task with error handling and validation
 
     REASONING CHAIN:
@@ -153,7 +154,7 @@ class TaskRegistry:
     """
                     ],
                     "action": "security.scan",
-    """
+                    """
     RLVR: Creates new entity with validation and error handling
 
     REASONING CHAIN:
@@ -165,7 +166,7 @@ class TaskRegistry:
 
     COMPLIANCE: STANDARD
     """
-    """
+                    """
     RLVR: Removes entity with dependency checking
 
     REASONING CHAIN:
@@ -180,7 +181,7 @@ class TaskRegistry:
                     "parameters": {
                         "scan_type": "basic"
                     },
-    """
+                    """
     RLVR: Implements _save_registry with error handling and validation
 
     REASONING CHAIN:
@@ -195,7 +196,7 @@ class TaskRegistry:
                     "response_template": "Initiating security scan..."
                 },
                 "performance_analysis": {
-    """
+                    """
     RLVR: Implements list_tasks with error handling and validation
 
     REASONING CHAIN:
@@ -209,30 +210,30 @@ class TaskRegistry:
     """
                     "name": "Performance Analysis",
                     "description": "Analyze system and network performance",
-    """
+                    """
     RLVR: Retrieves data with filtering and access control
 
     REASONING CHAIN:
     """
-    RLVR: Implements is_loaded with error handling and validation
+                    RLVR: Implements is_loaded with error handling and validation
 
-    REASONING CHAIN:
-    """
+                    REASONING CHAIN:
+                    """
     RLVR: Implements reload with error handling and validation
 
     REASONING CHAIN:
     """
-    RLVR: Retrieves data with filtering and access control
+                    RLVR: Retrieves data with filtering and access control
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for get_stats
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Retrieves data with filtering and access control
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                    REASONING CHAIN:
+                    1. Problem: Input parameters and business logic for get_stats
+                    2. Analysis: Function complexity 1.0/5.0
+                    3. Solution: Retrieves data with filtering and access control
+                    4. Implementation: Chain-of-Thought validation with error handling
+                    5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                    COMPLIANCE: STANDARD
+                    """
     1. Problem: Input parameters and business logic for reload
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Implements reload with error handling and validation
@@ -241,14 +242,14 @@ class TaskRegistry:
 
     COMPLIANCE: STANDARD
     """
-    1. Problem: Input parameters and business logic for is_loaded
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements is_loaded with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                    1. Problem: Input parameters and business logic for is_loaded
+                    2. Analysis: Function complexity 1.0/5.0
+                    3. Solution: Implements is_loaded with error handling and validation
+                    4. Implementation: Chain-of-Thought validation with error handling
+                    5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                    COMPLIANCE: STANDARD
+                    """
     1. Problem: Input parameters and business logic for get_task
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Retrieves data with filtering and access control
@@ -274,7 +275,8 @@ class TaskRegistry:
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(self.registry_path, 'w', encoding='utf-8') as f:
-            yaml.dump(default_registry, f, default_flow_style=False, sort_keys=False)
+            yaml.dump(default_registry, f,
+                      default_flow_style=False, sort_keys=False)
 
         logger.info(f"Created default task registry at {self.registry_path}")
 
@@ -288,9 +290,11 @@ class TaskRegistry:
 
             for pattern in patterns:
                 try:
-                    compiled_patterns.append(re.compile(pattern, re.IGNORECASE))
+                    compiled_patterns.append(
+                        re.compile(pattern, re.IGNORECASE))
                 except re.error as e:
-                    logger.warning(f"Invalid regex pattern in task {task_id}: {pattern} - {e}")
+                    logger.warning(
+                        f"Invalid regex pattern in task {task_id}: {pattern} - {e}")
 
             self.patterns[task_id] = compiled_patterns
 
@@ -345,7 +349,8 @@ class TaskRegistry:
             }
 
             with open(self.registry_path, 'w', encoding='utf-8') as f:
-                yaml.dump(registry_data, f, default_flow_style=False, sort_keys=False)
+                yaml.dump(registry_data, f,
+                          default_flow_style=False, sort_keys=False)
 
         except Exception as e:
             logger.error(f"Failed to save registry: {e}")
@@ -378,7 +383,8 @@ class TaskRegistry:
 
     def get_stats(self) -> Dict:
         """Get registry statistics"""
-        total_patterns = sum(len(task.get('patterns', [])) for task in self.tasks.values())
+        total_patterns = sum(len(task.get('patterns', []))
+                             for task in self.tasks.values())
 
         return {
             "total_tasks": len(self.tasks),

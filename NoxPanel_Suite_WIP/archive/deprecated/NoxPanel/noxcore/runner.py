@@ -1,8 +1,9 @@
-import subprocess
 import logging
+import subprocess
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
 
 def run_script(script_path, args=None):
     """

@@ -1,6 +1,18 @@
 """
 #!/usr/bin/env python3
 """
+import docker
+import yaml
+import aiohttp
+from typing import Any, Dict, List, Optional, Tuple
+from enum import Enum
+from datetime import datetime, timedelta
+from dataclasses import asdict, dataclass
+import time
+import subprocess
+import logging
+import json
+import asyncio
 blue_green_deployment.py - RLVR Enhanced Component
 
 REASONING: Production deployment with RLVR methodology integration
@@ -11,27 +23,16 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 Blue-Green Deployment System with Automatic Rollback
 Enterprise-grade zero-downtime deployment for 5,000+ users
 """
 
-import asyncio
-import aiohttp
-import docker
-import json
-import time
-import logging
-import subprocess
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta
-from enum import Enum
-import yaml
 
 logger = logging.getLogger(__name__)
+
 
 class DeploymentStatus(Enum):
     # REASONING: DeploymentStatus follows RLVR methodology for systematic validation
@@ -44,10 +45,12 @@ class DeploymentStatus(Enum):
     ROLLING_BACK = "rolling_back"
     ROLLED_BACK = "rolled_back"
 
+
 class Environment(Enum):
     # REASONING: Environment follows RLVR methodology for systematic validation
     BLUE = "blue"
     GREEN = "green"
+
 
 @dataclass
 class DeploymentConfig:
@@ -63,6 +66,7 @@ class DeploymentConfig:
     load_test_duration: int = 120
     performance_threshold_ms: int = 2000
     error_rate_threshold: float = 1.0
+
 
 @dataclass
 class DeploymentState:
@@ -80,18 +84,19 @@ class DeploymentState:
     performance_metrics: Dict[str, Any] = None
 
     def __post_init__(self):
-    # REASONING: __post_init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __post_init__ implements core logic with Chain-of-Thought validation
         if self.health_checks is None:
             self.health_checks = []
         if self.performance_metrics is None:
             self.performance_metrics = {}
+
 
 class BlueGreenDeployment:
     # REASONING: BlueGreenDeployment follows RLVR methodology for systematic validation
     """Enterprise blue-green deployment system with automatic rollback"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.docker_client = docker.from_env()
         self.active_environment = Environment.BLUE  # Start with blue as active
         self.deployment_history: List[DeploymentState] = []
@@ -102,7 +107,7 @@ class BlueGreenDeployment:
 
         # Service configurations
         self.service_configs = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             Environment.BLUE: {
                 'container_name': 'noxpanel_blue',
                 'port': 5001,
@@ -194,7 +199,8 @@ class BlueGreenDeployment:
             deployment_state.completed_at = datetime.utcnow()
 
             logger.info(f"✅ Deployment {deployment_id} completed successfully")
-            logger.info(f"   Active environment: {self.active_environment.value}")
+            logger.info(
+                f"   Active environment: {self.active_environment.value}")
 
             # Cleanup old environment
             await self._cleanup_inactive_environment()
@@ -221,7 +227,8 @@ class BlueGreenDeployment:
 
             # Stop existing container if running
             try:
-                existing_container = self.docker_client.containers.get(service_config['container_name'])
+                existing_container = self.docker_client.containers.get(
+                    service_config['container_name'])
                 # REASONING: Variable assignment with validation criteria
                 existing_container.stop()
                 existing_container.remove()
@@ -256,7 +263,8 @@ class BlueGreenDeployment:
                 }
             )
 
-            logger.info(f"   Started new {env.value} container: {container.id[:12]}")
+            logger.info(
+                f"   Started new {env.value} container: {container.id[:12]}")
 
             # Wait for container to be ready
             await asyncio.sleep(30)
@@ -264,7 +272,8 @@ class BlueGreenDeployment:
             # Verify container is running
             container.reload()
             if container.status != 'running':
-                raise Exception(f"Container failed to start: {container.status}")
+                raise Exception(
+                    f"Container failed to start: {container.status}")
 
             logger.info(f"✅ {env.value} environment deployed successfully")
             return True
@@ -288,12 +297,12 @@ class BlueGreenDeployment:
                     async with aiohttp.ClientSession() as session:
                         start_time = time.time()
                         async with session.get(health_url, timeout=config.health_check_timeout) as response:
-                        # REASONING: Variable assignment with validation criteria
+                            # REASONING: Variable assignment with validation criteria
                             response_time = (time.time() - start_time) * 1000
                             # REASONING: Variable assignment with validation criteria
 
                             health_result = {
-                            # REASONING: Variable assignment with validation criteria
+                                # REASONING: Variable assignment with validation criteria
                                 'attempt': attempt + 1,
                                 'status_code': response.status,
                                 'response_time_ms': round(response_time, 2),
@@ -301,46 +310,53 @@ class BlueGreenDeployment:
                             }
 
                             if response.status == 200:
-                            # REASONING: Variable assignment with validation criteria
+                                # REASONING: Variable assignment with validation criteria
                                 response_data = await response.json()
                                 # REASONING: Variable assignment with validation criteria
                                 health_result['response_data'] = response_data
                                 # REASONING: Variable assignment with validation criteria
-                                deployment_state.health_checks.append(health_result)
+                                deployment_state.health_checks.append(
+                                    health_result)
 
-                                logger.info(f"   ✅ Health check {attempt + 1} passed ({response_time:.1f}ms)")
+                                logger.info(
+                                    f"   ✅ Health check {attempt + 1} passed ({response_time:.1f}ms)")
                                 return True
                             else:
                                 health_result['error'] = f"HTTP {response.status}"
                                 # REASONING: Variable assignment with validation criteria
-                                deployment_state.health_checks.append(health_result)
-                                logger.warning(f"   ❌ Health check {attempt + 1} failed: HTTP {response.status}")
+                                deployment_state.health_checks.append(
+                                    health_result)
+                                logger.warning(
+                                    f"   ❌ Health check {attempt + 1} failed: HTTP {response.status}")
 
                 except asyncio.TimeoutError:
                     health_result = {
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         'attempt': attempt + 1,
                         'error': 'Timeout',
                         'timestamp': datetime.utcnow().isoformat()
                     }
                     deployment_state.health_checks.append(health_result)
-                    logger.warning(f"   ❌ Health check {attempt + 1} timed out")
+                    logger.warning(
+                        f"   ❌ Health check {attempt + 1} timed out")
 
                 except Exception as e:
                     health_result = {
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         'attempt': attempt + 1,
                         'error': str(e),
                         'timestamp': datetime.utcnow().isoformat()
                     }
                     deployment_state.health_checks.append(health_result)
-                    logger.warning(f"   ❌ Health check {attempt + 1} failed: {e}")
+                    logger.warning(
+                        f"   ❌ Health check {attempt + 1} failed: {e}")
 
                 # Wait before retry
                 if attempt < config.health_check_retries - 1:
                     await asyncio.sleep(config.health_check_interval)
 
-            logger.error(f"❌ All health checks failed for {env.value} environment")
+            logger.error(
+                f"❌ All health checks failed for {env.value} environment")
             return False
 
         except Exception as e:
@@ -355,7 +371,8 @@ class BlueGreenDeployment:
             base_url = f"http://localhost:{service_config['port']}"
             # REASONING: Variable assignment with validation criteria
 
-            logger.info(f"⚡ Running performance tests on {env.value} environment")
+            logger.info(
+                f"⚡ Running performance tests on {env.value} environment")
 
             performance_results = []
             # REASONING: Variable assignment with validation criteria
@@ -373,25 +390,28 @@ class BlueGreenDeployment:
                         async with aiohttp.ClientSession() as session:
                             start_time = time.time()
                             async with session.get(url, timeout=30) as response:
-                            # REASONING: Variable assignment with validation criteria
-                                response_time = (time.time() - start_time) * 1000
+                                # REASONING: Variable assignment with validation criteria
+                                response_time = (
+                                    time.time() - start_time) * 1000
                                 # REASONING: Variable assignment with validation criteria
                                 response_times.append(response_time)
 
                                 if response.status == 200:
-                                # REASONING: Variable assignment with validation criteria
+                                    # REASONING: Variable assignment with validation criteria
                                     success_count += 1
 
                     except Exception as e:
-                        logger.warning(f"   Request failed for {endpoint}: {e}")
+                        logger.warning(
+                            f"   Request failed for {endpoint}: {e}")
 
                 if response_times:
-                    avg_response_time = sum(response_times) / len(response_times)
+                    avg_response_time = sum(
+                        response_times) / len(response_times)
                     # REASONING: Variable assignment with validation criteria
                     success_rate = (success_count / 10) * 100
 
                     endpoint_result = {
-                    # REASONING: Variable assignment with validation criteria
+                        # REASONING: Variable assignment with validation criteria
                         'endpoint': endpoint,
                         'avg_response_time_ms': round(avg_response_time, 2),
                         'max_response_time_ms': round(max(response_times), 2),
@@ -403,26 +423,31 @@ class BlueGreenDeployment:
 
                     performance_results.append(endpoint_result)
 
-                    logger.info(f"   {endpoint}: {avg_response_time:.1f}ms avg, {success_rate}% success")
+                    logger.info(
+                        f"   {endpoint}: {avg_response_time:.1f}ms avg, {success_rate}% success")
 
                     # Check performance threshold
                     if avg_response_time > config.performance_threshold_ms:
-                        logger.error(f"   ❌ Performance threshold exceeded: {avg_response_time:.1f}ms > {config.performance_threshold_ms}ms")
+                        logger.error(
+                            f"   ❌ Performance threshold exceeded: {avg_response_time:.1f}ms > {config.performance_threshold_ms}ms")
                         return False
 
                     # Check error rate
                     error_rate = 100 - success_rate
                     if error_rate > config.error_rate_threshold:
-                        logger.error(f"   ❌ Error rate threshold exceeded: {error_rate}% > {config.error_rate_threshold}%")
+                        logger.error(
+                            f"   ❌ Error rate threshold exceeded: {error_rate}% > {config.error_rate_threshold}%")
                         return False
 
             deployment_state.performance_metrics['endpoint_tests'] = performance_results
             # REASONING: Variable assignment with validation criteria
 
             # Overall performance summary
-            all_response_times = [r['avg_response_time_ms'] for r in performance_results]
+            all_response_times = [r['avg_response_time_ms']
+                                  for r in performance_results]
             # REASONING: Variable assignment with validation criteria
-            overall_avg = sum(all_response_times) / len(all_response_times) if all_response_times else 0
+            overall_avg = sum(all_response_times) / \
+                len(all_response_times) if all_response_times else 0
             # REASONING: Variable assignment with validation criteria
 
             deployment_state.performance_metrics['overall'] = {
@@ -433,7 +458,8 @@ class BlueGreenDeployment:
                 # REASONING: Variable assignment with validation criteria
             }
 
-            logger.info(f"✅ Performance tests passed (avg: {overall_avg:.1f}ms)")
+            logger.info(
+                f"✅ Performance tests passed (avg: {overall_avg:.1f}ms)")
             return True
 
         except Exception as e:
@@ -448,7 +474,8 @@ class BlueGreenDeployment:
             base_url = f"http://localhost:{service_config['port']}"
             # REASONING: Variable assignment with validation criteria
 
-            logger.info(f"🔥 Running load tests on {env.value} environment ({config.load_test_duration}s)")
+            logger.info(
+                f"🔥 Running load tests on {env.value} environment ({config.load_test_duration}s)")
 
             # Simulate concurrent users
             concurrent_users = 50  # Start with moderate load
@@ -467,24 +494,27 @@ class BlueGreenDeployment:
                 async with aiohttp.ClientSession() as session:
                     for request_num in range(requests_per_user):
                         # Select random endpoint
-                        endpoint = self.monitoring_endpoints[request_num % len(self.monitoring_endpoints)]
+                        endpoint = self.monitoring_endpoints[request_num % len(
+                            self.monitoring_endpoints)]
                         url = f"{base_url}{endpoint}"
 
                         try:
                             start_time = time.time()
                             async with session.get(url, timeout=10) as response:
-                            # REASONING: Variable assignment with validation criteria
-                                response_time = (time.time() - start_time) * 1000
+                                # REASONING: Variable assignment with validation criteria
+                                response_time = (
+                                    time.time() - start_time) * 1000
                                 # REASONING: Variable assignment with validation criteria
                                 user_stats['total_response_time'] += response_time
                                 # REASONING: Variable assignment with validation criteria
 
                                 if response.status == 200:
-                                # REASONING: Variable assignment with validation criteria
+                                    # REASONING: Variable assignment with validation criteria
                                     user_stats['requests_completed'] += 1
                                 else:
                                     user_stats['requests_failed'] += 1
-                                    user_stats['errors'].append(f"HTTP {response.status}")
+                                    user_stats['errors'].append(
+                                        f"HTTP {response.status}")
 
                         except Exception as e:
                             user_stats['requests_failed'] += 1
@@ -507,7 +537,7 @@ class BlueGreenDeployment:
             # Wait for all users to complete or timeout
             try:
                 user_results = await asyncio.wait_for(
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     asyncio.gather(*user_tasks),
                     timeout=config.load_test_duration + 30
                     # REASONING: Variable assignment with validation criteria
@@ -519,22 +549,27 @@ class BlueGreenDeployment:
             load_test_duration = time.time() - start_time
 
             # Analyze results
-            total_requests = sum(r['requests_completed'] + r['requests_failed'] for r in user_results)
+            total_requests = sum(
+                r['requests_completed'] + r['requests_failed'] for r in user_results)
             # REASONING: Variable assignment with validation criteria
-            total_successful = sum(r['requests_completed'] for r in user_results)
+            total_successful = sum(r['requests_completed']
+                                   for r in user_results)
             # REASONING: Variable assignment with validation criteria
             total_failed = sum(r['requests_failed'] for r in user_results)
             # REASONING: Variable assignment with validation criteria
-            total_response_time = sum(r['total_response_time'] for r in user_results)
+            total_response_time = sum(r['total_response_time']
+                                      for r in user_results)
             # REASONING: Variable assignment with validation criteria
 
-            success_rate = (total_successful / total_requests) * 100 if total_requests > 0 else 0
-            avg_response_time = total_response_time / total_successful if total_successful > 0 else 0
+            success_rate = (total_successful / total_requests) * \
+                100 if total_requests > 0 else 0
+            avg_response_time = total_response_time / \
+                total_successful if total_successful > 0 else 0
             # REASONING: Variable assignment with validation criteria
             requests_per_second = total_requests / load_test_duration
 
             load_test_results = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 'duration_seconds': round(load_test_duration, 2),
                 'concurrent_users': concurrent_users,
                 'total_requests': total_requests,
@@ -550,7 +585,8 @@ class BlueGreenDeployment:
             # REASONING: Variable assignment with validation criteria
 
             logger.info(f"   📊 Load test results:")
-            logger.info(f"      Requests: {total_requests} ({total_successful} successful, {total_failed} failed)")
+            logger.info(
+                f"      Requests: {total_requests} ({total_successful} successful, {total_failed} failed)")
             logger.info(f"      Success rate: {success_rate:.1f}%")
             logger.info(f"      Avg response time: {avg_response_time:.1f}ms")
             logger.info(f"      Throughput: {requests_per_second:.1f} req/s")
@@ -558,11 +594,13 @@ class BlueGreenDeployment:
             # Check thresholds
             error_rate = 100 - success_rate
             if error_rate > config.error_rate_threshold:
-                logger.error(f"❌ Load test error rate too high: {error_rate:.1f}% > {config.error_rate_threshold}%")
+                logger.error(
+                    f"❌ Load test error rate too high: {error_rate:.1f}% > {config.error_rate_threshold}%")
                 return False
 
             if avg_response_time > config.performance_threshold_ms:
-                logger.error(f"❌ Load test response time too high: {avg_response_time:.1f}ms > {config.performance_threshold_ms}ms")
+                logger.error(
+                    f"❌ Load test response time too high: {avg_response_time:.1f}ms > {config.performance_threshold_ms}ms")
                 return False
 
             logger.info("✅ Load tests passed")
@@ -575,14 +613,15 @@ class BlueGreenDeployment:
     async def _switch_traffic(self, target_env: Environment, config: DeploymentConfig) -> bool:
         """Switch load balancer traffic to target environment"""
         try:
-            logger.info(f"🔄 Switching traffic to {target_env.value} environment")
+            logger.info(
+                f"🔄 Switching traffic to {target_env.value} environment")
 
             target_config = self.service_configs[target_env]
             # REASONING: Variable assignment with validation criteria
 
             # Update Traefik configuration
             traefik_config = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 'http': {
                     'services': {
                         'noxpanel': {
@@ -617,7 +656,8 @@ class BlueGreenDeployment:
             if not verification_successful:
                 raise Exception("Traffic switch verification failed")
 
-            logger.info(f"✅ Traffic switched to {target_env.value} environment")
+            logger.info(
+                f"✅ Traffic switched to {target_env.value} environment")
             return True
 
         except Exception as e:
@@ -631,22 +671,25 @@ class BlueGreenDeployment:
             async with aiohttp.ClientSession() as session:
                 for attempt in range(5):
                     async with session.get('http://localhost/health', timeout=10) as response:
-                    # REASONING: Variable assignment with validation criteria
-                        if response.status == 200:
                         # REASONING: Variable assignment with validation criteria
+                        if response.status == 200:
+                            # REASONING: Variable assignment with validation criteria
                             response_data = await response.json()
                             # REASONING: Variable assignment with validation criteria
 
                             # Check if response indicates correct environment
-                            env_indicator = response_data.get('environment', '').lower()
+                            env_indicator = response_data.get(
+                                'environment', '').lower()
                             # REASONING: Variable assignment with validation criteria
                             if target_env.value in env_indicator:
-                                logger.info(f"   ✅ Traffic verification successful (attempt {attempt + 1})")
+                                logger.info(
+                                    f"   ✅ Traffic verification successful (attempt {attempt + 1})")
                                 return True
 
                     await asyncio.sleep(2)
 
-            logger.error("❌ Traffic verification failed - not routing to target environment")
+            logger.error(
+                "❌ Traffic verification failed - not routing to target environment")
             return False
 
         except Exception as e:
@@ -661,17 +704,21 @@ class BlueGreenDeployment:
             # Run quick health check through load balancer
             async with aiohttp.ClientSession() as session:
                 async with session.get('http://localhost/health', timeout=30) as response:
-                # REASONING: Variable assignment with validation criteria
-                    if response.status == 200:
                     # REASONING: Variable assignment with validation criteria
+                    if response.status == 200:
+                        # REASONING: Variable assignment with validation criteria
                         response_data = await response.json()
                         # REASONING: Variable assignment with validation criteria
-                        logger.info(f"   ✅ Environment verification successful")
-                        logger.info(f"      Version: {response_data.get('version', 'unknown')}")
-                        logger.info(f"      Environment: {response_data.get('environment', 'unknown')}")
+                        logger.info(
+                            f"   ✅ Environment verification successful")
+                        logger.info(
+                            f"      Version: {response_data.get('version', 'unknown')}")
+                        logger.info(
+                            f"      Environment: {response_data.get('environment', 'unknown')}")
                         return True
                     else:
-                        logger.error(f"   ❌ Environment verification failed: HTTP {response.status}")
+                        logger.error(
+                            f"   ❌ Environment verification failed: HTTP {response.status}")
                         return False
 
         except Exception as e:
@@ -685,16 +732,19 @@ class BlueGreenDeployment:
             inactive_config = self.service_configs[inactive_env]
             # REASONING: Variable assignment with validation criteria
 
-            logger.info(f"🧹 Cleaning up inactive {inactive_env.value} environment")
+            logger.info(
+                f"🧹 Cleaning up inactive {inactive_env.value} environment")
 
             try:
-                container = self.docker_client.containers.get(inactive_config['container_name'])
+                container = self.docker_client.containers.get(
+                    inactive_config['container_name'])
                 # REASONING: Variable assignment with validation criteria
                 container.stop()
                 container.remove()
                 logger.info(f"   Removed {inactive_env.value} container")
             except docker.errors.NotFound:
-                logger.info(f"   No {inactive_env.value} container to clean up")
+                logger.info(
+                    f"   No {inactive_env.value} container to clean up")
 
         except Exception as e:
             logger.warning(f"⚠️ Failed to cleanup inactive environment: {e}")
@@ -702,7 +752,8 @@ class BlueGreenDeployment:
     async def _rollback_deployment(self, failed_deployment: DeploymentState) -> DeploymentState:
         """Automatic rollback to previous stable environment"""
         try:
-            logger.error(f"🔄 Starting automatic rollback for deployment {failed_deployment.deployment_id}")
+            logger.error(
+                f"🔄 Starting automatic rollback for deployment {failed_deployment.deployment_id}")
 
             failed_deployment.status = DeploymentStatus.ROLLING_BACK
 
@@ -712,7 +763,7 @@ class BlueGreenDeployment:
 
             # Update Traefik to point back to active environment
             traefik_config = {
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 'http': {
                     'services': {
                         'noxpanel': {
@@ -740,11 +791,13 @@ class BlueGreenDeployment:
             failed_env_config = self.service_configs[failed_deployment.target_env]
             # REASONING: Variable assignment with validation criteria
             try:
-                failed_container = self.docker_client.containers.get(failed_env_config['container_name'])
+                failed_container = self.docker_client.containers.get(
+                    failed_env_config['container_name'])
                 # REASONING: Variable assignment with validation criteria
                 failed_container.stop()
                 failed_container.remove()
-                logger.info(f"   Cleaned up failed {failed_deployment.target_env.value} container")
+                logger.info(
+                    f"   Cleaned up failed {failed_deployment.target_env.value} container")
             except docker.errors.NotFound:
                 pass
 
@@ -757,7 +810,8 @@ class BlueGreenDeployment:
                 failed_deployment.status = DeploymentStatus.ROLLED_BACK
                 failed_deployment.completed_at = datetime.utcnow()
                 logger.info(f"✅ Rollback completed successfully")
-                logger.info(f"   Active environment: {self.active_environment.value}")
+                logger.info(
+                    f"   Active environment: {self.active_environment.value}")
             else:
                 failed_deployment.status = DeploymentStatus.FAILED
                 failed_deployment.error_message += " | Rollback verification failed"
@@ -773,7 +827,7 @@ class BlueGreenDeployment:
             return failed_deployment
 
     def get_deployment_status(self) -> Dict[str, Any]:
-    # REASONING: get_deployment_status implements core logic with Chain-of-Thought validation
+        # REASONING: get_deployment_status implements core logic with Chain-of-Thought validation
         """Get current deployment status and history"""
         latest_deployment = self.deployment_history[-1] if self.deployment_history else None
 
@@ -786,7 +840,8 @@ class BlueGreenDeployment:
                 'started_at': latest_deployment.started_at.isoformat() if latest_deployment else None,
                 'completed_at': latest_deployment.completed_at.isoformat() if latest_deployment and latest_deployment.completed_at else None,
                 'duration_seconds': (
-                    (latest_deployment.completed_at - latest_deployment.started_at).total_seconds()
+                    (latest_deployment.completed_at -
+                     latest_deployment.started_at).total_seconds()
                     if latest_deployment and latest_deployment.completed_at
                     else None
                 )
@@ -820,10 +875,12 @@ class BlueGreenDeployment:
             target_config = self.service_configs[target_env]
             # REASONING: Variable assignment with validation criteria
             try:
-                container = self.docker_client.containers.get(target_config['container_name'])
+                container = self.docker_client.containers.get(
+                    target_config['container_name'])
                 # REASONING: Variable assignment with validation criteria
                 if container.status != 'running':
-                    logger.error(f"❌ Target environment container is not running: {container.status}")
+                    logger.error(
+                        f"❌ Target environment container is not running: {container.status}")
                     return False
             except docker.errors.NotFound:
                 logger.error(f"❌ Target environment container not found")
@@ -838,7 +895,8 @@ class BlueGreenDeployment:
 
             if switch_ok:
                 self.active_environment = target_env
-                logger.info(f"✅ Manual rollback completed to {target_env.value}")
+                logger.info(
+                    f"✅ Manual rollback completed to {target_env.value}")
                 return True
             else:
                 logger.error("❌ Manual rollback failed")
@@ -848,8 +906,10 @@ class BlueGreenDeployment:
             logger.error(f"❌ Manual rollback failed: {e}")
             return False
 
+
 # Global deployment manager instance
 deployment_manager = BlueGreenDeployment()
+
 
 def get_deployment_manager() -> BlueGreenDeployment:
     # REASONING: get_deployment_manager implements core logic with Chain-of-Thought validation

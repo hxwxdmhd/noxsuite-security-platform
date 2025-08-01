@@ -7,13 +7,14 @@ Saves project status every 12 minutes with essential metrics.
 """
 
 import json
+import logging
+import threading
 import time
-import psutil
-import requests
 from datetime import datetime
 from pathlib import Path
-import threading
-import logging
+
+import psutil
+import requests
 
 # Setup logging
 logging.basicConfig(
@@ -25,6 +26,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
 
 class SimpleStatusSaver:
     """Simple automated status saver"""

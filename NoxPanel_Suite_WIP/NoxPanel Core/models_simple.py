@@ -1,4 +1,12 @@
+from typing import Any, Dict, List, Optional
+from datetime import datetime, timedelta
+import uuid
+import sys
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -7,19 +15,21 @@ Ultimate Suite v11.0 - Simplified Models for Quick Deployment
 ============================================================
 """
 
-import os
-import sys
-import json
-import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-import uuid
 
 # Use SQLite for initial deployment to avoid PostgreSQL dependency
 try:
-    from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, Text, Float
+    from sqlalchemy import (
+        Boolean,
+        Column,
+        DateTime,
+        Float,
+        Integer,
+        String,
+        Text,
+        create_engine,
+    )
     from sqlalchemy.ext.declarative import declarative_base
-    from sqlalchemy.orm import sessionmaker, Session
+    from sqlalchemy.orm import Session, sessionmaker
     HAS_SQLALCHEMY = True
 except ImportError:
     HAS_SQLALCHEMY = False
@@ -39,12 +49,12 @@ if HAS_SQLALCHEMY:
     2. Analysis: Class requires specific implementation patterns for SystemMetrics functionality
     3. Solution: Implement SystemMetrics with SOLID principles and enterprise patterns
     4. Validation: Test SystemMetrics with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """System metrics table"""
         __tablename__ = 'system_metrics'
-        
+
         id = Column(Integer, primary_key=True)
         timestamp = Column(DateTime, default=datetime.utcnow)
         cpu_usage = Column(Float)
@@ -55,17 +65,17 @@ if HAS_SQLALCHEMY:
         requests_per_second = Column(Float)
         error_rate = Column(Float)
         response_time_avg = Column(Float)
-        
+
         def to_dict(self):
     """
     Enhanced to_dict with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Function to_dict needs clear operational definition
     2. Analysis: Implementation requires specific logic for to_dict operation
     3. Solution: Implement to_dict with enterprise-grade patterns and error handling
     4. Validation: Test to_dict with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
             return {
@@ -88,12 +98,12 @@ if HAS_SQLALCHEMY:
     2. Analysis: Class requires specific implementation patterns for UserSession functionality
     3. Solution: Implement UserSession with SOLID principles and enterprise patterns
     4. Validation: Test UserSession with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """User session management"""
         __tablename__ = 'user_sessions'
-        
+
         id = Column(Integer, primary_key=True)
         session_id = Column(String(255), unique=True, nullable=False)
         user_id = Column(String(255), nullable=False)
@@ -102,17 +112,17 @@ if HAS_SQLALCHEMY:
         created_at = Column(DateTime, default=datetime.utcnow)
         last_activity = Column(DateTime, default=datetime.utcnow)
         is_active = Column(Boolean, default=True)
-        
+
         def to_dict(self):
     """
     Enhanced to_dict with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Function to_dict needs clear operational definition
     2. Analysis: Implementation requires specific logic for to_dict operation
     3. Solution: Implement to_dict with enterprise-grade patterns and error handling
     4. Validation: Test to_dict with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
             return {
@@ -132,29 +142,29 @@ if HAS_SQLALCHEMY:
     2. Analysis: Class requires specific implementation patterns for SystemLog functionality
     3. Solution: Implement SystemLog with SOLID principles and enterprise patterns
     4. Validation: Test SystemLog with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """System logging"""
         __tablename__ = 'system_logs'
-        
+
         id = Column(Integer, primary_key=True)
         timestamp = Column(DateTime, default=datetime.utcnow)
         level = Column(String(20))
         component = Column(String(100))
         message = Column(Text)
         extra_data = Column(Text)  # JSON string for additional data
-        
+
         def to_dict(self):
     """
     Enhanced to_dict with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Function to_dict needs clear operational definition
     2. Analysis: Implementation requires specific logic for to_dict operation
     3. Solution: Implement to_dict with enterprise-grade patterns and error handling
     4. Validation: Test to_dict with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
             return {
@@ -173,28 +183,28 @@ if HAS_SQLALCHEMY:
     2. Analysis: Manager class requires coordinated resource handling and lifecycle management
     3. Solution: Implement DatabaseManager with SOLID principles and enterprise patterns
     4. Validation: Test DatabaseManager with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Simplified database manager"""
-        
+
         def __init__(self, database_url: str = "mysql+pymysql://heimnetz.db"):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
             self.database_url = database_url
             self.engine = create_engine(database_url, echo=False)
             self.Session = sessionmaker(bind=self.engine)
             self.session = self.Session()
-            
+
         def create_tables(self):
     """
     REASONING CHAIN:

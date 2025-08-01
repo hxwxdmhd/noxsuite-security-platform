@@ -10,6 +10,7 @@ import docker
 from langflow.custom import CustomComponent
 from langflow.field_typing import Data, DropDown, Text
 
+
 class NoxSuiteDockerManager(CustomComponent):
     display_name = "NoxSuite Docker Manager"
     description = (
@@ -60,7 +61,8 @@ class NoxSuiteDockerManager(CustomComponent):
 
             # Get filtered containers
             containers = client.containers.list(all=True)
-            filtered_containers = [c for c in containers if container_filter in c.name]
+            filtered_containers = [
+                c for c in containers if container_filter in c.name]
 
             if action == "status":
                 for container in filtered_containers:
@@ -96,10 +98,13 @@ class NoxSuiteDockerManager(CustomComponent):
                 log_data = {}
                 for container in filtered_containers:
                     try:
-                        logs = container.logs(tail=int(log_lines)).decode("utf-8")
-                        log_data[container.name] = logs.split("\n")[-int(log_lines) :]
+                        logs = container.logs(
+                            tail=int(log_lines)).decode("utf-8")
+                        log_data[container.name] = logs.split(
+                            "\n")[-int(log_lines):]
                     except Exception as e:
-                        log_data[container.name] = [f"Error retrieving logs: {str(e)}"]
+                        log_data[container.name] = [
+                            f"Error retrieving logs: {str(e)}"]
 
                 result["logs"] = log_data
                 status = "success"
@@ -113,7 +118,8 @@ class NoxSuiteDockerManager(CustomComponent):
                         if container.status == "running":
                             # Try to get health status from inspect
                             inspect_data = container.attrs
-                            health = inspect_data.get("State", {}).get("Health", {})
+                            health = inspect_data.get(
+                                "State", {}).get("Health", {})
                             if health:
                                 health_status[container.name] = health.get(
                                     "Status", "unknown"

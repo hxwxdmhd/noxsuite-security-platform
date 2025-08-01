@@ -14,6 +14,7 @@ from pathlib import Path
 # Add NoxPanel to path
 sys.path.insert(0, str(Path(__file__).parent / "AI" / "NoxPanel"))
 
+
 def main():
     """
     RLVR: Implements main with error handling and validation
@@ -46,6 +47,7 @@ def main():
     except Exception as e:
         print(f"❌ Failed to start consolidated interface: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

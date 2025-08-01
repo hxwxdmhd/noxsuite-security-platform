@@ -1,10 +1,12 @@
 import os
-import jwt
-import bcrypt
 import secrets
-from functools import wraps
-from flask import request, jsonify, current_app
 from datetime import datetime, timedelta
+from functools import wraps
+
+import bcrypt
+import jwt
+from flask import current_app, jsonify, request
+
 
 def hash_password(password):
     """
@@ -94,9 +96,11 @@ def hash_password(password):
     """Hash a password using bcrypt"""
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
+
 def verify_password(password, hashed):
     """Verify a password against its hash"""
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+
 
 def generate_token(user_data):
     """Generate JWT token for user"""
@@ -107,15 +111,18 @@ def generate_token(user_data):
     }
     return jwt.encode(payload, current_app.secret_key, algorithm='HS256')
 
+
 def verify_token(token):
     """Verify JWT token"""
     try:
-        payload = jwt.decode(token, current_app.secret_key, algorithms=['HS256'])
+        payload = jwt.decode(token, current_app.secret_key,
+                             algorithms=['HS256'])
         return payload['user']
     except jwt.ExpiredSignatureError:
         return None
     except jwt.InvalidTokenError:
         return None
+
 
 def auth_required(f):
     """Decorator to require authentication"""
@@ -140,10 +147,12 @@ def auth_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 def create_user(username, password, role='user'):
     """Create a new user (placeholder for database implementation)"""
     hashed_pw = hash_password(password)
     return {'username': username, 'password': hashed_pw, 'role': role}
+
 
 def verify_user(username, password):
     """Verify user credentials (placeholder for database implementation)"""

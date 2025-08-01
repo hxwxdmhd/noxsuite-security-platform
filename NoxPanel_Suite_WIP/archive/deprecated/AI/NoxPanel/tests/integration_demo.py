@@ -14,21 +14,22 @@ import asyncio
 import sys
 import time
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
 # Add current directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
 try:
     from test_validator_advanced import (
+        Colors,
         NoxPanelTestValidator,
         print_banner,
+        print_info,
         print_section,
         print_success,
-        print_info,
         print_warning,
-        Colors
     )
+
     # Import simple test runner with fallback
     try:
         from run_tests import SimpleTestRunner
@@ -53,9 +54,9 @@ try:
 
     COMPLIANCE: STANDARD
     """
-                self.project_root = Path.cwd()
-                self.environment = "test"
-                self.adhd_friendly = True
+    self.project_root = Path.cwd()
+    self.environment = "test"
+    self.adhd_friendly = True
 
 except ImportError as e:
     print(f"❌ Import error: {e}")
@@ -154,7 +155,7 @@ except ImportError as e:
 
     COMPLIANCE: STANDARD
     """
-        print("🧪 NoxPanel Integration Demo")
+    print("🧪 NoxPanel Integration Demo")
 
     def print_section(title, icon="📋"):
         print(f"\n{icon} {title}")
@@ -206,9 +207,10 @@ class NoxPanelIntegrationDemo:
 
     COMPLIANCE: STANDARD
     """
-        self.project_path = Path(__file__).parent.parent
-        self.simple_runner = SimpleTestRunner() if SimpleTestRunner else None
-        self.advanced_validator = NoxPanelTestValidator(self.project_path) if 'NoxPanelTestValidator' in globals() else None
+    self.project_path = Path(__file__).parent.parent
+    self.simple_runner = SimpleTestRunner() if SimpleTestRunner else None
+    self.advanced_validator = NoxPanelTestValidator(
+        self.project_path) if 'NoxPanelTestValidator' in globals() else None
 
     async def run_demonstration(self):
         """Run complete demonstration of integrated test system."""
@@ -244,7 +246,8 @@ class NoxPanelIntegrationDemo:
 
         # Show ADHD-friendly progress
         for i in range(1, 6):
-            print(f"{Colors.GREEN}✓{Colors.RESET} Test suite {i}/5 completed ({i*20}%)")
+            print(
+                f"{Colors.GREEN}✓{Colors.RESET} Test suite {i}/5 completed ({i*20}%)")
             await asyncio.sleep(0.3)
 
         print_success("Simple test execution completed in 2.1s")
@@ -259,13 +262,17 @@ class NoxPanelIntegrationDemo:
         if self.advanced_validator and hasattr(self.advanced_validator, 'ai_manager'):
             ai_manager = self.advanced_validator.ai_manager
             if ai_manager.available_models:
-                print_success(f"Local AI detected: {ai_manager.active_model['name']}")
+                print_success(
+                    f"Local AI detected: {ai_manager.active_model['name']}")
                 print_info("AI will provide intelligent test recommendations")
             else:
-                print_warning("No local AI detected - using rule-based analysis")
-                print_info("Install Ollama or LM Studio for AI-powered insights")
+                print_warning(
+                    "No local AI detected - using rule-based analysis")
+                print_info(
+                    "Install Ollama or LM Studio for AI-powered insights")
         else:
-            print_warning("Advanced validator not available - using mock AI demo")
+            print_warning(
+                "Advanced validator not available - using mock AI demo")
             print_info("This demonstrates how AI integration would work")
 
         # Simulate AI analysis
@@ -284,7 +291,8 @@ class NoxPanelIntegrationDemo:
             print(f"   {insight}")
             await asyncio.sleep(0.5)
 
-        print_success("AI analysis provides actionable, prioritized recommendations")
+        print_success(
+            "AI analysis provides actionable, prioritized recommendations")
 
     async def _demo_coverage_analysis(self):
         """Demonstrate comprehensive coverage analysis."""
@@ -317,7 +325,8 @@ class NoxPanelIntegrationDemo:
             await asyncio.sleep(0.3)
 
         print_success("Coverage analysis identifies improvement opportunities")
-        print_info("Key feature: Visual indicators help prioritize testing efforts")
+        print_info(
+            "Key feature: Visual indicators help prioritize testing efforts")
 
     async def _demo_comprehensive_reporting(self):
         """Demonstrate comprehensive HTML report generation."""
@@ -347,7 +356,8 @@ class NoxPanelIntegrationDemo:
         report_path.parent.mkdir(exist_ok=True)
 
         print_success(f"Report generated: {report_path}")
-        print_info("Key feature: Visual design reduces cognitive load and improves comprehension")
+        print_info(
+            "Key feature: Visual design reduces cognitive load and improves comprehension")
 
     async def _demo_adhd_features(self):
         """Demonstrate specific ADHD-friendly features."""
@@ -369,7 +379,8 @@ class NoxPanelIntegrationDemo:
             print(f"   {description}")
             await asyncio.sleep(0.8)
 
-        print_success("\nADHD-friendly design enhances usability for all developers")
+        print_success(
+            "\nADHD-friendly design enhances usability for all developers")
         print_info("Key insight: Neurodiverse-friendly design benefits everyone")
 
 
@@ -473,10 +484,14 @@ async def main():
         print_section("Next Steps", "🎯")
         print_info("Your NoxPanel test infrastructure is ready!")
         print(f"\n{Colors.CYAN}Immediate Actions:{Colors.RESET}")
-        print(f"   1. Install dependencies: {Colors.GREEN}pip install -r tests/requirements.txt{Colors.RESET}")
-        print(f"   2. Run quick tests: {Colors.GREEN}python tests/run_tests.py --quick{Colors.RESET}")
-        print(f"   3. Generate full report: {Colors.GREEN}python tests/test_validator_advanced.py{Colors.RESET}")
-        print(f"   4. Install local AI: {Colors.GREEN}ollama pull codellama{Colors.RESET} (optional)")
+        print(
+            f"   1. Install dependencies: {Colors.GREEN}pip install -r tests/requirements.txt{Colors.RESET}")
+        print(
+            f"   2. Run quick tests: {Colors.GREEN}python tests/run_tests.py --quick{Colors.RESET}")
+        print(
+            f"   3. Generate full report: {Colors.GREEN}python tests/test_validator_advanced.py{Colors.RESET}")
+        print(
+            f"   4. Install local AI: {Colors.GREEN}ollama pull codellama{Colors.RESET} (optional)")
 
         print(f"\n{Colors.CYAN}Key Benefits:{Colors.RESET}")
         print("   🧠 ADHD-friendly design reduces cognitive load")

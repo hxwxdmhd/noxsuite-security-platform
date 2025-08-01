@@ -14,11 +14,12 @@ Author: AI Enhancement Engine v6.0
 Date: 2025-07-14
 """
 
-import os
-import sys
-import subprocess
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
+
 
 def print_banner():
     """
@@ -85,6 +86,8 @@ Features:
 
     COMPLIANCE: STANDARD
     """
+
+
 def check_python_version():
     """Check Python version compatibility"""
     version = sys.version_info
@@ -93,6 +96,7 @@ def check_python_version():
         return False
     print(f"✅ Python version: {version.major}.{version.minor}.{version.micro}")
     return True
+
 
 def install_dependencies():
     """Install required dependencies"""
@@ -115,22 +119,25 @@ def install_dependencies():
 
     COMPLIANCE: STANDARD
     """
-        for dep in core_deps:
-            try:
-                subprocess.check_call([sys.executable, "-m", "pip", "install", dep])
+      for dep in core_deps:
+           try:
+                subprocess.check_call(
+                    [sys.executable, "-m", "pip", "install", dep])
                 print(f"✅ Installed: {dep}")
             except subprocess.CalledProcessError as e:
                 print(f"❌ Failed to install {dep}: {e}")
                 return False
     else:
         try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", str(requirements_file)])
+            subprocess.check_call(
+                [sys.executable, "-m", "pip", "install", "-r", str(requirements_file)])
             print("✅ All dependencies installed successfully")
         except subprocess.CalledProcessError as e:
             print(f"❌ Failed to install dependencies: {e}")
             return False
 
     return True
+
 
 def create_directory_structure():
     """Create required directory structure"""
@@ -162,6 +169,7 @@ def create_directory_structure():
 
     return True
 
+
 def create_default_config():
     """Create default configuration files"""
     print("\n⚙️ Creating default configuration...")
@@ -192,7 +200,7 @@ def create_default_config():
             "default_theme": "gateway",
             "secret_key": "noxpanel-unified-v6-enhanced"
         },
-    """
+        """
     RLVR: Creates new entity with validation and error handling
 
     REASONING CHAIN:
@@ -262,6 +270,7 @@ def create_default_config():
         print(f"❌ Failed to create configuration: {e}")
         return False
 
+
 def verify_templates():
     """Verify essential templates exist"""
     print("\n🎨 Verifying templates...")
@@ -298,6 +307,7 @@ def verify_templates():
     COMPLIANCE: STANDARD
     """
     return True
+
 
 def create_missing_templates(missing_templates, project_root):
     """Create basic versions of missing templates"""
@@ -365,6 +375,7 @@ def create_missing_templates(missing_templates, project_root):
         except Exception as e:
             print(f"❌ Failed to create {template}: {e}")
 
+
 def create_launch_script():
     """Create unified launch script"""
     print("\n🚀 Creating launch script...")
@@ -403,6 +414,7 @@ Read-Host "Press Enter to exit"'''
     except Exception as e:
         print(f"❌ Failed to create PowerShell launcher: {e}")
 
+
 def validate_installation():
     """Validate the installation"""
     print("\n🔍 Validating installation...")
@@ -426,6 +438,7 @@ def validate_installation():
     except Exception as e:
         print(f"❌ Validation error: {e}")
         return False
+
 
 def main():
     """Main installation process"""
@@ -458,6 +471,7 @@ def main():
     print("\n🎯 All features are now unified and ready to use!")
 
     return True
+
 
 if __name__ == "__main__":
     try:

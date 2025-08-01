@@ -42,6 +42,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class SystemMetrics:
     """Real-time system metrics"""
@@ -53,6 +54,7 @@ class SystemMetrics:
     active_connections: int
     uptime: str
 
+
 @dataclass
 class SecurityEvent:
     """Security event tracking"""
@@ -63,6 +65,7 @@ class SecurityEvent:
     source_ip: str
     user_agent: str
     action_taken: str
+
 
 class UltraOptimizedNoxPanel:
     """Ultra-optimized NoxPanel with 99.99999999999999999998% accuracy"""

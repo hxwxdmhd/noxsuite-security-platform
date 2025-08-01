@@ -50,27 +50,29 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class DockerNetworkDetector:
     """Detects Docker networking environment and Redis availability"""
-    
+
     def __init__(self):
         self.is_docker = self._detect_docker_environment()
         self.redis_configs = self._get_redis_configs()
         self.best_redis_config = None
-        
+
     def _detect_docker_environment(self) -> bool:
         """Detect if running in Docker container"""
         indicators = [
             os.path.exists('/.dockerenv'),
             os.environ.get('HEIMNETZ_DOCKER') == 'true',
-            os.path.exists('/proc/self/cgroup') and 'docker' in open('/proc/self/cgroup').read()
+            os.path.exists(
+                '/proc/self/cgroup') and 'docker' in open('/proc/self/cgroup').read()
         ]
         return any(indicators)
-    
+
     def _get_redis_configs(self) -> List[Tuple[str, int, Optional[str]]]:
         """Get possible Redis configurations based on environment"""
         configs = []
-        
+
         if self.is_docker:
             # Docker environment configs
             configs.extend([
@@ -88,15 +90,15 @@ class DockerNetworkDetector:
                 ('localhost', 6380, 'host_redis_password'),
                 ('127.0.0.1', 6380, 'host_redis_password')
             ])
-        
+
         return configs
-    
+
     def find_working_redis(self) -> Optional[Tuple[str, int, Optional[str]]]:
         """Find working Redis configuration"""
         if not REDIS_AVAILABLE:
             logger.warning("Redis library not available, using fallback")
             return None
-        
+
         for host, port, password in self.redis_configs:
             try:
                 client = redis.Redis(
@@ -110,31 +112,32 @@ class DockerNetworkDetector:
                 self.best_redis_config = (host, port, password)
                 logger.info(f"✅ Redis connection successful: {host}:{port}")
                 return self.best_redis_config
-                
+
             except Exception as e:
                 logger.debug(f"Redis connection failed {host}:{port}: {e}")
                 continue
-        
+
         logger.warning("❌ No working Redis configuration found")
         return None
 
+
 class EnhancedCacheManager:
     """Enhanced cache manager with Docker network awareness"""
-    
+
     def __init__(self):
         self.detector = DockerNetworkDetector()
         self.redis_client = None
         self.memory_cache = {}
         self.cache_timestamps = {}
         self.lock = threading.Lock()
-        
+
         # Try to connect to Redis
         self._initialize_redis()
-    
+
     def _initialize_redis(self):
         """Initialize Redis connection"""
         redis_config = self.detector.find_working_redis()
-        
+
         if redis_config and REDIS_AVAILABLE:
             try:
                 host, port, password = redis_config
@@ -149,9 +152,9 @@ class EnhancedCacheManager:
                 return
             except Exception as e:
                 logger.error(f"Redis initialization failed: {e}")
-        
+
         logger.info("📝 Using memory cache (Redis not available)")
-    
+
     def get(self, key: str, default=None):
         """Get value from cache"""
         if self.redis_client:
@@ -165,7 +168,7 @@ class EnhancedCacheManager:
                 return self._memory_get(key, default)
         else:
             return self._memory_get(key, default)
-    
+
     def set(self, key: str, value, ttl: int = 300):
         """Set value in cache"""
         if self.redis_client:
@@ -177,7 +180,7 @@ class EnhancedCacheManager:
                 return self._memory_set(key, value, ttl)
         else:
             return self._memory_set(key, value, ttl)
-    
+
     def _memory_get(self, key: str, default):
         """Get from memory cache"""
         with self.lock:
@@ -189,7 +192,7 @@ class EnhancedCacheManager:
                     del self.memory_cache[key]
                     del self.cache_timestamps[key]
             return default
-    
+
     def _memory_set(self, key: str, value, ttl: int):
         """Set in memory cache"""
         with self.lock:
@@ -197,19 +200,20 @@ class EnhancedCacheManager:
             self.cache_timestamps[key] = time.time()
             return True
 
+
 class EnhancedRateLimiter:
     """Rate limiter with Docker network awareness"""
-    
+
     def __init__(self, cache_manager: EnhancedCacheManager):
         self.cache_manager = cache_manager
         self.memory_limits = {}
         self.lock = threading.Lock()
-    
+
     def is_allowed(self, key: str, limit: int = 100, window: int = 60) -> bool:
         """Check if request is allowed"""
         current_time = time.time()
         window_start = current_time - window
-        
+
         # Try Redis first
         if self.cache_manager.redis_client:
             try:
@@ -219,70 +223,73 @@ class EnhancedRateLimiter:
                 pipe.zadd(key, {str(current_time): current_time})
                 pipe.expire(key, window)
                 results = pipe.execute()
-                
+
                 current_requests = results[1]
                 return current_requests < limit
-                
+
             except Exception as e:
                 logger.error(f"Redis rate limit error: {e}")
                 return self._memory_rate_limit(key, limit, window, current_time)
         else:
             return self._memory_rate_limit(key, limit, window, current_time)
-    
+
     def _memory_rate_limit(self, key: str, limit: int, window: int, current_time: float) -> bool:
         """Memory-based rate limiting"""
         with self.lock:
             if key not in self.memory_limits:
                 self.memory_limits[key] = []
-            
+
             # Clean old entries
             window_start = current_time - window
             self.memory_limits[key] = [
                 t for t in self.memory_limits[key] if t > window_start
             ]
-            
+
             # Check limit
             if len(self.memory_limits[key]) >= limit:
                 return False
-            
+
             # Add current request
             self.memory_limits[key].append(current_time)
             return True
 
+
 class EnhancedServer:
     """Enhanced server with Docker network awareness"""
-    
+
     def __init__(self):
         self.app = Flask(__name__)
-        self.app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
-        self.app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'jwt-secret-key-change-in-production')
+        self.app.config['SECRET_KEY'] = os.environ.get(
+            'SECRET_KEY', 'dev-secret-key-change-in-production')
+        self.app.config['JWT_SECRET_KEY'] = os.environ.get(
+            'JWT_SECRET_KEY', 'jwt-secret-key-change-in-production')
         self.app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
-        
+
         # Initialize components
         self.detector = DockerNetworkDetector()
         self.cache_manager = EnhancedCacheManager()
         self.rate_limiter = EnhancedRateLimiter(self.cache_manager)
-        
+
         # Initialize Flask extensions
         self.jwt = JWTManager(self.app)
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")
         CORS(self.app)
-        
+
         # Initialize database
         self._init_database()
-        
+
         # Setup routes
         self._setup_routes()
-        
+
         # Start background tasks
         self._start_background_tasks()
-        
+
         logger.info("✅ Enhanced Server initialized successfully")
-    
+
     def _init_database(self):
         """Initialize SQLite database"""
         self.db_path = "heimnetz_enhanced.db"
-        
+
         with sqlite3.connect(self.db_path) as conn:
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS users (
@@ -292,7 +299,7 @@ class EnhancedServer:
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             ''')
-            
+
             conn.execute('''
                 CREATE TABLE IF NOT EXISTS api_keys (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -303,21 +310,21 @@ class EnhancedServer:
                     FOREIGN KEY (user_id) REFERENCES users (id)
                 )
             ''')
-            
+
             # Create default admin user
             admin_password_hash = generate_password_hash('admin123')
             conn.execute(
                 'INSERT OR IGNORE INTO users (username, password_hash) VALUES (?, ?)',
                 ('admin', admin_password_hash)
             )
-            
+
             conn.commit()
-        
+
         logger.info("✅ Database initialized successfully")
-    
+
     def _setup_routes(self):
         """Setup API routes"""
-        
+
         @self.app.route('/')
         def index():
             """Main dashboard"""
@@ -527,14 +534,15 @@ class EnhancedServer:
     </script>
 </body>
 </html>
-            ''', 
-            docker_detected=self.detector.is_docker,
-            redis_connected=self.cache_manager.redis_client is not None,
-            redis_config=f"{self.detector.best_redis_config[0]}:{self.detector.best_redis_config[1]}" if self.detector.best_redis_config else None,
-            uptime=self._get_uptime(),
-            cache_hits=self.cache_manager.get('cache_hits', 0)
-            )
-        
+            ''',
+                                          docker_detected=self.detector.is_docker,
+                                          redis_connected=self.cache_manager.redis_client is not None,
+                                          redis_config=f"{self.detector.best_redis_config[0]}:{self.detector.best_redis_config[1]}" if self.detector.best_redis_config else None,
+                                          uptime=self._get_uptime(),
+                                          cache_hits=self.cache_manager.get(
+                                              'cache_hits', 0)
+                                          )
+
         @self.app.route('/api/health')
         def health_check():
             """Health check endpoint"""
@@ -597,13 +605,13 @@ class EnhancedServer:
     </div>
 </body>
 </html>
-                ''', 
-                docker_detected=self.detector.is_docker,
-                redis_connected=self.cache_manager.redis_client is not None,
-                uptime=self._get_uptime(),
-                timestamp=datetime.now().isoformat()
-                )
-        
+                ''',
+                                              docker_detected=self.detector.is_docker,
+                                              redis_connected=self.cache_manager.redis_client is not None,
+                                              uptime=self._get_uptime(),
+                                              timestamp=datetime.now().isoformat()
+                                              )
+
         @self.app.route('/api/network-status')
         def network_status():
             """Network status endpoint"""
@@ -706,15 +714,16 @@ class EnhancedServer:
     </div>
 </body>
 </html>
-                ''', 
-                docker_environment=self.detector.is_docker,
-                redis_configs_tested=len(self.detector.redis_configs),
-                redis_connected=self.cache_manager.redis_client is not None,
-                best_redis_config=self.detector.best_redis_config,
-                cache_type='redis' if self.cache_manager.redis_client else 'memory',
-                timestamp=datetime.now().isoformat()
-                )
-        
+                ''',
+                                              docker_environment=self.detector.is_docker,
+                                              redis_configs_tested=len(
+                                                  self.detector.redis_configs),
+                                              redis_connected=self.cache_manager.redis_client is not None,
+                                              best_redis_config=self.detector.best_redis_config,
+                                              cache_type='redis' if self.cache_manager.redis_client else 'memory',
+                                              timestamp=datetime.now().isoformat()
+                                              )
+
         @self.app.route('/api/redis-info')
         def redis_info():
             """Redis information endpoint"""
@@ -742,7 +751,7 @@ class EnhancedServer:
                     'fallback': 'memory_cache',
                     'memory_cache_size': len(self.cache_manager.memory_cache)
                 }
-            
+
             if request.headers.get('Accept') == 'application/json':
                 return jsonify(redis_data)
             else:
@@ -850,11 +859,11 @@ class EnhancedServer:
     </div>
 </body>
 </html>
-                ''', 
-                redis_data=redis_data,
-                timestamp=datetime.now().isoformat()
-                )
-        
+                ''',
+                                              redis_data=redis_data,
+                                              timestamp=datetime.now().isoformat()
+                                              )
+
         @self.app.route('/api/system-info')
         def system_info():
             """System information endpoint"""
@@ -864,7 +873,7 @@ class EnhancedServer:
                 flask_version = getattr(flask, '__version__', 'Unknown')
             except:
                 flask_version = "Unknown"
-            
+
             if request.headers.get('Accept') == 'application/json':
                 return jsonify({
                     'python_version': sys.version,
@@ -984,21 +993,21 @@ class EnhancedServer:
     </div>
 </body>
 </html>
-                ''', 
-                python_version=sys.version,
-                flask_version=flask_version,
-                docker_available=DOCKER_AVAILABLE,
-                redis_available=REDIS_AVAILABLE,
-                environment='docker' if self.detector.is_docker else 'native',
-                cache_manager='redis' if self.cache_manager.redis_client else 'memory',
-                platform=sys.platform,
-                architecture=sys.maxsize > 2**32 and "64-bit" or "32-bit",
-                docker_detected=self.detector.is_docker,
-                redis_connected=self.cache_manager.redis_client is not None,
-                uptime=self._get_uptime(),
-                timestamp=datetime.now().isoformat()
-                )
-        
+                ''',
+                                              python_version=sys.version,
+                                              flask_version=flask_version,
+                                              docker_available=DOCKER_AVAILABLE,
+                                              redis_available=REDIS_AVAILABLE,
+                                              environment='docker' if self.detector.is_docker else 'native',
+                                              cache_manager='redis' if self.cache_manager.redis_client else 'memory',
+                                              platform=sys.platform,
+                                              architecture=sys.maxsize > 2**32 and "64-bit" or "32-bit",
+                                              docker_detected=self.detector.is_docker,
+                                              redis_connected=self.cache_manager.redis_client is not None,
+                                              uptime=self._get_uptime(),
+                                              timestamp=datetime.now().isoformat()
+                                              )
+
         @self.app.route('/api/metrics')
         def metrics():
             """Metrics endpoint"""
@@ -1009,7 +1018,7 @@ class EnhancedServer:
                 'uptime_seconds': self._get_uptime_seconds(),
                 'timestamp': datetime.now().isoformat()
             })
-        
+
         # Rate limiting decorator
         def rate_limit(limit=100, window=60):
             def decorator(f):
@@ -1020,44 +1029,47 @@ class EnhancedServer:
                     return f(*args, **kwargs)
                 return decorated_function
             return decorator
-        
+
         # Apply rate limiting to all API endpoints
         for endpoint in [health_check, network_status, redis_info, system_info, metrics]:
             endpoint = rate_limit()(endpoint)
-    
+
     def _get_uptime(self) -> str:
         """Get formatted uptime"""
         uptime_seconds = self._get_uptime_seconds()
         hours = int(uptime_seconds // 3600)
         minutes = int((uptime_seconds % 3600) // 60)
         return f"{hours}h {minutes}m"
-    
+
     def _get_uptime_seconds(self) -> int:
         """Get uptime in seconds"""
         return int(time.time() - getattr(self, '_start_time', time.time()))
-    
+
     def _start_background_tasks(self):
         """Start background tasks"""
         self._start_time = time.time()
-        
+
         def metrics_collector():
             while True:
                 try:
                     # Update metrics
-                    current_requests = self.cache_manager.get('total_requests', 0)
-                    self.cache_manager.set('total_requests', current_requests + 1)
-                    
+                    current_requests = self.cache_manager.get(
+                        'total_requests', 0)
+                    self.cache_manager.set(
+                        'total_requests', current_requests + 1)
+
                     time.sleep(60)  # Update every minute
                 except Exception as e:
                     logger.error(f"Metrics collector error: {e}")
                     time.sleep(60)
-        
+
         # Start metrics collector in background
-        metrics_thread = threading.Thread(target=metrics_collector, daemon=True)
+        metrics_thread = threading.Thread(
+            target=metrics_collector, daemon=True)
         metrics_thread.start()
-        
+
         logger.info("✅ Background tasks started")
-    
+
     def run(self, host='127.0.0.1', port=5003, debug=True):
         """Run the server"""
         logger.info("=" * 60)
@@ -1066,10 +1078,12 @@ class EnhancedServer:
         logger.info(f"Starting server on {host}:{port}")
         logger.info(f"Debug mode: {debug}")
         logger.info(f"Docker environment: {self.detector.is_docker}")
-        logger.info(f"Redis connected: {self.cache_manager.redis_client is not None}")
-        logger.info(f"Cache type: {'Redis' if self.cache_manager.redis_client else 'Memory'}")
+        logger.info(
+            f"Redis connected: {self.cache_manager.redis_client is not None}")
+        logger.info(
+            f"Cache type: {'Redis' if self.cache_manager.redis_client else 'Memory'}")
         logger.info("=" * 60)
-        
+
         try:
             self.socketio.run(self.app, host=host, port=port, debug=debug)
         except KeyboardInterrupt:
@@ -1078,16 +1092,18 @@ class EnhancedServer:
             logger.error(f"Server error: {e}")
             raise
 
+
 def main():
     """Main function"""
     server = EnhancedServer()
-    
+
     # Get configuration from environment
     host = os.environ.get('HEIMNETZ_WEB_HOST', '127.0.0.1')
     port = int(os.environ.get('HEIMNETZ_WEB_PORT', '5003'))
     debug = os.environ.get('HEIMNETZ_DEBUG', 'true').lower() == 'true'
-    
+
     server.run(host=host, port=port, debug=debug)
+
 
 if __name__ == '__main__':
     main()

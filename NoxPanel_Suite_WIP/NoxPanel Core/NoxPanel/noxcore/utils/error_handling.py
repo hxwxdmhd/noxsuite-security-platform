@@ -3,14 +3,14 @@ Unified Error Handling Utilities for NoxPanel
 Provides standardized error handling, logging, and exception management
 """
 
-import logging
-import traceback
-import sys
-from datetime import datetime, timezone
-from functools import wraps
-from typing import Optional, Dict, Any, Callable, Type, Union, List
-from enum import Enum
 import json
+import logging
+import sys
+import traceback
+from datetime import datetime, timezone
+from enum import Enum
+from functools import wraps
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 
 class ErrorSeverity(Enum):
@@ -20,7 +20,7 @@ class ErrorSeverity(Enum):
     2. Analysis: Class requires specific implementation patterns for ErrorSeverity functionality
     3. Solution: Implement ErrorSeverity with SOLID principles and enterprise patterns
     4. Validation: Test ErrorSeverity with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Error severity levels for consistent classification."""
@@ -38,7 +38,7 @@ class ErrorCategory(Enum):
     2. Analysis: Class requires specific implementation patterns for ErrorCategory functionality
     3. Solution: Implement ErrorCategory with SOLID principles and enterprise patterns
     4. Validation: Test ErrorCategory with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Error categories for better organization."""
@@ -61,11 +61,11 @@ class NoxPanelError(Exception):
     2. Analysis: Class requires specific implementation patterns for NoxPanelError functionality
     3. Solution: Implement NoxPanelError with SOLID principles and enterprise patterns
     4. Validation: Test NoxPanelError with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Base exception class for NoxPanel with enhanced metadata."""
-    
+
     def __init__(
     """
     REASONING CHAIN:
@@ -73,7 +73,7 @@ class NoxPanelError(Exception):
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self,
@@ -85,7 +85,7 @@ class NoxPanelError(Exception):
         original_exception: Optional[Exception] = None
     ):
         """Initialize NoxPanel error with comprehensive metadata.
-        
+
         Args:
             message: Error message
             category: Error category
@@ -103,7 +103,7 @@ class NoxPanelError(Exception):
         self.original_exception = original_exception
         self.timestamp = datetime.now(timezone.utc)
         self.error_id = self._generate_error_id()
-    
+
     def _generate_error_id(self) -> str:
     """
     REASONING CHAIN:
@@ -111,13 +111,13 @@ class NoxPanelError(Exception):
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _generate_error_id with enterprise-grade patterns and error handling
     4. Validation: Test _generate_error_id with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Generate unique error ID for tracking."""
         import uuid
         return f"NOX-{self.category.value.upper()}-{str(uuid.uuid4())[:8]}"
-    
+
     def to_dict(self) -> Dict[str, Any]:
     """
     REASONING CHAIN:
@@ -125,7 +125,7 @@ class NoxPanelError(Exception):
     2. Analysis: Implementation requires specific logic for to_dict operation
     3. Solution: Implement to_dict with enterprise-grade patterns and error handling
     4. Validation: Test to_dict with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Convert error to dictionary for serialization."""
@@ -140,7 +140,7 @@ class NoxPanelError(Exception):
             'original_exception': str(self.original_exception) if self.original_exception else None,
             'traceback': traceback.format_exc() if self.original_exception else None
         }
-    
+
     def __str__(self) -> str:
     """
     REASONING CHAIN:
@@ -148,7 +148,7 @@ class NoxPanelError(Exception):
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __str__ with enterprise-grade patterns and error handling
     4. Validation: Test __str__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """String representation of error."""
@@ -162,21 +162,21 @@ class DatabaseError(NoxPanelError):
     2. Analysis: Class requires specific implementation patterns for DatabaseError functionality
     3. Solution: Implement DatabaseError with SOLID principles and enterprise patterns
     4. Validation: Test DatabaseError with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Database-specific error."""
-    
+
     def __init__(self, message: str, **kwargs):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         kwargs.setdefault('category', ErrorCategory.DATABASE)
@@ -191,21 +191,21 @@ class NetworkError(NoxPanelError):
     2. Analysis: Class requires specific implementation patterns for NetworkError functionality
     3. Solution: Implement NetworkError with SOLID principles and enterprise patterns
     4. Validation: Test NetworkError with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Network-specific error."""
-    
+
     def __init__(self, message: str, **kwargs):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         kwargs.setdefault('category', ErrorCategory.NETWORK)
@@ -220,21 +220,21 @@ class AuthenticationError(NoxPanelError):
     2. Analysis: Class requires specific implementation patterns for AuthenticationError functionality
     3. Solution: Implement AuthenticationError with SOLID principles and enterprise patterns
     4. Validation: Test AuthenticationError with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Authentication-specific error."""
-    
+
     def __init__(self, message: str, **kwargs):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         kwargs.setdefault('category', ErrorCategory.AUTH)
@@ -249,21 +249,21 @@ class ValidationError(NoxPanelError):
     2. Analysis: Class requires specific implementation patterns for ValidationError functionality
     3. Solution: Implement ValidationError with SOLID principles and enterprise patterns
     4. Validation: Test ValidationError with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Validation-specific error."""
-    
+
     def __init__(self, message: str, **kwargs):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         kwargs.setdefault('category', ErrorCategory.VALIDATION)
@@ -278,21 +278,21 @@ class PluginError(NoxPanelError):
     2. Analysis: Class requires specific implementation patterns for PluginError functionality
     3. Solution: Implement PluginError with SOLID principles and enterprise patterns
     4. Validation: Test PluginError with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Plugin-specific error."""
-    
+
     def __init__(self, message: str, **kwargs):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         kwargs.setdefault('category', ErrorCategory.PLUGIN)
@@ -307,21 +307,21 @@ class ConfigurationError(NoxPanelError):
     2. Analysis: Class requires specific implementation patterns for ConfigurationError functionality
     3. Solution: Implement ConfigurationError with SOLID principles and enterprise patterns
     4. Validation: Test ConfigurationError with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Configuration-specific error."""
-    
+
     def __init__(self, message: str, **kwargs):
     """
     Enhanced __init__ with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Internal operation needs clear implementation boundary
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         kwargs.setdefault('category', ErrorCategory.CONFIG)
@@ -336,11 +336,11 @@ class ErrorHandler:
     2. Analysis: Handler class requires specialized processing patterns and error recovery
     3. Solution: Implement ErrorHandler with SOLID principles and enterprise patterns
     4. Validation: Test ErrorHandler with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Centralized error handling with logging and reporting capabilities."""
-    
+
     def __init__(self, logger_name: str = __name__):
     """
     REASONING CHAIN:
@@ -348,11 +348,11 @@ class ErrorHandler:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Initialize error handler.
-        
+
         Args:
             logger_name: Name for the logger
         """
@@ -360,7 +360,7 @@ class ErrorHandler:
         self.error_count = 0
         self.recent_errors: List[Dict[str, Any]] = []
         self.max_recent_errors = 100
-    
+
     def handle_error(
     """
     REASONING CHAIN:
@@ -368,7 +368,7 @@ class ErrorHandler:
     2. Analysis: Implementation requires specific logic for handle_error operation
     3. Solution: Implement handle_error with enterprise-grade patterns and error handling
     4. Validation: Test handle_error with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         self,
@@ -377,17 +377,17 @@ class ErrorHandler:
         log_level: int = logging.ERROR
     ) -> str:
         """Handle error with logging and tracking.
-        
+
         Args:
             error: Exception or NoxPanelError to handle
             context: Additional context information
             log_level: Logging level for the error
-            
+
         Returns:
             Error ID for tracking
         """
         self.error_count += 1
-        
+
         # Convert to NoxPanelError if needed
         if not isinstance(error, NoxPanelError):
             nox_error = NoxPanelError(
@@ -399,10 +399,10 @@ class ErrorHandler:
             nox_error = error
             if context:
                 nox_error.context.update(context)
-        
+
         # Log the error
         error_dict = nox_error.to_dict()
-        
+
         if nox_error.severity == ErrorSeverity.CRITICAL:
             self.logger.critical(f"CRITICAL ERROR: {nox_error}")
         elif nox_error.severity == ErrorSeverity.HIGH:
@@ -411,14 +411,14 @@ class ErrorHandler:
             self.logger.warning(f"MEDIUM SEVERITY: {nox_error}")
         else:
             self.logger.info(f"LOW SEVERITY: {nox_error}")
-        
+
         # Add to recent errors
         self.recent_errors.append(error_dict)
         if len(self.recent_errors) > self.max_recent_errors:
             self.recent_errors = self.recent_errors[-self.max_recent_errors:]
-        
+
         return nox_error.error_id
-    
+
     def get_error_summary(self) -> Dict[str, Any]:
     """
     REASONING CHAIN:
@@ -426,24 +426,24 @@ class ErrorHandler:
     2. Analysis: Getter method requires consistent data access and error handling
     3. Solution: Implement get_error_summary with enterprise-grade patterns and error handling
     4. Validation: Test get_error_summary with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Get summary of recent errors.
-        
+
         Returns:
             Dictionary containing error statistics
         """
         categories = {}
         severities = {}
-        
+
         for error in self.recent_errors:
             category = error['category']
             severity = error['severity']
-            
+
             categories[category] = categories.get(category, 0) + 1
             severities[severity] = severities.get(severity, 0) + 1
-        
+
         return {
             'total_errors': self.error_count,
             'recent_errors': len(self.recent_errors),
@@ -451,7 +451,7 @@ class ErrorHandler:
             'severities': severities,
             'last_error': self.recent_errors[-1] if self.recent_errors else None
         }
-    
+
     def clear_recent_errors(self):
     """
     REASONING CHAIN:
@@ -459,7 +459,7 @@ class ErrorHandler:
     2. Analysis: Implementation requires specific logic for clear_recent_errors operation
     3. Solution: Implement clear_recent_errors with enterprise-grade patterns and error handling
     4. Validation: Test clear_recent_errors with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Clear recent errors list."""
@@ -474,7 +474,7 @@ def error_handler(
     2. Analysis: Implementation requires specific logic for error_handler operation
     3. Solution: Implement error_handler with enterprise-grade patterns and error handling
     4. Validation: Test error_handler with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     category: ErrorCategory = ErrorCategory.SYSTEM,
@@ -483,7 +483,7 @@ def error_handler(
     log_level: int = logging.ERROR
 ):
     """Decorator for automatic error handling.
-    
+
     Args:
         category: Error category
         severity: Error severity
@@ -493,26 +493,26 @@ def error_handler(
     def decorator(func: Callable) -> Callable:
     """
     Enhanced decorator with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Function decorator needs clear operational definition
     2. Analysis: Implementation requires specific logic for decorator operation
     3. Solution: Implement decorator with enterprise-grade patterns and error handling
     4. Validation: Test decorator with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         @wraps(func)
         def wrapper(*args, **kwargs):
     """
     Enhanced wrapper with AI-driven reasoning patterns
-    
+
     REASONING CHAIN:
     1. Problem: Function wrapper needs clear operational definition
     2. Analysis: Implementation requires specific logic for wrapper operation
     3. Solution: Implement wrapper with enterprise-grade patterns and error handling
     4. Validation: Test wrapper with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
             try:
@@ -524,7 +524,7 @@ def error_handler(
                     'args': str(args)[:200],  # Limit to avoid huge logs
                     'kwargs': str(kwargs)[:200]
                 }
-                
+
                 if isinstance(e, NoxPanelError):
                     error_id = handler.handle_error(e, context, log_level)
                 else:
@@ -535,11 +535,12 @@ def error_handler(
                         context=context,
                         original_exception=e
                     )
-                    error_id = handler.handle_error(nox_error, context, log_level)
-                
+                    error_id = handler.handle_error(
+                        nox_error, context, log_level)
+
                 if reraise:
                     raise
-                
+
                 return None
         return wrapper
     return decorator

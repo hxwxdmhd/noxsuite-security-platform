@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 updates_bp = Blueprint('updates', __name__, url_prefix='/updates')
 
+
 @updates_bp.route('/')
 @updates_bp.route('/dashboard')
 def dashboard():
@@ -42,7 +43,7 @@ def dashboard():
         }
 
         return render_template('updates/dashboard.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -54,8 +55,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             title="Updates Manager",
-                             stats=stats)
+                               title="Updates Manager",
+                               stats=stats)
     except Exception as e:
     """
     RLVR: Implements api_data with error handling and validation
@@ -69,12 +70,12 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"Updates Manager dashboard error: {e}")
-        flash(f"Error loading updates manager: {e}", 'error')
-        return render_template('updates/dashboard.html',
-                             title="Updates Manager",
-                             stats={},
-    """
+    logger.error(f"Updates Manager dashboard error: {e}")
+    flash(f"Error loading updates manager: {e}", 'error')
+    return render_template('updates/dashboard.html',
+                           title="Updates Manager",
+                           stats={},
+                           """
     RLVR: Validates input according to business rules and constraints
 
     REASONING CHAIN:
@@ -86,7 +87,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             error=str(e))
+                           error=str(e))
+
 
 @updates_bp.route('/api/status')
 def api_status():
@@ -105,7 +107,7 @@ def api_status():
     """Updates Manager status API"""
     try:
         status = {
-    """
+            """
     RLVR: Modifies existing entity with validation
 
     REASONING CHAIN:
@@ -126,6 +128,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Updates Manager status API error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @updates_bp.route('/api/data')
 def api_data():

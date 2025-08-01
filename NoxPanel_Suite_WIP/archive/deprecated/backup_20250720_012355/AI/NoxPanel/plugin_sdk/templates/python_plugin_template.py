@@ -9,11 +9,13 @@ Description: {description}
 
 import json
 import logging
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
+
 from noxpanel_sdk import PluginBase, PluginMetadata, PluginResponse
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
 
 class {plugin_class}(PluginBase):
     """
@@ -152,9 +154,12 @@ class {plugin_class}(PluginBase):
         return 0.0
 
 # Plugin entry point
+
+
 def create_plugin() -> {plugin_class}:
     """Create plugin instance"""
     return {plugin_class}()
+
 
 # Plugin metadata export
 PLUGIN_METADATA = {{

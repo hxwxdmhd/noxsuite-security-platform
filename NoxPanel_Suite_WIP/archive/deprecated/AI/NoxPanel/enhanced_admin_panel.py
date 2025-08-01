@@ -4,22 +4,34 @@ Enhanced Admin Panel for NoxPanel Gateway System
 Advanced administrative interface with role-based access and system management
 """
 
-import os
-import sys
 import json
-import time
 import logging
-import psutil
-import subprocess
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
-from flask import Flask, Blueprint, render_template, jsonify, request, redirect, url_for, session, flash
+import os
 import secrets
+import subprocess
+import sys
+import time
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import psutil
+from flask import (
+    Blueprint,
+    Flask,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 class EnhancedAdminPanel:
     """Enhanced admin panel with comprehensive system management"""
@@ -309,7 +321,8 @@ class EnhancedAdminPanel:
                     flash('Login successful', 'success')
                     return redirect(url_for('admin.dashboard'))
                 else:
-                    self._log_audit_event('login_failed', {'username': username})
+                    self._log_audit_event(
+                        'login_failed', {'username': username})
                     flash('Invalid credentials', 'error')
 
             return self._render_login_template()

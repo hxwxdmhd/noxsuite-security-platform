@@ -208,7 +208,7 @@ class ErrorHandler:
         # Add to recent errors
         self.recent_errors.append(error_dict)
         if len(self.recent_errors) > self.max_recent_errors:
-            self.recent_errors = self.recent_errors[-self.max_recent_errors :]
+            self.recent_errors = self.recent_errors[-self.max_recent_errors:]
 
         return nox_error.error_id
 
@@ -280,7 +280,8 @@ def error_handler(
                         context=context,
                         original_exception=e,
                     )
-                    error_id = handler.handle_error(nox_error, context, log_level)
+                    error_id = handler.handle_error(
+                        nox_error, context, log_level)
 
                 if reraise:
                     raise
@@ -367,7 +368,8 @@ def validate_input(
                 raise
             raise ValidationError(
                 f"Validation error: {str(e)}",
-                details={"value": str(value)[:100], "validator": validator.__name__},
+                details={"value": str(value)[:100],
+                         "validator": validator.__name__},
                 context=context,
                 original_exception=e,
             )

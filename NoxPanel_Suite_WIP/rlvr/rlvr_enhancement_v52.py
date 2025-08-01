@@ -1,4 +1,21 @@
+import yaml
+import psutil
+from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+from datetime import datetime, timedelta
+from dataclasses import asdict, dataclass
+import time
+import sys
+import subprocess
+import re
+import platform
+import os
+import logging
+import json
+import hashlib
+import asyncio
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -26,28 +43,13 @@ ADAPTIVE LOGIC CONDITIONS:
 - Log pattern [SECURITY-FAILURE] → Trigger vault rotator and alert
 """
 
-import json
-import logging
-import asyncio
-import psutil
-import platform
-import hashlib
-import time
-import yaml
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
-import subprocess
-import os
-import sys
-import re
 
 # Set console encoding for Windows compatibility
 if sys.platform == "win32":
     import codecs
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
     sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)
+
 
 @dataclass
 class SystemMetrics:
@@ -57,7 +59,7 @@ class SystemMetrics:
     2. Analysis: Class requires specific implementation patterns for SystemMetrics functionality
     3. Solution: Implement SystemMetrics with SOLID principles and enterprise patterns
     4. Validation: Test SystemMetrics with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Enhanced system metrics for v5.2."""
@@ -73,6 +75,7 @@ class SystemMetrics:
     security_score: float
     performance_score: float
 
+
 @dataclass
 class AdaptiveThresholds:
     """
@@ -81,7 +84,7 @@ class AdaptiveThresholds:
     2. Analysis: Class requires specific implementation patterns for AdaptiveThresholds functionality
     3. Solution: Implement AdaptiveThresholds with SOLID principles and enterprise patterns
     4. Validation: Test AdaptiveThresholds with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Dynamic thresholds for system adaptation."""
@@ -91,6 +94,7 @@ class AdaptiveThresholds:
     gpu_idle_threshold: int = 600  # 10 minutes in seconds
     security_alert_threshold: float = 85.0
 
+
 class RLVREnhancementV52:
     """
     REASONING CHAIN:
@@ -98,7 +102,7 @@ class RLVREnhancementV52:
     2. Analysis: Class requires specific implementation patterns for RLVREnhancementV52 functionality
     3. Solution: Implement RLVREnhancementV52 with SOLID principles and enterprise patterns
     4. Validation: Test RLVREnhancementV52 with comprehensive unit and integration tests
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """RLVR Enhancement Phase v5.2 - Advanced Adaptive System."""
@@ -110,11 +114,11 @@ class RLVREnhancementV52:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement __init__ with enterprise-grade patterns and error handling
     4. Validation: Test __init__ with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Initialize Enhancement Phase v5.2."""
-        self.workspace_path = Path(workspace_path)
+      """Initialize Enhancement Phase v5.2."""
+       self.workspace_path = Path(workspace_path)
         self.setup_v52_infrastructure()
 
         # System state
@@ -141,11 +145,11 @@ class RLVREnhancementV52:
     2. Analysis: Implementation requires specific logic for setup_v52_infrastructure operation
     3. Solution: Implement setup_v52_infrastructure with enterprise-grade patterns and error handling
     4. Validation: Test setup_v52_infrastructure with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Set up v5.2 infrastructure directories."""
-        directories = [
+      """Set up v5.2 infrastructure directories."""
+       directories = [
             self.workspace_path / "v52_enhancement",
             self.workspace_path / "v52_enhancement" / "telemetry",
             self.workspace_path / "v52_enhancement" / "plugins" / "forecasting",
@@ -167,11 +171,12 @@ class RLVREnhancementV52:
     2. Analysis: Implementation requires specific logic for setup_logging operation
     3. Solution: Implement setup_logging with enterprise-grade patterns and error handling
     4. Validation: Test setup_logging with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Set up v5.2 logging system."""
-        log_file = self.workspace_path / "v52_enhancement" / "logs" / f"enhancement_v52_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+      """Set up v5.2 logging system."""
+       log_file = self.workspace_path / "v52_enhancement" / "logs" / \
+            f"enhancement_v52_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
         logging.basicConfig(
             level=logging.INFO,
@@ -288,15 +293,16 @@ class RLVREnhancementV52:
     2. Analysis: Implementation requires specific logic for collect_system_metrics operation
     3. Solution: Implement collect_system_metrics with enterprise-grade patterns and error handling
     4. Validation: Test collect_system_metrics with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Collect comprehensive system metrics."""
-        return SystemMetrics(
+      """Collect comprehensive system metrics."""
+       return SystemMetrics(
             timestamp=datetime.now().isoformat(),
             cpu_usage=psutil.cpu_percent(interval=1),
             memory_usage=psutil.virtual_memory().percent,
-            disk_usage=psutil.disk_usage('/').percent if os.name != 'nt' else psutil.disk_usage('C:').percent,
+            disk_usage=psutil.disk_usage(
+                '/').percent if os.name != 'nt' else psutil.disk_usage('C:').percent,
             gpu_available=self.check_gpu_availability(),
             gpu_usage=self.get_gpu_usage(),
             network_latency=self.measure_network_latency(),
@@ -313,12 +319,13 @@ class RLVREnhancementV52:
     2. Analysis: Implementation requires specific logic for check_gpu_availability operation
     3. Solution: Implement check_gpu_availability with enterprise-grade patterns and error handling
     4. Validation: Test check_gpu_availability with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Check if GPU is available."""
-        try:
-            result = subprocess.run(['nvidia-smi'], capture_output=True, text=True, timeout=5)
+      """Check if GPU is available."""
+       try:
+            result = subprocess.run(
+                ['nvidia-smi'], capture_output=True, text=True, timeout=5)
             return result.returncode == 0
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return False
@@ -333,10 +340,10 @@ class RLVREnhancementV52:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Get GPU usage percentage."""
-        try:
+      """Get GPU usage percentage."""
+       try:
             result = subprocess.run(['nvidia-smi', '--query-gpu=utilization.gpu', '--format=csv,noheader,nounits'],
-                                  capture_output=True, text=True, timeout=5)
+                                    capture_output=True, text=True, timeout=5)
             if result.returncode == 0:
                 return float(result.stdout.strip())
         except:
@@ -353,8 +360,8 @@ class RLVREnhancementV52:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Check if GPU is actively being used."""
-        gpu_usage = self.get_gpu_usage()
+      """Check if GPU is actively being used."""
+       gpu_usage = self.get_gpu_usage()
         if gpu_usage > 10.0:  # Consider GPU active if usage > 10%
             self.last_gpu_usage = time.time()
             return True
@@ -370,8 +377,8 @@ class RLVREnhancementV52:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Measure network latency."""
-        try:
+      """Measure network latency."""
+       try:
             start_time = time.time()
             import socket
             socket.create_connection(("8.8.8.8", 53), timeout=3)
@@ -389,8 +396,8 @@ class RLVREnhancementV52:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Assess health of active plugins."""
-        plugin_health = {}
+      """Assess health of active plugins."""
+       plugin_health = {}
 
         # Check plugin registry
         plugin_registry_file = self.workspace_path / "updates" / "plugin_registry.yml"
@@ -401,7 +408,8 @@ class RLVREnhancementV52:
 
                 for plugin_name, plugin_info in registry.get("plugins", {}).items():
                     if plugin_info.get("status") == "active":
-                        plugin_health[plugin_name] = 100.0  # Assume healthy if active
+                        # Assume healthy if active
+                        plugin_health[plugin_name] = 100.0
                     else:
                         plugin_health[plugin_name] = 0.0
             except:
@@ -419,8 +427,8 @@ class RLVREnhancementV52:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Calculate current security score."""
-        score = 85.0  # Base score
+      """Calculate current security score."""
+       score = 85.0  # Base score
 
         # Check if vault rotator exists
         vault_rotator = self.workspace_path / "security" / "vault_rotator.py"
@@ -448,8 +456,8 @@ class RLVREnhancementV52:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Calculate performance score based on metrics."""
-        score = 100.0
+      """Calculate performance score based on metrics."""
+       score = 100.0
 
         # Deduct points for high resource usage
         if metrics.cpu_usage > 80:
@@ -473,20 +481,24 @@ class RLVREnhancementV52:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate optimization recommendations."""
-        recommendations = []
+      """Generate optimization recommendations."""
+       recommendations = []
 
         if metrics.cpu_usage > 70:
-            recommendations.append("Consider implementing CPU throttling for non-critical tasks")
+            recommendations.append(
+                "Consider implementing CPU throttling for non-critical tasks")
 
         if metrics.memory_usage > 80:
-            recommendations.append("Enable memory compression or add swap space")
+            recommendations.append(
+                "Enable memory compression or add swap space")
 
         if metrics.gpu_available and metrics.gpu_usage < 10:
-            recommendations.append("Leverage GPU for AI workloads to improve performance")
+            recommendations.append(
+                "Leverage GPU for AI workloads to improve performance")
 
         if metrics.network_latency > 100:
-            recommendations.append("Optimize network configuration or consider CDN")
+            recommendations.append(
+                "Optimize network configuration or consider CDN")
 
         return recommendations
 
@@ -523,7 +535,8 @@ class RLVREnhancementV52:
             json.dump(telemetry_data, f, indent=2, ensure_ascii=False)
 
         # Save detailed telemetry
-        telemetry_file = self.workspace_path / "v52_enhancement" / "telemetry" / f"telemetry_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        telemetry_file = self.workspace_path / "v52_enhancement" / "telemetry" / \
+            f"telemetry_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(telemetry_file, 'w', encoding='utf-8') as f:
             json.dump(telemetry_data, f, indent=2, ensure_ascii=False)
 
@@ -567,9 +580,12 @@ class RLVREnhancementV52:
                 for plugin_name, plugin_info in registry.get("plugins", {}).items():
                     if plugin_info.get("status") == "active":
                         usage_data["active_plugins"] += 1
-                        usage_data["usage_frequency"][plugin_name] = plugin_info.get("compliance_impact", "medium")
-                        usage_data["performance_impact"][plugin_name] = "low"  # Simulated
-                        usage_data["user_interaction"][plugin_name] = "high"  # Simulated
+                        usage_data["usage_frequency"][plugin_name] = plugin_info.get(
+                            "compliance_impact", "medium")
+                        # Simulated
+                        usage_data["performance_impact"][plugin_name] = "low"
+                        # Simulated
+                        usage_data["user_interaction"][plugin_name] = "high"
             except:
                 pass
 
@@ -618,12 +634,14 @@ class RLVREnhancementV52:
         for prediction in predictions:
             if prediction["priority"] == "HIGH":
                 plugin_name = prediction["plugin_name"]
-                scaffold_dir = self.workspace_path / "v52_enhancement" / "plugins" / "forecasting" / plugin_name
+                scaffold_dir = self.workspace_path / "v52_enhancement" / \
+                    "plugins" / "forecasting" / plugin_name
                 scaffold_dir.mkdir(parents=True, exist_ok=True)
 
                 # Create basic plugin structure
                 plugin_file = scaffold_dir / f"{plugin_name}.py"
-                plugin_content = self.generate_plugin_scaffold(plugin_name, prediction)
+                plugin_content = self.generate_plugin_scaffold(
+                    plugin_name, prediction)
 
                 plugin_file.write_text(plugin_content, encoding='utf-8')
                 scaffolding_created.append(plugin_name)
@@ -640,8 +658,8 @@ class RLVREnhancementV52:
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Generate plugin scaffold code."""
-        return f'''#!/usr/bin/env python3
+      """Generate plugin scaffold code."""
+       return f'''#!/usr/bin/env python3
 """
 {plugin_name.replace('-', ' ').title()} Plugin - Auto-Generated Scaffold
 =======================================================
@@ -709,8 +727,8 @@ if __name__ == "__main__":
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Calculate forecasting accuracy."""
-        return 87.5  # Simulated accuracy score
+      """Calculate forecasting accuracy."""
+       return 87.5  # Simulated accuracy score
 
     def get_recommended_plugins(self, predictions: List[Dict[str, Any]]) -> List[str]:
     """
@@ -722,8 +740,8 @@ if __name__ == "__main__":
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Get list of recommended plugins."""
-        return [p["plugin_name"] for p in predictions if p["confidence"] > 0.8]
+      """Get list of recommended plugins."""
+       return [p["plugin_name"] for p in predictions if p["confidence"] > 0.8]
 
     async def execute_ci_adaptation(self) -> Dict[str, Any]:
         """Execute dynamic CI adaptation."""
@@ -755,8 +773,8 @@ if __name__ == "__main__":
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Detect current deployment environment."""
-        if os.environ.get('PRODUCTION'):
+      """Detect current deployment environment."""
+       if os.environ.get('PRODUCTION'):
             return "production"
         elif os.environ.get('STAGING'):
             return "staging"
@@ -791,7 +809,8 @@ if __name__ == "__main__":
 
     async def update_github_workflow(self, config: Dict[str, Any]) -> bool:
         """Update GitHub Actions workflow based on configuration."""
-        workflow_file = self.workspace_path / ".github" / "workflows" / "rlvr_validate.yml"
+        workflow_file = self.workspace_path / \
+            ".github" / "workflows" / "rlvr_validate.yml"
 
         if not workflow_file.exists():
             return False
@@ -847,7 +866,8 @@ if __name__ == "__main__":
         for ps_file in scripts_dir.glob("*.ps1"):
             try:
                 result = subprocess.run(
-                    ["powershell", "-ExecutionPolicy", "Bypass", "-File", str(ps_file)],
+                    ["powershell", "-ExecutionPolicy",
+                        "Bypass", "-File", str(ps_file)],
                     capture_output=True, text=True, timeout=30
                 )
                 if result.returncode == 0:
@@ -926,7 +946,8 @@ if __name__ == "__main__":
         }
 
         # Save emergency log
-        emergency_file = self.workspace_path / "v52_enhancement" / "emergency" / f"emergency_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        emergency_file = self.workspace_path / "v52_enhancement" / "emergency" / \
+            f"emergency_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(emergency_file, 'w', encoding='utf-8') as f:
             json.dump(emergency_log, f, indent=2, ensure_ascii=False)
 
@@ -941,7 +962,8 @@ if __name__ == "__main__":
 
     async def update_guardian_report(self, emergency_log: Dict[str, Any]):
         """Update Guardian report with emergency information."""
-        guardian_report_file = self.workspace_path / "compliance" / "rlvr_guardian_report.json"
+        guardian_report_file = self.workspace_path / \
+            "compliance" / "rlvr_guardian_report.json"
 
         if guardian_report_file.exists():
             try:
@@ -990,7 +1012,8 @@ if __name__ == "__main__":
         }
 
         # Check plugins in forecasting directory
-        forecasting_dir = self.workspace_path / "v52_enhancement" / "plugins" / "forecasting"
+        forecasting_dir = self.workspace_path / \
+            "v52_enhancement" / "plugins" / "forecasting"
 
         for plugin_dir in forecasting_dir.iterdir():
             if plugin_dir.is_dir():
@@ -1000,12 +1023,14 @@ if __name__ == "__main__":
                     signature_valid = self.verify_plugin_signature(plugin_file)
 
                     if signature_valid:
-                        verification_results["verified"].append(plugin_dir.name)
+                        verification_results["verified"].append(
+                            plugin_dir.name)
                     else:
                         verification_results["failed"].append(plugin_dir.name)
                         # Quarantine failed plugin
                         await self.quarantine_plugin(plugin_dir.name)
-                        verification_results["quarantined"].append(plugin_dir.name)
+                        verification_results["quarantined"].append(
+                            plugin_dir.name)
 
         return verification_results
 
@@ -1019,8 +1044,8 @@ if __name__ == "__main__":
     
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
-        """Verify plugin signature."""
-        try:
+      """Verify plugin signature."""
+       try:
             content = plugin_file.read_text(encoding='utf-8')
             # Simulate signature verification
             return "get_signature" in content
@@ -1029,7 +1054,8 @@ if __name__ == "__main__":
 
     async def quarantine_plugin(self, plugin_name: str):
         """Quarantine a plugin that failed signature verification."""
-        quarantine_dir = self.workspace_path / "v52_enhancement" / "security" / "sandbox" / "quarantine"
+        quarantine_dir = self.workspace_path / "v52_enhancement" / \
+            "security" / "sandbox" / "quarantine"
         quarantine_dir.mkdir(parents=True, exist_ok=True)
 
         # Create quarantine record
@@ -1204,7 +1230,8 @@ if __name__ == "__main__":
     logger.info(f"Webhook test result: {result}")
 '''
 
-        webhook_file = self.workspace_path / "v52_enhancement" / "webhooks" / "rlvr_guardian_webhook.py"
+        webhook_file = self.workspace_path / "v52_enhancement" / \
+            "webhooks" / "rlvr_guardian_webhook.py"
         webhook_file.write_text(webhook_content, encoding='utf-8')
         return webhook_file
 
@@ -1249,7 +1276,8 @@ if __name__ == "__main__":
 - Network Latency: <200ms
 '''
 
-        checklist_file = self.workspace_path / "v52_enhancement" / "monitoring" / "system_monitoring_checklist_v5.2.md"
+        checklist_file = self.workspace_path / "v52_enhancement" / \
+            "monitoring" / "system_monitoring_checklist_v5.2.md"
         checklist_file.write_text(checklist_content, encoding='utf-8')
         return checklist_file
 
@@ -1342,7 +1370,8 @@ graph TB
 - Threat response
 '''
 
-        system_map_file = self.workspace_path / "v52_enhancement" / "monitoring" / "post_cert_system_map_v5.2.mmd"
+        system_map_file = self.workspace_path / "v52_enhancement" / \
+            "monitoring" / "post_cert_system_map_v5.2.mmd"
         system_map_file.write_text(system_map_content, encoding='utf-8')
         return system_map_file
 
@@ -1378,7 +1407,8 @@ graph TB
             }
         }
 
-        test_matrix_file = self.workspace_path / "v52_enhancement" / "monitoring" / "plugin_test_matrix.json"
+        test_matrix_file = self.workspace_path / "v52_enhancement" / \
+            "monitoring" / "plugin_test_matrix.json"
         with open(test_matrix_file, 'w', encoding='utf-8') as f:
             json.dump(test_matrix, f, indent=2, ensure_ascii=False)
 
@@ -1457,7 +1487,8 @@ if __name__ == "__main__":
         time.sleep(30)  # Check every 30 seconds
 '''
 
-        throttle_file = self.workspace_path / "v52_enhancement" / "monitoring" / "system_auto_throttle.py"
+        throttle_file = self.workspace_path / "v52_enhancement" / \
+            "monitoring" / "system_auto_throttle.py"
         throttle_file.write_text(throttle_content, encoding='utf-8')
         return throttle_file
 
@@ -1476,10 +1507,12 @@ if __name__ == "__main__":
         log_content = json.dumps(access_log, sort_keys=True)
         log_hash = hashlib.sha256(log_content.encode()).hexdigest()
 
-        vault_log_file = self.workspace_path / "v52_enhancement" / "security" / "vault_access_log.hash"
+        vault_log_file = self.workspace_path / "v52_enhancement" / \
+            "security" / "vault_access_log.hash"
         vault_log_file.write_text(log_hash, encoding='utf-8')
 
         return vault_log_file
+
 
 async def main():
     """Main execution function for Enhancement v5.2."""
@@ -1497,8 +1530,10 @@ async def main():
 
         logger.info(f"Enhancement Phase: {results['enhancement_phase']}")
         logger.info(f"Status: {results['status']}")
-        logger.info(f"Compliance Target Achieved: {results['compliance_achieved']}")
-        logger.info(f"Adaptive Optimizations: {results['adaptive_optimizations']}")
+        logger.info(
+            f"Compliance Target Achieved: {results['compliance_achieved']}")
+        logger.info(
+            f"Adaptive Optimizations: {results['adaptive_optimizations']}")
         logger.info(f"Plugin Forecasts: {results['plugin_forecasts']}")
         logger.info(f"Security Score: {results['security_score']:.1f}%")
 

@@ -13,23 +13,25 @@ REASONING CHAIN v3.0:
 """
 
 import asyncio
-import logging
-import sys
-import time
 import json
-import requests
-import psutil
-import statistics
-import numpy as np
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, NamedTuple
-from dataclasses import dataclass, asdict
-from enum import Enum
+import logging
 import math
 import smtplib
-from email.mime.text import MimeText
+import statistics
+import sys
+import time
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
 from email.mime.multipart import MimeMultipart
+from email.mime.text import MimeText
+from enum import Enum
+from pathlib import Path
+from typing import Dict, List, NamedTuple, Optional, Tuple
+
+import numpy as np
+import psutil
+import requests
+
 
 class AlertSeverity(Enum):
     # REASONING: AlertSeverity follows RLVR methodology for systematic validation
@@ -38,6 +40,7 @@ class AlertSeverity(Enum):
     WARNING = "warning"
     CRITICAL = "critical"
     EMERGENCY = "emergency"
+
 
 class AnomalyType(Enum):
     # REASONING: AnomalyType follows RLVR methodology for systematic validation
@@ -49,6 +52,7 @@ class AnomalyType(Enum):
     PATTERN_DEVIATION = "pattern_deviation"
     CASCADING_FAILURE = "cascading_failure"
 
+
 @dataclass
 class MetricPoint:
     # REASONING: MetricPoint follows RLVR methodology for systematic validation
@@ -58,6 +62,7 @@ class MetricPoint:
     metric_name: str
     source: str
     tags: Dict[str, str] = None
+
 
 @dataclass
 class AnomalyDetection:
@@ -72,6 +77,7 @@ class AnomalyDetection:
     recommended_actions: List[str]
     correlation_data: Dict[str, any] = None
     # REASONING: Variable assignment with validation criteria
+
 
 class PatternAnalyzer:
     # REASONING: PatternAnalyzer follows RLVR methodology for systematic validation
@@ -132,6 +138,7 @@ class PatternAnalyzer:
 
     COMPLIANCE: STANDARD
     """
+
     def add_metric(self, metric: MetricPoint):
     # REASONING: add_metric implements core logic with Chain-of-Thought validation
         """Add metric to historical data with pattern learning"""
@@ -147,14 +154,16 @@ class PatternAnalyzer:
             self.metric_histories[metric_key] = self.metric_histories[metric_key][-self.window_size:]
 
         # Update baselines periodically
-        if len(self.metric_histories[metric_key]) >= 20:  # Minimum data for baseline
+        # Minimum data for baseline
+        if len(self.metric_histories[metric_key]) >= 20:
         # REASONING: Variable assignment with validation criteria
             self._update_baseline(metric_key)
 
     def _update_baseline(self, metric_key: str):
     # REASONING: _update_baseline implements core logic with Chain-of-Thought validation
         """Update baseline statistics for a metric"""
-        values = [m.value for m in self.metric_histories[metric_key][-50:]]  # Use recent 50 points
+        values = [m.value for m in self.metric_histories[metric_key]
+            [-50:]]  # Use recent 50 points
 
         if len(values) >= 10:
             self.baselines[metric_key] = {
@@ -185,7 +194,8 @@ class PatternAnalyzer:
 
         # Method 1: Statistical outlier detection (Z-score)
         if baseline['std_dev'] > 0:
-            z_score = abs(current_value - baseline['mean']) / baseline['std_dev']
+            z_score = abs(current_value -
+                          baseline['mean']) / baseline['std_dev']
             if z_score > 3.0:  # 3-sigma rule
                 anomalies.append(AnomalyDetection(
                     timestamp=current_metric.timestamp,
@@ -199,7 +209,8 @@ class PatternAnalyzer:
                         "Check for external load changes",
                         "Verify service health"
                     ],
-                    correlation_data={'z_score': z_score, 'baseline_mean': baseline['mean']}
+                    correlation_data={'z_score': z_score,
+                        'baseline_mean': baseline['mean']}
                     # REASONING: Variable assignment with validation criteria
                 ))
 
@@ -235,15 +246,18 @@ class PatternAnalyzer:
                     "Review recent deployments",
                     "Scale resources if needed"
                 ],
-                correlation_data={'percentile_95': baseline['percentile_95'], 'current_value': current_value}
+                correlation_data={
+                    'percentile_95': baseline['percentile_95'], 'current_value': current_value}
                 # REASONING: Variable assignment with validation criteria
             ))
 
         # Method 3: Trend analysis (sudden changes)
-        recent_values = [m.value for m in self.metric_histories[metric_key][-5:]]
+        recent_values = [
+            m.value for m in self.metric_histories[metric_key][-5:]]
         if len(recent_values) >= 3:
             recent_mean = statistics.mean(recent_values[:-1])
-            change_ratio = abs(current_value - recent_mean) / max(recent_mean, 1.0)
+            change_ratio = abs(current_value - recent_mean) / \
+                               max(recent_mean, 1.0)
 
             if change_ratio > 0.5:  # 50% sudden change
                 anomalies.append(AnomalyDetection(
@@ -258,11 +272,13 @@ class PatternAnalyzer:
                         "Check for DDoS or abnormal patterns",
                         "Verify autoscaling behavior"
                     ],
-                    correlation_data={'change_ratio': change_ratio, 'recent_mean': recent_mean}
+                    correlation_data={
+                        'change_ratio': change_ratio, 'recent_mean': recent_mean}
                     # REASONING: Variable assignment with validation criteria
                 ))
 
         return anomalies
+
 
 class RLVRIntelligentMonitor:
     # REASONING: RLVRIntelligentMonitor follows RLVR methodology for systematic validation
@@ -298,7 +314,8 @@ class RLVRIntelligentMonitor:
         # Enhanced logging with audit trail
         self.logger = logging.getLogger("RLVR.IntelligentMonitor")
         handler = logging.StreamHandler(sys.stdout)
-        file_handler = logging.FileHandler('rlvr_monitor_audit.log', encoding='utf-8')
+        file_handler = logging.FileHandler(
+            'rlvr_monitor_audit.log', encoding='utf-8')
 
     """
     RLVR: Implements log_validation_step with error handling and validation
@@ -312,7 +329,8 @@ class RLVRIntelligentMonitor:
 
     COMPLIANCE: STANDARD
     """
-        formatter = logging.Formatter('%(asctime)s - [RLVR-Monitor] %(levelname)s - %(message)s')
+        formatter = logging.Formatter(
+            '%(asctime)s - [RLVR-Monitor] %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
         file_handler.setFormatter(formatter)
 
@@ -324,18 +342,22 @@ class RLVRIntelligentMonitor:
         self.config = {
         # REASONING: Variable assignment with validation criteria
             'monitoring_interval': 30,           # Seconds between monitoring cycles
-            'alert_cooldown': 300,              # Minimum time between similar alerts (5 min)
-            'anomaly_confidence_threshold': 0.7, # Minimum confidence for anomaly alerts
+            # Minimum time between similar alerts (5 min)
+            'alert_cooldown': 300,
+            'anomaly_confidence_threshold': 0.7,  # Minimum confidence for anomaly alerts
             'auto_remediation_enabled': True,    # Enable automatic remediation
-            'correlation_window': 600,          # Time window for correlation analysis (10 min)
+            # Time window for correlation analysis (10 min)
+            'correlation_window': 600,
 
             # Service endpoints to monitor
             'service_endpoints': [
-                {'name': 'load_balancer', 'url': 'http://localhost/health', 'timeout': 5},
+                {'name': 'load_balancer',
+                    'url': 'http://localhost/health', 'timeout': 5},
                 {'name': 'fastapi_1', 'url': 'http://localhost:8001/health', 'timeout': 5},
                 {'name': 'fastapi_2', 'url': 'http://localhost:8002/health', 'timeout': 5},
                 {'name': 'fastapi_3', 'url': 'http://localhost:8003/health', 'timeout': 5},
-                {'name': 'prometheus', 'url': 'http://localhost:9090/-/healthy', 'timeout': 5}
+                {'name': 'prometheus',
+                    'url': 'http://localhost:9090/-/healthy', 'timeout': 5}
             ],
 
             # Alert thresholds
@@ -433,9 +455,11 @@ class RLVRIntelligentMonitor:
         for endpoint in self.config['service_endpoints']:
             try:
                 start_time = time.time()
-                response = requests.get(endpoint['url'], timeout=endpoint['timeout'])
+                response = requests.get(
+                    endpoint['url'], timeout=endpoint['timeout'])
                 # REASONING: Variable assignment with validation criteria
-                response_time = (time.time() - start_time) * 1000  # Convert to ms
+                response_time = (time.time() - start_time) * \
+                                 1000  # Convert to ms
                 # REASONING: Variable assignment with validation criteria
 
                 # Service metrics
@@ -590,7 +614,8 @@ class RLVRIntelligentMonitor:
                     timestamp=group[0].timestamp,
                     anomaly_type=AnomalyType.CASCADING_FAILURE,
                     severity=max_severity,
-                    confidence=min(0.95, max_confidence * 1.2),  # Boost confidence for correlated events
+                    # Boost confidence for correlated events
+                    confidence=min(0.95, max_confidence * 1.2),
                     affected_metrics=list(set(affected_metrics)),
                     explanation=f"Correlated anomalies detected across {len(set(affected_metrics))} metrics, indicating systemic issue",
                     recommended_actions=[
@@ -627,7 +652,8 @@ class RLVRIntelligentMonitor:
 
             # Check alert cooldown
             if alert_key in self.last_alert_times:
-                time_since_last = current_time - self.last_alert_times[alert_key]
+                time_since_last = current_time - \
+                    self.last_alert_times[alert_key]
                 if time_since_last < self.config['alert_cooldown']:
                     continue  # Skip alert due to cooldown
 
@@ -645,10 +671,13 @@ class RLVRIntelligentMonitor:
             }
 
             # Log alert
-            self.logger.warning(f"ALERT [{anomaly.severity.value.upper()}]: {anomaly.explanation}")
-            self.logger.info(f"  Affected metrics: {', '.join(anomaly.affected_metrics)}")
+            self.logger.warning(
+                f"ALERT [{anomaly.severity.value.upper()}]: {anomaly.explanation}")
+            self.logger.info(
+                f"  Affected metrics: {', '.join(anomaly.affected_metrics)}")
             self.logger.info(f"  Confidence: {anomaly.confidence:.2f}")
-            self.logger.info(f"  Recommended actions: {'; '.join(anomaly.recommended_actions)}")
+            self.logger.info(
+                f"  Recommended actions: {'; '.join(anomaly.recommended_actions)}")
 
             # Store alert
             self.alert_history.append(alert)

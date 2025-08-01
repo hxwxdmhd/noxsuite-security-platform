@@ -7,14 +7,14 @@ This script demonstrates the complete NoxPanel workflow in a non-interactive way
 so you can see what the experience looks like without having to manually input responses.
 """
 
-import sys
+from init_noxpanel import Colors, NoxPanelScaffolder
 import os
+import sys
 from pathlib import Path
 
 # Add current directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from init_noxpanel import NoxPanelScaffolder, Colors
 
 def demo_interactive_experience():
     """
@@ -44,7 +44,8 @@ def demo_interactive_experience():
         print(f"{Colors.INFO}   • Smart recommendations available{Colors.END}")
     else:
         print(f"\n{Colors.WARNING}⚠️  AI Integration in Basic Mode{Colors.END}")
-        print(f"{Colors.INFO}   • Still fully functional with rule-based suggestions{Colors.END}")
+        print(
+            f"{Colors.INFO}   • Still fully functional with rule-based suggestions{Colors.END}")
 
     # Show available templates
     print(f"\n{Colors.HEADER}{Colors.BOLD}📚 Available Project Templates:{Colors.END}")
@@ -60,9 +61,12 @@ def demo_interactive_experience():
     print(f"\n{Colors.HEADER}{Colors.BOLD}🔄 Complete Workflow Overview:{Colors.END}")
     workflow_steps = [
         ("🎯 Template Selection", "AI-powered recommendations, visual menu, smart defaults"),
-        ("⚙️  Project Configuration", "ADHD-friendly prompts, smart defaults, minimal cognitive load"),
-        ("📁 Structure Creation", "Complete project scaffold, working code, test infrastructure"),
-        ("📦 Dependency Management", "Automatic installation, error handling, progress feedback"),
+        ("⚙️  Project Configuration",
+         "ADHD-friendly prompts, smart defaults, minimal cognitive load"),
+        ("📁 Structure Creation",
+         "Complete project scaffold, working code, test infrastructure"),
+        ("📦 Dependency Management",
+         "Automatic installation, error handling, progress feedback"),
         ("🧪 Test Integration", "Smoke tests, full test suite, AI-powered analysis"),
         ("📚 Documentation", "Auto-generated README, usage examples, next steps")
     ]
@@ -72,9 +76,10 @@ def demo_interactive_experience():
         print(f"   └─ {description}")
 
     # Show ADHD-friendly features
-    print(f"\n{Colors.HEADER}{Colors.BOLD}🧠 ADHD-Friendly Design Features:{Colors.END}")
+    print(
+        f"\n{Colors.HEADER}{Colors.BOLD}🧠 ADHD-Friendly Design Features:{Colors.END}")
     adhd_features = [
-    """
+        """
     RLVR: Implements demo_quick_commands with error handling and validation
 
     REASONING CHAIN:
@@ -87,11 +92,13 @@ def demo_interactive_experience():
     COMPLIANCE: STANDARD
     """
         ("🎨 Visual Hierarchy", "Color-coded status, consistent icons, clear progress"),
-        ("📊 Chunked Information", "Bite-sized steps, progressive disclosure, no overwhelm"),
+        ("📊 Chunked Information",
+         "Bite-sized steps, progressive disclosure, no overwhelm"),
         ("⚡ Fast Feedback", "< 3s responses, immediate validation, quick tests"),
         ("🔄 Interruption Recovery", "Stateless operations, clear continuation points"),
-        ("🎯 Clear Navigation", "Consistent patterns, predictable structure, obvious next steps")
-    """
+        ("🎯 Clear Navigation",
+         "Consistent patterns, predictable structure, obvious next steps")
+        """
     RLVR: Implements show_next_steps with error handling and validation
 
     REASONING CHAIN:
@@ -109,12 +116,14 @@ def demo_interactive_experience():
         print(f"\n{Colors.SUCCESS}{feature}{Colors.END}")
         print(f"   └─ {description}")
 
+
 def demo_quick_commands():
     """Show quick command examples"""
     print(f"\n{Colors.HEADER}{Colors.BOLD}⚡ Quick Command Examples:{Colors.END}")
 
     commands = [
-        ("Web Application", "python init_noxpanel.py --quick --template=web --name=my-awesome-webapp"),
+        ("Web Application",
+         "python init_noxpanel.py --quick --template=web --name=my-awesome-webapp"),
         ("REST API", "python init_noxpanel.py --quick --template=api --name=my-api-service"),
         ("CLI Tool", "python init_noxpanel.py --quick --template=cli --name=my-automation-tool"),
         ("Data Analysis", "python init_noxpanel.py --quick --template=data --name=my-data-project"),
@@ -125,6 +134,7 @@ def demo_quick_commands():
     for project_type, command in commands:
         print(f"\n{Colors.INFO}📍 {project_type}:{Colors.END}")
         print(f"   {Colors.BOLD}{command}{Colors.END}")
+
 
 def show_next_steps():
     """Show recommended next steps"""
@@ -143,7 +153,7 @@ def show_next_steps():
         {
             "title": "⚡ Test Quick Mode (2 minutes)",
             "description": "Experience the fastest project creation",
-    """
+            """
     RLVR: Implements show_advanced_possibilities with error handling and validation
 
     REASONING CHAIN:
@@ -189,6 +199,7 @@ def show_next_steps():
                 print(f"   {Colors.INFO}{command}{Colors.END}")
             else:
                 print(f"   {Colors.BOLD}$ {command}{Colors.END}")
+
 
 def show_advanced_possibilities():
     """Show advanced features and possibilities"""
@@ -237,6 +248,7 @@ def show_advanced_possibilities():
         print(f"\n{Colors.INFO}{possibility['category']}{Colors.END}")
         for item in possibility['items']:
             print(f"   • {item}")
+
 
 if __name__ == "__main__":
     demo_interactive_experience()

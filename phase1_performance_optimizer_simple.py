@@ -5,16 +5,18 @@ Addresses performance blockers identified in validation
 Target: Sub-200ms response times for Phase 1 compliance
 """
 
-import time
 import subprocess
-import psutil
-from pathlib import Path
+import time
 from datetime import datetime, timezone
+from pathlib import Path
+
+import psutil
+
 
 def create_optimized_flask_server():
     """Create optimized Flask server for Phase 1 performance"""
     print("🚀 CREATING OPTIMIZED FLASK SERVER")
-    
+
     optimized_server_content = '''#!/usr/bin/env python3
 """
 OPTIMIZED NOXPANEL SERVER - PHASE 1 PERFORMANCE
@@ -135,25 +137,31 @@ if __name__ == '__main__':
         use_reloader=False    # Disable reloader for performance
     )
 '''
-    
+
     optimized_file = Path("main_server_optimized_phase1.py")
     optimized_file.write_text(optimized_server_content)
     print(f"  ✅ Created optimized server: {optimized_file}")
     return optimized_file
 
+
 def terminate_existing_servers():
     """Terminate existing Flask servers for optimization"""
     print("🔄 TERMINATING EXISTING SERVERS")
-    
+
     try:
-        processes = [p for p in psutil.process_iter(['pid', 'name', 'cmdline']) 
-                    if 'python' in p.info['name'].lower()]
-        
+        processes = [
+            p
+            for p in psutil.process_iter(["pid", "name", "cmdline"])
+            if "python" in p.info["name"].lower()
+        ]
+
         flask_processes = []
         for p in processes:
-            if p.info['cmdline'] and any('main_server' in str(cmd) for cmd in p.info['cmdline']):
+            if p.info["cmdline"] and any(
+                "main_server" in str(cmd) for cmd in p.info["cmdline"]
+            ):
                 flask_processes.append(p)
-        
+
         if flask_processes:
             print(f"  📊 Found {len(flask_processes)} Flask process(es)")
             for p in flask_processes:
@@ -165,71 +173,74 @@ def terminate_existing_servers():
                     pass
         else:
             print("  ✅ No Flask processes to terminate")
-            
+
     except Exception as e:
         print(f"  ⚠️ Process termination error: {e}")
+
 
 def run_performance_test():
     """Run quick performance test"""
     print("📊 RUNNING PERFORMANCE TEST")
-    
+
     # File I/O test
     test_file = Path("perf_test.tmp")
-    
+
     # Write test
     start_time = time.time()
     test_file.write_text("performance test" * 100)
     write_time = (time.time() - start_time) * 1000
-    
-    # Read test  
+
+    # Read test
     start_time = time.time()
     test_file.read_text()
     read_time = (time.time() - start_time) * 1000
-    
+
     # Cleanup
     test_file.unlink()
-    
+
     print(f"  📝 File Write: {write_time:.1f}ms")
     print(f"  📖 File Read: {read_time:.1f}ms")
-    
+
     # CPU test
     start_time = time.time()
     _ = sum(i * i for i in range(10000))
     cpu_time = (time.time() - start_time) * 1000
     print(f"  🧮 CPU Test: {cpu_time:.1f}ms")
-    
+
     return {
-        'file_write_ms': write_time,
-        'file_read_ms': read_time,
-        'cpu_test_ms': cpu_time
+        "file_write_ms": write_time,
+        "file_read_ms": read_time,
+        "cpu_test_ms": cpu_time,
     }
+
 
 def main():
     """Main optimization execution"""
     print("🚀 PHASE 1 PERFORMANCE OPTIMIZATION STARTING")
     print("=" * 50)
-    
+
     # Step 1: Terminate existing servers
     terminate_existing_servers()
-    
+
     # Step 2: Create optimized server
     optimized_file = create_optimized_flask_server()
-    
+
     # Step 3: Run performance test
     perf_results = run_performance_test()
-    
+
     print("\n" + "=" * 50)
     print("⚡ PERFORMANCE OPTIMIZATION COMPLETE")
     print("=" * 50)
-    
+
     print("\n🎯 NEXT ACTIONS:")
     print("1. Start optimized server:")
     print("   python main_server_optimized_phase1.py")
     print("\n2. Validate improvements:")
     print("   python phase1_system_validator.py")
     print("\n3. Expected result: All Phase 1 gates PASS")
-    
+
     return perf_results
+
 
 if __name__ == "__main__":
     main()

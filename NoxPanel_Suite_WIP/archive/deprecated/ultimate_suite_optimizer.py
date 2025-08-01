@@ -103,13 +103,14 @@ Current: >1,200ms for module imports
 =========================================
 """
 
+import asyncio
+import json
 import os
+import subprocess
 import sys
 import time
-import asyncio
-import subprocess
-import json
-from typing import Dict, List, Any
+from typing import Any, Dict, List
+
 
 class UltimateSuiteOptimizer:
     """Ultimate Suite v11.0 Performance Optimizer"""
@@ -127,8 +128,8 @@ class UltimateSuiteOptimizer:
 
     COMPLIANCE: STANDARD
     """
-        self.base_path = "k:\\Project Heimnetz"
-        self.optimization_results = {}
+    self.base_path = "k:\\Project Heimnetz"
+    self.optimization_results = {}
 
     async def audit_environment(self) -> Dict[str, Any]:
         """Comprehensive environment audit"""
@@ -156,7 +157,7 @@ class UltimateSuiteOptimizer:
         """Get list of installed Python packages"""
         try:
             result = subprocess.run([sys.executable, "-m", "pip", "list"],
-                                  capture_output=True, text=True)
+                                    capture_output=True, text=True)
             packages = []
             for line in result.stdout.split('\n')[2:]:  # Skip header
                 if line.strip():
@@ -179,7 +180,8 @@ class UltimateSuiteOptimizer:
         missing = {}
 
         for category, packages in required_packages.items():
-            missing[category] = [pkg for pkg in packages if pkg not in installed]
+            missing[category] = [
+                pkg for pkg in packages if pkg not in installed]
 
         return missing
 
@@ -195,7 +197,9 @@ class UltimateSuiteOptimizer:
         # Module import time
         start = time.time()
         try:
-            import flask, sqlalchemy, requests
+            import flask
+            import requests
+            import sqlalchemy
             metrics["core_import_ms"] = (time.time() - start) * 1000
         except ImportError:
             metrics["core_import_ms"] = -1
@@ -464,6 +468,8 @@ Target Scaling: Auto-scaling with load balancing
         return report
 
 # Generate optimization assets
+
+
 async def main():
     optimizer = UltimateSuiteOptimizer()
 

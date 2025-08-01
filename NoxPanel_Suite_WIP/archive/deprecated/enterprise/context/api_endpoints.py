@@ -4,14 +4,16 @@ FastAPI implementation for HTTP access to ContextForge services
 Part of the Heimnetz Enterprise Suite
 """
 
-from fastapi import FastAPI, HTTPException, Query, Body
+import asyncio
+import json
+from typing import Any, Dict, List, Optional
+
+from fastapi import Body, FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from typing import Dict, Any, Optional, List
-import asyncio
+
 from .index import ContextForge
 from .service_integration import service_integration
-import json
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -24,6 +26,8 @@ app = FastAPI(
 contextforge = ContextForge()
 
 # Request/Response Models
+
+
 class ContextRequest(BaseModel):
     prompt: str
     model_preference: Optional[str] = None
@@ -31,15 +35,18 @@ class ContextRequest(BaseModel):
     context_sources: Optional[List[str]] = None
     max_context_length: Optional[int] = None
 
+
 class ContextResponse(BaseModel):
     success: bool
     data: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
     processing_time: Optional[float] = None
 
+
 class ModelCompatibilityRequest(BaseModel):
     agent_call: str
     available_models: List[str]
+
 
 class RouterRequest(BaseModel):
     request_type: str
@@ -47,6 +54,8 @@ class RouterRequest(BaseModel):
     preferences: Optional[Dict[str, Any]] = None
 
 # API Endpoints
+
+
 @app.post("/context/analyze", response_model=ContextResponse)
 async def analyze_context(request: ContextRequest):
     """
@@ -54,24 +63,25 @@ async def analyze_context(request: ContextRequest):
     """
     try:
         start_time = asyncio.get_event_loop().time()
-        
+
         # Process context request
         result = await contextforge.process_context_request(request.dict())
-        
+
         end_time = asyncio.get_event_loop().time()
         processing_time = end_time - start_time
-        
+
         return ContextResponse(
             success=True,
             data=result,
             processing_time=processing_time
         )
-        
+
     except Exception as e:
         return ContextResponse(
             success=False,
             error=str(e)
         )
+
 
 @app.post("/context/compatibility", response_model=ContextResponse)
 async def check_model_compatibility(request: ModelCompatibilityRequest):
@@ -80,27 +90,28 @@ async def check_model_compatibility(request: ModelCompatibilityRequest):
     """
     try:
         start_time = asyncio.get_event_loop().time()
-        
+
         # Check compatibility
         result = await contextforge.check_model_compatibility(
             request.agent_call,
             request.available_models
         )
-        
+
         end_time = asyncio.get_event_loop().time()
         processing_time = end_time - start_time
-        
+
         return ContextResponse(
             success=True,
             data=result,
             processing_time=processing_time
         )
-        
+
     except Exception as e:
         return ContextResponse(
             success=False,
             error=str(e)
         )
+
 
 @app.post("/context/route", response_model=ContextResponse)
 async def route_request(request: RouterRequest):
@@ -109,28 +120,29 @@ async def route_request(request: RouterRequest):
     """
     try:
         start_time = asyncio.get_event_loop().time()
-        
+
         # Route request
         result = await contextforge.router.route_request(
             request.request_type,
             request.load_factor,
             request.preferences
         )
-        
+
         end_time = asyncio.get_event_loop().time()
         processing_time = end_time - start_time
-        
+
         return ContextResponse(
             success=True,
             data=result,
             processing_time=processing_time
         )
-        
+
     except Exception as e:
         return ContextResponse(
             success=False,
             error=str(e)
         )
+
 
 @app.get("/context/health")
 async def health_check():
@@ -140,22 +152,23 @@ async def health_check():
     try:
         # Get service health
         health_info = await service_integration.get_service_info()
-        
+
         # Check ContextForge health
         contextforge_health = await contextforge.health_check()
-        
+
         return {
             "status": "healthy",
             "contextforge": contextforge_health,
             "service_integration": health_info,
             "timestamp": asyncio.get_event_loop().time()
         }
-        
+
     except Exception as e:
         return JSONResponse(
             status_code=500,
             content={"status": "unhealthy", "error": str(e)}
         )
+
 
 @app.get("/context/metrics")
 async def get_metrics():
@@ -168,12 +181,13 @@ async def get_metrics():
             "metrics": metrics,
             "timestamp": asyncio.get_event_loop().time()
         }
-        
+
     except Exception as e:
         return JSONResponse(
             status_code=500,
             content={"error": str(e)}
         )
+
 
 @app.get("/context/models")
 async def list_available_models():
@@ -186,12 +200,13 @@ async def list_available_models():
             "models": models,
             "total_count": len(models)
         }
-        
+
     except Exception as e:
         return JSONResponse(
             status_code=500,
             content={"error": str(e)}
         )
+
 
 @app.get("/context/protocols")
 async def list_protocols():
@@ -204,12 +219,13 @@ async def list_protocols():
             "protocols": protocols,
             "active_version": contextforge.protocol_version
         }
-        
+
     except Exception as e:
         return JSONResponse(
             status_code=500,
             content={"error": str(e)}
         )
+
 
 @app.post("/context/test")
 async def run_test(test_name: str = Query(...)):
@@ -223,12 +239,13 @@ async def run_test(test_name: str = Query(...)):
             "result": result,
             "timestamp": asyncio.get_event_loop().time()
         }
-        
+
     except Exception as e:
         return JSONResponse(
             status_code=500,
             content={"error": str(e)}
         )
+
 
 @app.get("/context/config")
 async def get_configuration():
@@ -241,12 +258,13 @@ async def get_configuration():
             "configuration": config,
             "timestamp": asyncio.get_event_loop().time()
         }
-        
+
     except Exception as e:
         return JSONResponse(
             status_code=500,
             content={"error": str(e)}
         )
+
 
 @app.post("/context/config")
 async def update_configuration(config: Dict[str, Any] = Body(...)):
@@ -260,7 +278,7 @@ async def update_configuration(config: Dict[str, Any] = Body(...)):
             "updated_config": result,
             "timestamp": asyncio.get_event_loop().time()
         }
-        
+
     except Exception as e:
         return JSONResponse(
             status_code=500,
@@ -268,19 +286,21 @@ async def update_configuration(config: Dict[str, Any] = Body(...)):
         )
 
 # WebSocket endpoints for real-time updates
+
+
 @app.websocket("/context/ws")
 async def websocket_endpoint(websocket):
     """
     WebSocket endpoint for real-time updates
     """
     await websocket.accept()
-    
+
     try:
         while True:
             # Wait for client message
             data = await websocket.receive_text()
             request_data = json.loads(data)
-            
+
             # Process request
             if request_data.get("type") == "context_request":
                 result = await contextforge.process_context_request(
@@ -290,21 +310,21 @@ async def websocket_endpoint(websocket):
                     "type": "context_response",
                     "result": result
                 }))
-                
+
             elif request_data.get("type") == "health_check":
                 health = await contextforge.health_check()
                 await websocket.send_text(json.dumps({
                     "type": "health_response",
                     "health": health
                 }))
-                
+
             elif request_data.get("type") == "metrics":
                 metrics = await contextforge.get_metrics()
                 await websocket.send_text(json.dumps({
                     "type": "metrics_response",
                     "metrics": metrics
                 }))
-                
+
     except Exception as e:
         await websocket.send_text(json.dumps({
             "type": "error",
@@ -313,12 +333,15 @@ async def websocket_endpoint(websocket):
         await websocket.close()
 
 # Startup and shutdown events
+
+
 @app.on_event("startup")
 async def startup_event():
     """
     Initialize ContextForge on startup
     """
     await contextforge.initialize()
+
 
 @app.on_event("shutdown")
 async def shutdown_event():
