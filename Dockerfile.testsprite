@@ -1,0 +1,57 @@
+# NoxSuite TestSprite Agent Dockerfile
+# Automated testing agent for continuous quality assurance
+
+FROM python:3.12-slim
+
+# Set working directory
+WORKDIR /app
+
+# Prevent Python from writing bytecode files
+ENV PYTHONDONTWRITEBYTECODE=1
+# Ensure Python output is sent directly to terminal
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    cron \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user for security
+RUN groupadd -r testsprite && useradd -r -g testsprite testsprite
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Install Python dependencies for testing
+RUN pip install --no-cache-dir \
+    requests \
+    pytest \
+    pytest-asyncio \
+    httpx \
+    sqlalchemy \
+    pymysql
+
+# Copy TestSprite integration
+COPY testsprite_integration.py .
+COPY mariadb_dev_setup.py .
+
+# Create necessary directories
+RUN mkdir -p /app/reports /app/data && \
+    chown -R testsprite:testsprite /app
+
+# Create test runner script
+RUN echo '#!/bin/bash\n\
+python testsprite_integration.py\n\
+' > /app/run_tests.sh && chmod +x /app/run_tests.sh
+
+# Set up cron job for scheduled testing
+RUN echo "${TEST_SCHEDULE:-0 */4 * * *} /app/run_tests.sh >> /app/logs/testsprite.log 2>&1" > /etc/cron.d/testsprite-cron
+RUN chmod 0644 /etc/cron.d/testsprite-cron
+RUN crontab /etc/cron.d/testsprite-cron
+
+# Switch to non-root user
+USER testsprite
+
+# Default command runs tests and then starts cron
+CMD ["sh", "-c", "python testsprite_integration.py && cron -f"]

@@ -1,0 +1,400 @@
+{
+  "summary": {
+    "total_tests": 37,
+    "passed": 34,
+    "failed": 3,
+    "errors": 0,
+    "pass_rate": 91.89,
+    "duration": 18.53,
+    "timestamp": "2025-08-01T07:30:18.905131"
+  },
+  "results_by_category": {
+    "authentication": [
+      {
+        "test_id": "auth_login_valid",
+        "name": "_test_valid_login",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.FAILED",
+        "duration": 0.0015287399291992188,
+        "message": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/auth/login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f5a965ca4b0>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:00.374157"
+      },
+      {
+        "test_id": "auth_login_invalid",
+        "name": "_test_invalid_login",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.FAILED",
+        "duration": 0.0016875267028808594,
+        "message": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/auth/login (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f5a965ca420>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:00.876536"
+      },
+      {
+        "test_id": "auth_login_inactive_user",
+        "name": "_test_inactive_user_login",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 9.083747863769531e-05,
+        "message": "Inactive user test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:01.377279"
+      },
+      {
+        "test_id": "auth_token_validation",
+        "name": "_test_token_validation",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.0001087188720703125,
+        "message": "Token validation test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:01.878073"
+      },
+      {
+        "test_id": "auth_token_expiration",
+        "name": "_test_token_expiration",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.00010371208190917969,
+        "message": "Token expiration test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:02.378785"
+      },
+      {
+        "test_id": "auth_refresh_token",
+        "name": "_test_refresh_token",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 9.5367431640625e-05,
+        "message": "Refresh token test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:02.879523"
+      },
+      {
+        "test_id": "auth_logout",
+        "name": "_test_logout",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 9.775161743164062e-05,
+        "message": "Logout test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:03.380284"
+      },
+      {
+        "test_id": "auth_user_profile",
+        "name": "_test_user_profile",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.0001010894775390625,
+        "message": "User profile test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:03.881047"
+      }
+    ],
+    "mfa": [
+      {
+        "test_id": "mfa_setup_flow",
+        "name": "_test_mfa_setup",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 3.743171691894531e-05,
+        "message": "MFA setup test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:04.381868"
+      },
+      {
+        "test_id": "mfa_qr_generation",
+        "name": "_test_mfa_qr_code",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.00010061264038085938,
+        "message": "MFA QR code test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:04.882631"
+      },
+      {
+        "test_id": "mfa_totp_verification",
+        "name": "_test_totp_verification",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 9.822845458984375e-05,
+        "message": "TOTP verification test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:05.383386"
+      },
+      {
+        "test_id": "mfa_backup_codes",
+        "name": "_test_backup_codes",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 9.965896606445312e-05,
+        "message": "Backup codes test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:05.884145"
+      },
+      {
+        "test_id": "mfa_disable_flow",
+        "name": "_test_mfa_disable",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 8.821487426757812e-05,
+        "message": "MFA disable test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:06.384880"
+      },
+      {
+        "test_id": "mfa_status_check",
+        "name": "_test_mfa_status",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.00010704994201660156,
+        "message": "MFA status test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:06.885657"
+      }
+    ],
+    "rbac": [
+      {
+        "test_id": "rbac_role_creation",
+        "name": "_test_role_creation",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 3.743171691894531e-05,
+        "message": "Role creation test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:07.386475"
+      },
+      {
+        "test_id": "rbac_role_assignment",
+        "name": "_test_role_assignment",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.00010061264038085938,
+        "message": "Role assignment test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:07.887237"
+      },
+      {
+        "test_id": "rbac_permission_check",
+        "name": "_test_permission_check",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 8.0108642578125e-05,
+        "message": "Permission check test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:08.387859"
+      },
+      {
+        "test_id": "rbac_endpoint_protection",
+        "name": "_test_endpoint_protection",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 9.942054748535156e-05,
+        "message": "Endpoint protection test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:08.888613"
+      },
+      {
+        "test_id": "rbac_admin_access",
+        "name": "_test_admin_access",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 8.916854858398438e-05,
+        "message": "Admin access test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:09.389345"
+      },
+      {
+        "test_id": "rbac_user_permissions",
+        "name": "_test_user_permissions",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.00010704994201660156,
+        "message": "User permissions test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:09.890113"
+      }
+    ],
+    "security": [
+      {
+        "test_id": "security_sql_injection",
+        "name": "_test_sql_injection",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 4.458427429199219e-05,
+        "message": "SQL injection test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:10.390984"
+      },
+      {
+        "test_id": "security_xss_protection",
+        "name": "_test_xss_protection",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.00013589859008789062,
+        "message": "XSS protection test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:10.891802"
+      },
+      {
+        "test_id": "security_rate_limiting",
+        "name": "_test_rate_limiting",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.00010085105895996094,
+        "message": "Rate limiting test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:11.392560"
+      },
+      {
+        "test_id": "security_brute_force",
+        "name": "_test_brute_force_protection",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 9.989738464355469e-05,
+        "message": "Brute force protection test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:11.893321"
+      },
+      {
+        "test_id": "security_headers",
+        "name": "_test_security_headers",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.00010085105895996094,
+        "message": "Security headers test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:12.394079"
+      },
+      {
+        "test_id": "security_session_management",
+        "name": "_test_session_security",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 9.751319885253906e-05,
+        "message": "Session security test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:12.894859"
+      }
+    ],
+    "database": [
+      {
+        "test_id": "db_schema_validation",
+        "name": "_test_database_schema",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 4.0531158447265625e-05,
+        "message": "Database schema test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:13.395692"
+      },
+      {
+        "test_id": "db_user_model",
+        "name": "_test_user_model",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.00010061264038085938,
+        "message": "User model test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:13.896487"
+      },
+      {
+        "test_id": "db_role_model",
+        "name": "_test_role_model",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 8.487701416015625e-05,
+        "message": "Role model test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:14.396861"
+      },
+      {
+        "test_id": "db_session_model",
+        "name": "_test_session_model",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 9.918212890625e-05,
+        "message": "Session model test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:14.897620"
+      },
+      {
+        "test_id": "db_audit_log",
+        "name": "_test_audit_log",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 9.918212890625e-05,
+        "message": "Audit log test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:15.398376"
+      },
+      {
+        "test_id": "db_constraints",
+        "name": "_test_database_constraints",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 9.965896606445312e-05,
+        "message": "Database constraints test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:15.899135"
+      }
+    ],
+    "health": [
+      {
+        "test_id": "health_endpoint",
+        "name": "_test_health_endpoint",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.FAILED",
+        "duration": 0.0013399124145507812,
+        "message": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /health (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f5a965cb290>: Failed to establish a new connection: [Errno 111] Connection refused'))",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:16.401262"
+      },
+      {
+        "test_id": "health_database",
+        "name": "_test_database_health",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.0001049041748046875,
+        "message": "Database health test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:16.902026"
+      },
+      {
+        "test_id": "health_performance",
+        "name": "_test_performance",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.00013494491577148438,
+        "message": "Performance test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:17.402833"
+      },
+      {
+        "test_id": "health_memory",
+        "name": "_test_memory_usage",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.000102996826171875,
+        "message": "Memory usage test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:17.903605"
+      },
+      {
+        "test_id": "health_disk_space",
+        "name": "_test_disk_space",
+        "category": "TestCategory.INTEGRATION",
+        "status": "TestStatus.PASSED",
+        "duration": 0.00010418891906738281,
+        "message": "Disk space test (placeholder)",
+        "details": {},
+        "timestamp": "2025-08-01 07:30:18.404382"
+      }
+    ]
+  },
+  "compliance": {
+    "target_pass_rate": 95.0,
+    "achieved_pass_rate": 91.8918918918919,
+    "compliant": false
+  }
+}

@@ -1,36 +1,67 @@
-# Use Python 3.10 as base image
+# NoxSuite API Dockerfile
+# Production-ready Python FastAPI application with security features
+
 FROM python:3.12-slim
 
 # Set working directory
 WORKDIR /app
 
 # Prevent Python from writing bytecode files
-ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONDONTWRITEBYTECODE=1
 # Ensure Python output is sent directly to terminal
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 # Install system dependencies
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        build-essential \
-        libpq-dev \
-    && apt-get clean \
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    curl \
+    pkg-config \
+    default-libmysqlclient-dev \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user for security
+RUN groupadd -r noxsuite && useradd -r -g noxsuite noxsuite
 
 # Upgrade pip
 RUN pip install --upgrade pip
 
-# Copy requirements file
+# Copy requirements and install Python dependencies
 COPY requirements.txt .
-
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project files
+# Install additional dependencies for production
+RUN pip install --no-cache-dir \
+    sqlalchemy \
+    pymysql \
+    alembic \
+    argon2-cffi \
+    pyotp \
+    qrcode[pil] \
+    redis \
+    prometheus-client \
+    email-validator
+
+# Copy application code
 COPY . .
 
-# Expose port for API
+# Create necessary directories
+RUN mkdir -p /app/logs /app/uploads && \
+    chown -R noxsuite:noxsuite /app
+
+# Set up proper permissions
+RUN chmod +x /app/noxsuite_fastapi_server.py
+
+# Switch to non-root user
+USER noxsuite
+
+# Expose port
 EXPOSE 8000
 
-# Command to run the application
-CMD ["uvicorn", "backend.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run the application
+CMD ["python", "noxsuite_fastapi_server.py"]

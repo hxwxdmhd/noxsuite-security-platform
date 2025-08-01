@@ -11,8 +11,7 @@ import sys
 import logging
 from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, Text, ForeignKey, JSON
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 import bcrypt
 
 # Setup logging
@@ -124,7 +123,7 @@ class MariaDBDevSetup:
         # Try MariaDB connection first, fallback to development mode
         self.database_url = os.getenv(
             "DATABASE_URL", 
-            "mysql+pymysql://./mariadb_dev_simulation.db"  # Temporary until MariaDB available
+            "sqlite:///./mariadb_dev_simulation.db"  # Temporary until MariaDB available
         )
         
         # Configure engine for MariaDB compatibility

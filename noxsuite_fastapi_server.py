@@ -192,7 +192,7 @@ def get_current_user(
     return user
 
 def log_audit_event(db: SessionLocal, user_id: Optional[int], action: str, 
-                   resource: str, details: dict, request: Request):
+                   category: str, details: dict, request: Request):
     """Log audit event"""
     if not AuditLog:
         return
@@ -200,10 +200,10 @@ def log_audit_event(db: SessionLocal, user_id: Optional[int], action: str,
     audit_log = AuditLog(
         user_id=user_id,
         action=action,
-        resource=resource,
-        details=str(details),
-        ip_address=request.client.host,
-        user_agent=request.headers.get("user-agent")
+        category=category,
+        details=details,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent") if request else None
     )
     db.add(audit_log)
     db.commit()
@@ -343,7 +343,7 @@ async def login_handler(
             )
     
     # Create tokens with unique id to prevent collisions
-    unique_id = secrets.token_hex(8)
+    unique_id = secrets.token_hex(16)  # Larger unique ID
     access_token = create_access_token(data={"sub": str(user.id), "jti": unique_id})
     refresh_token = create_refresh_token(data={"sub": str(user.id), "jti": unique_id})
     
@@ -351,8 +351,8 @@ async def login_handler(
     if UserSession:
         session = UserSession(
             user_id=user.id,
-            session_token=access_token[:50],  # Store first 50 chars for reference
-            refresh_token=f"{unique_id}_{refresh_token[:40]}",  # Make sure it's unique
+            session_token=f"{unique_id}_{access_token[:40]}",  # Unique prefix + token sample
+            refresh_token=f"{unique_id}_refresh_{secrets.token_hex(8)}",  # Completely unique refresh
             expires_at=datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
             ip_address=request.client.host,
             user_agent=request.headers.get("user-agent", "")[:255]
@@ -532,6 +532,7 @@ async def startup_event():
 
 
 # Main application entry point
+if __name__ == "__main__":
     import uvicorn
     
     # Install uvicorn if not available
@@ -547,6 +548,5 @@ async def startup_event():
         host="0.0.0.0",
         port=8000,
         reload=True,
-        log_level="debug",
-        debug=True
+        log_level="debug"
     )
