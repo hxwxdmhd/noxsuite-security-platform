@@ -1,0 +1,455 @@
+{
+  "timestamp": "2025-08-01T11:05:39.507785",
+  "bandit_scan": {},
+  "custom_vulnerabilities": [
+    {
+      "file": "enable_mfa.py",
+      "line": 23,
+      "category": "hardcoded_secrets",
+      "pattern": "secret\\s*=\\s*[\"\\'][^\"\\']{16,}[\"\\']",
+      "match": "secret = 'ABCDEFGHIJKLMNOP'",
+      "severity": "HIGH"
+    },
+    {
+      "file": "deployment_simulation_engine.py",
+      "line": 699,
+      "category": "debug_mode",
+      "pattern": "debug\\s*=\\s*True",
+      "match": "DEBUG=true",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "deployment_simulation_engine.py",
+      "line": 708,
+      "category": "debug_mode",
+      "pattern": "debug\\s*=\\s*True",
+      "match": "DEBUG=true",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "deployment_simulation_engine.py",
+      "line": 699,
+      "category": "debug_mode",
+      "pattern": "DEBUG\\s*=\\s*True",
+      "match": "DEBUG=true",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "deployment_simulation_engine.py",
+      "line": 708,
+      "category": "debug_mode",
+      "pattern": "DEBUG\\s*=\\s*True",
+      "match": "DEBUG=true",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "mariadb_dev_setup.py",
+      "line": 266,
+      "category": "hardcoded_secrets",
+      "pattern": "secret\\s*=\\s*[\"\\'][^\"\\']{16,}[\"\\']",
+      "match": "secret=\"ABCDEFGHIJKLMNOP\"",
+      "severity": "HIGH"
+    },
+    {
+      "file": "install_noxsuite.py",
+      "line": 74,
+      "category": "command_injection",
+      "pattern": "os\\.system\\(",
+      "match": "os.system(",
+      "severity": "HIGH"
+    },
+    {
+      "file": "install_noxsuite.py",
+      "line": 75,
+      "category": "command_injection",
+      "pattern": "os\\.system\\(",
+      "match": "os.system(",
+      "severity": "HIGH"
+    },
+    {
+      "file": "install_noxsuite.py",
+      "line": 76,
+      "category": "command_injection",
+      "pattern": "os\\.system\\(",
+      "match": "os.system(",
+      "severity": "HIGH"
+    },
+    {
+      "file": "demo_automation_scenarios.py",
+      "line": 62,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(user_input, shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "noxsuite_fastapi_server.py",
+      "line": 627,
+      "category": "debug_mode",
+      "pattern": "debug\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "noxsuite_fastapi_server.py",
+      "line": 627,
+      "category": "debug_mode",
+      "pattern": "DEBUG\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "repository_enhancement_engine.py",
+      "line": 656,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(cmd, shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "production_deployment_engine.py",
+      "line": 499,
+      "category": "insecure_crypto",
+      "pattern": "verify\\s*=\\s*False",
+      "match": "verify=False",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "demo_data/vulnerable_code.py",
+      "line": 18,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(user_input, shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "demo_data/vulnerable_code.py",
+      "line": 36,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(user_input, shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "scripts/setup-dev.py",
+      "line": 25,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(cmd, shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/launch_unified_server.py",
+      "line": 88,
+      "category": "debug_mode",
+      "pattern": "debug\\s*=\\s*True",
+      "match": "debug = True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/launch_unified_server.py",
+      "line": 88,
+      "category": "debug_mode",
+      "pattern": "DEBUG\\s*=\\s*True",
+      "match": "debug = True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/noxsuite_smart_installer_complete.py",
+      "line": 2790,
+      "category": "debug_mode",
+      "pattern": "debug\\s*=\\s*True",
+      "match": "DEBUG=true",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/noxsuite_smart_installer_complete.py",
+      "line": 2790,
+      "category": "debug_mode",
+      "pattern": "DEBUG\\s*=\\s*True",
+      "match": "DEBUG=true",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/mcp_autonomous_orchestrator.py",
+      "line": 302,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.call(\",\n            \"shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/mcp_autonomous_orchestrator.py",
+      "line": 302,
+      "category": "command_injection",
+      "pattern": "os\\.system\\(",
+      "match": "os.system(",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/mcp_autonomous_orchestrator.py",
+      "line": 376,
+      "category": "insecure_crypto",
+      "pattern": "hashlib\\.md5\\(",
+      "match": "hashlib.md5(",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/install_noxsuite.py",
+      "line": 92,
+      "category": "command_injection",
+      "pattern": "os\\.system\\(",
+      "match": "os.system(",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/install_noxsuite.py",
+      "line": 93,
+      "category": "command_injection",
+      "pattern": "os\\.system\\(",
+      "match": "os.system(",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/install_noxsuite.py",
+      "line": 94,
+      "category": "command_injection",
+      "pattern": "os\\.system\\(",
+      "match": "os.system(",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/mcp_cicd_monitor.py",
+      "line": 279,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(\n                        step.command,\n                        shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/mcp_cicd_monitor.py",
+      "line": 342,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(\n                    \"python -m black . --quiet\",\n                    shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/mcp_cicd_monitor.py",
+      "line": 348,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(\n                    \"python -m isort . --quiet\",\n                    shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/mcp_cicd_monitor.py",
+      "line": 363,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(\"docker system prune -f\",\n                                   shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/mcp_cicd_monitor.py",
+      "line": 374,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(\n                        \"python -m pip install pytest pytest-cov pytest-mock\",\n                        shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/mcp_cicd_monitor.py",
+      "line": 433,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(\"chmod -R 755 .\", shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/Scripts & Tools/mcp_cicd_monitor.py",
+      "line": 442,
+      "category": "command_injection",
+      "pattern": "subprocess\\.(call|run|Popen)\\([^)]*shell\\s*=\\s*True",
+      "match": "subprocess.run(\n                    \"python -m pip install -r requirements.txt --upgrade\",\n                    shell=True",
+      "severity": "HIGH"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/NoxPanel Core/launch_unified_server.py",
+      "line": 88,
+      "category": "debug_mode",
+      "pattern": "debug\\s*=\\s*True",
+      "match": "debug = True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/NoxPanel Core/launch_unified_server.py",
+      "line": 88,
+      "category": "debug_mode",
+      "pattern": "DEBUG\\s*=\\s*True",
+      "match": "debug = True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/NoxPanel Core/server_dev.py",
+      "line": 1635,
+      "category": "debug_mode",
+      "pattern": "debug\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/NoxPanel Core/server_dev.py",
+      "line": 1635,
+      "category": "debug_mode",
+      "pattern": "DEBUG\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/NoxPanel Core/server_enhanced.py",
+      "line": 1395,
+      "category": "debug_mode",
+      "pattern": "debug\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/NoxPanel Core/server_enhanced.py",
+      "line": 1395,
+      "category": "debug_mode",
+      "pattern": "DEBUG\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/NoxPanel Core/server_advanced.py",
+      "line": 2002,
+      "category": "debug_mode",
+      "pattern": "debug\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/NoxPanel Core/server_advanced.py",
+      "line": 2002,
+      "category": "debug_mode",
+      "pattern": "DEBUG\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/AI & NoxPanel/AI/NoxPanel/simple_noxpanel_fixed.py",
+      "line": 1190,
+      "category": "debug_mode",
+      "pattern": "debug\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/AI & NoxPanel/AI/NoxPanel/simple_noxpanel_fixed.py",
+      "line": 1190,
+      "category": "debug_mode",
+      "pattern": "DEBUG\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "NoxPanel_Suite_WIP/AI & NoxPanel/AI/NoxPanel/simple_noxpanel_fixed.py",
+      "line": 1187,
+      "category": "debug_mode",
+      "pattern": "app\\.run\\([^)]*debug\\s*=\\s*True",
+      "match": "app.run(\n            host='127.0.0.1',\n            port=5002,\n            debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "AI/NoxPanel/simple_noxpanel_fixed.py",
+      "line": 1190,
+      "category": "debug_mode",
+      "pattern": "debug\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "AI/NoxPanel/simple_noxpanel_fixed.py",
+      "line": 1190,
+      "category": "debug_mode",
+      "pattern": "DEBUG\\s*=\\s*True",
+      "match": "debug=True",
+      "severity": "MEDIUM"
+    },
+    {
+      "file": "AI/NoxPanel/simple_noxpanel_fixed.py",
+      "line": 1187,
+      "category": "debug_mode",
+      "pattern": "app\\.run\\([^)]*debug\\s*=\\s*True",
+      "match": "app.run(\n            host='127.0.0.1',\n            port=5002,\n            debug=True",
+      "severity": "MEDIUM"
+    }
+  ],
+  "dependency_issues": [
+    {
+      "package": "requests",
+      "file": "requirements.txt",
+      "vulnerability": "CVE-2023-32681",
+      "recommended_version": "<2.31.0",
+      "severity": "HIGH"
+    },
+    {
+      "package": "pyyaml",
+      "file": "requirements.txt",
+      "vulnerability": "CVE-2020-14343",
+      "recommended_version": "<6.0",
+      "severity": "HIGH"
+    },
+    {
+      "package": "requests",
+      "file": "requirements-prod.txt",
+      "vulnerability": "CVE-2023-32681",
+      "recommended_version": "<2.31.0",
+      "severity": "HIGH"
+    },
+    {
+      "package": "flask",
+      "file": "requirements-prod.txt",
+      "vulnerability": "CVE-2023-30861",
+      "recommended_version": "<2.2.0",
+      "severity": "HIGH"
+    },
+    {
+      "package": "requests",
+      "file": "requirements-dev.txt",
+      "vulnerability": "CVE-2023-32681",
+      "recommended_version": "<2.31.0",
+      "severity": "HIGH"
+    },
+    {
+      "package": "pyyaml",
+      "file": "requirements-dev.txt",
+      "vulnerability": "CVE-2020-14343",
+      "recommended_version": "<6.0",
+      "severity": "HIGH"
+    },
+    {
+      "package": "requests",
+      "file": "requirements-security.txt",
+      "vulnerability": "CVE-2023-32681",
+      "recommended_version": "<2.31.0",
+      "severity": "HIGH"
+    },
+    {
+      "package": "flask",
+      "file": "requirements-security.txt",
+      "vulnerability": "CVE-2023-30861",
+      "recommended_version": "<2.2.0",
+      "severity": "HIGH"
+    }
+  ],
+  "summary": {
+    "total_high_severity": 30,
+    "bandit_high_severity": 0,
+    "custom_pattern_high_severity": 22,
+    "dependency_high_severity": 8,
+    "total_issues": 56
+  }
+}

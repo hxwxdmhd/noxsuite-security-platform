@@ -20,8 +20,13 @@ def run_command(cmd, check=True):
         result = subprocess.run(args, check=check)
         return result.returncode == 0
     except ValueError:
-        # Fallback for complex commands that need shell
-        print(f"Warning: Using shell=True for complex command: {cmd}")
+        # Fallback for complex commands - use with extreme caution
+        print(f"⚠️  SECURITY WARNING: Complex command detected: {cmd}")
+        print("⚠️  Consider refactoring to avoid shell=True usage")
+        # Only allow specific known safe commands in fallback
+        if not any(safe_cmd in cmd for safe_cmd in ['pip install', 'npm install', 'git clone']):
+            print(f"❌ Command blocked for security: {cmd}")
+            return False
         result = subprocess.run(cmd, shell=True, check=check)
         return result.returncode == 0
 

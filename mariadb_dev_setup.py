@@ -256,6 +256,8 @@ class MariaDBDevSetup:
                 mfa_password = bcrypt.hashpw(
                     "MfaUser123!".encode(), bcrypt.gensalt()
                 ).decode()
+                import secrets
+                mfa_dev_secret = os.environ.get('MFA_DEV_SECRET', secrets.token_urlsafe(32))
                 mfa_user = User(
                     username="mfa_test",
                     email="mfa_test@noxsuite.local",
@@ -263,7 +265,7 @@ class MariaDBDevSetup:
                     is_admin=False,
                     is_active=True,
                     mfa_enabled=True,
-                    mfa_secret="ABCDEFGHIJKLMNOP",  # Development secret
+                    mfa_secret=mfa_dev_secret,  # Environment-based development secret
                 )
                 db.add(mfa_user)
                 db.commit()
