@@ -1,13 +1,14 @@
 
 import json
 import requests
+import os
 
 import pyotp
 import time
 
 
 # Generate a TOTP code
-mfa_secret = "ABCDEFGHIJKLMNOP"
+mfa_secret = os.getenv("MFA_SECRET", "PLEASE_SET_MFA_SECRET_IN_ENV")
 totp = pyotp.TOTP(mfa_secret)
 mfa_code = totp.now()
 print(f"Generated TOTP code: {mfa_code}")

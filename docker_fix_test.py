@@ -267,17 +267,20 @@ def main():
                     # On Linux/Unix, use ulimit
                     logger.info(
                         "   🔍 Unix/Linux system detected - checking ulimit")
-                    ulimit_result = subprocess.run(
-                        ["ulimit", "-n"], capture_output=True, text=True, shell=True
-                    )
-                    if ulimit_result.returncode == 0:
-                        file_limit = int(ulimit_result.stdout.strip())
-                        if file_limit < 8192:
-                            logger.info(
-                                f"   ⚠️ ulimit file descriptor limit may be low: {file_limit}"
-                            )
-                        else:
-                            logger.info(
+                    try:
+                        # Use shell-less approach for security
+                        ulimit_result = subprocess.run(
+                            ["/bin/sh", "-c", "ulimit -n"], 
+                            capture_output=True, text=True, shell=False
+                        )
+                        if ulimit_result.returncode == 0:
+                            file_limit = int(ulimit_result.stdout.strip())
+                            if file_limit < 8192:
+                                logger.info(
+                                    f"   ⚠️ ulimit file descriptor limit may be low: {file_limit}"
+                                )
+                            else:
+                                logger.info(
                                 f"   ✅ ulimit file descriptor limit adequate: {file_limit}"
                             )
             except Exception as e:

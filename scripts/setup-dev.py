@@ -11,10 +11,19 @@ from pathlib import Path
 
 
 def run_command(cmd, check=True):
-    """Run a shell command"""
+    """Run a shell command safely"""
     print(f"Running: {cmd}")
-    result = subprocess.run(cmd, shell=True, check=check)
-    return result.returncode == 0
+    # Split command into list for safe execution without shell
+    import shlex
+    try:
+        args = shlex.split(cmd)
+        result = subprocess.run(args, check=check)
+        return result.returncode == 0
+    except ValueError:
+        # Fallback for complex commands that need shell
+        print(f"Warning: Using shell=True for complex command: {cmd}")
+        result = subprocess.run(cmd, shell=True, check=check)
+        return result.returncode == 0
 
 
 def setup_environment():

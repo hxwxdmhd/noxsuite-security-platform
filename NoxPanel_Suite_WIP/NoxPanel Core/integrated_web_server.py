@@ -362,4 +362,7 @@ if __name__ == "__main__":
     logger.info("🌐 Dashboard: http://localhost:5000")
     logger.info("🔗 Heimnetz: http://localhost:5000/heimnetz")
     logger.info("📡 API Status: http://localhost:5000/api/status")
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    
+    # Use environment variable for debug mode, default to False for production safety
+    debug_mode = os.getenv("FLASK_DEBUG", "False").lower() == "true"
+    app.run(host="0.0.0.0", port=5000, debug=debug_mode)
