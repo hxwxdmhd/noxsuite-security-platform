@@ -6,10 +6,11 @@
 [![Database](https://img.shields.io/badge/Database-MariaDB-blue)](https://mariadb.org/)
 [![Authentication](https://img.shields.io/badge/Auth-MFA%2FRBAC-orange)](https://github.com/hxwxdmhd/noxsuite-security-platform)
 [![Testing](https://img.shields.io/badge/Testing-TestSprite-purple)](https://github.com/hxwxdmhd/noxsuite-security-platform)
+[![AI/ML](https://img.shields.io/badge/AI%2FML-Integrated-brightgreen)](https://github.com/hxwxdmhd/noxsuite-security-platform)
 
 ## 🚀 Overview
 
-NoxSuite is a comprehensive security platform designed for enterprise-grade applications with zero-compromise security standards. Built with production readiness in mind, it features advanced authentication, real-time monitoring, and automated security enforcement.
+NoxSuite is a comprehensive security platform designed for enterprise-grade applications with zero-compromise security standards. Built with production readiness in mind, it features advanced authentication, real-time monitoring, automated security enforcement, and **state-of-the-art AI/ML capabilities** for intelligent threat detection and risk assessment.
 
 ## ✨ Key Features
 
@@ -31,6 +32,16 @@ NoxSuite is a comprehensive security platform designed for enterprise-grade appl
 - **End-to-end testing** for authentication workflows
 - **Load testing** capabilities
 - **95% target test coverage** enforcement
+
+### 🤖 **AI/ML Security Intelligence**
+- **TensorFlow & PyTorch** integration for neural network-based threat detection
+- **Scikit-learn** powered classical ML algorithms for behavior analysis
+- **XGBoost & LightGBM** for high-performance anomaly scoring
+- **NLTK** for natural language processing of security logs
+- **Real-time anomaly detection** on login patterns and system metrics
+- **Predictive risk scoring** for users, sessions, and IP addresses
+- **Automated threat intelligence extraction** from log data
+- **H2O.ai AutoML** for continuous model improvement
 
 ### 🛡️ **Security Enforcement**
 - **Skeptical Development Auditor** with continuous monitoring
