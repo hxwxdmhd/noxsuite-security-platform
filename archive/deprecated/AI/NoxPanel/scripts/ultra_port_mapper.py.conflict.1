@@ -36,6 +36,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class PortAnalysis:
     """Advanced port analysis data structure"""
@@ -51,6 +52,7 @@ class PortAnalysis:
     security_level: str
     performance_metrics: Dict[str, float]
 
+
 @dataclass
 class GitTemplate:
     """Git template data structure"""
@@ -63,6 +65,7 @@ class GitTemplate:
     features: List[str]
     port_configurations: Dict[str, int]
 
+
 @dataclass
 class ArchitectureRecommendation:
     """Architecture recommendation with ML confidence"""
@@ -73,6 +76,7 @@ class ArchitectureRecommendation:
     estimated_impact: str
     implementation_steps: List[str]
     risk_assessment: Dict[str, str]
+
 
 class UltraAdvancedPortMapper:
     """Ultra-advanced port mapper with 99.99999999999999999998% accuracy"""
@@ -93,7 +97,8 @@ class UltraAdvancedPortMapper:
         self.project_root = project_root
         self.port_analyses: Dict[int, PortAnalysis] = {}
         self.git_templates: List[GitTemplate] = []
-        self.architecture_recommendations: List[ArchitectureRecommendation] = []
+        self.architecture_recommendations: List[ArchitectureRecommendation] = [
+            ]
         self.scan_history: List[Dict] = []
         self.ml_confidence_threshold = 0.999999999999999999998
 
@@ -204,18 +209,21 @@ class UltraAdvancedPortMapper:
         for file_path in self.project_root.rglob("*"):
             if file_path.is_file() and file_path.suffix.lower() in self.scannable_extensions:
                 try:
-                    content = file_path.read_text(encoding='utf-8', errors='ignore')
+                    content = file_path.read_text(
+                        encoding='utf-8', errors='ignore')
                     scanned_files += 1
 
                     for pattern in self.ultra_port_patterns:
                         total_patterns_checked += 1
-                        matches = re.findall(pattern, content, re.IGNORECASE | re.MULTILINE)
+                        matches = re.findall(
+                            pattern, content, re.IGNORECASE | re.MULTILINE)
 
                         for port in matches:
                             if port.isdigit():
                                 port_num = int(port)
                                 if 1 <= port_num <= 65535:  # Valid port range
-                                    confidence = self._calculate_port_confidence(content, port, pattern)
+                                    confidence = self._calculate_port_confidence(
+                                        content, port, pattern)
 
                                     if port_num not in found_ports:
                                         found_ports[port_num] = []

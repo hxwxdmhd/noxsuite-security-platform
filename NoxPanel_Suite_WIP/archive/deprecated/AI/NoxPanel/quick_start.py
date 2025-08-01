@@ -3,11 +3,12 @@ NoxPanel v5.0 - Quick Start Server
 Simplified startup to test fixes and get the knowledge management working
 """
 
+import logging
 import os
 import sys
-import logging
-from flask import Flask, render_template, jsonify, request
 from datetime import datetime
+
+from flask import Flask, jsonify, render_template, request
 
 # Add project root to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -144,8 +145,8 @@ def create_simple_app():
     COMPLIANCE: STANDARD
     """
         # Import with absolute path
-        import sys
         import os
+        import sys
         webpanel_path = os.path.join(os.path.dirname(__file__), 'webpanel')
         if webpanel_path not in sys.path:
             sys.path.insert(0, webpanel_path)

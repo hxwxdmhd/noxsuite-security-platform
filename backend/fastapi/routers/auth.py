@@ -15,16 +15,19 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from passlib.context import CryptContext
 from pydantic import BaseModel, EmailStr
 
+
 # Authentication schemas
 class UserCredentials(BaseModel):
     username: str
     password: str
+
 
 class TokenResponse(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
     expires_in: int
+
 
 class UserProfile(BaseModel):
     id: str
@@ -34,6 +37,7 @@ class UserProfile(BaseModel):
     is_active: bool = True
     created_at: datetime
     last_login: Optional[datetime] = None
+
 
 class AuthManager:
     """Authentication manager with JWT token handling"""
@@ -164,12 +168,14 @@ class AuthManager:
             self.logger.error(f"Token verification error: {e}")
             return None
 
+
 # Global auth manager instance
 auth_manager = AuthManager()
 security = HTTPBearer()
 
 # Authentication router
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
@@ -222,6 +228,7 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+
 @router.post("/login", response_model=TokenResponse)
 async def login(credentials: UserCredentials, request: Request):
     """Authenticate user and return JWT tokens"""
@@ -262,6 +269,7 @@ async def login(credentials: UserCredentials, request: Request):
     except Exception as e:
         auth_manager.logger.error(f"Login error: {e}")
         raise HTTPException(status_code=500, detail="Login failed")
+
 
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh_token(refresh_token: str):
@@ -307,6 +315,7 @@ async def refresh_token(refresh_token: str):
         auth_manager.logger.error(f"Token refresh error: {e}")
         raise HTTPException(status_code=500, detail="Token refresh failed")
 
+
 @router.post("/logout")
 async def logout(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Logout current user (token blacklisting would be implemented here)"""
@@ -317,6 +326,7 @@ async def logout(current_user: Dict[str, Any] = Depends(get_current_user)):
     except Exception as e:
         auth_manager.logger.error(f"Logout error: {e}")
         raise HTTPException(status_code=500, detail="Logout failed")
+
 
 @router.get("/profile", response_model=UserProfile)
 async def get_profile(current_user: Dict[str, Any] = Depends(get_current_user)):
@@ -336,6 +346,7 @@ async def get_profile(current_user: Dict[str, Any] = Depends(get_current_user)):
         auth_manager.logger.error(f"Profile retrieval error: {e}")
         raise HTTPException(status_code=500, detail="Profile retrieval failed")
 
+
 @router.get("/verify")
 async def verify_token_endpoint(
     current_user: Dict[str, Any] = Depends(get_current_user),
@@ -346,6 +357,7 @@ async def verify_token_endpoint(
         "username": current_user["username"],
         "roles": current_user["roles"],
     }
+
 
 # Health check for authentication service
 @router.get("/health")

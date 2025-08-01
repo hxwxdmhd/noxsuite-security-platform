@@ -17,21 +17,28 @@ Key Features:
 """
 
 import asyncio
+import base64
 import json
 import logging
-import subprocess
 import platform
-import base64
+import subprocess
 import tempfile
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Union, Tuple
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from sysadmin_copilot import (
-    SysAdminCopilot, Task, TaskType, TaskPriority, TaskStatus, ScriptType,
-    SystemOS, SystemContext, SystemContextManager
+    ScriptType,
+    SysAdminCopilot,
+    SystemContext,
+    SystemContextManager,
+    SystemOS,
+    Task,
+    TaskPriority,
+    TaskStatus,
+    TaskType,
 )
 
 # Configure logging
@@ -969,8 +976,9 @@ class PowerShellIntegration:
     async def create_system_cleanup_task(self) -> Task:
         """Create a comprehensive system cleanup task"""
         
-        from sysadmin_copilot import Task, TaskType, TaskPriority, ScriptType
         import hashlib
+
+        from sysadmin_copilot import ScriptType, Task, TaskPriority, TaskType
         
         task = Task(
             id=hashlib.md5(f"windows_cleanup_{datetime.now()}".encode()).hexdigest()[:8],
@@ -991,9 +999,10 @@ class PowerShellIntegration:
     async def create_performance_monitoring_task(self, duration: int = 60) -> Task:
         """Create a performance monitoring task"""
         
-        from sysadmin_copilot import Task, TaskType, TaskPriority, ScriptType
         import hashlib
-        
+
+        from sysadmin_copilot import ScriptType, Task, TaskPriority, TaskType
+
         # Create script with duration parameter
         script_content = self.templates.performance_monitoring()
         
@@ -1019,8 +1028,9 @@ class PowerShellIntegration:
     async def create_system_info_task(self) -> Task:
         """Create comprehensive system information task"""
         
-        from sysadmin_copilot import Task, TaskType, TaskPriority, ScriptType
         import hashlib
+
+        from sysadmin_copilot import ScriptType, Task, TaskPriority, TaskType
         
         task = Task(
             id=hashlib.md5(f"windows_sysinfo_{datetime.now()}".encode()).hexdigest()[:8],

@@ -18,18 +18,20 @@ FritzBox Router Integration Plugin v2.0
 Advanced router management and monitoring capabilities
 """
 
-import sys
+import json
 import os
 import socket
-import json
+import sys
 from datetime import datetime
 
 # Fix plugin system import path
 plugin_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, plugin_dir)
 
+from typing import Any, Dict
+
 from plugin_system import PluginInterface, PluginMetadata
-from typing import Dict, Any
+
 
 class FritzboxPlugin(PluginInterface):
     # REASONING: FritzboxPlugin follows RLVR methodology for systematic validation

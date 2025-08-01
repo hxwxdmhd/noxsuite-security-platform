@@ -13,15 +13,16 @@ This is a sample plugin demonstrating the secure plugin framework:
 Use this as a template for creating new plugins.
 """
 
+import hashlib
+import json
+import logging
 import os
 import sys
-import json
-import time
-import logging
-from typing import Dict, Any, Optional, List
-from datetime import datetime
-import hashlib
 import threading
+import time
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 import psutil
 
 # Add the project root to the Python path
@@ -30,9 +31,18 @@ sys.path.insert(0, project_root)
 
 # Import the secure plugin base class
 try:
-    from plugin_template_secure import SecurePluginBase, PluginExecutionContext, PluginError
     from plugin_manifest_system import PluginManifest, PluginManifestManager
-    from plugin_registry_db import PluginRegistryDatabase, PluginMetadata, PluginStatus, PluginCategory
+    from plugin_registry_db import (
+        PluginCategory,
+        PluginMetadata,
+        PluginRegistryDatabase,
+        PluginStatus,
+    )
+    from plugin_template_secure import (
+        PluginError,
+        PluginExecutionContext,
+        SecurePluginBase,
+    )
 except ImportError as e:
     logging.error(f"Failed to import plugin framework: {e}")
     sys.exit(1)

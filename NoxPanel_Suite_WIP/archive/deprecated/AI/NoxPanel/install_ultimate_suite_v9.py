@@ -15,21 +15,21 @@ Features:
 - Comprehensive logging and monitoring
 """
 
-import os
-import sys
-import json
-import time
-import logging
-import subprocess
-import platform
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass
 import argparse
+import json
+import logging
+import os
+import platform
 import shutil
+import subprocess
+import sys
+import tempfile
+import time
 import urllib.request
 import zipfile
-import tempfile
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # Setup logging
 logging.basicConfig(
@@ -575,7 +575,7 @@ class UltimateSuiteInstaller:
             sys.path.insert(0, str(self.install_path))
             
             from ultimate_webapp_v9 import UltimateSuiteV9
-            
+
             # Create configuration path
             config_path = self.install_path / "config" / "ultimate_suite_v9.json"
             

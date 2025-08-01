@@ -2,9 +2,9 @@
 Enhanced User Service for API Endpoints with MFA/RBAC Integration
 """
 
-from typing import Dict, Optional, Any
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 from auth.mfa_service import MFAService
 from auth.rbac_service import RBACService, Role
@@ -30,11 +30,9 @@ class UserService:
                 "email": "admin@noxsuite.local",
                 "role": "admin",
                 "mfa_enabled": True,
-                "permissions": [
-                    "admin:access", "admin:settings", "system:logs"
-                ],
+                "permissions": ["admin:access", "admin:settings", "system:logs"],
                 "created_at": "2025-07-30T00:00:00Z",
-                "last_login": "2025-07-31T10:00:00Z"
+                "last_login": "2025-07-31T10:00:00Z",
             },
             "user1": {
                 "user_id": "user1",
@@ -44,8 +42,8 @@ class UserService:
                 "mfa_enabled": False,
                 "permissions": ["user:view", "api:read"],
                 "created_at": "2025-07-30T00:00:00Z",
-                "last_login": "2025-07-31T09:30:00Z"
-            }
+                "last_login": "2025-07-31T09:30:00Z",
+            },
         }
 
         user = users_db.get(user_id)
@@ -69,7 +67,7 @@ class UserService:
             "mfa_enabled": False,
             "permissions": [],
             "created_at": datetime.utcnow().isoformat(),
-            "status": "active"
+            "status": "active",
         }
 
         # Assign default permissions based on role
@@ -81,10 +79,7 @@ class UserService:
 
         new_user["permissions"] = rbac.get_user_permissions(user_id)
 
-        return {
-            "status": "created",
-            "user": new_user
-        }
+        return {"status": "created", "user": new_user}
 
     @staticmethod
     def update_user(user_id: str, updates: Dict[str, Any]) -> Dict[str, Any]:
@@ -108,5 +103,5 @@ class UserService:
             "mfa_enabled_users": 1,
             "admin_users": 1,
             "regular_users": 1,
-            "last_updated": datetime.utcnow().isoformat()
+            "last_updated": datetime.utcnow().isoformat(),
         }

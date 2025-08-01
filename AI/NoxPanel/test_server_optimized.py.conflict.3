@@ -5,18 +5,26 @@ Enhanced features for Gates 1-2 unlocked capabilities
 Optimized for Gates 3-4 testing with <100ms response times
 """
 
-from flask import Flask, render_template, jsonify, request, session, render_template_string
-import sqlite3
 import json
+import logging
+import os
+import sqlite3
+import sys
+import threading
 import time
 from datetime import datetime, timezone
-from pathlib import Path
-import logging
 from functools import lru_cache
-import threading
-from typing import Dict, List, Optional, Any, Tuple
-import sys
-import os
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+from flask import (
+    Flask,
+    jsonify,
+    render_template,
+    render_template_string,
+    request,
+    session,
+)
 
 # Add parent directory to path for emergency imports
 sys.path.append(str(Path(__file__).parent.parent.parent))

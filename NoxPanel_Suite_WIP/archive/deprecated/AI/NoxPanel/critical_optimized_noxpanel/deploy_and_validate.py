@@ -20,10 +20,11 @@ Deploys optimized application and runs validation
 """
 
 import os
+import subprocess
 import sys
 import time
-import subprocess
 from pathlib import Path
+
 
 def deploy_and_validate():
     # REASONING: deploy_and_validate implements core logic with Chain-of-Thought validation

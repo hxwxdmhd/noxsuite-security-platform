@@ -5,14 +5,17 @@ Example Service Plugin
 Demonstrates enhanced service plugin features for Audit 2 compliance
 """
 
-import sys
 import os
+import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from unified_plugin_system_clean import ServicePlugin, PluginInfo
-from typing import Dict, Any, List
-import time
 import threading
+import time
+from typing import Any, Dict, List
+
+from unified_plugin_system_clean import PluginInfo, ServicePlugin
+
 
 class ExampleServicePlugin(ServicePlugin):
     """Example service plugin demonstrating enhanced features"""

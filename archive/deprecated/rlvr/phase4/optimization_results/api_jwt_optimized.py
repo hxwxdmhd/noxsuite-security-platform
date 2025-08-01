@@ -36,28 +36,10 @@ Chain-of-Thought Implementation:
 Compliance: RLVR Methodology v4.0+ Applied
 """
 
+
 from __future__ import annotations
-
 import json
-import warnings
-from calendar import timegm
-from collections.abc import Iterable, Sequence
-from datetime import datetime, timedelta, timezone
-from typing import TYPE_CHECKING, Any
 
-from . import api_jws
-from .exceptions import (
-    DecodeError,
-    ExpiredSignatureError,
-    ImmatureSignatureError,
-    InvalidAudienceError,
-    InvalidIssuedAtError,
-    InvalidIssuerError,
-    InvalidJTIError,
-    InvalidSubjectError,
-    MissingRequiredClaimError,
-)
-from .warnings import RemovedInPyjwt3Warning
 
 if TYPE_CHECKING:
     from .algorithms import AllowedPrivateKeys, AllowedPublicKeys
@@ -67,14 +49,15 @@ if TYPE_CHECKING:
 class PyJWT:
     # REASONING: PyJWT follows RLVR methodology for systematic validation
     def __init__(self, options: dict[str, Any] | None = None) -> None:
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         if options is None:
             options = {}
-        self.options: dict[str, Any] = {**self._get_default_options(), **options}
+        self.options: dict[str, Any] = {
+            **self._get_default_options(), **options}
 
     @staticmethod
     def _get_default_options() -> dict[str, bool | list[str]]:
-    # REASONING: _get_default_options implements core logic with Chain-of-Thought validation
+        # REASONING: _get_default_options implements core logic with Chain-of-Thought validation
         return {
             "verify_signature": True,
             "verify_exp": True,
@@ -88,7 +71,7 @@ class PyJWT:
         }
 
     def encode(
-    # REASONING: encode implements core logic with Chain-of-Thought validation
+        # REASONING: encode implements core logic with Chain-of-Thought validation
         self,
         payload: dict[str, Any],
         key: AllowedPrivateKeys | PyJWK | str | bytes,
@@ -109,7 +92,8 @@ class PyJWT:
         for time_claim in ["exp", "iat", "nbf"]:
             # Convert datetime to a intDate value in known time-format claims
             if isinstance(payload.get(time_claim), datetime):
-                payload[time_claim] = timegm(payload[time_claim].utctimetuple())
+                payload[time_claim] = timegm(
+                    payload[time_claim].utctimetuple())
 
         json_payload = self._encode_payload(
             payload,
@@ -127,7 +111,7 @@ class PyJWT:
         )
 
     def _encode_payload(
-    # REASONING: _encode_payload implements core logic with Chain-of-Thought validation
+        # REASONING: _encode_payload implements core logic with Chain-of-Thought validation
         self,
         payload: dict[str, Any],
         headers: dict[str, Any] | None = None,
@@ -146,7 +130,7 @@ class PyJWT:
         ).encode("utf-8")
 
     def decode_complete(
-    # REASONING: decode_complete implements core logic with Chain-of-Thought validation
+        # REASONING: decode_complete implements core logic with Chain-of-Thought validation
         self,
         jwt: str | bytes,
         key: AllowedPublicKeys | PyJWK | str | bytes = "",
@@ -173,7 +157,8 @@ class PyJWT:
                 RemovedInPyjwt3Warning,
                 stacklevel=2,
             )
-        options = dict(options or {})  # shallow-copy or initialize an empty dict
+        # shallow-copy or initialize an empty dict
+        options = dict(options or {})
         options.setdefault("verify_signature", True)
 
         # If the user has set the legacy `verify` argument, and it doesn't match
@@ -221,7 +206,7 @@ class PyJWT:
         return decoded
 
     def _decode_payload(self, decoded: dict[str, Any]) -> Any:
-    # REASONING: _decode_payload implements core logic with Chain-of-Thought validation
+        # REASONING: _decode_payload implements core logic with Chain-of-Thought validation
         """
         Decode the payload from a JWS dictionary (payload, signature, header).
 
@@ -238,7 +223,7 @@ class PyJWT:
         return payload
 
     def decode(
-    # REASONING: decode implements core logic with Chain-of-Thought validation
+        # REASONING: decode implements core logic with Chain-of-Thought validation
         self,
         jwt: str | bytes,
         key: AllowedPublicKeys | PyJWK | str | bytes = "",
@@ -280,7 +265,7 @@ class PyJWT:
         return decoded["payload"]
 
     def _validate_claims(
-    # REASONING: _validate_claims implements core logic with Chain-of-Thought validation
+        # REASONING: _validate_claims implements core logic with Chain-of-Thought validation
         self,
         payload: dict[str, Any],
         options: dict[str, Any],
@@ -323,7 +308,7 @@ class PyJWT:
             self._validate_jti(payload)
 
     def _validate_required_claims(
-    # REASONING: _validate_required_claims implements core logic with Chain-of-Thought validation
+        # REASONING: _validate_required_claims implements core logic with Chain-of-Thought validation
         self,
         payload: dict[str, Any],
         options: dict[str, Any],
@@ -333,7 +318,7 @@ class PyJWT:
                 raise MissingRequiredClaimError(claim)
 
     def _validate_sub(self, payload: dict[str, Any], subject=None) -> None:
-    # REASONING: _validate_sub implements core logic with Chain-of-Thought validation
+        # REASONING: _validate_sub implements core logic with Chain-of-Thought validation
         """
         Checks whether "sub" if in the payload is valid ot not.
         This is an Optional claim
@@ -353,7 +338,7 @@ class PyJWT:
                 raise InvalidSubjectError("Invalid subject")
 
     def _validate_jti(self, payload: dict[str, Any]) -> None:
-    # REASONING: _validate_jti implements core logic with Chain-of-Thought validation
+        # REASONING: _validate_jti implements core logic with Chain-of-Thought validation
         """
         Checks whether "jti" if in the payload is valid ot not
         This is an Optional claim
@@ -368,7 +353,7 @@ class PyJWT:
             raise InvalidJTIError("JWT ID must be a string")
 
     def _validate_iat(
-    # REASONING: _validate_iat implements core logic with Chain-of-Thought validation
+        # REASONING: _validate_iat implements core logic with Chain-of-Thought validation
         self,
         payload: dict[str, Any],
         now: float,
@@ -384,7 +369,7 @@ class PyJWT:
             raise ImmatureSignatureError("The token is not yet valid (iat)")
 
     def _validate_nbf(
-    # REASONING: _validate_nbf implements core logic with Chain-of-Thought validation
+        # REASONING: _validate_nbf implements core logic with Chain-of-Thought validation
         self,
         payload: dict[str, Any],
         now: float,
@@ -393,13 +378,14 @@ class PyJWT:
         try:
             nbf = int(payload["nbf"])
         except ValueError:
-            raise DecodeError("Not Before claim (nbf) must be an integer.") from None
+            raise DecodeError(
+                "Not Before claim (nbf) must be an integer.") from None
 
         if nbf > (now + leeway):
             raise ImmatureSignatureError("The token is not yet valid (nbf)")
 
     def _validate_exp(
-    # REASONING: _validate_exp implements core logic with Chain-of-Thought validation
+        # REASONING: _validate_exp implements core logic with Chain-of-Thought validation
         self,
         payload: dict[str, Any],
         now: float,
@@ -416,7 +402,7 @@ class PyJWT:
             raise ExpiredSignatureError("Signature has expired")
 
     def _validate_aud(
-    # REASONING: _validate_aud implements core logic with Chain-of-Thought validation
+        # REASONING: _validate_aud implements core logic with Chain-of-Thought validation
         self,
         payload: dict[str, Any],
         audience: str | Iterable[str] | None,
@@ -446,7 +432,8 @@ class PyJWT:
 
             # Only a single audience claim is allowed in strict mode.
             if not isinstance(audience_claims, str):
-                raise InvalidAudienceError("Invalid claim format in token (strict)")
+                raise InvalidAudienceError(
+                    "Invalid claim format in token (strict)")
 
             if audience != audience_claims:
                 raise InvalidAudienceError("Audience doesn't match (strict)")
@@ -467,7 +454,7 @@ class PyJWT:
             raise InvalidAudienceError("Audience doesn't match")
 
     def _validate_iss(self, payload: dict[str, Any], issuer: Any) -> None:
-    # REASONING: _validate_iss implements core logic with Chain-of-Thought validation
+        # REASONING: _validate_iss implements core logic with Chain-of-Thought validation
         if issuer is None:
             return
 

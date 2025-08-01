@@ -3,13 +3,15 @@ NoxPanel Security Manager - JWT Authentication & Protection
 Implements enterprise-grade security with ADHD-friendly error handling
 """
 
-import jwt
-import bcrypt
 import secrets
 from datetime import datetime, timedelta
 from functools import wraps
-from flask import request, jsonify, current_app
-from typing import Dict, Optional, Tuple, List  # Added List import
+from typing import Dict, List, Optional, Tuple  # Added List import
+
+import bcrypt
+import jwt
+from flask import current_app, jsonify, request
+
 
 class NoxAuthManager:
     """Comprehensive authentication and security management"""

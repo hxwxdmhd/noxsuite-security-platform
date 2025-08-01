@@ -5,25 +5,25 @@
 Dynamic template discovery, multi-protocol scanning, and ML-powered analysis
 """
 
-import os
-import re
-import json
-import socket
-import time
-import subprocess
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Set, Union
-import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta
-import configparser
 import ast
-import platform
-import hashlib
 import base64
-import urllib.request
+import configparser
+import hashlib
+import json
+import logging
+import os
+import platform
+import re
+import socket
+import subprocess
+import time
 import urllib.parse
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 # Configure advanced logging
 logging.basicConfig(

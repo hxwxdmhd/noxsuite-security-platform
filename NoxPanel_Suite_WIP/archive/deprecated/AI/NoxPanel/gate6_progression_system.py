@@ -8,16 +8,16 @@ This module implements the Gate 6 progression system building on the
 successful completion of all three development phases and Gate 5 readiness.
 """
 
-import json
 import asyncio
-import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
 import hashlib
+import json
+import logging
 import secrets
-from pathlib import Path
 import threading
 import time
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(

@@ -10,6 +10,7 @@ import json
 from datetime import datetime
 from typing import Dict, Any, List
 
+
 class RLVRNoxPanelAIBridge:
     """AI Bridge for RLVR-NoxPanel integration."""
 
@@ -43,6 +44,7 @@ class RLVRNoxPanelAIBridge:
             "Optimize plugin performance",
             "Enhance compliance monitoring"
         ]
+
 
 if __name__ == "__main__":
     bridge = RLVRNoxPanelAIBridge()

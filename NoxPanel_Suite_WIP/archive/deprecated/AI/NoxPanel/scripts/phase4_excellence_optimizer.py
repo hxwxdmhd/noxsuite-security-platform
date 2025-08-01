@@ -10,14 +10,14 @@ Final optimization phase to achieve 95+ audit score by addressing remaining gaps
 - Advanced testing infrastructure activation
 """
 
+import asyncio
+import json
+import logging
 import os
 import sys
 import time
-import json
-import asyncio
-import logging
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
 
 # Setup logging
 logging.basicConfig(
@@ -163,7 +163,7 @@ class Phase4ExcellenceOptimizer:
             # Check if DatabaseConnectionPool can be imported and configured
             sys.path.insert(0, str(self.noxpanel_root))
             from noxcore.database_pool import DatabaseConnectionPool
-            
+
             # Create a test configuration with proper parameters
             test_db_path = self.noxpanel_root / "data" / "test.db"
             test_db_path.parent.mkdir(exist_ok=True)
@@ -340,8 +340,8 @@ class Phase4ExcellenceOptimizer:
             app = create_app()
             
             # Simulate concurrent requests
-            import threading
             import queue
+            import threading
             
             results = queue.Queue()
             

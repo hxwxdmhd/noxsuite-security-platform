@@ -15,32 +15,33 @@ This system provides comprehensive tenant-aware authentication and authorization
 Essential for enterprise multi-tenant security
 """
 
-import os
-import sys
-import json
-import time
 import asyncio
-import logging
-import threading
-from typing import Dict, List, Optional, Any, Union, Set
-from datetime import datetime, timedelta
-from dataclasses import dataclass, field
-from enum import Enum
-import uuid
+import base64
 import hashlib
 import hmac
-import base64
+import json
+import logging
+import os
 import secrets
+import sys
+import threading
+import time
+import uuid
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
 from functools import wraps
+from typing import Any, Dict, List, Optional, Set, Union
+
 import jwt
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # Add project root to path
 project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, project_root)
 
 try:
-    from tenant_manager import TenantManager, Tenant, TenantStatus
+    from tenant_manager import Tenant, TenantManager, TenantStatus
 except ImportError:
     TenantManager = None
     Tenant = None
@@ -55,9 +56,20 @@ except ImportError:
 
 try:
     import sqlalchemy
-    from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, DateTime, Boolean, Text, ForeignKey
+    from sqlalchemy import (
+        Boolean,
+        Column,
+        DateTime,
+        ForeignKey,
+        Integer,
+        MetaData,
+        String,
+        Table,
+        Text,
+        create_engine,
+    )
     from sqlalchemy.ext.declarative import declarative_base
-    from sqlalchemy.orm import sessionmaker, Session, relationship
+    from sqlalchemy.orm import Session, relationship, sessionmaker
     HAS_SQLALCHEMY = True
 except ImportError:
     HAS_SQLALCHEMY = False

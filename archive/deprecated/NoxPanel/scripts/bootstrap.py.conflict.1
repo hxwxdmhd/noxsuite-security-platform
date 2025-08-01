@@ -22,6 +22,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Tuple, Any
 
+
 class NoxBootstrap:
     """Master bootstrap system for NoxPanel"""
 

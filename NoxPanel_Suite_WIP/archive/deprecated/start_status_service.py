@@ -3,9 +3,10 @@
 Start the Simple Status Saver as a background service
 """
 
-from simple_status_saver import SimpleStatusSaver
-import time
 import logging
+import time
+
+from simple_status_saver import SimpleStatusSaver
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -15,16 +16,16 @@ DASHBOARD CHAIN:
 5. Validation: Real-time compliance tracking with automated remediation
 """
 
-import logging
-import webbrowser
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List
-from dataclasses import dataclass
 import http.server
+import logging
 import socketserver
 import threading
 import time
+import webbrowser
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List
 
 # Configure dashboard logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - [RLVR-DASHBOARD] %(levelname)s - %(message)s')

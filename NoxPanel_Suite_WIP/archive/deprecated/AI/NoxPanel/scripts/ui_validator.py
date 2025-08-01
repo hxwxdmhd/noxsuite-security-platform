@@ -19,19 +19,19 @@ Compliance: RLVR Methodology v4.0+ Applied
 Visual validation of UI components using headless browser testing
 """
 
-import os
-import sys
 import json
-import time
 import logging
-from pathlib import Path
-from typing import Dict, List, Optional
+import os
+import subprocess
+import sys
+import time
 from dataclasses import dataclass
 from datetime import datetime
-import subprocess
+from pathlib import Path
+from typing import Dict, List, Optional
 
 try:
-    from playwright.sync_api import sync_playwright, Page, Browser
+    from playwright.sync_api import Browser, Page, sync_playwright
     PLAYWRIGHT_AVAILABLE = True
 except ImportError:
     PLAYWRIGHT_AVAILABLE = False

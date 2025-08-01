@@ -8,8 +8,10 @@ This is a demonstration security plugin with enhanced features.
 
 import hashlib
 import time
-from typing import Dict, Any, List
-from unified_plugin_system_clean import SecurityPlugin, PluginInfo
+from typing import Any, Dict, List
+
+from unified_plugin_system_clean import PluginInfo, SecurityPlugin
+
 
 class SecurityScannerPlugin(SecurityPlugin):
     """Advanced security scanner plugin"""

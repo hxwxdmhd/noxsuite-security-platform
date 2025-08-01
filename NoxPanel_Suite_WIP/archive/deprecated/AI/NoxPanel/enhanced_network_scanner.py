@@ -20,16 +20,17 @@ Advanced network scanning, device classification, and topology mapping
 """
 
 import ipaddress
+import json
+import re
 import socket
 import subprocess
 import threading
 import time
-import json
-import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-from typing import List, Dict, Optional, Set
 from pathlib import Path
+from typing import Dict, List, Optional, Set
+
 
 @dataclass
 class NetworkDevice:

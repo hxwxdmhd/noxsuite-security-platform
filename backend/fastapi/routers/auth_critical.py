@@ -4,34 +4,47 @@ CRITICAL AUTHENTICATION SYSTEM - FINAL ENHANCED VERSION
 Complete authentication infrastructure for 95%+ pass rate
 """
 
-from fastapi import APIRouter, HTTPException, Depends, Request, Response, status, BackgroundTasks
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from passlib.context import CryptContext
-from pydantic import BaseModel, EmailStr, Field, validator
-from datetime import datetime, timedelta, timezone
-import jwt
-import secrets
 import logging
-from dataclasses import dataclass, asdict
+import secrets
 import threading
 import time
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta, timezone
+
+import jwt
+from fastapi import (
+    APIRouter,
+    BackgroundTasks,
+    Depends,
+    HTTPException,
+    Request,
+    Response,
+    status,
+)
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from passlib.context import CryptContext
+from pydantic import BaseModel, EmailStr, Field, validator
 
 # Configure comprehensive logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler('logs/auth_critical.log', encoding='utf-8'),
-        logging.StreamHandler()
-    ]
+        logging.FileHandler("logs/auth_critical.log", encoding="utf-8"),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
 
+
 # Enhanced Models
 class UserCredentials(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50, regex=r'^[a-zA-Z0-9_\-\.]+$')
+    username: str = Field(
+        ..., min_length=3, max_length=50, regex=r"^[a-zA-Z0-9_\-\.]+$"
+    )
     password: str = Field(..., min_length=8, max_length=256)
     remember_me: bool = False
+
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -44,6 +57,7 @@ class TokenResponse(BaseModel):
     permissions: List[str]
     session_id: str
     token_fingerprint: str
+
 
 class UserProfile(BaseModel):
     id: str
@@ -59,9 +73,11 @@ class UserProfile(BaseModel):
     password_expires_at: Optional[datetime] = None
     two_factor_enabled: bool = False
 
+
 @dataclass
 class SecuritySession:
     """Enhanced security session tracking"""
+
     session_id: str
     user_id: str
     username: str
@@ -74,6 +90,7 @@ class SecuritySession:
     is_active: bool = True
     fingerprint: str = ""
 
+
 class CriticalAuthManager:
     """Critical Authentication Manager - Production Ready"""
 
@@ -85,7 +102,7 @@ class CriticalAuthManager:
             bcrypt__rounds=14,  # Enhanced security
             argon2__memory_cost=65536,
             argon2__time_cost=3,
-            argon2__parallelism=1
+            argon2__parallelism=1,
         )
 
         # Token configuration
@@ -130,7 +147,7 @@ class CriticalAuthManager:
 
         if users_file.exists():
             try:
-                with open(users_file, 'r', encoding='utf-8') as f:
+                with open(users_file, "r", encoding="utf-8") as f:
                     users_data = json.load(f)
                     # Validate and enhance existing users
                     for username, user_data in users_data.items():
@@ -151,8 +168,14 @@ class CriticalAuthManager:
                 "hashed_password": self.get_password_hash(admin_password),
                 "roles": ["admin", "user", "auditor", "service"],
                 "permissions": [
-                    "admin_access", "read_data", "write_data", "delete_data",
-                    "manage_users", "view_system", "audit_logs", "service_access"
+                    "admin_access",
+                    "read_data",
+                    "write_data",
+                    "delete_data",
+                    "manage_users",
+                    "view_system",
+                    "audit_logs",
+                    "service_access",
                 ],
                 "is_active": True,
                 "created_at": datetime.utcnow().isoformat(),
@@ -160,10 +183,12 @@ class CriticalAuthManager:
                 "failed_attempts": 0,
                 "locked_until": None,
                 "password_changed_at": datetime.utcnow().isoformat(),
-                "password_expires_at": (datetime.utcnow() + timedelta(days=90)).isoformat(),
+                "password_expires_at": (
+                    datetime.utcnow() + timedelta(days=90)
+                ).isoformat(),
                 "account_locked": False,
                 "two_factor_enabled": False,
-                "login_history": []
+                "login_history": [],
             },
             "noxsuite_service": {
                 "id": "service_critical_001",
@@ -178,15 +203,17 @@ class CriticalAuthManager:
                 "failed_attempts": 0,
                 "locked_until": None,
                 "password_changed_at": datetime.utcnow().isoformat(),
-                "password_expires_at": (datetime.utcnow() + timedelta(days=365)).isoformat(),
+                "password_expires_at": (
+                    datetime.utcnow() + timedelta(days=365)
+                ).isoformat(),
                 "account_locked": False,
                 "two_factor_enabled": False,
-                "login_history": []
-            }
+                "login_history": [],
+            },
         }
 
         # Save enhanced users
-        with open(users_file, 'w', encoding='utf-8') as f:
+        with open(users_file, "w", encoding="utf-8") as f:
             json.dump(default_users, f, indent=2, ensure_ascii=False)
 
         logger.info("Created critical authentication users with enhanced security")
@@ -199,12 +226,15 @@ class CriticalAuthManager:
         user_data.setdefault("locked_until", None)
         user_data.setdefault("account_locked", False)
         user_data.setdefault("password_changed_at", datetime.utcnow().isoformat())
-        user_data.setdefault("password_expires_at", (datetime.utcnow() + timedelta(days=90)).isoformat())
+        user_data.setdefault(
+            "password_expires_at", (datetime.utcnow() + timedelta(days=90)).isoformat()
+        )
         user_data.setdefault("two_factor_enabled", False)
         user_data.setdefault("login_history", [])
 
     def _start_session_cleanup(self):
         """Start background session cleanup"""
+
         def cleanup_sessions():
             while True:
                 try:
@@ -212,7 +242,9 @@ class CriticalAuthManager:
                     expired_sessions = []
 
                     for session_id, session in self.active_sessions.items():
-                        if (current_time - session.last_activity) > self.session_timeout:
+                        if (
+                            current_time - session.last_activity
+                        ) > self.session_timeout:
                             expired_sessions.append(session_id)
 
                     for session_id in expired_sessions:
@@ -222,7 +254,9 @@ class CriticalAuthManager:
                     # Clean old rate limit entries
                     cutoff = current_time - timedelta(hours=1)
                     for ip, attempts in list(self.rate_limits.items()):
-                        self.rate_limits[ip] = [attempt for attempt in attempts if attempt > cutoff]
+                        self.rate_limits[ip] = [
+                            attempt for attempt in attempts if attempt > cutoff
+                        ]
                         if not self.rate_limits[ip]:
                             del self.rate_limits[ip]
 
@@ -235,7 +269,9 @@ class CriticalAuthManager:
         cleanup_thread = threading.Thread(target=cleanup_sessions, daemon=True)
         cleanup_thread.start()
 
-    def _check_rate_limit(self, ip_address: str, max_attempts: int = 10, window_minutes: int = 15) -> bool:
+    def _check_rate_limit(
+        self, ip_address: str, max_attempts: int = 10, window_minutes: int = 15
+    ) -> bool:
         """Check rate limiting"""
         current_time = datetime.utcnow()
         cutoff_time = current_time - timedelta(minutes=window_minutes)
@@ -245,8 +281,7 @@ class CriticalAuthManager:
 
         # Remove old attempts
         self.rate_limits[ip_address] = [
-            attempt for attempt in self.rate_limits[ip_address]
-            if attempt > cutoff_time
+            attempt for attempt in self.rate_limits[ip_address] if attempt > cutoff_time
         ]
 
         # Check if under limit
@@ -274,7 +309,16 @@ class CriticalAuthManager:
         has_no_common = password.lower() not in ["password", "123456", "admin", "user"]
         has_min_entropy = len(set(password)) >= 6  # At least 6 unique characters
 
-        return all([has_upper, has_lower, has_digit, has_special, has_no_common, has_min_entropy])
+        return all(
+            [
+                has_upper,
+                has_lower,
+                has_digit,
+                has_special,
+                has_no_common,
+                has_min_entropy,
+            ]
+        )
 
     def _is_user_locked(self, username: str) -> bool:
         """Check if user account is locked"""
@@ -312,28 +356,34 @@ class CriticalAuthManager:
         user["failed_attempts"] = user.get("failed_attempts", 0) + 1
 
         # Log security event
-        self.security_events.append({
-            "event": "failed_login",
-            "username": username,
-            "ip_address": ip_address,
-            "timestamp": datetime.utcnow().isoformat(),
-            "attempts": user["failed_attempts"]
-        })
+        self.security_events.append(
+            {
+                "event": "failed_login",
+                "username": username,
+                "ip_address": ip_address,
+                "timestamp": datetime.utcnow().isoformat(),
+                "attempts": user["failed_attempts"],
+            }
+        )
 
         if user["failed_attempts"] >= self.max_failed_attempts:
             lock_until = datetime.utcnow() + self.lockout_duration
             user["locked_until"] = lock_until.isoformat()
 
-            logger.warning(f"User {username} locked until {lock_until} after {user['failed_attempts']} failed attempts")
+            logger.warning(
+                f"User {username} locked until {lock_until} after {user['failed_attempts']} failed attempts"
+            )
 
             # Log lockout event
-            self.security_events.append({
-                "event": "account_locked",
-                "username": username,
-                "ip_address": ip_address,
-                "timestamp": datetime.utcnow().isoformat(),
-                "locked_until": lock_until.isoformat()
-            })
+            self.security_events.append(
+                {
+                    "event": "account_locked",
+                    "username": username,
+                    "ip_address": ip_address,
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "locked_until": lock_until.isoformat(),
+                }
+            )
 
         self._save_users()
 
@@ -349,7 +399,7 @@ class CriticalAuthManager:
         """Save users database"""
         try:
             users_file = Path("config/users_critical.json")
-            with open(users_file, 'w', encoding='utf-8') as f:
+            with open(users_file, "w", encoding="utf-8") as f:
                 json.dump(self.users_db, f, indent=2, ensure_ascii=False)
         except Exception as e:
             logger.error(f"Could not save users: {e}")
@@ -368,7 +418,9 @@ class CriticalAuthManager:
             raise ValueError("Password does not meet complexity requirements")
         return self.pwd_context.hash(password)
 
-    def authenticate_user(self, username: str, password: str, ip_address: str = "unknown") -> Optional[Dict[str, Any]]:
+    def authenticate_user(
+        self, username: str, password: str, ip_address: str = "unknown"
+    ) -> Optional[Dict[str, Any]]:
         """Critical authentication with comprehensive security"""
         try:
             # Rate limiting check
@@ -376,13 +428,15 @@ class CriticalAuthManager:
                 logger.warning(f"Rate limit exceeded for IP: {ip_address}")
                 raise HTTPException(
                     status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                    detail="Too many authentication attempts. Please try again later."
+                    detail="Too many authentication attempts. Please try again later.",
                 )
 
             # User existence check
             user = self.users_db.get(username)
             if not user:
-                logger.warning(f"Authentication attempt for non-existent user: {username}")
+                logger.warning(
+                    f"Authentication attempt for non-existent user: {username}"
+                )
                 return None
 
             # Account status checks
@@ -418,7 +472,7 @@ class CriticalAuthManager:
             login_entry = {
                 "timestamp": datetime.utcnow().isoformat(),
                 "ip_address": ip_address,
-                "success": True
+                "success": True,
             }
 
             if "login_history" not in user:
@@ -433,12 +487,14 @@ class CriticalAuthManager:
             self._save_users()
 
             # Log successful authentication
-            self.security_events.append({
-                "event": "successful_login",
-                "username": username,
-                "ip_address": ip_address,
-                "timestamp": datetime.utcnow().isoformat()
-            })
+            self.security_events.append(
+                {
+                    "event": "successful_login",
+                    "username": username,
+                    "ip_address": ip_address,
+                    "timestamp": datetime.utcnow().isoformat(),
+                }
+            )
 
             logger.info(f"Successful authentication for user: {username}")
             return user
@@ -458,25 +514,31 @@ class CriticalAuthManager:
 
             # Comprehensive token claims
             jti = secrets.token_urlsafe(32)
-            to_encode.update({
-                "exp": expire,
-                "iat": now,
-                "nbf": now,
-                "type": "access_token",
-                "jti": jti,
-                "iss": "noxsuite-critical-auth",
-                "aud": "noxsuite-api",
-                "token_version": "2.0"
-            })
+            to_encode.update(
+                {
+                    "exp": expire,
+                    "iat": now,
+                    "nbf": now,
+                    "type": "access_token",
+                    "jti": jti,
+                    "iss": "noxsuite-critical-auth",
+                    "aud": "noxsuite-api",
+                    "token_version": "2.0",
+                }
+            )
 
-            encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
+            encoded_jwt = jwt.encode(
+                to_encode, self.secret_key, algorithm=self.algorithm
+            )
             return encoded_jwt
 
         except Exception as e:
             logger.error(f"Access token creation error: {e}")
             raise HTTPException(status_code=500, detail="Token creation failed")
 
-    def create_refresh_token(self, data: Dict[str, Any], remember_me: bool = False) -> str:
+    def create_refresh_token(
+        self, data: Dict[str, Any], remember_me: bool = False
+    ) -> str:
         """Create production-grade JWT refresh token"""
         try:
             to_encode = data.copy()
@@ -488,23 +550,29 @@ class CriticalAuthManager:
                 expire = now + timedelta(days=self.refresh_token_expire_days)
 
             jti = secrets.token_urlsafe(32)
-            to_encode.update({
-                "exp": expire,
-                "iat": now,
-                "type": "refresh_token",
-                "jti": jti,
-                "iss": "noxsuite-critical-auth",
-                "remember_me": remember_me
-            })
+            to_encode.update(
+                {
+                    "exp": expire,
+                    "iat": now,
+                    "type": "refresh_token",
+                    "jti": jti,
+                    "iss": "noxsuite-critical-auth",
+                    "remember_me": remember_me,
+                }
+            )
 
-            encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
+            encoded_jwt = jwt.encode(
+                to_encode, self.secret_key, algorithm=self.algorithm
+            )
             return encoded_jwt
 
         except Exception as e:
             logger.error(f"Refresh token creation error: {e}")
             raise HTTPException(status_code=500, detail="Refresh token creation failed")
 
-    def verify_token(self, token: str, expected_type: str = "access_token") -> Optional[Dict[str, Any]]:
+    def verify_token(
+        self, token: str, expected_type: str = "access_token"
+    ) -> Optional[Dict[str, Any]]:
         """Production-grade token verification"""
         try:
             # Check blacklist
@@ -523,13 +591,15 @@ class CriticalAuthManager:
                     "verify_exp": True,
                     "verify_iat": True,
                     "verify_nbf": True,
-                    "require": ["exp", "iat", "sub", "type", "jti", "iss"]
-                }
+                    "require": ["exp", "iat", "sub", "type", "jti", "iss"],
+                },
             )
 
             # Comprehensive validation
             if payload.get("type") != expected_type:
-                logger.warning(f"Invalid token type: expected {expected_type}, got {payload.get('type')}")
+                logger.warning(
+                    f"Invalid token type: expected {expected_type}, got {payload.get('type')}"
+                )
                 return None
 
             if payload.get("iss") != "noxsuite-critical-auth":
@@ -540,7 +610,11 @@ class CriticalAuthManager:
             username = payload.get("sub")
             if username:
                 user = self.users_db.get(username)
-                if not user or not user.get("is_active") or self._is_user_locked(username):
+                if (
+                    not user
+                    or not user.get("is_active")
+                    or self._is_user_locked(username)
+                ):
                     logger.warning(f"Token for invalid user: {username}")
                     return None
 
@@ -556,11 +630,19 @@ class CriticalAuthManager:
             logger.error(f"Token verification error: {e}")
             return None
 
-    def create_session(self, user: Dict[str, Any], ip_address: str, user_agent: str,
-                      access_token_jti: str, refresh_token_jti: str) -> SecuritySession:
+    def create_session(
+        self,
+        user: Dict[str, Any],
+        ip_address: str,
+        user_agent: str,
+        access_token_jti: str,
+        refresh_token_jti: str,
+    ) -> SecuritySession:
         """Create secure session"""
         session_id = secrets.token_urlsafe(32)
-        fingerprint = hashlib.sha256(f"{user_agent}{ip_address}".encode()).hexdigest()[:16]
+        fingerprint = hashlib.sha256(f"{user_agent}{ip_address}".encode()).hexdigest()[
+            :16
+        ]
 
         session = SecuritySession(
             session_id=session_id,
@@ -572,7 +654,7 @@ class CriticalAuthManager:
             user_agent=user_agent,
             access_token_jti=access_token_jti,
             refresh_token_jti=refresh_token_jti,
-            fingerprint=fingerprint
+            fingerprint=fingerprint,
         )
 
         self.active_sessions[session_id] = session
@@ -604,6 +686,7 @@ class CriticalAuthManager:
             # If we can't decode, blacklist the full token
             self.blacklisted_tokens.add(token)
 
+
 # Global critical auth manager
 critical_auth = CriticalAuthManager()
 security = HTTPBearer()
@@ -611,7 +694,10 @@ security = HTTPBearer()
 # Authentication router
 router = APIRouter(prefix="/api/auth", tags=["Critical Authentication"])
 
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Dict[str, Any]:
+
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+) -> Dict[str, Any]:
     """Get current authenticated user with critical validation"""
     try:
         token = credentials.credentials
@@ -627,7 +713,11 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         username = payload.get("sub")
         user = critical_auth.users_db.get(username)
 
-        if not user or not user.get("is_active") or critical_auth._is_user_locked(username):
+        if (
+            not user
+            or not user.get("is_active")
+            or critical_auth._is_user_locked(username)
+        ):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="User access denied",
@@ -646,15 +736,20 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+
 # Critical Authentication Endpoints
 @router.post("/login", response_model=TokenResponse)
-async def critical_login(credentials: UserCredentials, request: Request, background_tasks: BackgroundTasks):
+async def critical_login(
+    credentials: UserCredentials, request: Request, background_tasks: BackgroundTasks
+):
     """Critical login endpoint with comprehensive security"""
     try:
         ip_address = request.client.host if request.client else "unknown"
         user_agent = request.headers.get("user-agent", "unknown")
 
-        user = critical_auth.authenticate_user(credentials.username, credentials.password, ip_address)
+        user = critical_auth.authenticate_user(
+            credentials.username, credentials.password, ip_address
+        )
 
         if not user:
             raise HTTPException(
@@ -670,14 +765,15 @@ async def critical_login(credentials: UserCredentials, request: Request, backgro
             "roles": user.get("roles", []),
             "permissions": user.get("permissions", []),
             "email": user.get("email"),
-            "session_fingerprint": hashlib.sha256(f"{user_agent}{ip_address}".encode()).hexdigest()[:16]
+            "session_fingerprint": hashlib.sha256(
+                f"{user_agent}{ip_address}".encode()
+            ).hexdigest()[:16],
         }
 
         # Generate tokens
         access_token = critical_auth.create_access_token(token_data)
         refresh_token = critical_auth.create_refresh_token(
-            {"sub": user["username"]},
-            credentials.remember_me
+            {"sub": user["username"]}, credentials.remember_me
         )
 
         # Extract JTIs for session tracking
@@ -686,8 +782,7 @@ async def critical_login(credentials: UserCredentials, request: Request, backgro
 
         # Create session
         session = critical_auth.create_session(
-            user, ip_address, user_agent,
-            access_payload["jti"], refresh_payload["jti"]
+            user, ip_address, user_agent, access_payload["jti"], refresh_payload["jti"]
         )
 
         logger.info(f"Critical login successful for user: {user['username']}")
@@ -701,7 +796,7 @@ async def critical_login(credentials: UserCredentials, request: Request, backgro
             roles=user.get("roles", []),
             permissions=user.get("permissions", []),
             session_id=session.session_id,
-            token_fingerprint=session.fingerprint
+            token_fingerprint=session.fingerprint,
         )
 
     except HTTPException:
@@ -710,8 +805,9 @@ async def critical_login(credentials: UserCredentials, request: Request, backgro
         logger.error(f"Critical login error: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Authentication service error"
+            detail="Authentication service error",
         )
+
 
 @router.post("/refresh")
 async def critical_refresh_token(refresh_token: str, request: Request):
@@ -729,10 +825,13 @@ async def critical_refresh_token(refresh_token: str, request: Request):
         username = payload.get("sub")
         user = critical_auth.users_db.get(username)
 
-        if not user or not user.get("is_active") or critical_auth._is_user_locked(username):
+        if (
+            not user
+            or not user.get("is_active")
+            or critical_auth._is_user_locked(username)
+        ):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="User access denied"
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="User access denied"
             )
 
         # Create new tokens
@@ -745,13 +844,14 @@ async def critical_refresh_token(refresh_token: str, request: Request):
             "roles": user.get("roles", []),
             "permissions": user.get("permissions", []),
             "email": user.get("email"),
-            "session_fingerprint": hashlib.sha256(f"{user_agent}{ip_address}".encode()).hexdigest()[:16]
+            "session_fingerprint": hashlib.sha256(
+                f"{user_agent}{ip_address}".encode()
+            ).hexdigest()[:16],
         }
 
         new_access_token = critical_auth.create_access_token(token_data)
         new_refresh_token = critical_auth.create_refresh_token(
-            {"sub": user["username"]},
-            payload.get("remember_me", False)
+            {"sub": user["username"]}, payload.get("remember_me", False)
         )
 
         # Blacklist old refresh token
@@ -768,7 +868,9 @@ async def critical_refresh_token(refresh_token: str, request: Request):
             roles=user.get("roles", []),
             permissions=user.get("permissions", []),
             session_id="refreshed",
-            token_fingerprint=hashlib.sha256(f"{user_agent}{ip_address}".encode()).hexdigest()[:16]
+            token_fingerprint=hashlib.sha256(
+                f"{user_agent}{ip_address}".encode()
+            ).hexdigest()[:16],
         )
 
     except HTTPException:
@@ -777,12 +879,15 @@ async def critical_refresh_token(refresh_token: str, request: Request):
         logger.error(f"Token refresh error: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Token refresh failed"
+            detail="Token refresh failed",
         )
 
+
 @router.post("/logout")
-async def critical_logout(current_user: Dict[str, Any] = Depends(get_current_user),
-                         credentials: HTTPAuthorizationCredentials = Depends(security)):
+async def critical_logout(
+    current_user: Dict[str, Any] = Depends(get_current_user),
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+):
     """Critical logout with comprehensive cleanup"""
     try:
         # Blacklist current access token
@@ -804,24 +909,28 @@ async def critical_logout(current_user: Dict[str, Any] = Depends(get_current_use
         return {
             "message": "Successfully logged out",
             "sessions_terminated": len(sessions_to_terminate),
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.utcnow().isoformat(),
         }
 
     except Exception as e:
         logger.error(f"Logout error: {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Logout failed"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Logout failed"
         )
 
+
 @router.get("/profile", response_model=UserProfile)
-async def get_critical_profile(current_user: Dict[str, Any] = Depends(get_current_user)):
+async def get_critical_profile(
+    current_user: Dict[str, Any] = Depends(get_current_user),
+):
     """Get enhanced user profile"""
     try:
         password_expires = None
         if current_user.get("password_expires_at"):
             try:
-                password_expires = datetime.fromisoformat(current_user["password_expires_at"])
+                password_expires = datetime.fromisoformat(
+                    current_user["password_expires_at"]
+                )
             except Exception as e:
                 logger.warning(f"Unexpected error: {e}")
                 pass
@@ -841,23 +950,30 @@ async def get_critical_profile(current_user: Dict[str, Any] = Depends(get_curren
             roles=current_user.get("roles", []),
             permissions=current_user.get("permissions", []),
             is_active=current_user.get("is_active", False),
-            created_at=datetime.fromisoformat(current_user["created_at"]) if isinstance(current_user["created_at"], str) else current_user["created_at"],
+            created_at=(
+                datetime.fromisoformat(current_user["created_at"])
+                if isinstance(current_user["created_at"], str)
+                else current_user["created_at"]
+            ),
             last_login=last_login,
             failed_attempts=current_user.get("failed_attempts", 0),
             account_locked=current_user.get("account_locked", False),
             password_expires_at=password_expires,
-            two_factor_enabled=current_user.get("two_factor_enabled", False)
+            two_factor_enabled=current_user.get("two_factor_enabled", False),
         )
 
     except Exception as e:
         logger.error(f"Profile retrieval error: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Profile retrieval failed"
+            detail="Profile retrieval failed",
         )
 
+
 @router.get("/validate")
-async def validate_critical_token(current_user: Dict[str, Any] = Depends(get_current_user)):
+async def validate_critical_token(
+    current_user: Dict[str, Any] = Depends(get_current_user),
+):
     """Validate current token with comprehensive checks"""
     return {
         "valid": True,
@@ -868,8 +984,9 @@ async def validate_critical_token(current_user: Dict[str, Any] = Depends(get_cur
         "account_status": "active" if current_user.get("is_active") else "inactive",
         "account_locked": current_user.get("account_locked", False),
         "validation_timestamp": datetime.utcnow().isoformat(),
-        "message": "Token validation successful"
+        "message": "Token validation successful",
     }
+
 
 @router.get("/sessions")
 async def get_active_sessions(current_user: Dict[str, Any] = Depends(get_current_user)):
@@ -879,20 +996,23 @@ async def get_active_sessions(current_user: Dict[str, Any] = Depends(get_current
 
     for session in critical_auth.active_sessions.values():
         if session.username == username:
-            user_sessions.append({
-                "session_id": session.session_id,
-                "created_at": session.created_at.isoformat(),
-                "last_activity": session.last_activity.isoformat(),
-                "ip_address": session.ip_address,
-                "user_agent": session.user_agent[:100],  # Truncate for security
-                "fingerprint": session.fingerprint
-            })
+            user_sessions.append(
+                {
+                    "session_id": session.session_id,
+                    "created_at": session.created_at.isoformat(),
+                    "last_activity": session.last_activity.isoformat(),
+                    "ip_address": session.ip_address,
+                    "user_agent": session.user_agent[:100],  # Truncate for security
+                    "fingerprint": session.fingerprint,
+                }
+            )
 
     return {
         "active_sessions": user_sessions,
         "total_count": len(user_sessions),
-        "retrieved_at": datetime.utcnow().isoformat()
+        "retrieved_at": datetime.utcnow().isoformat(),
     }
+
 
 @router.get("/health")
 async def critical_auth_health():
@@ -912,7 +1032,7 @@ async def critical_auth_health():
             "session_management": True,
             "token_blacklisting": True,
             "password_complexity": critical_auth.require_password_complexity,
-            "session_timeout": str(critical_auth.session_timeout)
+            "session_timeout": str(critical_auth.session_timeout),
         },
-        "health_check_timestamp": datetime.utcnow().isoformat()
+        "health_check_timestamp": datetime.utcnow().isoformat(),
     }

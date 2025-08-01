@@ -15,27 +15,48 @@ This system provides a comprehensive multi-tenant web interface with:
 Essential for enterprise multi-tenant web portal
 """
 
+import asyncio
+import json
+import logging
 import os
 import sys
-import json
 import time
-import asyncio
-import logging
-from typing import Dict, List, Optional, Any, Union
-from datetime import datetime, timedelta
-from flask import Flask, request, jsonify, render_template, redirect, url_for, session, g
-from flask_cors import CORS
-from functools import wraps
 import uuid
+from datetime import datetime, timedelta
+from functools import wraps
+from typing import Any, Dict, List, Optional, Union
+
+from flask import (
+    Flask,
+    g,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
+from flask_cors import CORS
 
 # Add project root to path
 project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, project_root)
 
 try:
-    from tenant_manager import TenantManager, Tenant, TenantStatus, SubscriptionPlan, ResourceType
-    from tenant_auth import TenantAuthManager, User, UserRole, Permission
-    from resource_manager import ResourceMonitor, QuotaManager, ResourceStatus, AlertType
+    from resource_manager import (
+        AlertType,
+        QuotaManager,
+        ResourceMonitor,
+        ResourceStatus,
+    )
+    from tenant_auth import Permission, TenantAuthManager, User, UserRole
+    from tenant_manager import (
+        ResourceType,
+        SubscriptionPlan,
+        Tenant,
+        TenantManager,
+        TenantStatus,
+    )
 except ImportError:
     TenantManager = None
     Tenant = None

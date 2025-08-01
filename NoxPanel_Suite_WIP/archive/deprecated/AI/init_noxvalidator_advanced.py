@@ -35,22 +35,23 @@ Features:
 - 🎯 Provides detailed, actionable improvement suggestions
 """
 
-import os
-import sys
+import hashlib
 import json
-import shutil
+import os
 import platform
+import re
+import shutil
 import subprocess
+import sys
+import tempfile
+import time
 import urllib.request
 import zipfile
-import tempfile
-import requests
-import re
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
 from datetime import datetime
-import time
-import hashlib
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import requests
 
 # --- Project Configuration ---
 

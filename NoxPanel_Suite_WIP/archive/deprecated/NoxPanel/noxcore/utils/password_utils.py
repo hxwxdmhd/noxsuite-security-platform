@@ -1,5 +1,6 @@
 import bcrypt
 
+
 def hash_password(password: str) -> str:
     """
     RLVR: Implements hash_password with error handling and validation

@@ -1,21 +1,22 @@
-import os
 import logging
+import os
+import secrets
+import threading
+import time
+from datetime import datetime
 from pathlib import Path
-from flask import Flask, render_template, request, jsonify
+
+from dotenv import load_dotenv
+from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
-from noxcore.runner import run_script
 from noxcore.auth import auth_required, create_user, verify_user
 from noxcore.database import NoxDatabase
-from noxcore.websocket.manager import WebSocketManager
-from noxcore.tasks.manager import TaskManager
 from noxcore.plugins import PluginManager
+from noxcore.runner import run_script
+from noxcore.tasks.manager import TaskManager
 from noxcore.utils.password_utils import verify_password
-from dotenv import load_dotenv
-import secrets
-import time
-import threading
-from datetime import datetime
+from noxcore.websocket.manager import WebSocketManager
 
 # Load environment variables first
 load_dotenv()

@@ -1,10 +1,11 @@
 """Task Registry - YAML-based AI Command Routing System"""
 
-import yaml
-import re
 import logging
-from typing import Dict, List, Optional
+import re
 from pathlib import Path
+from typing import Dict, List, Optional
+
+import yaml
 
 logger = logging.getLogger(__name__)
 

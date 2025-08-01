@@ -18,13 +18,14 @@ NoxPanel v5.0 - Security Headers System
 Comprehensive security headers implementation for web application protection
 """
 
-import logging
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, field
-from flask import Response, request, current_app
-import secrets
 import hashlib
+import logging
+import secrets
 import time
+from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional
+
+from flask import Response, current_app, request
 
 logger = logging.getLogger(__name__)
 

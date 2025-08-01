@@ -3,10 +3,10 @@ NoxPanel v5.0 - Environment-Specific Security Configuration
 Secure configuration management for different deployment environments
 """
 
-import os
-from typing import Dict, Any, Optional
-from dataclasses import dataclass
 import logging
+import os
+from dataclasses import dataclass
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

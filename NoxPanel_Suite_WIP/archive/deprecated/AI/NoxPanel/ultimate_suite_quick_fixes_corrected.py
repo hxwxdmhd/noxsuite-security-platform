@@ -7,15 +7,17 @@ This script implements the immediate fixes identified in the audit
 and prepares the foundation for v9.1 development.
 """
 
+import json
+import logging
 import os
 import sys
-import json
 import time
-import logging
-import psutil
-from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional, Any
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import psutil
+
 
 class UltimateSuiteQuickFixes:
     """Implements immediate fixes and improvements for v9.0"""

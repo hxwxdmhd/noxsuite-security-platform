@@ -11,6 +11,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from fastapi import Depends, HTTPException
 
+
 class Permission(str, Enum):
     """System permissions"""
 
@@ -44,6 +45,7 @@ class Permission(str, Enum):
     API_WRITE = "api:write"
     API_ADMIN = "api:admin"
 
+
 class Role(str, Enum):
     """System roles"""
 
@@ -52,6 +54,7 @@ class Role(str, Enum):
     SERVICE = "service"
     READONLY = "readonly"
     AUDITOR = "auditor"
+
 
 class AccessControlManager:
     """Role-based access control manager"""
@@ -235,8 +238,10 @@ class AccessControlManager:
             self.logger.error(f"Error loading roles and permissions: {e}")
             return False
 
+
 # Global access control manager
 access_control = AccessControlManager()
+
 
 def require_permission(permission: str):
     """Decorator to require specific permission"""
@@ -271,6 +276,7 @@ def require_permission(permission: str):
 
     return decorator
 
+
 def require_any_permission(permissions: List[str]):
     """Decorator to require any of the specified permissions"""
 
@@ -304,6 +310,7 @@ def require_any_permission(permissions: List[str]):
 
     return decorator
 
+
 def require_role(role: str):
     """Decorator to require specific role"""
 
@@ -334,6 +341,7 @@ def require_role(role: str):
 
     return decorator
 
+
 def check_permission_dependency(permission: str):
     """Dependency to check permission"""
 
@@ -348,6 +356,7 @@ def check_permission_dependency(permission: str):
         return current_user
 
     return permission_checker
+
 
 # Save default roles and permissions
 def initialize_access_control():
@@ -367,6 +376,7 @@ def initialize_access_control():
     except Exception as e:
         access_control.logger.error(f"Failed to initialize access control: {e}")
         return False
+
 
 # Import get_current_user at the end to avoid circular import
 try:

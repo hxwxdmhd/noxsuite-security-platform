@@ -4,15 +4,16 @@ Simple Multi-Tenant Enterprise Architecture Demo
 A lightweight demonstration of the complete enterprise system
 """
 
+import json
+import logging
 import os
 import sys
-import json
 import time
-import pymysql
-import logging
-from pathlib import Path
 from datetime import datetime
-from flask import Flask, render_template_string, jsonify, request
+from pathlib import Path
+
+import pymysql
+from flask import Flask, jsonify, render_template_string, request
 
 # Configure logging
 logging.basicConfig(

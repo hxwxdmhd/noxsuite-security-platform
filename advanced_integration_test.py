@@ -1,3 +1,8 @@
+import requests
+from datetime import datetime
+import time
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,13 +12,6 @@ logger = get_logger(__name__)
 Advanced Workflow Integration Tester
 Validates the newly created memory-based intelligent workflows
 """
-
-import json
-import os
-import time
-from datetime import datetime
-
-import requests
 
 
 class AdvancedWorkflowTester:
@@ -106,7 +104,8 @@ class AdvancedWorkflowTester:
                 if component_type in noxsuite_components:
                     used_components.add(component_type)
 
-            compatibility_score = len(used_components) / len(noxsuite_components) * 100
+            compatibility_score = len(
+                used_components) / len(noxsuite_components) * 100
 
             return {
                 "compatible": True,
@@ -127,7 +126,8 @@ class AdvancedWorkflowTester:
     def test_langflow_connectivity(self):
         """Test connection to Langflow instance"""
         try:
-            response = requests.get(f"{self.langflow_url}/api/v1/flows", timeout=10)
+            response = requests.get(
+                f"{self.langflow_url}/api/v1/flows", timeout=10)
             if response.status_code == 200:
                 return {
                     "connected": True,
@@ -148,7 +148,8 @@ class AdvancedWorkflowTester:
         """Run all tests on advanced workflows"""
         logger.info("🧪 ADVANCED WORKFLOW INTEGRATION TESTING")
         logger.info("=" * 60)
-        logger.info(f"🕐 Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        logger.info(
+            f"🕐 Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
         # Test Langflow connectivity
         logger.info("\n1. Testing Langflow connectivity...")
@@ -235,14 +236,16 @@ class AdvancedWorkflowTester:
         logger.info(
             f"📈 Overall Success Rate: {passed_workflows}/{total_workflows} ({passed_workflows/total_workflows*100:.1f}%)"
         )
-        logger.info(f"🔧 NoxSuite Integration: Full compatibility across all workflows")
+        logger.info(
+            f"🔧 NoxSuite Integration: Full compatibility across all workflows")
         logger.info(
             f"🌐 Langflow Status: {'✅ Connected' if langflow_test['connected'] else '❌ Disconnected'}"
         )
 
         # Detailed metrics
         total_nodes = sum(r["nodes_count"] for r in self.test_results)
-        total_noxsuite_nodes = sum(r["noxsuite_nodes"] for r in self.test_results)
+        total_noxsuite_nodes = sum(r["noxsuite_nodes"]
+                                   for r in self.test_results)
 
         logger.info(f"\n📊 Workflow Metrics:")
         logger.info(f"   • Total Workflows: {total_workflows}")

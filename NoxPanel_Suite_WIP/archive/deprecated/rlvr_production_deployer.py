@@ -13,17 +13,18 @@ REASONING CHAIN:
 """
 
 import asyncio
+import json
 import logging
 import subprocess
 import sys
+import threading
 import time
-import json
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional
+
 import psutil
 import requests
-from pathlib import Path
-from datetime import datetime
-import threading
-from typing import Dict, List, Optional
 
 # Configure logging with reasoning trace
 logging.basicConfig(
@@ -35,6 +36,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
 
 class RLVRProductionDeployer:
     """
@@ -55,7 +57,7 @@ class RLVRProductionDeployer:
 
     COMPLIANCE: STANDARD
     """
-        """
+     """
         REASONING: Initialize with clear architectural decisions
 
         Architecture Decision Chain:
@@ -64,14 +66,14 @@ class RLVRProductionDeployer:
         3. Prometheus monitoring → Real-time performance metrics
         4. Auto-scaling service → Reactive capacity management
         """
-        self.base_dir = Path(__file__).parent
-        self.services = {
+      self.base_dir = Path(__file__).parent
+       self.services = {
             'load_balancer': {'port': 80, 'status': 'stopped'},
             'fastapi_1': {'port': 8001, 'status': 'stopped'},
             'fastapi_2': {'port': 8002, 'status': 'stopped'},
             'fastapi_3': {'port': 8003, 'status': 'stopped'},
             'prometheus': {'port': 9090, 'status': 'stopped'},
-    """
+            """
     RLVR: Validates input according to business rules and constraints
 
     REASONING CHAIN:
@@ -172,7 +174,8 @@ class RLVRProductionDeployer:
 
         if is_valid:
             self.reasoning_checks['architecture_validated'] = True
-            logger.info("✅ Architecture reasoning validated - proceeding with implementation")
+            logger.info(
+                "✅ Architecture reasoning validated - proceeding with implementation")
         else:
             raise Exception("❌ Architecture reasoning failed validation")
 
@@ -206,8 +209,8 @@ class RLVRProductionDeployer:
 
     COMPLIANCE: STANDARD
     """
-        # Health check logic
-        health_check_reasoning = """
+     # Health check logic
+     health_check_reasoning = """
         Problem: How to detect failed service instances?
         → Method: HTTP health endpoints (/health) every 10 seconds
         → Logic: 3 consecutive failures = instance marked down
@@ -215,14 +218,14 @@ class RLVRProductionDeployer:
         → Evidence: Standard practice (Kubernetes, Docker Swarm)
         """
 
-        # Validate load balancer reasoning
-        is_valid = self.validate_reasoning_step(
-            "Load Balancer Logic",
+      # Validate load balancer reasoning
+      is_valid = self.validate_reasoning_step(
+           "Load Balancer Logic",
             f"{traffic_reasoning}\n{health_check_reasoning}",
             "NGINX upstream module, industry-standard health checking"
-        )
+           )
 
-        if is_valid:
+       if is_valid:
             self.reasoning_checks['load_balancer_logic_verified'] = True
 
         # Create NGINX configuration with reasoning annotations
@@ -291,7 +294,8 @@ server {
         with open(config_path, 'w', encoding='utf-8') as f:
             f.write(config)
 
-        logger.info(f"✅ NGINX configuration created with embedded reasoning: {config_path}")
+        logger.info(
+            f"✅ NGINX configuration created with embedded reasoning: {config_path}")
         return str(config_path)
 
     async def reason_auto_scaling_logic(self):
@@ -313,9 +317,9 @@ server {
         REASONING CHAIN:
         Load Metrics → Threshold Analysis → Scaling Decision → Action Execution
         """
-        logger.info("📈 STEP 3: Auto-scaling Logic Reasoning")
+     logger.info("📈 STEP 3: Auto-scaling Logic Reasoning")
 
-        scaling_reasoning = """
+      scaling_reasoning = """
         Trigger Question: When should we add/remove service instances?
 
         Scaling Up Logic:
@@ -333,8 +337,8 @@ server {
         Evidence: AWS Auto Scaling best practices, Google Cloud guidelines
         """
 
-        # Validate auto-scaling reasoning
-        is_valid = self.validate_reasoning_step(
+       # Validate auto-scaling reasoning
+       is_valid = self.validate_reasoning_step(
             "Auto-scaling Logic",
             scaling_reasoning,
             "Cloud provider best practices, prevents scaling oscillation"
@@ -520,7 +524,8 @@ if __name__ == "__main__":
         with open(autoscaler_path, 'w', encoding='utf-8') as f:
             f.write(autoscaler_code)
 
-        logger.info(f"✅ Auto-scaler created with RLVR reasoning: {autoscaler_path}")
+        logger.info(
+            f"✅ Auto-scaler created with RLVR reasoning: {autoscaler_path}")
         return str(autoscaler_path)
 
     async def deploy_with_reasoning_validation(self):
@@ -566,21 +571,26 @@ if __name__ == "__main__":
                 # Save deployment summary (UTF-8 encoding for Unicode compatibility)
                 summary_path = self.base_dir / "rlvr_deployment_summary.json"
                 with open(summary_path, 'w', encoding='utf-8') as f:
-                    json.dump(deployment_summary, f, indent=2, ensure_ascii=False)
+                    json.dump(deployment_summary, f,
+                              indent=2, ensure_ascii=False)
 
-                logger.info("🎉 RLVR Production Deployment reasoning validation completed!")
+                logger.info(
+                    "🎉 RLVR Production Deployment reasoning validation completed!")
                 logger.info(f"📊 Deployment summary: {summary_path}")
                 logger.info(f"⚖️ NGINX config: {nginx_config}")
                 logger.info(f"🤖 Auto-scaler: {autoscaler_path}")
 
                 return deployment_summary
             else:
-                failed_checks = [k for k, v in self.reasoning_checks.items() if not v]
-                raise Exception(f"❌ Reasoning validation failed: {failed_checks}")
+                failed_checks = [
+                    k for k, v in self.reasoning_checks.items() if not v]
+                raise Exception(
+                    f"❌ Reasoning validation failed: {failed_checks}")
 
         except Exception as e:
             logger.error(f"❌ RLVR Deployment failed: {e}")
             raise
+
 
 async def main():
     """Main entry point for RLVR deployment demonstration"""

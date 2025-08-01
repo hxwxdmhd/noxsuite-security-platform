@@ -18,21 +18,23 @@ NoxPanel v4.3 - Self-Healing AI Model Monitor
 Comprehensive monitoring and auto-recovery system for local AI models
 """
 
-import os
-import time
 import json
 import logging
-import requests
+import os
+import platform
+import shutil
 import subprocess
 import threading
-import psutil
-import shutil
+import time
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass, asdict
-from logging.handlers import RotatingFileHandler
-import platform
+
+import psutil
+import requests
+
 
 @dataclass
 class ModelEndpoint:

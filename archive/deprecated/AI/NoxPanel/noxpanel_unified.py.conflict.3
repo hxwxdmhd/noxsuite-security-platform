@@ -37,11 +37,13 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler(PROJECT_ROOT / 'data' / 'logs' / 'noxpanel_unified.log'),
+        logging.FileHandler(PROJECT_ROOT / 'data' /
+                            'logs' / 'noxpanel_unified.log'),
         logging.StreamHandler()
     ]
 )
 logger = logging.getLogger(__name__)
+
 
 class NoxPanelUnified:
     """Unified NoxPanel System Manager with AI Communication Monitoring"""

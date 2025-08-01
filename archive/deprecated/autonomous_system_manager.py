@@ -362,6 +362,7 @@ class IDecisionEngine(ABC):
 
     COMPLIANCE: STANDARD
     """
+
     def evaluate_action_safety(self, action: AutonomousAction) -> float:
         """Evaluate the safety of an action (0.0 to 1.0)"""
         pass
@@ -370,7 +371,6 @@ class IDecisionEngine(ABC):
     def predict_outcome(self, action: AutonomousAction, metrics: SystemMetrics) -> Dict[str, Any]:
         """Predict the outcome of an action"""
         pass
-
 
     """
     RLVR: Implements predict_outcome with error handling and validation
@@ -384,6 +384,8 @@ class IDecisionEngine(ABC):
 
     COMPLIANCE: STANDARD
     """
+
+
 class LearningDecisionEngine(IDecisionEngine):
     """Machine learning-based decision engine"""
 
@@ -494,7 +496,8 @@ class LearningDecisionEngine(IDecisionEngine):
 
     def _rule_no_critical_system_changes(self, action: AutonomousAction) -> bool:
         """Safety rule: No critical system changes"""
-        critical_commands = ['shutdown', 'reboot', 'format', 'rm -rf', 'del /f']
+        critical_commands = ['shutdown', 'reboot',
+            'format', 'rm -rf', 'del /f']
         return not any(cmd in action.command.lower() for cmd in critical_commands)
 
     def _rule_resource_threshold_check(self, action: AutonomousAction) -> bool:
@@ -613,10 +616,12 @@ class LearningDecisionEngine(IDecisionEngine):
         # Analyze alerts
         for alert in alerts:
             if not alert.acknowledged and alert.severity in ['critical', 'high']:
-                actions.extend(self._create_alert_response_actions(alert, metrics))
+                actions.extend(
+                    self._create_alert_response_actions(alert, metrics))
 
         # Prioritize actions by confidence and risk
-        actions.sort(key=lambda a: (a.confidence.value, -a.risk_level), reverse=True)
+        actions.sort(key=lambda a: (
+            a.confidence.value, -a.risk_level), reverse=True)
 
         return actions[:5]  # Return top 5 actions
 
@@ -627,7 +632,8 @@ class LearningDecisionEngine(IDecisionEngine):
             action_type=ActionType.OPTIMIZATION,
             description="Optimize CPU usage by managing high-usage processes",
             command="powershell -Command \"Get-Process | Sort-Object CPU -Descending | Select-Object -First 5\"",
-            parameters={"target_reduction": 20, "method": "process_management"},
+            parameters={"target_reduction": 20,
+                "method": "process_management"},
             expected_outcome="Reduce CPU usage by 15-25%",
             risk_level=0.3,
             confidence=DecisionConfidence.HIGH,
@@ -643,7 +649,8 @@ class LearningDecisionEngine(IDecisionEngine):
             action_type=ActionType.MAINTENANCE,
             description="Clean up system memory and cache",
             command="powershell -Command \"[System.GC]::Collect(); [System.GC]::WaitForPendingFinalizers()\"",
-            parameters={"cleanup_type": "garbage_collection", "aggressive": False},
+            parameters={"cleanup_type": "garbage_collection",
+                "aggressive": False},
             expected_outcome="Reduce memory usage by 10-20%",
             risk_level=0.1,
             confidence=DecisionConfidence.VERY_HIGH,
@@ -659,7 +666,8 @@ class LearningDecisionEngine(IDecisionEngine):
             action_type=ActionType.MAINTENANCE,
             description="Clean temporary files and system cache",
             command="powershell -Command \"cleanmgr /sagerun:1\"",
-            parameters={"cleanup_targets": ["temp", "cache", "logs"], "aggressive": False},
+            parameters={"cleanup_targets": [
+                "temp", "cache", "logs"], "aggressive": False},
             expected_outcome="Free up 5-15% disk space",
             risk_level=0.2,
             confidence=DecisionConfidence.HIGH,
@@ -774,9 +782,11 @@ class LearningDecisionEngine(IDecisionEngine):
         # Action-specific predictions
         if action.action_type == ActionType.OPTIMIZATION:
             if "cpu" in action.description.lower():
-                prediction["expected_improvements"]["cpu_reduction"] = min(15, metrics.cpu_percent * 0.2)
+                prediction["expected_improvements"]["cpu_reduction"] = min(
+                    15, metrics.cpu_percent * 0.2)
             elif "memory" in action.description.lower():
-                prediction["expected_improvements"]["memory_reduction"] = min(20, metrics.memory_percent * 0.15)
+                prediction["expected_improvements"]["memory_reduction"] = min(
+                    20, metrics.memory_percent * 0.15)
 
         return prediction
 
@@ -810,13 +820,15 @@ class LearningDecisionEngine(IDecisionEngine):
         # Update success rate
         success = outcome.get("success", False)
         current_rate = model["success_rate"]
-        model["success_rate"] = (current_rate * 0.9) + (0.1 * (1.0 if success else 0.0))
+        model["success_rate"] = (current_rate * 0.9) + \
+                                 (0.1 * (1.0 if success else 0.0))
 
         # Update improvement metrics
         if success and "improvement" in outcome:
             current_improvement = model["avg_improvement"]
             new_improvement = outcome["improvement"]
-            model["avg_improvement"] = (current_improvement * 0.8) + (0.2 * new_improvement)
+            model["avg_improvement"] = (
+                current_improvement * 0.8) + (0.2 * new_improvement)
 
         # Save updated models
         self._save_models()
@@ -856,7 +868,8 @@ class AutonomousSystemManager:
         }
 
         # Action history for learning
-        self._action_history: List[Tuple[AutonomousAction, Dict[str, Any]]] = []
+        self._action_history: List[Tuple[AutonomousAction, Dict[str, Any]]] = [
+            ]
         self._last_action_times: Dict[str, float] = {}
 
         # Database for persistence

@@ -6,11 +6,12 @@ Handles schema versioning and automated migrations
 import json
 import logging
 import os
-import pymysql
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+import pymysql
 
 logger = logging.getLogger(__name__)
 

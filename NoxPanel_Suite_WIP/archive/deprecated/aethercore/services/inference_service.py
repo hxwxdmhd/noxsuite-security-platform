@@ -9,10 +9,12 @@ import asyncio
 import json
 import logging
 import time
-from datetime import datetime
-from typing import Dict, List, Any, Optional, Union, AsyncGenerator
 import uuid
+from datetime import datetime
+from typing import Any, AsyncGenerator, Dict, List, Optional, Union
+
 import numpy as np
+
 from .model_service import ModelService
 
 logger = logging.getLogger(__name__)

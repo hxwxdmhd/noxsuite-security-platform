@@ -11,6 +11,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 
+
 class NoxAuditGenerator:
     """Comprehensive system audit with hypercritical analysis"""
 
@@ -154,7 +155,8 @@ class NoxAuditGenerator:
             })
 
         # Check modular structure
-        required_modules = ["noxcore", "webpanel", "scripts", "copilot", "tests"]
+        required_modules = ["noxcore", "webpanel",
+            "scripts", "copilot", "tests"]
         missing_modules = []
 
         for module in required_modules:

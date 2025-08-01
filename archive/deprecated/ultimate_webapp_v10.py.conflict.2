@@ -91,6 +91,7 @@ logging.basicConfig(
     ]
 )
 
+
 class UltimateSuiteV10:
     """Ultimate Heimnetz/NoxPanel/NoxGuard Suite v10.0 - Advanced AI Orchestration"""
 
@@ -163,6 +164,7 @@ class UltimateSuiteV10:
 
     COMPLIANCE: STANDARD
     """
+
     def _initialize_advanced_features(self):
         """Initialize advanced AI and monitoring features"""
         try:
@@ -662,8 +664,10 @@ class UltimateSuiteV10:
                     except (subprocess.TimeoutExpired, Exception):
                         continue
 
-                self.network_devices = {device["ip"]: device for device in devices}
-                self.logger.info(f"✅ Network scan completed - found {len(devices)} devices")
+                self.network_devices = {
+                    device["ip"]: device for device in devices}
+                self.logger.info(
+                    f"✅ Network scan completed - found {len(devices)} devices")
 
                 return jsonify({"devices": devices, "total_scanned": 10})
 

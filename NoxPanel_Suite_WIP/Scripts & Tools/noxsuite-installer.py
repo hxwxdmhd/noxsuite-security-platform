@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -7,19 +8,20 @@ NoxSuite + AI Dev Infrastructure Auto-Installer
 Intelligent cross-platform setup for the complete NoxSuite ecosystem
 """
 
-import os
-import sys
 import json
-import subprocess
+import logging
+import os
 import platform
 import shutil
-import requests
+import subprocess
+import sys
 import time
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
-import logging
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+import requests
 
 # Configure logging
 logging.basicConfig(

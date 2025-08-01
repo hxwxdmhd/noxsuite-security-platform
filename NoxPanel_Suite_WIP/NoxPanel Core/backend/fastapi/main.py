@@ -3,42 +3,53 @@ NoxSuite FastAPI Backend - Main Application
 AI-Powered Infrastructure Management API
 """
 
-from fastapi import FastAPI, HTTPException, Depends, Request, BackgroundTasks
+import asyncio
+import json
+import logging
+import os
+from contextlib import asynccontextmanager
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
+
+import uvicorn
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import HTTPBearer
-from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from contextlib import asynccontextmanager
-import asyncio
-import uvicorn
-import logging
-from datetime import datetime, timezone
-from typing import Dict, List, Optional, Any
-import os
-import json
 
-# Import routers
-from .routers import (
-    auth, system, noxpanel, noxguard, autoimport, 
-    powerlog, langflow_hub, autocleaner, heimnetz_scanner,
-    ai_models, websocket, health
-)
+from .core.ai_manager import AIManager
 
 # Import core modules
 from .core.config import settings
-from .core.database import init_db, get_db
-from .core.ai_manager import AIManager
-from .core.websocket_manager import WebSocketManager
+from .core.database import get_db, init_db
+from .core.logging_config import setup_logging
+from .core.metrics import metrics_middleware
 from .core.plugin_manager import PluginManager
 from .core.security import get_current_user
-from .core.metrics import metrics_middleware
-from .core.logging_config import setup_logging
+from .core.websocket_manager import WebSocketManager
 
 # Import models and schemas
 from .models.base import Base
-from .schemas.system import SystemStatus, HealthCheck
+
+# Import routers
+from .routers import (
+    ai_models,
+    auth,
+    autocleaner,
+    autoimport,
+    health,
+    heimnetz_scanner,
+    langflow_hub,
+    noxguard,
+    noxpanel,
+    powerlog,
+    system,
+    websocket,
+)
+from .schemas.system import HealthCheck, SystemStatus
 
 # Setup logging
 setup_logging()
@@ -49,61 +60,63 @@ ai_manager: Optional[AIManager] = None
 ws_manager: Optional[WebSocketManager] = None
 plugin_manager: Optional[PluginManager] = None
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
     logger.info("🚀 Starting NoxSuite FastAPI Backend...")
-    
+
     global ai_manager, ws_manager, plugin_manager
-    
+
     try:
         # Initialize database
         logger.info("📊 Initializing database...")
         await init_db()
-        
+
         # Initialize AI Manager
         if settings.ENABLE_AI:
             logger.info("🤖 Initializing AI Manager...")
             ai_manager = AIManager()
             await ai_manager.initialize()
             app.state.ai_manager = ai_manager
-        
+
         # Initialize WebSocket Manager
         logger.info("🌐 Initializing WebSocket Manager...")
         ws_manager = WebSocketManager()
         app.state.ws_manager = ws_manager
-        
+
         # Initialize Plugin Manager
         logger.info("🧩 Initializing Plugin Manager...")
         plugin_manager = PluginManager()
         await plugin_manager.initialize()
         app.state.plugin_manager = plugin_manager
-        
+
         # Start background tasks
         logger.info("⚙️ Starting background tasks...")
         asyncio.create_task(system_monitor_task())
         asyncio.create_task(ai_model_health_check())
-        
+
         logger.info("✅ NoxSuite Backend initialized successfully")
-        
+
         yield
-        
+
     except Exception as e:
         logger.error(f"❌ Failed to initialize NoxSuite Backend: {e}")
         raise
-    
+
     finally:
         # Cleanup
         logger.info("🛑 Shutting down NoxSuite Backend...")
-        
+
         if ai_manager:
             await ai_manager.cleanup()
         if ws_manager:
             await ws_manager.cleanup()
         if plugin_manager:
             await plugin_manager.cleanup()
-            
+
         logger.info("✅ NoxSuite Backend shutdown complete")
+
 
 # Create FastAPI application
 app = FastAPI(
@@ -147,12 +160,12 @@ app = FastAPI(
     contact={
         "name": "NoxSuite Support",
         "url": "https://github.com/noxpanel/noxsuite",
-        "email": "support@noxsuite.dev"
+        "email": "support@noxsuite.dev",
     },
     license_info={
         "name": "MIT",
         "url": "https://opensource.org/licenses/MIT",
-    }
+    },
 )
 
 # ============================================================================
@@ -180,8 +193,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # Trusted hosts (security)
 app.add_middleware(
-    TrustedHostMiddleware, 
-    allowed_hosts=["localhost", "127.0.0.1", "*.noxsuite.local"]
+    TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "*.noxsuite.local"]
 )
 
 # Custom metrics middleware
@@ -200,66 +212,66 @@ app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 
 # Protected routes (authentication required)
 app.include_router(
-    system.router, 
-    prefix="/api/system", 
+    system.router,
+    prefix="/api/system",
     tags=["System Management"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_user)],
 )
 
 app.include_router(
-    noxpanel.router, 
-    prefix="/api/noxpanel", 
+    noxpanel.router,
+    prefix="/api/noxpanel",
     tags=["NoxPanel Dashboard"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_user)],
 )
 
 app.include_router(
-    noxguard.router, 
-    prefix="/api/noxguard", 
+    noxguard.router,
+    prefix="/api/noxguard",
     tags=["NoxGuard Security"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_user)],
 )
 
 app.include_router(
-    autoimport.router, 
-    prefix="/api/autoimport", 
+    autoimport.router,
+    prefix="/api/autoimport",
     tags=["AutoImport Discovery"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_user)],
 )
 
 app.include_router(
-    powerlog.router, 
-    prefix="/api/powerlog", 
+    powerlog.router,
+    prefix="/api/powerlog",
     tags=["PowerLog Monitoring"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_user)],
 )
 
 app.include_router(
-    langflow_hub.router, 
-    prefix="/api/langflow", 
+    langflow_hub.router,
+    prefix="/api/langflow",
     tags=["Langflow AI Hub"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_user)],
 )
 
 app.include_router(
-    autocleaner.router, 
-    prefix="/api/autocleaner", 
+    autocleaner.router,
+    prefix="/api/autocleaner",
     tags=["AutoCleaner Optimization"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_user)],
 )
 
 app.include_router(
-    heimnetz_scanner.router, 
-    prefix="/api/scanner", 
+    heimnetz_scanner.router,
+    prefix="/api/scanner",
     tags=["Network Scanner"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_user)],
 )
 
 app.include_router(
-    ai_models.router, 
-    prefix="/api/ai", 
+    ai_models.router,
+    prefix="/api/ai",
     tags=["AI Models"],
-    dependencies=[Depends(get_current_user)]
+    dependencies=[Depends(get_current_user)],
 )
 
 # WebSocket routes
@@ -269,10 +281,12 @@ app.include_router(websocket.router, prefix="/ws", tags=["WebSocket"])
 # ROOT ENDPOINTS
 # ============================================================================
 
+
 @app.get("/", response_class=HTMLResponse)
 async def root():
     """Root endpoint with HTML welcome page"""
-    return HTMLResponse(content="""
+    return HTMLResponse(
+        content="""
     <!DOCTYPE html>
     <html>
     <head>
@@ -345,7 +359,9 @@ async def root():
         </div>
     </body>
     </html>
-    """)
+    """
+    )
+
 
 @app.get("/api")
 async def api_root():
@@ -360,7 +376,7 @@ async def api_root():
             "ai_enabled": settings.ENABLE_AI,
             "voice_enabled": settings.ENABLE_VOICE,
             "websocket_enabled": True,
-            "plugins_enabled": True
+            "plugins_enabled": True,
         },
         "endpoints": {
             "authentication": "/api/auth",
@@ -368,13 +384,15 @@ async def api_root():
             "dashboard": "/api/noxpanel",
             "security": "/api/noxguard",
             "ai_models": "/api/ai",
-            "websocket": "/ws"
-        }
+            "websocket": "/ws",
+        },
     }
+
 
 # ============================================================================
 # BACKGROUND TASKS
 # ============================================================================
+
 
 async def system_monitor_task():
     """Background task for system monitoring"""
@@ -383,84 +401,94 @@ async def system_monitor_task():
             # Collect system metrics
             if ws_manager:
                 system_data = await collect_system_metrics()
-                await ws_manager.broadcast_to_all({
-                    "type": "system_update",
-                    "data": system_data,
-                    "timestamp": datetime.now(timezone.utc).isoformat()
-                })
-            
+                await ws_manager.broadcast_to_all(
+                    {
+                        "type": "system_update",
+                        "data": system_data,
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                    }
+                )
+
             await asyncio.sleep(30)  # Update every 30 seconds
-            
+
         except Exception as e:
             logger.error(f"System monitor task error: {e}")
             await asyncio.sleep(60)  # Wait longer on error
+
 
 async def ai_model_health_check():
     """Background task for AI model health monitoring"""
     if not settings.ENABLE_AI or not ai_manager:
         return
-        
+
     while True:
         try:
             # Check AI model status
             models_status = await ai_manager.health_check()
-            
+
             if ws_manager:
-                await ws_manager.broadcast_to_all({
-                    "type": "ai_status_update",
-                    "data": models_status,
-                    "timestamp": datetime.now(timezone.utc).isoformat()
-                })
-            
+                await ws_manager.broadcast_to_all(
+                    {
+                        "type": "ai_status_update",
+                        "data": models_status,
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                    }
+                )
+
             await asyncio.sleep(120)  # Check every 2 minutes
-            
+
         except Exception as e:
             logger.error(f"AI health check task error: {e}")
             await asyncio.sleep(300)  # Wait longer on error
+
 
 async def collect_system_metrics() -> Dict[str, Any]:
     """Collect comprehensive system metrics"""
     try:
         import psutil
+
         import docker
-        
+
         # System metrics
         cpu_percent = psutil.cpu_percent(interval=1)
         memory = psutil.virtual_memory()
-        disk = psutil.disk_usage('/')
-        
+        disk = psutil.disk_usage("/")
+
         # Docker metrics
         docker_client = docker.from_env()
         containers = docker_client.containers.list()
-        
+
         container_stats = []
         for container in containers:
-            if container.name.startswith('noxsuite-'):
+            if container.name.startswith("noxsuite-"):
                 stats = container.stats(stream=False)
-                container_stats.append({
-                    "name": container.name,
-                    "status": container.status,
-                    "cpu_usage": _calculate_cpu_percent(stats),
-                    "memory_usage": _calculate_memory_usage(stats)
-                })
-        
+                container_stats.append(
+                    {
+                        "name": container.name,
+                        "status": container.status,
+                        "cpu_usage": _calculate_cpu_percent(stats),
+                        "memory_usage": _calculate_memory_usage(stats),
+                    }
+                )
+
         return {
             "system": {
                 "cpu_percent": cpu_percent,
                 "memory_percent": memory.percent,
                 "disk_percent": (disk.used / disk.total) * 100,
-                "uptime": _get_system_uptime()
+                "uptime": _get_system_uptime(),
             },
             "containers": container_stats,
-            "timestamp": datetime.now(timezone.utc).isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
-        
+
     except Exception as e:
         logger.error(f"Error collecting system metrics: {e}")
         return {
             "error": "Failed to collect metrics",
-            "timestamp": datetime.now(timezone.utc).isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
+
 
 def _calculate_cpu_percent(stats: Dict) -> float:
     """
@@ -469,21 +497,30 @@ def _calculate_cpu_percent(stats: Dict) -> float:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _calculate_cpu_percent with enterprise-grade patterns and error handling
     4. Validation: Test _calculate_cpu_percent with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Calculate CPU percentage from Docker stats"""
     try:
-        cpu_delta = stats['cpu_stats']['cpu_usage']['total_usage'] - \
-                   stats['precpu_stats']['cpu_usage']['total_usage']
-        system_delta = stats['cpu_stats']['system_cpu_usage'] - \
-                      stats['precpu_stats']['system_cpu_usage']
-        
+        cpu_delta = (
+            stats["cpu_stats"]["cpu_usage"]["total_usage"]
+            - stats["precpu_stats"]["cpu_usage"]["total_usage"]
+        )
+        system_delta = (
+            stats["cpu_stats"]["system_cpu_usage"]
+            - stats["precpu_stats"]["system_cpu_usage"]
+        )
+
         if system_delta > 0:
-            return (cpu_delta / system_delta) * len(stats['cpu_stats']['cpu_usage']['percpu_usage']) * 100
+            return (
+                (cpu_delta / system_delta)
+                * len(stats["cpu_stats"]["cpu_usage"]["percpu_usage"])
+                * 100
+            )
         return 0.0
     except (KeyError, ZeroDivisionError):
         return 0.0
+
 
 def _calculate_memory_usage(stats: Dict) -> Dict[str, int]:
     """
@@ -492,20 +529,21 @@ def _calculate_memory_usage(stats: Dict) -> Dict[str, int]:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _calculate_memory_usage with enterprise-grade patterns and error handling
     4. Validation: Test _calculate_memory_usage with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Calculate memory usage from Docker stats"""
     try:
-        usage = stats['memory_stats']['usage']
-        limit = stats['memory_stats']['limit']
+        usage = stats["memory_stats"]["usage"]
+        limit = stats["memory_stats"]["limit"]
         return {
             "usage_mb": usage // 1024 // 1024,
             "limit_mb": limit // 1024 // 1024,
-            "percent": (usage / limit) * 100
+            "percent": (usage / limit) * 100,
         }
     except KeyError:
         return {"usage_mb": 0, "limit_mb": 0, "percent": 0}
+
 
 def _get_system_uptime() -> str:
     """
@@ -514,26 +552,29 @@ def _get_system_uptime() -> str:
     2. Analysis: Private method requires controlled access and defined behavior
     3. Solution: Implement _get_system_uptime with enterprise-grade patterns and error handling
     4. Validation: Test _get_system_uptime with edge cases and performance requirements
-    
+
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Get system uptime"""
     try:
         import psutil
+
         boot_time = psutil.boot_time()
         uptime_seconds = datetime.now().timestamp() - boot_time
-        
+
         days = int(uptime_seconds // 86400)
         hours = int((uptime_seconds % 86400) // 3600)
         minutes = int((uptime_seconds % 3600) // 60)
-        
+
         return f"{days}d {hours}h {minutes}m"
     except:
         return "Unknown"
 
+
 # ============================================================================
 # ERROR HANDLERS
 # ============================================================================
+
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
@@ -544,9 +585,10 @@ async def http_exception_handler(request: Request, exc: HTTPException):
             "error": exc.detail,
             "status_code": exc.status_code,
             "timestamp": datetime.now(timezone.uitc).isoformat(),
-            "path": str(request.url.path)
-        }
+            "path": str(request.url.path),
+        },
     )
+
 
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
@@ -558,9 +600,10 @@ async def general_exception_handler(request: Request, exc: Exception):
             "error": "Internal server error",
             "message": str(exc) if settings.DEBUG else "An unexpected error occurred",
             "timestamp": datetime.now(timezone.utc).isoformat(),
-            "path": str(request.url.path)
-        }
+            "path": str(request.url.path),
+        },
     )
+
 
 # ============================================================================
 # APPLICATION STARTUP
@@ -575,5 +618,5 @@ if __name__ == "__main__":
         log_level="debug" if settings.DEBUG else "info",
         access_log=True,
         server_header=False,
-        date_header=False
+        date_header=False,
     )

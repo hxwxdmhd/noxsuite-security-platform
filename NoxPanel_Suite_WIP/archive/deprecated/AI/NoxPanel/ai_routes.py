@@ -4,11 +4,12 @@
 Flask routes for AI model monitoring and management
 """
 
-from flask import Blueprint, render_template, jsonify, request, flash, redirect, url_for
-from datetime import datetime
-import logging
 import json
-from ai_monitor import get_ai_monitor, ModelStatus
+import logging
+from datetime import datetime
+
+from ai_monitor import ModelStatus, get_ai_monitor
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 
 # Configure logging
 logger = logging.getLogger(__name__)

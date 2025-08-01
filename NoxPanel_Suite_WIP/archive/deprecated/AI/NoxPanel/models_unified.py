@@ -17,37 +17,53 @@ Version: 11.0.0
 Status: PRODUCTION READY
 """
 
-import os
-import sys
+import hashlib
 import json
 import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Union, Tuple
-from dataclasses import dataclass, field
-from enum import Enum
-import uuid
-import hashlib
+import os
 import secrets
+import sys
+import uuid
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Database dependencies
 try:
-    from sqlalchemy import (
-        create_engine, Column, Integer, String, DateTime, Boolean, 
-        Text, JSON, Float, ForeignKey, Index, UniqueConstraint,
-        Table, MetaData, event, text
-    )
-    from sqlalchemy.ext.declarative import declarative_base
-    from sqlalchemy.orm import (
-        sessionmaker, relationship, scoped_session, Session,
-        declarative_base, validates
-    )
-    from sqlalchemy.dialects.postgresql import UUID, JSONB
-    from sqlalchemy.pool import QueuePool
-    from sqlalchemy.engine import Engine
-    from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-    
     import psycopg2
     from psycopg2.extras import RealDictCursor
+    from sqlalchemy import (
+        JSON,
+        Boolean,
+        Column,
+        DateTime,
+        Float,
+        ForeignKey,
+        Index,
+        Integer,
+        MetaData,
+        String,
+        Table,
+        Text,
+        UniqueConstraint,
+        create_engine,
+        event,
+        text,
+    )
+    from sqlalchemy.dialects.postgresql import JSONB, UUID
+    from sqlalchemy.engine import Engine
+    from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+    from sqlalchemy.ext.declarative import declarative_base
+    from sqlalchemy.orm import (
+        Session,
+        declarative_base,
+        relationship,
+        scoped_session,
+        sessionmaker,
+        validates,
+    )
+    from sqlalchemy.pool import QueuePool
     
 except ImportError as e:
     print(f"Critical database dependency missing: {e}")

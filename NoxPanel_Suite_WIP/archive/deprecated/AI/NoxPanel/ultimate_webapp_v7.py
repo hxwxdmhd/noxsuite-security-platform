@@ -18,18 +18,27 @@ Features:
 - 98/100 audit score optimized interface
 """
 
+import json
+import logging
 import os
 import sys
-import json
 import time
-import logging
-from pathlib import Path
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Flask and web dependencies
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory
+from flask import (
+    Flask,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    session,
+    url_for,
+)
 from flask_cors import CORS
 from werkzeug.serving import WSGIRequestHandler
 
@@ -40,12 +49,12 @@ sys.path.insert(0, str(project_root / "AI" / "NoxPanel"))
 
 # Import our enhanced components
 try:
-    from noxcore.security_config import SecurityConfig
-    from noxcore.security_headers import SecurityHeaders
-    from noxcore.blueprint_registry import BlueprintRegistry
-    from blueprints.ui import ui_bp
     from blueprints.api import api_bp
     from blueprints.auth import auth_bp
+    from blueprints.ui import ui_bp
+    from noxcore.blueprint_registry import BlueprintRegistry
+    from noxcore.security_config import SecurityConfig
+    from noxcore.security_headers import SecurityHeaders
 except ImportError as e:
     print(f"⚠️ Import warning: {e}")
     print("🔄 Creating minimal fallback components...")

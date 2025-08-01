@@ -7,16 +7,16 @@ Integrates ContextForge with the enterprise service ecosystem.
 Provides service registration, health monitoring, and API endpoints.
 """
 
-import json
 import asyncio
-from typing import Dict, Any, Optional
-from pathlib import Path
-from datetime import datetime
+import json
 import logging
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, Optional
 
-from context.index import ContextForge, ContextRequest, ModelType, AgentIntent
-from context.router import ContextRouter
+from context.index import AgentIntent, ContextForge, ContextRequest, ModelType
 from context.protocols.schema import protocol_registry
+from context.router import ContextRouter
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

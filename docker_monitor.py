@@ -1,3 +1,6 @@
+import docker
+from datetime import datetime
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,10 +10,6 @@ logger = get_logger(__name__)
 NoxSuite Docker Status Monitor
 Provides Docker integration for the MCP Autonomous Agent
 """
-import json
-from datetime import datetime
-
-import docker
 
 
 def get_docker_status():

@@ -19,19 +19,29 @@ NoxPanel Enhanced Gateway Platform v6.0
 Comprehensive multi-platform management system with health monitoring and plugin integration
 """
 
-import os
-import sys
 import json
-import time
 import logging
-import psutil
-import subprocess
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
-from flask import Flask, render_template, jsonify, request, redirect, url_for, session, flash
-from flask_cors import CORS
+import os
 import secrets
+import subprocess
+import sys
+import time
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import psutil
+from flask import (
+    Flask,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
+from flask_cors import CORS
 
 # Setup logging
 logging.basicConfig(

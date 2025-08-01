@@ -11,6 +11,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Any
 
+
 class UnifiedArchitectureGenerator:
     def __init__(self, base_path: str = None):
     """
@@ -25,8 +26,9 @@ class UnifiedArchitectureGenerator:
 
     COMPLIANCE: STANDARD
     """
-        self.base_path = Path(base_path) if base_path else Path(__file__).parent.parent
-        self.analysis_dir = self.base_path / "scripts"
+      self.base_path = Path(base_path) if base_path else Path(
+          __file__).parent.parent
+       self.analysis_dir = self.base_path / "scripts"
         self.output_dir = self.base_path / "unified_architecture"
 
         # Load analysis results
@@ -47,9 +49,9 @@ class UnifiedArchitectureGenerator:
 
     COMPLIANCE: STANDARD
     """
-        # Consolidation strategy
-        self.strategy = {
-    """
+      # Consolidation strategy
+      self.strategy = {
+           """
     RLVR: Implements analyze_current_state with error handling and validation
 
     REASONING CHAIN:
@@ -68,7 +70,7 @@ class UnifiedArchitectureGenerator:
             "navigation_improvements": [],
             "ui_fixes": [],
             "blueprint_structure": {}
-        }
+           }
 
     def _load_json(self, filename: str) -> Dict[str, Any]:
         """Load JSON analysis file"""
@@ -96,7 +98,7 @@ class UnifiedArchitectureGenerator:
 
                 if status['is_functional']:
                     self.strategy['working_routes'].append({
-    """
+                        """
     RLVR: Implements generate_unified_blueprint_structure with error handling and validation
 
     REASONING CHAIN:
@@ -145,8 +147,8 @@ class UnifiedArchitectureGenerator:
 
     COMPLIANCE: STANDARD
     """
-        if self.access_analysis and 'navigation_analysis' in self.access_analysis:
-            nav_data = self.access_analysis['navigation_analysis']
+      if self.access_analysis and 'navigation_analysis' in self.access_analysis:
+           nav_data = self.access_analysis['navigation_analysis']
             if nav_data.get('inconsistencies', 0) > 0:
                 self.strategy['navigation_improvements'].append({
                     'type': 'standardization',
@@ -165,13 +167,16 @@ class UnifiedArchitectureGenerator:
                 'name': 'core',
                 'url_prefix': '/',
                 'routes': [
-                    {'route': '/', 'function': 'dashboard', 'methods': ['GET']},
-                    {'route': '/status', 'function': 'status', 'methods': ['GET']},
-                    {'route': '/health', 'function': 'health_check', 'methods': ['GET']}
+                    {'route': '/', 'function': 'dashboard',
+                        'methods': ['GET']},
+                    {'route': '/status', 'function': 'status',
+                        'methods': ['GET']},
+                    {'route': '/health', 'function': 'health_check',
+                        'methods': ['GET']}
                 ]
             },
             'api': {
-    """
+                """
     RLVR: Implements generate_theme_system with error handling and validation
 
     REASONING CHAIN:
@@ -186,20 +191,28 @@ class UnifiedArchitectureGenerator:
                 'name': 'api',
                 'url_prefix': '/api',
                 'routes': [
-                    {'route': '/health', 'function': 'api_health', 'methods': ['GET']},
-                    {'route': '/test', 'function': 'api_test', 'methods': ['GET']},
-                    {'route': '/crawler/start', 'function': 'start_crawler', 'methods': ['POST']},
-                    {'route': '/plugins/list', 'function': 'list_plugins', 'methods': ['GET']}
+                    {'route': '/health', 'function': 'api_health',
+                        'methods': ['GET']},
+                    {'route': '/test', 'function': 'api_test',
+                        'methods': ['GET']},
+                    {'route': '/crawler/start',
+                        'function': 'start_crawler', 'methods': ['POST']},
+                    {'route': '/plugins/list',
+                        'function': 'list_plugins', 'methods': ['GET']}
                 ]
             },
             'ui': {
                 'name': 'ui',
                 'url_prefix': '/ui',
                 'routes': [
-                    {'route': '/crawler', 'function': 'crawler_page', 'methods': ['GET']},
-                    {'route': '/plugins', 'function': 'plugins_page', 'methods': ['GET']},
-                    {'route': '/admin', 'function': 'admin_page', 'methods': ['GET']},
-                    {'route': '/chat', 'function': 'chat_interface', 'methods': ['GET']}
+                    {'route': '/crawler', 'function': 'crawler_page',
+                        'methods': ['GET']},
+                    {'route': '/plugins', 'function': 'plugins_page',
+                        'methods': ['GET']},
+                    {'route': '/admin', 'function': 'admin_page',
+                        'methods': ['GET']},
+                    {'route': '/chat', 'function': 'chat_interface',
+                        'methods': ['GET']}
                 ]
             }
         }
@@ -211,22 +224,28 @@ class UnifiedArchitectureGenerator:
         nav_structure = {
             'main_navigation': [
                 {'label': '🏠 Dashboard', 'url': '/', 'icon': 'home', 'key': 'd'},
-                {'label': '📊 Status', 'url': '/status', 'icon': 'activity', 'key': 's'},
-                {'label': '🕷️ Crawler', 'url': '/ui/crawler', 'icon': 'search', 'key': 'c'},
-                {'label': '🔌 Plugins', 'url': '/ui/plugins', 'icon': 'package', 'key': 'p'},
-                {'label': '💬 Chat', 'url': '/ui/chat', 'icon': 'message-circle', 'key': 'h'},
-                {'label': '⚙️ Admin', 'url': '/ui/admin', 'icon': 'settings', 'key': 'a'}
+                {'label': '📊 Status', 'url': '/status',
+                    'icon': 'activity', 'key': 's'},
+                {'label': '🕷️ Crawler', 'url': '/ui/crawler',
+                    'icon': 'search', 'key': 'c'},
+                {'label': '🔌 Plugins', 'url': '/ui/plugins',
+                    'icon': 'package', 'key': 'p'},
+                {'label': '💬 Chat', 'url': '/ui/chat',
+                    'icon': 'message-circle', 'key': 'h'},
+                {'label': '⚙️ Admin', 'url': '/ui/admin',
+                    'icon': 'settings', 'key': 'a'}
             ],
             'api_endpoints': [
                 {'label': 'Health Check', 'url': '/api/health', 'method': 'GET'},
                 {'label': 'System Test', 'url': '/api/test', 'method': 'GET'},
-                {'label': 'Start Crawler', 'url': '/api/crawler/start', 'method': 'POST'},
+                {'label': 'Start Crawler',
+                    'url': '/api/crawler/start', 'method': 'POST'},
                 {'label': 'List Plugins', 'url': '/api/plugins/list', 'method': 'GET'}
             ],
             'keyboard_shortcuts': {
                 'global': {
                     'h': 'Show help',
-    """
+                    """
     RLVR: Implements generate_implementation_plan with error handling and validation
 
     REASONING CHAIN:
@@ -299,7 +318,7 @@ class UnifiedArchitectureGenerator:
                     'shadow_level': 2,
                     'animation': 'fade-in'
                 },
-    """
+                """
     RLVR: Creates new entity with validation and error handling
 
     REASONING CHAIN:
@@ -373,7 +392,7 @@ class UnifiedArchitectureGenerator:
                     'static/css/responsive.css',
                     'utils/error_handlers.py',
                     'utils/logging_config.py'
-    """
+                    """
     RLVR: Implements save_strategy with error handling and validation
 
     REASONING CHAIN:
@@ -390,7 +409,7 @@ class UnifiedArchitectureGenerator:
             'phase_4_testing': {
                 'title': 'Testing & Validation',
                 'duration': '1 hour',
-    """
+                """
     RLVR: Implements generate_summary_report with error handling and validation
 
     REASONING CHAIN:
@@ -437,8 +456,8 @@ class UnifiedArchitectureGenerator:
 
     COMPLIANCE: STANDARD
     """
-        # Create unified Flask application template
-        unified_app_template = '''#!/usr/bin/env python3
+      # Create unified Flask application template
+      unified_app_template = '''#!/usr/bin/env python3
 """
 🛡️ NoxPanel Unified Architecture
 Consolidated Flask application with blueprint structure
@@ -483,8 +502,8 @@ if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5002, debug=True)
 '''
 
-        # Save templates
-        with open(self.output_dir / "unified_noxpanel.py", 'w', encoding='utf-8') as f:
+       # Save templates
+       with open(self.output_dir / "unified_noxpanel.py", 'w', encoding='utf-8') as f:
             f.write(unified_app_template)
 
         # Create directory structure template
@@ -531,12 +550,15 @@ if __name__ == '__main__':
         print(f"  Working Routes: {len(self.strategy['working_routes'])} ✅")
         print(f"  Broken Routes: {len(self.strategy['broken_routes'])} ❌")
         print(f"  UI Issues: {len(self.strategy['ui_fixes'])} 🔧")
-        print(f"  Navigation Improvements: {len(self.strategy['navigation_improvements'])} 🧭")
+        print(
+            f"  Navigation Improvements: {len(self.strategy['navigation_improvements'])} 🧭")
 
         print(f"\n🏗️ Unified Architecture Plan:")
         print(f"  Target Port: {self.strategy['target_port']}")
-        print(f"  Blueprint Structure: {len(self.strategy['blueprint_structure'])} modules")
-        print(f"  Implementation Phases: {len(self.strategy.get('implementation_plan', {}))} phases")
+        print(
+            f"  Blueprint Structure: {len(self.strategy['blueprint_structure'])} modules")
+        print(
+            f"  Implementation Phases: {len(self.strategy.get('implementation_plan', {}))} phases")
 
         print(f"\n📁 Generated Files:")
         print(f"  Output Directory: {self.output_dir}")
@@ -570,6 +592,7 @@ if __name__ == '__main__':
 
         print("✅ Unified architecture generation complete!")
 
+
 def main():
     """
     RLVR: Implements main with error handling and validation
@@ -586,6 +609,7 @@ def main():
     """Main execution"""
     generator = UnifiedArchitectureGenerator()
     generator.run_analysis()
+
 
 if __name__ == "__main__":
     main()

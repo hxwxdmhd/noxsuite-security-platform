@@ -4,15 +4,16 @@ NoxPanel Full System Diagnostic and Repair
 Comprehensive analysis and repair tool for all NoxPanel components
 """
 
-import os
-import sys
 import json
 import logging
+import os
 import subprocess
-import pymysql
-from pathlib import Path
-from typing import Dict, List, Any, Optional
+import sys
 import traceback
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import pymysql
 
 # Setup logging
 logging.basicConfig(

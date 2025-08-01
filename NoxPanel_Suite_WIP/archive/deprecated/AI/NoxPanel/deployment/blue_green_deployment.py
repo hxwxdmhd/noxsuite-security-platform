@@ -19,17 +19,19 @@ Enterprise-grade zero-downtime deployment for 5,000+ users
 """
 
 import asyncio
-import aiohttp
-import docker
 import json
-import time
 import logging
 import subprocess
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, asdict
+import time
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple
+
+import aiohttp
 import yaml
+
+import docker
 
 logger = logging.getLogger(__name__)
 

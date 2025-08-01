@@ -17,14 +17,15 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Any
 
+
 class UltimateSuiteQuickFixes:
     """Implements immediate fixes and improvements for v9.0"""
-    
+
     def __init__(self):
         self.setup_logging()
         self.fixes_applied = []
         self.improvements_made = []
-        
+
     def setup_logging(self):
         """Setup improved logging with Unicode support"""
         try:
@@ -32,7 +33,8 @@ class UltimateSuiteQuickFixes:
                 level=logging.INFO,
                 format='%(asctime)s - %(levelname)s - %(message)s',
                 handlers=[
-                    logging.FileHandler('ultimate_suite_fixes.log', encoding='utf-8'),
+                    logging.FileHandler(
+                        'ultimate_suite_fixes.log', encoding='utf-8'),
                     logging.StreamHandler()
                 ]
             )
@@ -44,7 +46,7 @@ class UltimateSuiteQuickFixes:
     def fix_system_metrics_collection(self) -> bool:
         """Fix system metrics collection formatting issues"""
         self.logger.info("Fixing system metrics collection...")
-        
+
         fixed_metrics_code = '''
 def collect_system_metrics(self) -> Dict[str, Any]:
     """Collect system metrics with proper error handling"""
@@ -52,7 +54,7 @@ def collect_system_metrics(self) -> Dict[str, Any]:
         # CPU metrics
         cpu_percent = psutil.cpu_percent(interval=1)
         cpu_count = psutil.cpu_count()
-        
+
         # Memory metrics
         memory = psutil.virtual_memory()
         memory_dict = {
@@ -62,7 +64,7 @@ def collect_system_metrics(self) -> Dict[str, Any]:
             'used': memory.used,
             'free': memory.free
         }
-        
+
         # Disk metrics
         disk = psutil.disk_usage('/')
         disk_dict = {
@@ -71,7 +73,7 @@ def collect_system_metrics(self) -> Dict[str, Any]:
             'free': disk.free,
             'percent': (disk.used / disk.total) * 100
         }
-        
+
         # Network metrics (basic)
         network_stats = psutil.net_io_counters()
         network_dict = {
@@ -80,7 +82,7 @@ def collect_system_metrics(self) -> Dict[str, Any]:
             'packets_sent': network_stats.packets_sent,
             'packets_recv': network_stats.packets_recv
         }
-        
+
         return {
             'timestamp': datetime.now().isoformat(),
             'cpu': {
@@ -101,7 +103,7 @@ def collect_system_metrics(self) -> Dict[str, Any]:
             'fallback': True
         }
 '''
-        
+
         # Save the fixed metrics code
         try:
             with open('fixed_system_metrics.py', 'w', encoding='utf-8') as f:
@@ -116,7 +118,7 @@ def collect_system_metrics(self) -> Dict[str, Any]:
     def add_missing_network_scanner_methods(self) -> bool:
         """Add missing methods to network scanner"""
         self.logger.info("Adding missing network scanner methods...")
-        
+
         missing_methods_code = '''
 def get_quick_status(self) -> Dict[str, Any]:
     """Get quick network scanner status"""
@@ -143,13 +145,14 @@ def _calculate_network_health(self) -> float:
         devices = getattr(self, 'discovered_devices', [])
         if not devices:
             return 75.0  # Default if no devices scanned yet
-        
-        responsive_devices = len([d for d in devices if d.get('responsive', False)])
+
+        responsive_devices = len(
+            [d for d in devices if d.get('responsive', False)])
         total_devices = len(devices)
-        
+
         if total_devices == 0:
             return 75.0
-        
+
         health_score = (responsive_devices / total_devices) * 100
         return min(100.0, max(0.0, health_score))
     except:
@@ -159,7 +162,7 @@ def get_network_topology(self) -> Dict[str, Any]:
     """Get network topology data for visualization"""
     try:
         devices = getattr(self, 'discovered_devices', [])
-        
+
         # Build basic topology structure
         topology = {
             'nodes': [],
@@ -167,7 +170,7 @@ def get_network_topology(self) -> Dict[str, Any]:
             'subnets': [],
             'gateway': None
         }
-        
+
         for i, device in enumerate(devices):
             node = {
                 'id': f"device_{i}",
@@ -179,7 +182,7 @@ def get_network_topology(self) -> Dict[str, Any]:
                 'last_seen': device.get('last_seen', datetime.now().isoformat())
             }
             topology['nodes'].append(node)
-        
+
         return topology
     except Exception as e:
         return {
@@ -204,10 +207,10 @@ def comprehensive_network_scan(self, target: str = None) -> Dict[str, Any]:
                 'scan_duration': 0
             }
         }
-        
+
         # Basic scan implementation (placeholder for actual scanning logic)
         # This would integrate with the existing scanning capabilities
-        
+
         return scan_results
     except Exception as e:
         return {
@@ -233,7 +236,7 @@ def quick_scan(self, target: str = None) -> Dict[str, Any]:
             'error': str(e)
         }
 '''
-        
+
         try:
             with open('network_scanner_fixes.py', 'w', encoding='utf-8') as f:
                 f.write(missing_methods_code)
@@ -247,18 +250,18 @@ def quick_scan(self, target: str = None) -> Dict[str, Any]:
     def create_enhanced_sysadmin_copilot(self) -> bool:
         """Create enhanced SysAdmin Copilot with new capabilities"""
         self.logger.info("Creating enhanced SysAdmin Copilot...")
-        
+
         enhanced_copilot_code = '''
 class EnhancedSysAdminCopilot:
     """Enhanced SysAdmin Copilot with intelligent automation capabilities"""
-    
+
     def __init__(self, ai_manager=None):
         self.ai_manager = ai_manager
         self.knowledge_base = SystemKnowledgeBase()
         self.task_executor = SafeTaskExecutor()
         self.script_generator = MultiPlatformScriptGenerator()
         self.maintenance_planner = MaintenancePlanner()
-        
+
     def analyze_system_issue(self, description: str, system_logs: List[str] = None) -> Dict[str, Any]:
         """AI-powered system issue analysis with suggested solutions"""
         try:
@@ -272,7 +275,7 @@ class EnhancedSysAdminCopilot:
                 'diagnostic_steps': [],
                 'estimated_fix_time': 'unknown'
             }
-            
+
             # Basic issue classification
             if any(keyword in description.lower() for keyword in ['cpu', 'performance', 'slow']):
                 analysis['category'] = 'performance'
@@ -286,7 +289,7 @@ class EnhancedSysAdminCopilot:
                     'Check: ps aux --sort=-%cpu',
                     'Monitor: iostat and vmstat'
                 ]
-                
+
             elif any(keyword in description.lower() for keyword in ['memory', 'ram', 'oom']):
                 analysis['category'] = 'memory'
                 analysis['suggested_solutions'] = [
@@ -294,7 +297,7 @@ class EnhancedSysAdminCopilot:
                     'Identify memory-heavy processes',
                     'Clear caches if safe to do so'
                 ]
-                
+
             elif any(keyword in description.lower() for keyword in ['disk', 'storage', 'space']):
                 analysis['category'] = 'storage'
                 analysis['suggested_solutions'] = [
@@ -302,7 +305,7 @@ class EnhancedSysAdminCopilot:
                     'Find large files with du -sh',
                     'Clean up temporary files'
                 ]
-            
+
             # If AI manager is available, enhance analysis
             if self.ai_manager and hasattr(self.ai_manager, 'query_model'):
                 try:
@@ -314,16 +317,16 @@ class EnhancedSysAdminCopilot:
                     analysis['ai_insights'] = ai_response
                 except:
                     pass
-            
+
             return analysis
-            
+
         except Exception as e:
             return {
                 'error': str(e),
                 'timestamp': datetime.now().isoformat(),
                 'fallback': True
             }
-    
+
     def generate_maintenance_plan(self, system_state: Dict[str, Any] = None) -> Dict[str, Any]:
         """Create intelligent maintenance schedules based on system state"""
         try:
@@ -336,7 +339,7 @@ class EnhancedSysAdminCopilot:
                 'estimated_duration': '2-4 hours',
                 'recommended_schedule': 'weekly'
             }
-            
+
             # Define standard maintenance tasks
             standard_tasks = [
                 {
@@ -375,9 +378,9 @@ class EnhancedSysAdminCopilot:
                     'estimated_time': '10 minutes'
                 }
             ]
-            
+
             maintenance_plan['scheduled_tasks'] = standard_tasks
-            
+
             # Add priority tasks based on system state
             if system_state:
                 if system_state.get('disk_usage', 0) > 80:
@@ -386,22 +389,22 @@ class EnhancedSysAdminCopilot:
                         'reason': 'High disk usage detected',
                         'urgency': 'high'
                     })
-                    
+
                 if system_state.get('memory_usage', 0) > 85:
                     maintenance_plan['priority_tasks'].append({
                         'task': 'Memory Analysis',
                         'reason': 'High memory usage detected',
                         'urgency': 'medium'
                     })
-            
+
             return maintenance_plan
-            
+
         except Exception as e:
             return {
                 'error': str(e),
                 'fallback_plan': 'Basic weekly maintenance recommended'
             }
-    
+
     def generate_script(self, description: str, target_platform: str = 'auto') -> Dict[str, Any]:
         """Generate scripts for various platforms based on description"""
         try:
@@ -414,7 +417,7 @@ class EnhancedSysAdminCopilot:
                 'execution_notes': [],
                 'safety_warnings': []
             }
-            
+
             # Detect platform if auto
             if target_platform == 'auto':
                 import platform
@@ -425,24 +428,26 @@ class EnhancedSysAdminCopilot:
                     target_platform = 'bash'
                 else:
                     target_platform = 'python'
-            
+
             # Generate basic scripts based on common tasks
             if 'disk space' in description.lower() or 'cleanup' in description.lower():
                 if target_platform == 'powershell':
                     script_result['script_content'] = '''
+
+
 # Disk Space Cleanup Script (PowerShell)
 Write-Host "Starting disk cleanup..."
 
 # Clear temp files
-Get-ChildItem -Path $env:TEMP -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
+Get-ChildItem - Path $env: TEMP - Recurse | Remove-Item - Force - Recurse - ErrorAction SilentlyContinue
 Write-Host "Temporary files cleaned"
 
 # Clear Windows temp
-Get-ChildItem -Path "C:\\Windows\\Temp" -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
+Get-ChildItem - Path "C:\\Windows\\Temp" - Recurse | Remove-Item - Force - Recurse - ErrorAction SilentlyContinue
 Write-Host "Windows temp files cleaned"
 
 # Show disk usage
-Get-WmiObject -Class Win32_LogicalDisk | Select-Object DeviceID, @{Name="Size(GB)";Expression={[math]::Round($_.Size/1GB,2)}}, @{Name="FreeSpace(GB)";Expression={[math]::Round($_.FreeSpace/1GB,2)}}
+Get-WmiObject - Class Win32_LogicalDisk | Select-Object DeviceID, @ {Name = "Size(GB)"; Expression = {[math]: : Round($_.Size/1GB, 2)}}, @ {Name = "FreeSpace(GB)"; Expression = {[math]: : Round($_.FreeSpace/1GB, 2)}}
 '''
                 elif target_platform == 'bash':
                     script_result['script_content'] = '''
@@ -451,22 +456,22 @@ Get-WmiObject -Class Win32_LogicalDisk | Select-Object DeviceID, @{Name="Size(GB
 echo "Starting disk cleanup..."
 
 # Clear temp files
-sudo rm -rf /tmp/*
+sudo rm - rf / tmp/*
 echo "Temporary files cleaned"
 
 # Clear cache (be careful)
-sudo apt-get clean 2>/dev/null || yum clean all 2>/dev/null || echo "Package cache cleanup skipped"
+sudo apt-get clean 2 > /dev/null | | yum clean all 2 > /dev/null | | echo "Package cache cleanup skipped"
 
 # Show disk usage
-df -h
+df - h
 '''
-                    
+
                 script_result['safety_warnings'] = [
                     'Review script before execution',
                     'Ensure you have proper backups',
                     'Test in non-production environment first'
                 ]
-                
+
             elif 'memory' in description.lower():
                 if target_platform == 'powershell':
                     script_result['script_content'] = '''
@@ -474,21 +479,21 @@ df -h
 Write-Host "Analyzing memory usage..."
 
 # Get memory info
-Get-WmiObject -Class Win32_ComputerSystem | Select-Object TotalPhysicalMemory
-Get-Process | Sort-Object WorkingSet -Descending | Select-Object -First 10 Name, WorkingSet, CPU
+Get-WmiObject - Class Win32_ComputerSystem | Select-Object TotalPhysicalMemory
+Get-Process | Sort-Object WorkingSet - Descending | Select-Object - First 10 Name, WorkingSet, CPU
 
 # Memory usage summary
-$mem = Get-WmiObject -Class Win32_OperatingSystem
-$totalMem = [math]::Round($mem.TotalVisibleMemorySize/1KB, 2)
-$freeMem = [math]::Round($mem.FreePhysicalMemory/1KB, 2)
+$mem = Get-WmiObject - Class Win32_OperatingSystem
+$totalMem = [math]:: Round($mem.TotalVisibleMemorySize/1KB, 2)
+$freeMem = [math]:: Round($mem.FreePhysicalMemory/1KB, 2)
 $usedMem = $totalMem - $freeMem
 Write-Host "Total Memory: $totalMem GB"
 Write-Host "Used Memory: $usedMem GB"
 Write-Host "Free Memory: $freeMem GB"
 '''
-            
+
             return script_result
-            
+
         except Exception as e:
             return {
                 'error': str(e),
@@ -497,12 +502,12 @@ Write-Host "Free Memory: $freeMem GB"
 
 class SystemKnowledgeBase:
     """Knowledge base for system administration information"""
-    
+
     def __init__(self):
         self.common_issues = {}
         self.best_practices = {}
         self.command_library = {}
-    
+
     def get_solution(self, issue_type: str) -> List[str]:
         """Get solutions for common system issues"""
         solutions = {
@@ -529,17 +534,17 @@ class SystemKnowledgeBase:
 
 class SafeTaskExecutor:
     """Safe execution environment for system tasks"""
-    
+
     def __init__(self):
         self.execution_log = []
         self.safety_checks = True
-    
+
     def execute_task(self, task: Dict[str, Any], confirm: bool = True) -> Dict[str, Any]:
         """Execute system task with safety checks"""
         if confirm:
             # In a real implementation, this would prompt for user confirmation
             pass
-        
+
         return {
             'task_id': task.get('id', 'unknown'),
             'status': 'simulated',
@@ -548,7 +553,7 @@ class SafeTaskExecutor:
 
 class MultiPlatformScriptGenerator:
     """Generate scripts for multiple platforms"""
-    
+
     def generate(self, task_description: str, platform: str) -> str:
         """Generate platform-specific scripts"""
         # Implementation would be expanded based on task types
@@ -556,7 +561,7 @@ class MultiPlatformScriptGenerator:
 
 class MaintenancePlanner:
     """Intelligent maintenance planning system"""
-    
+
     def create_plan(self, system_state: Dict[str, Any]) -> Dict[str, Any]:
         """Create maintenance plan based on system state"""
         return {
@@ -565,7 +570,7 @@ class MaintenancePlanner:
             'estimated_duration': '2 hours'
         }
 '''
-        
+
         try:
             with open('enhanced_sysadmin_copilot.py', 'w', encoding='utf-8') as f:
                 f.write(enhanced_copilot_code)

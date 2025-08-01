@@ -12,18 +12,18 @@ SELF-CORRECTION CHAIN:
 """
 
 import asyncio
-import logging
-import unittest
 import json
-import time
-import sys
-import traceback
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass, asdict
-from unittest.mock import Mock, patch, AsyncMock
+import logging
 import subprocess
+import sys
+import time
+import traceback
+import unittest
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+from unittest.mock import AsyncMock, Mock, patch
 
 # Import the modules we're testing
 sys.path.append(str(Path(__file__).parent))

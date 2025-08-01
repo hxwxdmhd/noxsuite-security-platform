@@ -1,3 +1,6 @@
+import time
+import sys
+import subprocess
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -6,9 +9,6 @@ logger = get_logger(__name__)
 """
 Emergency system fix - addresses both CVE and Copilot issues
 """
-import subprocess
-import sys
-import time
 
 
 def emergency_langflow_update():
@@ -18,7 +18,8 @@ def emergency_langflow_update():
         subprocess.run(["docker", "stop", "noxsuite-langflow"], check=True)
 
         logger.info("📦 Pulling latest secure Langflow image...")
-        subprocess.run(["docker", "pull", "langflowai/langflow:latest"], check=True)
+        subprocess.run(
+            ["docker", "pull", "langflowai/langflow:latest"], check=True)
 
         logger.info("🔄 Restarting with updated container...")
         subprocess.run(["docker-compose", "up", "-d", "langflow"], check=True)
@@ -60,7 +61,8 @@ def main():
 
     # Step 3: Provide usage instructions
     logger.info("\n📋 USAGE INSTRUCTIONS:")
-    logger.info("1. Use 'throttler.execute_with_throttle(function)' for all tool calls")
+    logger.info(
+        "1. Use 'throttler.execute_with_throttle(function)' for all tool calls")
     logger.info("2. Split complex tasks using 'split_large_task()'")
     logger.info("3. Monitor tool count with 'throttler.tool_count'")
     logger.info("4. System auto-resets every 5 minutes")

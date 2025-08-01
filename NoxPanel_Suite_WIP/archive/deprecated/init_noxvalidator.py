@@ -1,6 +1,19 @@
 """
 #!/usr/bin/env python3
 """
+from typing import Dict, List, Optional, Tuple
+from pathlib import Path
+from datetime import datetime
+import zipfile
+import urllib.request
+import time
+import tempfile
+import sys
+import subprocess
+import shutil
+import platform
+import os
+import json
 init_noxvalidator.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -11,7 +24,7 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 🔍 NoxValidator - NoxPanel Health & Structure Validator (v1.0)
@@ -32,19 +45,6 @@ Features:
 - Integrates with local AI for intelligent analysis
 """
 
-import os
-import sys
-import json
-import shutil
-import platform
-import subprocess
-import urllib.request
-import zipfile
-import tempfile
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
-from datetime import datetime
-import time
 
 # --- Project Configuration ---
 
@@ -53,6 +53,7 @@ CURRENT_TIME = "2025-07-15 11:04:05"
 CURRENT_USER = "hxwxdmhd"
 
 # --- Colors for ADHD-friendly interface ---
+
 
 class Colors:
     # REASONING: Colors follows RLVR methodology for systematic validation
@@ -69,9 +70,11 @@ class Colors:
     BG_GREEN = '\033[102m'
     BG_BLUE = '\033[104m'
 
+
 def colorize(text: str, color: str) -> str:
     # REASONING: colorize implements core logic with Chain-of-Thought validation
     return f"{color}{text}{Colors.RESET}"
+
 
 def print_banner():
     # REASONING: print_banner implements core logic with Chain-of-Thought validation
@@ -91,11 +94,13 @@ def print_banner():
 """
     print(banner)
 
+
 def print_section(title: str, icon: str = "📋"):
     # REASONING: print_section implements core logic with Chain-of-Thought validation
     print(f"\n{Colors.BOLD}{Colors.BLUE}{'═' * 60}{Colors.RESET}")
     print(f"{Colors.BOLD}{Colors.BLUE}{icon} {title}{Colors.RESET}")
     print(f"{Colors.BOLD}{Colors.BLUE}{'═' * 60}{Colors.RESET}")
+
 
 def print_progress(current: int, total: int, description: str):
     # REASONING: print_progress implements core logic with Chain-of-Thought validation
@@ -105,24 +110,29 @@ def print_progress(current: int, total: int, description: str):
     bar = '█' * filled_length + '░' * (bar_length - filled_length)
     print(f"{Colors.GREEN}[{bar}] {percentage}%{Colors.RESET} {description}")
 
+
 def print_error(message: str):
     # REASONING: print_error implements core logic with Chain-of-Thought validation
     print(f"\n{Colors.BG_RED}{Colors.WHITE} ❌ ERROR {Colors.RESET}")
     print(f"{Colors.RED}🔥 {message}{Colors.RESET}\n")
 
+
 def print_success(message: str):
     # REASONING: print_success implements core logic with Chain-of-Thought validation
     print(f"{Colors.GREEN}✅ {message}{Colors.RESET}")
 
+
 def print_warning(message: str):
     # REASONING: print_warning implements core logic with Chain-of-Thought validation
     print(f"{Colors.YELLOW}⚠️  {message}{Colors.RESET}")
+
 
 def print_info(message: str):
     # REASONING: print_info implements core logic with Chain-of-Thought validation
     print(f"{Colors.CYAN}ℹ️  {message}{Colors.RESET}")
 
 # --- NoxPanel Detection and Analysis ---
+
 
 class NoxPanelAnalyzer:
     # REASONING: NoxPanelAnalyzer follows RLVR methodology for systematic validation
@@ -201,7 +211,8 @@ class NoxPanelAnalyzer:
             self.issues.extend([f"Missing file: {f}" for f in missing_files])
 
         if missing_dirs:
-            self.issues.extend([f"Missing directory: {d}" for d in missing_dirs])
+            self.issues.extend(
+                [f"Missing directory: {d}" for d in missing_dirs])
 
         return {
             "valid": len(self.issues) == 0,
@@ -229,11 +240,13 @@ class NoxPanelAnalyzer:
                 required_fields = ["name", "version", "description"]
                 for field in required_fields:
                     if field not in project_config:
-                        config_issues.append(f"project.json missing field: {field}")
+                        config_issues.append(
+                            f"project.json missing field: {field}")
 
                 if project_config.get("name") != "NoxPanel":
                 # REASONING: Variable assignment with validation criteria
-                    self.warnings.append("project.json name field is not 'NoxPanel'")
+                    self.warnings.append(
+                        "project.json name field is not 'NoxPanel'")
 
             except json.JSONDecodeError:
                 config_issues.append("project.json is not valid JSON")
@@ -246,7 +259,8 @@ class NoxPanelAnalyzer:
 
             for var in required_env_vars:
                 if f"{var}=" not in env_content:
-                    config_issues.append(f".env missing required variable: {var}")
+                    config_issues.append(
+                        f".env missing required variable: {var}")
 
             if "SECRET_KEY=dev-secret" in env_content:
                 self.warnings.append(".env still contains default SECRET_KEY")
@@ -259,7 +273,8 @@ class NoxPanelAnalyzer:
 
             for package in forbidden_packages:
                 if package in req_content:
-                    config_issues.append(f"Forbidden cloud package found: {package}")
+                    config_issues.append(
+                        f"Forbidden cloud package found: {package}")
 
         self.issues.extend(config_issues)
 
@@ -286,18 +301,21 @@ class NoxPanelAnalyzer:
 
                 # Check for docstrings
                 if 'def ' in content and '"""' not in content:
-                    quality_issues.append(f"Missing docstrings: {py_file.name}")
+                    quality_issues.append(
+                        f"Missing docstrings: {py_file.name}")
 
                 # Check for ADHD-friendly patterns
                 if len(content.splitlines()) > 100:
-                    adhd_violations.append(f"File too long (ADHD-unfriendly): {py_file.name}")
+                    adhd_violations.append(
+                        f"File too long (ADHD-unfriendly): {py_file.name}")
 
                 # Check for clear function names
                 import re
                 functions = re.findall(r'def (\w+)', content)
                 for func in functions:
                     if len(func) < 3 or not any(c.isupper() for c in func):
-                        quality_issues.append(f"Unclear function name: {func} in {py_file.name}")
+                        quality_issues.append(
+                            f"Unclear function name: {func} in {py_file.name}")
 
             except Exception as e:
                 quality_issues.append(f"Could not analyze {py_file.name}: {e}")
@@ -339,7 +357,8 @@ class NoxPanelAnalyzer:
                 if hasattr(os, 'stat') and platform.system() != "Windows":
                     stat = full_path.stat()
                     if stat.st_mode & 0o044:  # World readable
-                        security_issues.append(f"File {path} is world-readable")
+                        security_issues.append(
+                            f"File {path} is world-readable")
 
         self.issues.extend(security_issues)
 
@@ -385,10 +404,12 @@ class NoxPanelAnalyzer:
         recommendations = []
 
         if len(self.issues) > 0:
-            recommendations.append("🔧 Fix critical issues found in structure and configuration")
+            recommendations.append(
+                "🔧 Fix critical issues found in structure and configuration")
 
         if len(self.warnings) > 5:
-            recommendations.append("⚠️ Address warnings to improve ADHD-friendly design")
+            recommendations.append(
+                "⚠️ Address warnings to improve ADHD-friendly design")
 
         recommendations.extend([
             "📚 Add comprehensive docstrings to all functions",
@@ -401,6 +422,7 @@ class NoxPanelAnalyzer:
         return recommendations
 
 # --- Start Menu ---
+
 
 def show_start_menu() -> str:
     # REASONING: show_start_menu implements core logic with Chain-of-Thought validation
@@ -424,12 +446,14 @@ def show_start_menu() -> str:
         print()
 
     while True:
-        choice = input(f"{Colors.CYAN}Select an option [1-6, q]:{Colors.RESET} ").strip().lower()
+        choice = input(
+            f"{Colors.CYAN}Select an option [1-6, q]:{Colors.RESET} ").strip().lower()
         if choice in options:
             return choice
         print_error("Invalid option. Please choose 1-6 or q.")
 
 # --- Main Analysis Functions ---
+
 
 def run_analysis(choice: str, noxpanel_path: Optional[Path] = None) -> None:
     # REASONING: run_analysis implements core logic with Chain-of-Thought validation
@@ -440,13 +464,15 @@ def run_analysis(choice: str, noxpanel_path: Optional[Path] = None) -> None:
 
     if not analyzer.noxpanel_path:
         print_error("NoxPanel installation not found!")
-        print_info("Please ensure NoxPanel is installed in one of these locations:")
+        print_info(
+            "Please ensure NoxPanel is installed in one of these locations:")
         print("  - ./noxpanel/")
         print("  - ../noxpanel/")
         print("  - ~/noxpanel/")
         print("  - ~/projects/noxpanel/")
 
-        custom_path = input(f"\n{Colors.CYAN}Enter custom NoxPanel path (or press Enter to exit):{Colors.RESET} ").strip()
+        custom_path = input(
+            f"\n{Colors.CYAN}Enter custom NoxPanel path (or press Enter to exit):{Colors.RESET} ").strip()
         if custom_path:
             analyzer.noxpanel_path = Path(custom_path)
             if not analyzer._is_noxpanel_directory(analyzer.noxpanel_path):
@@ -475,17 +501,22 @@ def run_analysis(choice: str, noxpanel_path: Optional[Path] = None) -> None:
         report = analyzer.generate_report()
 
         print(f"\n{Colors.BOLD}📊 Analysis Results:{Colors.RESET}")
-        print(f"Overall Health Score: {Colors.GREEN if report['overall_health'] > 80 else Colors.YELLOW if report['overall_health'] > 60 else Colors.RED}{report['overall_health']}/100{Colors.RESET}")
+        print(
+            f"Overall Health Score: {Colors.GREEN if report['overall_health'] > 80 else Colors.YELLOW if report['overall_health'] > 60 else Colors.RED}{report['overall_health']}/100{Colors.RESET}")
 
         print(f"\n{Colors.BOLD}📋 Summary:{Colors.RESET}")
         print(f"• Issues Found: {len(analyzer.issues)}")
         print(f"• Warnings: {len(analyzer.warnings)}")
-        print(f"• Code Quality Score: {report['code_quality']['quality_score']}/100")
-        print(f"• Security Score: {report['security_check']['security_score']}/100")
-        print(f"• ADHD Compliance: {report['code_quality']['adhd_compliance']}/100")
+        print(
+            f"• Code Quality Score: {report['code_quality']['quality_score']}/100")
+        print(
+            f"• Security Score: {report['security_check']['security_score']}/100")
+        print(
+            f"• ADHD Compliance: {report['code_quality']['adhd_compliance']}/100")
 
         # Save detailed report
-        report_path = PROJECT_ROOT / "outputs" / f"noxpanel_analysis_{CURRENT_TIME.replace(':', '-').replace(' ', '_')}.json"
+        report_path = PROJECT_ROOT / "outputs" / \
+            f"noxpanel_analysis_{CURRENT_TIME.replace(':', '-').replace(' ', '_')}.json"
         report_path.parent.mkdir(parents=True, exist_ok=True)
         with open(report_path, 'w') as f:
             json.dump(report, f, indent=2)
@@ -507,7 +538,8 @@ def run_analysis(choice: str, noxpanel_path: Optional[Path] = None) -> None:
         print_section("Security Audit", "🔒")
         security = analyzer.check_security()
 
-        print(f"Security Score: {Colors.GREEN if security['security_score'] > 80 else Colors.RED}{security['security_score']}/100{Colors.RESET}")
+        print(
+            f"Security Score: {Colors.GREEN if security['security_score'] > 80 else Colors.RED}{security['security_score']}/100{Colors.RESET}")
 
         if security["issues"]:
             print_warning("Security issues found:")
@@ -520,7 +552,8 @@ def run_analysis(choice: str, noxpanel_path: Optional[Path] = None) -> None:
         print_section("ADHD Compliance Check", "🧠")
         quality = analyzer.analyze_code_quality()
 
-        print(f"ADHD Compliance Score: {Colors.GREEN if quality['adhd_compliance'] > 80 else Colors.YELLOW if quality['adhd_compliance'] > 60 else Colors.RED}{quality['adhd_compliance']}/100{Colors.RESET}")
+        print(
+            f"ADHD Compliance Score: {Colors.GREEN if quality['adhd_compliance'] > 80 else Colors.YELLOW if quality['adhd_compliance'] > 60 else Colors.RED}{quality['adhd_compliance']}/100{Colors.RESET}")
 
         if quality["adhd_violations"]:
             print_warning("ADHD-friendly violations found:")
@@ -535,7 +568,8 @@ def run_analysis(choice: str, noxpanel_path: Optional[Path] = None) -> None:
 
         # Generate HTML report
         html_report = generate_html_report(report)
-        report_path = PROJECT_ROOT / "outputs" / f"noxpanel_report_{CURRENT_TIME.replace(':', '-').replace(' ', '_')}.html"
+        report_path = PROJECT_ROOT / "outputs" / \
+            f"noxpanel_report_{CURRENT_TIME.replace(':', '-').replace(' ', '_')}.html"
         report_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(report_path, 'w') as f:
@@ -550,6 +584,7 @@ def run_analysis(choice: str, noxpanel_path: Optional[Path] = None) -> None:
             print_info("Report opened in your default browser")
         except:
             print_info("Please open the HTML file manually in your browser")
+
 
 def generate_html_report(report: Dict[str, any]) -> str:
     # REASONING: generate_html_report implements core logic with Chain-of-Thought validation
@@ -661,7 +696,8 @@ def generate_html_report(report: Dict[str, any]) -> str:
 
         <div class="section">
             <h2>🎯 Recommendations</h2>
-            {''.join([f'<div class="recommendation">{rec}</div>' for rec in report['recommendations']])}
+            {''.join(
+                [f'<div class="recommendation">{rec}</div>' for rec in report['recommendations']])}
         </div>
 
         <div class="section">
@@ -675,6 +711,7 @@ def generate_html_report(report: Dict[str, any]) -> str:
 """
 
 # --- Project Files ---
+
 
 FOLDERS = [
     "analyzer/",

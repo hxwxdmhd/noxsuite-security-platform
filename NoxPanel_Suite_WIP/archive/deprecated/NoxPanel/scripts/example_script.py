@@ -4,10 +4,11 @@ NoxPanel Example Script
 Demonstrates basic script structure for NoxPanel integration
 """
 
+import os
 import sys
 import time
-import os
 from datetime import datetime
+
 
 def main():
     """

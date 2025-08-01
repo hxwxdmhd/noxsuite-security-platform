@@ -4,10 +4,12 @@ API bindings for plugin development
 """
 
 import json
-import requests
-from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+import requests
+
 
 @dataclass
 class PluginMetadata:

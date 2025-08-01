@@ -1,3 +1,12 @@
+from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path
+import time
+import sys
+import subprocess
+import os
+import logging
+import json
+import datetime
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -8,21 +17,13 @@ NoxGuard System Status Check
 Provides comprehensive system status monitoring integrating Docker, VS Code Copilot tools,
 and multi-agent coordination.
 """
-import datetime
-import json
-import logging
-import os
-import subprocess
-import sys
-import time
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("system_status.log"), logging.StreamHandler()],
+    handlers=[logging.FileHandler(
+        "system_status.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger("SystemStatusCheck")
 
@@ -141,7 +142,8 @@ class SystemStatusMonitor:
 
                     # Get Docker info with timeout
                     docker_info = client.info()
-                    result["version"] = docker_info.get("ServerVersion", "Unknown")
+                    result["version"] = docker_info.get(
+                        "ServerVersion", "Unknown")
                     result["containers"] = {
                         "total": docker_info.get("Containers", 0),
                         "running": docker_info.get("ContainersRunning", 0),
@@ -549,7 +551,8 @@ class SystemStatusMonitor:
             logger.info("Agent coordination check completed")
         except Exception as e:
             logger.error(f"Agent coordination check failed: {e}")
-            self.status_data["agent_coordination"]["error"] = f"Check failed: {str(e)}"
+            self.status_data["agent_coordination"][
+                "error"] = f"Check failed: {str(e)}"
 
         try:
             self.check_resources()
@@ -559,12 +562,14 @@ class SystemStatusMonitor:
             self.status_data["resources"]["error"] = f"Check failed: {str(e)}"
 
         # Add completion timestamp
-        self.status_data["check_completed_at"] = datetime.datetime.now().isoformat()
+        self.status_data["check_completed_at"] = datetime.datetime.now(
+        ).isoformat()
 
         # Save results
         self.save_results()
 
-        logger.info(f"Status check completed. Results saved to {self.output_file}")
+        logger.info(
+            f"Status check completed. Results saved to {self.output_file}")
         return self.status_data
 
     def save_results(self):
@@ -608,7 +613,8 @@ class SystemStatusMonitor:
                     logger.info(
                         f"Version: {self.status_data['docker_status']['version']}"
                     )
-                    containers = self.status_data["docker_status"].get("containers", {})
+                    containers = self.status_data["docker_status"].get(
+                        "containers", {})
                     logger.info(
                         f"Containers: {containers.get('running', 0)} running, {containers.get('stopped', 0)} stopped"
                     )
@@ -633,7 +639,8 @@ class SystemStatusMonitor:
                     count = self.status_data["copilot_tools"]["current_count"]
                     limit = self.status_data["copilot_tools"]["max_limit"]
                     percentage = self.status_data["copilot_tools"]["usage_percentage"]
-                    logger.info(f"Tools Usage: {count}/{limit} ({percentage:.1f}%)")
+                    logger.info(
+                        f"Tools Usage: {count}/{limit} ({percentage:.1f}%)")
 
                     # Show warning if applicable
                     if "warning" in self.status_data["copilot_tools"]:
@@ -653,7 +660,8 @@ class SystemStatusMonitor:
                         "throttling_active", False
                     )
                     logger.info(
-                        f"Throttling: {throttling}" + (" (Active)" if active else "")
+                        f"Throttling: {throttling}" +
+                        (" (Active)" if active else "")
                     )
 
             # Agent coordination
@@ -701,7 +709,8 @@ class SystemStatusMonitor:
             logger.info("\nSYSTEM RESOURCES")
             if "resources" in self.status_data:
                 if "error" in self.status_data["resources"]:
-                    logger.info(f"[!] Error: {self.status_data['resources']['error']}")
+                    logger.info(
+                        f"[!] Error: {self.status_data['resources']['error']}")
                 else:
                     if "cpu_usage" in self.status_data["resources"]:
                         logger.info(
@@ -723,7 +732,8 @@ class SystemStatusMonitor:
             logger.info("\n" + "=" * 50)
             logger.info("NOXGUARD SYSTEM STATUS SUMMARY (MINIMAL FORMAT)")
             logger.info("=" * 50)
-            logger.info(f"\nStatus check completed with possible errors: {str(e)}")
+            logger.info(
+                f"\nStatus check completed with possible errors: {str(e)}")
             logger.info(f"Results saved to {self.output_file}")
             logger.info("\n" + "=" * 50)
 
@@ -733,7 +743,8 @@ def main():
     import argparse
     import signal
 
-    parser = argparse.ArgumentParser(description="NoxGuard System Status Check")
+    parser = argparse.ArgumentParser(
+        description="NoxGuard System Status Check")
     parser.add_argument(
         "--output", default="system_status.json", help="Output file path"
     )
@@ -747,7 +758,8 @@ def main():
 
     # Setup global timeout handler
     def timeout_handler(signum, frame):
-        logger.error(f"Global timeout of {args.timeout} seconds reached. Exiting.")
+        logger.error(
+            f"Global timeout of {args.timeout} seconds reached. Exiting.")
         sys.exit(1)
 
     # Register timeout handler
@@ -778,7 +790,8 @@ def main():
         if "monitor" in locals():
             try:
                 monitor.save_results()
-                logger.info(f"Partial results saved to {args.output} despite error")
+                logger.info(
+                    f"Partial results saved to {args.output} despite error")
 
                 if not args.quiet:
                     monitor.print_summary()

@@ -3,23 +3,26 @@ NoxPanel v5.0 - Integrated Flask Application
 Main application with enhanced security, performance, and modular architecture
 """
 
-import os
-import sys
 import logging
+import os
+import secrets
+import sys
 import time
 from pathlib import Path
-from typing import Dict, Any, Optional
-from flask import Flask, render_template, request, jsonify, g, Response
-from flask_cors import CORS
+from typing import Any, Dict, Optional
+
 from dotenv import load_dotenv
-import secrets
+from flask import Flask, Response, g, jsonify, render_template, request
+from flask_cors import CORS
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from noxcore.database_pool import DatabaseConnectionPool
+
 # Import new security and performance systems
 from noxcore.security_config import EnvironmentSecurityManager
-from noxcore.database_pool import DatabaseConnectionPool
+
 
 class NetworkInterface:
     def _get_hostname(self, ip):
@@ -46,6 +49,7 @@ class NetworkInterface:
         """Get local IP address"""
         try:
             import socket
+
             # Connect to a remote address to get local IP
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
                 s.connect(("8.8.8.8", 80))
@@ -111,17 +115,19 @@ class NetworkInterface:
         logger.info("=" * 60)
         logger.info(f"[BOT] NoxPanel v5.0 - System Status Summary")
         logger.info("=" * 60)from noxcore.blueprint_registry import BlueprintRegistry
+from noxcore.auth import auth_required, create_user, verify_user
+from noxcore.connection_manager import init_connection_manager
 from noxcore.plugin_sandbox import SecurePluginLoader
 from noxcore.rate_limiter import (
-    get_rate_limiter, rate_limit, add_rate_limit_headers,
-    RateLimitRule
+    RateLimitRule,
+    add_rate_limit_headers,
+    get_rate_limiter,
+    rate_limit,
 )
-from noxcore.security_headers import init_security_headers
-from noxcore.connection_manager import init_connection_manager
 
 # Import existing core modules
 from noxcore.runner import run_script
-from noxcore.auth import auth_required, create_user, verify_user
+from noxcore.security_headers import init_security_headers
 
 # Load environment variables
 load_dotenv()
@@ -566,8 +572,8 @@ class NoxPanelApp:
         @auth_required
         def infrastructure_network_scan():
             """Discover network devices and topology"""
-            import subprocess
             import ipaddress
+            import subprocess
             import threading
             from concurrent.futures import ThreadPoolExecutor
 

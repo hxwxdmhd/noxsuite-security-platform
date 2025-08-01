@@ -13,36 +13,39 @@ Target: 99% Uptime, Secure Containers, Real-Time Monitoring Active
 System Health Target: >= 98%
 """
 
-import os
-import sys
-import json
-import time
-import logging
-import subprocess
-import docker
-import requests
-import yaml
 import ipaddress
+import json
+import logging
+import os
+import subprocess
+import sys
+import threading
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-import threading
+
 import psutil
+import requests
+import yaml
+
+import docker
 
 # Configure logging with ASCII-only output
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler('production_deployment.log', encoding='utf-8'),
-        logging.StreamHandler(sys.stdout)
-    ]
+        logging.FileHandler("production_deployment.log", encoding="utf-8"),
+        logging.StreamHandler(sys.stdout),
+    ],
 )
 logger = logging.getLogger(__name__)
 
+
 class SimplifiedProductionEngine:
     """Simplified production deployment focusing on core services"""
-    
+
     def __init__(self):
         self.base_dir = Path(__file__).parent
         self.deployment_start = datetime.now()
@@ -52,27 +55,27 @@ class SimplifiedProductionEngine:
         self.uptime_target = 99.0
         self.health_target = 98.0
         self.monitoring_active = False
-        
+
         # Core production services (simplified)
         self.services = {
             "noxguard-backend": {
                 "port": 8000,
                 "health_endpoint": "/health",
-                "container_name": "noxguard-api"
+                "container_name": "noxguard-api",
             },
             "noxguard-monitor": {
                 "port": 8001,
                 "health_endpoint": "/status",
-                "container_name": "noxguard-monitor"
-            }
+                "container_name": "noxguard-monitor",
+            },
         }
-        
+
         # Monitoring services
         self.monitoring_services = {
             "prometheus": {"port": 9090, "container_name": "noxguard-prometheus"},
-            "grafana": {"port": 3001, "container_name": "noxguard-grafana"}
+            "grafana": {"port": 3001, "container_name": "noxguard-grafana"},
         }
-        
+
         self.deployment_results = {
             "timestamp": self.deployment_start.isoformat(),
             "phase": "simplified_production_deployment",
@@ -80,35 +83,35 @@ class SimplifiedProductionEngine:
             "monitoring_configured": False,
             "security_hardened": False,
             "validation_results": {},
-            "final_health": 0.0
+            "final_health": 0.0,
         }
-        
+
     def initialize_docker(self) -> bool:
         """Initialize Docker client and validate environment"""
         try:
             logger.info("DOCKER: Initializing Docker environment")
             self.docker_client = docker.from_env()
-            
+
             version = self.docker_client.version()
             logger.info(f"Docker version: {version.get('Version', 'Unknown')}")
-            
+
             self.docker_client.ping()
             logger.info("SUCCESS: Docker daemon accessible")
             return True
-            
+
         except Exception as e:
             logger.error(f"FAILED: Docker initialization: {e}")
             return False
-            
+
     def create_minimal_services(self) -> bool:
         """Create minimal production services"""
         try:
             logger.info("SERVICES: Creating minimal production services")
-            
+
             # Create backend service directory
             backend_dir = self.base_dir / "production_backend"
             backend_dir.mkdir(exist_ok=True)
-            
+
             # Minimal FastAPI backend
             main_py = """from fastapi import FastAPI, Response
 from fastapi.responses import JSONResponse
@@ -195,20 +198,20 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
 """
-            
-            with open(backend_dir / "main.py", 'w') as f:
+
+            with open(backend_dir / "main.py", "w") as f:
                 f.write(main_py)
-                
+
             # Requirements for backend
             requirements = """fastapi==0.104.1
 uvicorn[standard]==0.24.0
 python-multipart==0.0.6
 psutil==5.9.6
 """
-            
-            with open(backend_dir / "requirements.txt", 'w') as f:
+
+            with open(backend_dir / "requirements.txt", "w") as f:
                 f.write(requirements)
-                
+
             # Backend Dockerfile
             dockerfile = """FROM python:3.11-slim
 
@@ -236,14 +239,14 @@ EXPOSE 8000
 
 CMD ["python", "main.py"]
 """
-            
-            with open(backend_dir / "Dockerfile", 'w') as f:
+
+            with open(backend_dir / "Dockerfile", "w") as f:
                 f.write(dockerfile)
-                
+
             # Create monitoring service
             monitor_dir = self.base_dir / "production_monitor"
             monitor_dir.mkdir(exist_ok=True)
-            
+
             # Simple monitoring service
             monitor_py = """from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -283,28 +286,33 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
 """
-            
-            with open(monitor_dir / "main.py", 'w') as f:
+
+            with open(monitor_dir / "main.py", "w") as f:
                 f.write(monitor_py)
-                
-            with open(monitor_dir / "requirements.txt", 'w') as f:
+
+            with open(monitor_dir / "requirements.txt", "w") as f:
                 f.write(requirements)
-                
-            with open(monitor_dir / "Dockerfile", 'w') as f:
-                f.write(dockerfile.replace("8000", "8001").replace("CMD [\"python\", \"main.py\"]", "CMD [\"python\", \"-m\", \"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8001\"]"))
-                
+
+            with open(monitor_dir / "Dockerfile", "w") as f:
+                f.write(
+                    dockerfile.replace("8000", "8001").replace(
+                        'CMD ["python", "main.py"]',
+                        'CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]',
+                    )
+                )
+
             logger.info("SUCCESS: Minimal production services created")
             return True
-            
+
         except Exception as e:
             logger.error(f"FAILED: Service creation: {e}")
             return False
-            
+
     def create_production_compose(self) -> bool:
         """Create simplified production Docker Compose"""
         try:
             logger.info("COMPOSE: Creating production configuration")
-            
+
             compose_config = {
                 "services": {
                     "noxguard-api": {
@@ -316,11 +324,16 @@ if __name__ == "__main__":
                         "restart": "unless-stopped",
                         "security_opt": ["no-new-privileges:true"],
                         "healthcheck": {
-                            "test": ["CMD", "curl", "-f", "http://localhost:8000/health"],
+                            "test": [
+                                "CMD",
+                                "curl",
+                                "-f",
+                                "http://localhost:8000/health",
+                            ],
                             "interval": "30s",
                             "timeout": "10s",
-                            "retries": 3
-                        }
+                            "retries": 3,
+                        },
                     },
                     "noxguard-monitor": {
                         "build": "./production_monitor",
@@ -330,7 +343,7 @@ if __name__ == "__main__":
                         "networks": ["noxguard-net"],
                         "restart": "unless-stopped",
                         "security_opt": ["no-new-privileges:true"],
-                        "depends_on": ["noxguard-api"]
+                        "depends_on": ["noxguard-api"],
                     },
                     "prometheus": {
                         "image": "prom/prometheus:latest",
@@ -343,10 +356,10 @@ if __name__ == "__main__":
                             "--config.file=/etc/prometheus/prometheus.yml",
                             "--storage.tsdb.path=/prometheus",
                             "--storage.tsdb.retention.time=200h",
-                            "--web.enable-lifecycle"
+                            "--web.enable-lifecycle",
                         ],
                         "networks": ["noxguard-net"],
-                        "restart": "unless-stopped"
+                        "restart": "unless-stopped",
                     },
                     "grafana": {
                         "image": "grafana/grafana-oss:latest",
@@ -355,33 +368,32 @@ if __name__ == "__main__":
                         "environment": ["GF_SECURITY_ADMIN_PASSWORD=noxguard123"],
                         "networks": ["noxguard-net"],
                         "restart": "unless-stopped",
-                        "depends_on": ["prometheus"]
-                    }
+                        "depends_on": ["prometheus"],
+                    },
                 },
-                "networks": {
-                    "noxguard-net": {"driver": "bridge"}
-                }
+                "networks": {"noxguard-net": {"driver": "bridge"}},
             }
-            
+
             compose_path = self.base_dir / "docker-compose-prod.yml"
-            with open(compose_path, 'w') as f:
-                yaml.dump(compose_config, f, default_flow_style=False, indent=2)
-                
+            with open(compose_path, "w") as f:
+                yaml.dump(compose_config, f,
+                          default_flow_style=False, indent=2)
+
             logger.info(f"SUCCESS: Production compose created: {compose_path}")
             return True
-            
+
         except Exception as e:
             logger.error(f"FAILED: Compose creation: {e}")
             return False
-            
+
     def setup_monitoring(self) -> bool:
         """Setup basic monitoring configuration"""
         try:
             logger.info("MONITORING: Setting up configuration")
-            
+
             monitoring_dir = self.base_dir / "monitoring"
             monitoring_dir.mkdir(exist_ok=True)
-            
+
             prometheus_config = {
                 "global": {"scrape_interval": "15s"},
                 "scrape_configs": [
@@ -389,51 +401,65 @@ if __name__ == "__main__":
                         "job_name": "noxguard-api",
                         "static_configs": [{"targets": ["noxguard-api:8000"]}],
                         "metrics_path": "/health",
-                        "scrape_interval": "30s"
+                        "scrape_interval": "30s",
                     },
                     {
                         "job_name": "noxguard-monitor",
                         "static_configs": [{"targets": ["noxguard-monitor:8001"]}],
                         "metrics_path": "/status",
-                        "scrape_interval": "30s"
-                    }
-                ]
+                        "scrape_interval": "30s",
+                    },
+                ],
             }
-            
-            with open(monitoring_dir / "prometheus.yml", 'w') as f:
-                yaml.dump(prometheus_config, f, default_flow_style=False, indent=2)
-                
+
+            with open(monitoring_dir / "prometheus.yml", "w") as f:
+                yaml.dump(prometheus_config, f,
+                          default_flow_style=False, indent=2)
+
             logger.info("SUCCESS: Monitoring configured")
             return True
-            
+
         except Exception as e:
             logger.error(f"FAILED: Monitoring setup: {e}")
             return False
-            
+
     def deploy_production_stack(self) -> bool:
         """Deploy simplified production stack"""
         try:
             logger.info("DEPLOY: Starting production deployment")
-            
+
             # Stop existing containers
             try:
                 subprocess.run(
                     ["docker-compose", "-f", "docker-compose-prod.yml", "down"],
-                    cwd=self.base_dir, capture_output=True, text=True, timeout=60
+                    cwd=self.base_dir,
+                    capture_output=True,
+                    text=True,
+                    timeout=60,
                 )
             except:
                 pass
-            
+
             # Deploy production stack
             result = subprocess.run(
-                ["docker-compose", "-f", "docker-compose-prod.yml", "up", "-d", "--build"],
-                cwd=self.base_dir, capture_output=True, text=True, timeout=300
+                [
+                    "docker-compose",
+                    "-f",
+                    "docker-compose-prod.yml",
+                    "up",
+                    "-d",
+                    "--build",
+                ],
+                cwd=self.base_dir,
+                capture_output=True,
+                text=True,
+                timeout=300,
             )
-            
+
             if result.returncode == 0:
                 logger.info("SUCCESS: Production stack deployed")
                 self.deployment_status = "DEPLOYED"
-                
+
                 # Wait for services to initialize
                 logger.info("Waiting for services to start...")
                 time.sleep(30)
@@ -441,67 +467,73 @@ if __name__ == "__main__":
             else:
                 logger.error(f"FAILED: Deployment error: {result.stderr}")
                 return False
-                
+
         except Exception as e:
             logger.error(f"FAILED: Deployment exception: {e}")
             return False
-            
+
     def validate_service_health(self, service_name: str, config: dict) -> dict:
         """Validate service health"""
         result = {
             "service": service_name,
             "status": "UNKNOWN",
             "response_time": 0,
-            "container_running": False
+            "container_running": False,
         }
-        
+
         try:
             # Check container
             try:
-                container = self.docker_client.containers.get(config["container_name"])
+                container = self.docker_client.containers.get(
+                    config["container_name"])
                 result["container_running"] = container.status == "running"
-                logger.info(f"Container {config['container_name']}: {container.status}")
+                logger.info(
+                    f"Container {config['container_name']}: {container.status}")
             except:
                 result["container_running"] = False
-                
+
             # Check HTTP endpoint
             start_time = time.time()
             try:
                 response = requests.get(
                     f"http://localhost:{config['port']}{config['health_endpoint']}",
-                    timeout=10
+                    timeout=10,
                 )
                 result["response_time"] = time.time() - start_time
-                result["status"] = "HEALTHY" if response.status_code == 200 else "UNHEALTHY"
-                logger.info(f"Service {service_name}: {result['status']} ({result['response_time']:.2f}s)")
+                result["status"] = (
+                    "HEALTHY" if response.status_code == 200 else "UNHEALTHY"
+                )
+                logger.info(
+                    f"Service {service_name}: {result['status']} ({result['response_time']:.2f}s)"
+                )
             except Exception as e:
                 result["status"] = "UNREACHABLE"
                 logger.warning(f"Service {service_name} unreachable: {e}")
-                
+
         except Exception as e:
             logger.error(f"Health check failed for {service_name}: {e}")
-            
+
         return result
-        
+
     def run_comprehensive_validation(self) -> dict:
         """Run comprehensive production validation"""
         logger.info("VALIDATE: Running production validation")
-        
+
         validation_results = {
             "timestamp": datetime.now().isoformat(),
             "services": {},
             "monitoring": {},
-            "overall_health": 0.0
+            "overall_health": 0.0,
         }
-        
+
         total_score = 0
         max_score = 0
-        
+
         # Validate core services
         for service_name, config in self.services.items():
             health_result = self.validate_service_health(service_name, config)
             validation_results["services"][service_name] = health_result
-            
+
             service_score = 0
             if health_result["container_running"]:
                 service_score += 40
@@ -509,48 +541,59 @@ if __name__ == "__main__":
                 service_score += 50
             if health_result["response_time"] < 2.0:
                 service_score += 10
-                
+
             total_score += service_score
             max_score += 100
-            
+
         # Validate monitoring
         for service_name, config in self.monitoring_services.items():
             try:
-                response = requests.get(f"http://localhost:{config['port']}", timeout=10)
+                response = requests.get(
+                    f"http://localhost:{config['port']}", timeout=10
+                )
                 validation_results["monitoring"][service_name] = {
                     "status": "HEALTHY" if response.status_code == 200 else "UNHEALTHY",
-                    "accessible": True
+                    "accessible": True,
                 }
                 total_score += 50
                 logger.info(f"Monitoring {service_name}: HEALTHY")
             except Exception as e:
                 validation_results["monitoring"][service_name] = {
                     "status": "UNREACHABLE",
-                    "accessible": False
+                    "accessible": False,
                 }
                 logger.warning(f"Monitoring {service_name}: UNREACHABLE")
             max_score += 50
-            
+
         # Calculate overall health
-        validation_results["overall_health"] = (total_score / max_score) * 100 if max_score > 0 else 0
+        validation_results["overall_health"] = (
+            (total_score / max_score) * 100 if max_score > 0 else 0
+        )
         self.system_health = validation_results["overall_health"]
-        
-        logger.info(f"SUCCESS: Validation complete. Health: {self.system_health:.1f}%")
+
+        logger.info(
+            f"SUCCESS: Validation complete. Health: {self.system_health:.1f}%")
         return validation_results
-        
+
     def generate_production_report(self) -> str:
         """Generate production deployment report"""
         try:
             logger.info("REPORT: Generating production report")
-            
-            uptime_hours = (datetime.now() - self.deployment_start).total_seconds() / 3600
-            uptime_percentage = min(99.9, max(95.0, 98.5))  # Simulated high uptime
-            
+
+            uptime_hours = (
+                datetime.now() - self.deployment_start
+            ).total_seconds() / 3600
+            # Simulated high uptime
+            uptime_percentage = min(99.9, max(95.0, 98.5))
+
             report = {
                 "simplified_production_report": {
                     "timestamp": datetime.now().isoformat(),
                     "deployment_start": self.deployment_start.isoformat(),
-                    "deployment_duration_minutes": (datetime.now() - self.deployment_start).total_seconds() / 60,
+                    "deployment_duration_minutes": (
+                        datetime.now() - self.deployment_start
+                    ).total_seconds()
+                    / 60,
                     "deployment_status": self.deployment_status,
                     "system_health": self.system_health,
                     "uptime_percentage": uptime_percentage,
@@ -559,69 +602,75 @@ if __name__ == "__main__":
                         "uptime_achieved": uptime_percentage >= self.uptime_target,
                         "health_target": self.health_target,
                         "health_achieved": self.system_health >= self.health_target,
-                        "monitoring_active": self.monitoring_active
+                        "monitoring_active": self.monitoring_active,
                     },
                     "services_deployed": list(self.services.keys()),
                     "monitoring_services": list(self.monitoring_services.keys()),
                     "security_features": {
                         "container_security": "hardened",
                         "non_root_execution": True,
-                        "network_isolation": True
+                        "network_isolation": True,
                     },
-                    "validation_results": self.deployment_results.get("validation_results", {}),
-                    "production_readiness": "READY" if self.system_health >= self.health_target else "CONDITIONAL"
+                    "validation_results": self.deployment_results.get(
+                        "validation_results", {}
+                    ),
+                    "production_readiness": (
+                        "READY"
+                        if self.system_health >= self.health_target
+                        else "CONDITIONAL"
+                    ),
                 }
             }
-            
+
             report_path = self.base_dir / "simplified_prod_report.json"
-            with open(report_path, 'w') as f:
+            with open(report_path, "w") as f:
                 json.dump(report, f, indent=2)
-                
+
             logger.info(f"SUCCESS: Report saved: {report_path}")
             return str(report_path)
-            
+
         except Exception as e:
             logger.error(f"FAILED: Report generation: {e}")
             return ""
-            
+
     def run_deployment(self) -> dict:
         """Execute simplified production deployment"""
         logger.info("STARTING: Simplified Production Deployment")
         logger.info("=" * 60)
-        
+
         start_time = time.time()
-        
+
         try:
             # Phase 1: Initialize
             logger.info("Phase 1: Docker initialization")
             if not self.initialize_docker():
                 raise Exception("Docker initialization failed")
-                
+
             # Phase 2: Create services
             logger.info("Phase 2: Service creation")
             if not self.create_minimal_services():
                 raise Exception("Service creation failed")
-                
+
             # Phase 3: Setup monitoring
             logger.info("Phase 3: Monitoring setup")
             if not self.setup_monitoring():
                 raise Exception("Monitoring setup failed")
-                
+
             # Phase 4: Create compose
             logger.info("Phase 4: Compose configuration")
             if not self.create_production_compose():
                 raise Exception("Compose creation failed")
-                
+
             # Phase 5: Deploy
             logger.info("Phase 5: Production deployment")
             if not self.deploy_production_stack():
                 raise Exception("Deployment failed")
-                
+
             # Phase 6: Validate
             logger.info("Phase 6: Validation")
             validation_results = self.run_comprehensive_validation()
             self.deployment_results["validation_results"] = validation_results
-            
+
             # Update status
             if self.system_health >= self.health_target:
                 self.deployment_status = "PRODUCTION_READY"
@@ -629,13 +678,13 @@ if __name__ == "__main__":
             else:
                 self.deployment_status = "CONDITIONAL"
                 self.monitoring_active = True
-                
+
             # Phase 7: Report
             logger.info("Phase 7: Report generation")
             report_path = self.generate_production_report()
-            
+
             execution_time = time.time() - start_time
-            
+
             final_results = {
                 "status": self.deployment_status,
                 "system_health": self.system_health,
@@ -644,48 +693,63 @@ if __name__ == "__main__":
                 "services_deployed": len(self.services),
                 "monitoring_deployed": len(self.monitoring_services),
                 "report_path": report_path,
-                "recommendation": "PRODUCTION_READY" if self.system_health >= self.health_target else "NEEDS_REVIEW",
+                "recommendation": (
+                    "PRODUCTION_READY"
+                    if self.system_health >= self.health_target
+                    else "NEEDS_REVIEW"
+                ),
                 "uptime_achieved": True,
-                "security_hardened": True
+                "security_hardened": True,
             }
-            
+
             logger.info("=" * 60)
             logger.info("SUCCESS: Simplified Production Deployment Complete")
             logger.info(f"Status: {final_results['status']}")
-            logger.info(f"System Health: {final_results['system_health']:.1f}%")
-            logger.info(f"Monitoring: {'ACTIVE' if final_results['monitoring_active'] else 'INACTIVE'}")
-            logger.info(f"Services: {final_results['services_deployed']} core + {final_results['monitoring_deployed']} monitoring")
-            logger.info(f"Execution Time: {final_results['execution_time_seconds']:.1f}s")
+            logger.info(
+                f"System Health: {final_results['system_health']:.1f}%")
+            logger.info(
+                f"Monitoring: {'ACTIVE' if final_results['monitoring_active'] else 'INACTIVE'}"
+            )
+            logger.info(
+                f"Services: {final_results['services_deployed']} core + {final_results['monitoring_deployed']} monitoring"
+            )
+            logger.info(
+                f"Execution Time: {final_results['execution_time_seconds']:.1f}s"
+            )
             logger.info("=" * 60)
-            
+
             return final_results
-            
+
         except Exception as e:
             logger.error(f"FAILED: Production deployment: {e}")
             return {
                 "status": "FAILED",
                 "error": str(e),
                 "system_health": self.system_health,
-                "execution_time_seconds": time.time() - start_time
+                "execution_time_seconds": time.time() - start_time,
             }
+
 
 def main():
     """Main execution"""
     engine = SimplifiedProductionEngine()
     results = engine.run_deployment()
-    
+
     print("\n" + "=" * 50)
     print("SIMPLIFIED PRODUCTION DEPLOYMENT SUMMARY")
     print("=" * 50)
     print(f"Status: {results.get('status', 'UNKNOWN')}")
     print(f"System Health: {results.get('system_health', 0):.1f}%")
-    print(f"Monitoring: {'ACTIVE' if results.get('monitoring_active') else 'INACTIVE'}")
+    print(
+        f"Monitoring: {'ACTIVE' if results.get('monitoring_active') else 'INACTIVE'}")
     print(f"Services: {results.get('services_deployed', 0)} deployed")
-    print(f"Security: {'HARDENED' if results.get('security_hardened') else 'BASIC'}")
+    print(
+        f"Security: {'HARDENED' if results.get('security_hardened') else 'BASIC'}")
     print(f"Recommendation: {results.get('recommendation', 'UNKNOWN')}")
     print("=" * 50)
-    
+
     return results
+
 
 if __name__ == "__main__":
     main()

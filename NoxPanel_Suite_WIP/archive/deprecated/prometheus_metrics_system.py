@@ -13,16 +13,16 @@ This system provides Prometheus-compatible metrics collection:
 Essential for production monitoring and observability
 """
 
-import os
-import time
+import json
 import logging
+import os
+import sys
 import threading
-from typing import Dict, List, Optional, Any, Callable
+import time
+from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from datetime import datetime
-from collections import defaultdict, deque
-import json
-import sys
+from typing import Any, Callable, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -191,7 +191,7 @@ class MetricsCollector:
         """Collect system performance metrics"""
         try:
             import psutil
-            
+
             # CPU usage
             cpu_percent = psutil.cpu_percent(interval=None)
             self.set_gauge("heimnetz_server_cpu_usage_percent", cpu_percent)
@@ -458,8 +458,9 @@ class StressTestSuite:
     def run_memory_stress_test(self, target_function: Callable, 
                               max_memory_mb: int = 100) -> Dict[str, Any]:
         """Run memory stress test"""
-        import psutil
         import gc
+
+        import psutil
         
         self.logger.info(f"Starting memory stress test (max: {max_memory_mb}MB)")
         

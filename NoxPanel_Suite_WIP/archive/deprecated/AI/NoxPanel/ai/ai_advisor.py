@@ -4,14 +4,15 @@
 Connects to local Ollama for code suggestions, template improvements, and automation advice
 """
 
-import os
 import json
 import logging
-import requests
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Optional, Any
+import os
 import re
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import requests
 
 logger = logging.getLogger(__name__)
 

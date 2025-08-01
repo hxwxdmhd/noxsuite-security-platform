@@ -13,22 +13,22 @@ This template provides a secure foundation for plugin development with:
 DO NOT REMOVE SECURITY HOOKS - Required for Audit 3 compliance
 """
 
-import os
-import sys
-import time
 import logging
-import threading
-import traceback
-from typing import Dict, List, Optional, Any, Callable
-from dataclasses import dataclass, field
-from abc import ABC, abstractmethod
-from datetime import datetime
+import os
 import resource
 import signal
+import sys
+import threading
+import time
+import traceback
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any, Callable, Dict, List, Optional
 
 # Import the plugin interface
 try:
-    from unified_plugin_system_clean import PluginInterface, PluginInfo
+    from unified_plugin_system_clean import PluginInfo, PluginInterface
     PLUGIN_SYSTEM_AVAILABLE = True
 except ImportError:
     # Fallback interface if not available

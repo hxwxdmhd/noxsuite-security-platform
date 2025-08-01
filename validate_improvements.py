@@ -1,3 +1,8 @@
+from pathlib import Path
+from datetime import datetime, timezone
+import sys
+import subprocess
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -8,11 +13,6 @@ NoxPanel Improvements Validation Script
 Validates and reports on the improvements made to the codebase
 """
 
-import json
-import subprocess
-import sys
-from datetime import datetime, timezone
-from pathlib import Path
 
 # Add the project root to Python path
 project_root = Path(__file__).parent
@@ -86,7 +86,8 @@ def run_analysis_comparison():
     logger.info("Analyzing AI NoxPanel components...")
     ai_issues, _ = analyze_codebase(
         project_root / "AI" / "NoxPanel",
-        exclude_patterns=["*/test_*", "*/tests/*", "*/__pycache__/*", "*/archive/*"],
+        exclude_patterns=["*/test_*", "*/tests/*",
+                          "*/__pycache__/*", "*/archive/*"],
         report_format="json",
     )
     results["ai_components"] = {
@@ -228,7 +229,8 @@ def main():
         logger.info("🔧 IMPROVEMENTS MADE:")
         for improvement, status in report["improvements_made"].items():
             status_icon = "✅" if status else "❌"
-            logger.info(f"  {status_icon} {improvement.replace('_', ' ').title()}")
+            logger.info(
+                f"  {status_icon} {improvement.replace('_', ' ').title()}")
         logger.info()
 
         logger.info("📁 NEW UTILITIES CREATED:")
@@ -244,9 +246,11 @@ def main():
         if "summary" in report:
             summary = report["summary"]
             logger.info("📊 CURRENT CODE QUALITY:")
-            logger.info(f"  Total Active Issues: {summary['total_active_issues']}")
+            logger.info(
+                f"  Total Active Issues: {summary['total_active_issues']}")
             logger.info(f"  Critical Issues: {summary['critical_issues']}")
-            logger.info(f"  High Severity Issues: {summary['high_severity_issues']}")
+            logger.info(
+                f"  High Severity Issues: {summary['high_severity_issues']}")
             logger.info(
                 f"  Improvement Status: {summary['improvement_status'].upper()}"
             )

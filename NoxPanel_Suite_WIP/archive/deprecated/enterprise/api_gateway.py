@@ -16,36 +16,37 @@ This system provides a comprehensive API gateway for multi-tenant enterprise dep
 Essential for enterprise multi-tenant API management
 """
 
-import os
-import sys
-import json
-import time
 import asyncio
-import logging
-from typing import Dict, List, Optional, Any, Union, Tuple
-from datetime import datetime, timedelta
-from flask import Flask, request, jsonify, g
-from flask_cors import CORS
-from functools import wraps
-import uuid
+import base64
 import hashlib
 import hmac
-import base64
+import json
+import logging
+import os
+import sys
 import threading
+import time
+import uuid
 from collections import defaultdict, deque
-import requests
+from datetime import datetime, timedelta
+from functools import wraps
+from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.parse import urljoin, urlparse
-import redis
+
 import pymysql
+import redis
+import requests
+from flask import Flask, g, jsonify, request
+from flask_cors import CORS
 
 # Add project root to path
 project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, project_root)
 
 try:
-    from tenant_manager import TenantManager, Tenant, TenantStatus
-    from tenant_auth import TenantAuthManager, User, UserRole, Permission
-    from resource_manager import ResourceMonitor, QuotaManager
+    from resource_manager import QuotaManager, ResourceMonitor
+    from tenant_auth import Permission, TenantAuthManager, User, UserRole
+    from tenant_manager import Tenant, TenantManager, TenantStatus
 except ImportError:
     TenantManager = None
     Tenant = None

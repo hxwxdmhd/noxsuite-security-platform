@@ -13,19 +13,19 @@ Architecture:
 - ADHD-friendly responses (clear, concise, visual)
 """
 
-import os
-import sys
+import asyncio
 import json
 import logging
-import asyncio
+import os
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
 # Import voice capabilities (optional)
 try:
-    import speech_recognition as sr
     import pyttsx3
+    import speech_recognition as sr
     VOICE_AVAILABLE = True
 except ImportError:
     VOICE_AVAILABLE = False
@@ -337,8 +337,8 @@ Available capabilities:
     
     def run_diagnostics(self) -> str:
         """Run system diagnostics"""
-        import subprocess
         import platform
+        import subprocess
         
         results = []
         results.append("🔍 **System Diagnostics Report**")
@@ -452,7 +452,7 @@ Available capabilities:
         
         try:
             import psutil
-            
+
             # CPU usage
             cpu_percent = psutil.cpu_percent(interval=1)
             results.append(f"🖥️  **CPU Usage**: {cpu_percent}%")

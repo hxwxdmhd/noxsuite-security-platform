@@ -2,24 +2,28 @@
 # Integrated with Plugin Framework v2.0 for NoxPanel/NoxGuard/Heimnetz Suite
 # Audit 3 Compliant - Security-First Administration
 
+import asyncio
+import hashlib
+import json
+import logging
 import os
 import sys
-import json
-import asyncio
-import logging
-import hashlib
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional, Union
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 # Add the project root to sys.path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
 try:
     from plugin_framework_v2 import (
-        PluginFrameworkV2, PluginSandboxV2, PluginMetadataV2, 
-        SecurityLevel, PluginPermissionsV2, PluginLimitsV2
+        PluginFrameworkV2,
+        PluginLimitsV2,
+        PluginMetadataV2,
+        PluginPermissionsV2,
+        PluginSandboxV2,
+        SecurityLevel,
     )
     PLUGIN_FRAMEWORK_AVAILABLE = True
 except ImportError:
@@ -999,8 +1003,8 @@ def main(config=None):
             logger.warning("⚠️ Running plugin without sandbox - Plugin Framework v2.0 not available")
             
             # Create a temporary module and execute
-            import tempfile
             import importlib.util
+            import tempfile
             
             with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
                 f.write(plugin.script_content)

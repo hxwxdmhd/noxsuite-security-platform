@@ -1,3 +1,7 @@
+from pathlib import Path
+import sys
+import logging
+import argparse
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -8,10 +12,6 @@ NoxPanel Code Analysis and Improvement Script
 Runs comprehensive code analysis and generates reports
 """
 
-import argparse
-import logging
-import sys
-from pathlib import Path
 
 # Add the project root to Python path
 project_root = Path(__file__).parent
@@ -43,7 +43,8 @@ def main():
         default="text",
         help="Report format (default: text)",
     )
-    parser.add_argument("--output", help="Output file for report (default: stdout)")
+    parser.add_argument(
+        "--output", help="Output file for report (default: stdout)")
     parser.add_argument(
         "--exclude",
         nargs="*",
@@ -59,7 +60,8 @@ def main():
         ],
         help="Patterns to exclude",
     )
-    parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
+    parser.add_argument("--verbose", action="store_true",
+                        help="Enable verbose logging")
     parser.add_argument(
         "--only-active",
         action="store_true",
@@ -138,7 +140,8 @@ def main():
             critical_issues = sum(
                 1 for issue in issues if issue.severity.value == "critical"
             )
-            high_issues = sum(1 for issue in issues if issue.severity.value == "high")
+            high_issues = sum(
+                1 for issue in issues if issue.severity.value == "high")
 
             if critical_issues > 0:
                 logger.error(f"Found {critical_issues} critical issues")

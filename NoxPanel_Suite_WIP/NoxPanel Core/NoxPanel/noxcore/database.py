@@ -3,16 +3,17 @@ Enhanced Database Layer for NoxGuard---NoxPanel System
 Implements complete schema with knowledge management, AI conversations, and session handling
 """
 
-import pymysql
+import json
 import logging
 import os
-import json
 import threading
-from pathlib import Path
-from datetime import datetime, timedelta, timezone
-from contextlib import contextmanager
-from typing import Optional, Dict, List, Any, Union
 import time
+from contextlib import contextmanager
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
+
+import pymysql
 
 logger = logging.getLogger(__name__)
 

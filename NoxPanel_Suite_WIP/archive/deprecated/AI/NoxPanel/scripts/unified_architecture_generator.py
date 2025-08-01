@@ -4,12 +4,13 @@
 Post-audit consolidation strategy and implementation generator
 """
 
-import os
 import json
+import os
 import shutil
-from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any
+from pathlib import Path
+from typing import Any, Dict, List
+
 
 class UnifiedArchitectureGenerator:
     def __init__(self, base_path: str = None):

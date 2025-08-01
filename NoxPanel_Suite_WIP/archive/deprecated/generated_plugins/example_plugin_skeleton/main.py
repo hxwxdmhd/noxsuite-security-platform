@@ -7,7 +7,7 @@ Generated plugin skeleton for example_plugin
 """
 
 import logging
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

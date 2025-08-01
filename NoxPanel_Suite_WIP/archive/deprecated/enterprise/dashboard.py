@@ -15,31 +15,39 @@ This system provides a comprehensive enterprise dashboard integrating:
 The ultimate administrative and user interface for Heimnetz
 """
 
-import os
-import sys
-import json
-import time
 import asyncio
-import logging
-from typing import Dict, List, Optional, Any, Union
-from datetime import datetime, timedelta
-from dataclasses import dataclass, field
-from enum import Enum
-import uuid
+import base64
 import hashlib
 import hmac
-import base64
+import json
+import logging
+import os
+import sys
+import time
+import uuid
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Dict, List, Optional, Union
 
 # Web framework
 try:
-    from fastapi import FastAPI, WebSocket, Request, Response, Depends, HTTPException, status
-    from fastapi.staticfiles import StaticFiles
-    from fastapi.templating import Jinja2Templates
-    from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-    from fastapi.responses import HTMLResponse, JSONResponse
+    import uvicorn
+    from fastapi import (
+        Depends,
+        FastAPI,
+        HTTPException,
+        Request,
+        Response,
+        WebSocket,
+        status,
+    )
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.middleware.gzip import GZipMiddleware
-    import uvicorn
+    from fastapi.responses import HTMLResponse, JSONResponse
+    from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+    from fastapi.staticfiles import StaticFiles
+    from fastapi.templating import Jinja2Templates
     HAS_FASTAPI = True
 except ImportError:
     HAS_FASTAPI = False
@@ -57,9 +65,9 @@ sys.path.insert(0, project_root)
 
 # Import our systems
 try:
-    from voice.tts_system import VoiceAssistant, VoiceConfig, AudioConfig
-    from webrtc.webrtc_system import WebRTCPeerManager, WebRTCConfig, SignalingServer
-    from analytics.analytics_dashboard import AnalyticsEngine, MetricType, AlertLevel
+    from analytics.analytics_dashboard import AlertLevel, AnalyticsEngine, MetricType
+    from voice.tts_system import AudioConfig, VoiceAssistant, VoiceConfig
+    from webrtc.webrtc_system import SignalingServer, WebRTCConfig, WebRTCPeerManager
 except ImportError as e:
     print(f"Warning: Could not import some systems: {e}")
 

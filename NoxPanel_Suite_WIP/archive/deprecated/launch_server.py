@@ -1,6 +1,6 @@
+import os
 import subprocess
 import sys
-import os
 
 # Change to project directory
 os.chdir("k:\\Project Heimnetz")

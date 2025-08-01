@@ -2,13 +2,14 @@
 Simple Knowledge Base Setup - Creates basic knowledge items for NoxPanel
 """
 
+import json
+import logging
 import os
 import sys
-import json
-import pymysql
-import logging
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
+import pymysql
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))

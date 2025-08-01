@@ -5,12 +5,15 @@ Example Security Plugin
 Demonstrates enhanced plugin features for Audit 2 compliance
 """
 
-import sys
 import os
+import sys
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from unified_plugin_system_clean import SecurityPlugin, PluginInfo
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+
+from unified_plugin_system_clean import PluginInfo, SecurityPlugin
+
 
 class ExampleSecurityPlugin(SecurityPlugin):
     """Example security plugin demonstrating enhanced features"""

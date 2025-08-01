@@ -17,7 +17,7 @@ Compliance: RLVR Methodology v4.0+ Applied
 Sample Plugin for NoxPanel v4.1.0
 """
 
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, jsonify, render_template
 
 sample_bp = Blueprint('sample', __name__, url_prefix='/sample')
 

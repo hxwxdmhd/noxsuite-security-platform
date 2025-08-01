@@ -18,36 +18,44 @@ Status: PRODUCTION READY
 """
 
 import asyncio
-import logging
-import json
-import time
-import threading
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Callable
-from dataclasses import dataclass, field
-from pathlib import Path
-import secrets
 import hashlib
+import json
+import logging
+import os
+import secrets
+import sys
+import threading
+import time
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional
+
 import jwt
 import psutil
-import os
-import sys
 
 # Core dependencies
 try:
-    from flask import Flask, request, jsonify, render_template, send_file, redirect, url_for
-    from flask_socketio import SocketIO, emit, join_room, leave_room, disconnect
+    import psycopg2
+    import redis
+    from flask import (
+        Flask,
+        jsonify,
+        redirect,
+        render_template,
+        request,
+        send_file,
+        url_for,
+    )
     from flask_cors import CORS
     from flask_limiter import Limiter
     from flask_limiter.util import get_remote_address
-    from werkzeug.security import generate_password_hash, check_password_hash
-    from werkzeug.middleware.proxy_fix import ProxyFix
-    
-    import redis
-    import psycopg2
+    from flask_socketio import SocketIO, disconnect, emit, join_room, leave_room
     from sqlalchemy import create_engine, text
     from sqlalchemy.orm import sessionmaker
     from sqlalchemy.pool import QueuePool
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    from werkzeug.security import check_password_hash, generate_password_hash
     
 except ImportError as e:
     print(f"Critical dependency missing: {e}")
@@ -57,7 +65,13 @@ except ImportError as e:
 
 # Import our unified components
 try:
-    from models_unified import DatabaseManager, SystemMetrics, UserSession, SystemLog, PluginRegistry
+    from models_unified import (
+        DatabaseManager,
+        PluginRegistry,
+        SystemLog,
+        SystemMetrics,
+        UserSession,
+    )
     from unified_plugin_system import UnifiedPluginManager, plugin_manager
 except ImportError:
     print("Warning: Unified components not found. Please ensure models_unified.py and unified_plugin_system.py are in the same directory.")

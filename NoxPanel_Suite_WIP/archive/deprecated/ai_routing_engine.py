@@ -10,15 +10,16 @@ POST-GATE-5 ENHANCEMENT: Context-aware AI task distribution and model orchestrat
 - Resource-aware model selection
 """
 
+import asyncio
+import hashlib
 import json
 import time
-import hashlib
-import asyncio
-from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
 
 class TaskType(Enum):
     """Task type enumeration for AI routing."""
@@ -31,12 +32,14 @@ class TaskType(Enum):
     THREAT_DETECTION = "threat_detection"
     COMPLIANCE_CHECK = "compliance_check"
 
+
 class UrgencyLevel(Enum):
     """Task urgency levels."""
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
     LOW = "low"
+
 
 @dataclass
 class AIModel:
@@ -49,6 +52,7 @@ class AIModel:
     availability: bool = True
     current_load: int = 0
 
+
 @dataclass
 class TaskRequest:
     """AI task request."""
@@ -60,6 +64,7 @@ class TaskRequest:
     timestamp: datetime
     timeout: int = 30
 
+
 @dataclass
 class TaskResult:
     """AI task result."""
@@ -70,6 +75,7 @@ class TaskResult:
     timestamp: datetime
     success: bool
     error_message: Optional[str] = None
+
 
 class AIRoutingEngine:
     """AI Routing Engine for multi-model orchestration."""
@@ -175,7 +181,8 @@ class AIRoutingEngine:
             TaskType.COMPLIANCE_CHECK: 6
         }
 
-        context_analysis["complexity_score"] = task_complexity.get(task.task_type, 5)
+        context_analysis["complexity_score"] = task_complexity.get(
+            task.task_type, 5)
 
         # Analyze urgency
         urgency_mapping = {
@@ -229,7 +236,8 @@ class AIRoutingEngine:
                 score += context_analysis["specialist_requirement"]
 
             # Load balancing penalty
-            load_penalty = (model.current_load / model.max_concurrent_tasks) * 5
+            load_penalty = (model.current_load /
+                            model.max_concurrent_tasks) * 5
             score -= load_penalty
 
             # Response time bonus (lower is better)
@@ -256,7 +264,8 @@ class AIRoutingEngine:
         """Route task to optimal AI model."""
         routing_start = time.time()
 
-        print(f"Routing task {task.task_id} ({task.task_type.value}) - Urgency: {task.urgency.value}")
+        print(
+            f"Routing task {task.task_id} ({task.task_type.value}) - Urgency: {task.urgency.value}")
 
         # Select optimal model
         selected_model = self.select_optimal_model(task)
@@ -292,7 +301,8 @@ class AIRoutingEngine:
             )
 
             # Update performance metrics
-            self.update_performance_metrics(selected_model, processing_time, True)
+            self.update_performance_metrics(
+                selected_model, processing_time, True)
 
             return task_result
 
@@ -321,7 +331,8 @@ class AIRoutingEngine:
         """Execute AI task (simulation - replace with actual AI model calls)."""
         # Simulate processing time based on model characteristics
         model = self.models[model_name]
-        processing_time = model.average_response_time + (task.urgency.value == "low" and 1.0 or 0)
+        processing_time = model.average_response_time + \
+            (task.urgency.value == "low" and 1.0 or 0)
 
         await asyncio.sleep(processing_time)
 
@@ -375,7 +386,8 @@ class AIRoutingEngine:
         # Update average response time
         current_avg = metrics["average_response_time"]
         total_tasks = metrics["total_tasks"]
-        metrics["average_response_time"] = (current_avg * (total_tasks - 1) + processing_time) / total_tasks
+        metrics["average_response_time"] = (
+            current_avg * (total_tasks - 1) + processing_time) / total_tasks
         metrics["last_updated"] = datetime.now().isoformat()
 
     def get_routing_statistics(self) -> Dict[str, Any]:
@@ -417,7 +429,8 @@ Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 '''
 
         for model_name, metrics in stats["performance_metrics"].items():
-            success_rate = (metrics["successful_tasks"] / metrics["total_tasks"]) * 100 if metrics["total_tasks"] > 0 else 0
+            success_rate = (metrics["successful_tasks"] / metrics["total_tasks"]
+                            ) * 100 if metrics["total_tasks"] > 0 else 0
             report_content += f'''
 ### {model_name.replace("_", " ").title()}
 - **Total Tasks**: {metrics["total_tasks"]}
@@ -445,10 +458,12 @@ Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 - Implement predictive load balancing for better resource allocation
 '''
 
-        report_file = self.workspace_path / "ai_orchestration" / "routing_performance_report.md"
+        report_file = self.workspace_path / \
+            "ai_orchestration" / "routing_performance_report.md"
         report_file.write_text(report_content, encoding='utf-8')
 
         return str(report_file)
+
 
 class AILoadBalancer:
     """Load balancer for AI models."""
@@ -463,10 +478,12 @@ class AILoadBalancer:
 
         least_loaded = min(
             capable_models,
-            key=lambda name: self.models[name].current_load / self.models[name].max_concurrent_tasks
+            key=lambda name: self.models[name].current_load /
+            self.models[name].max_concurrent_tasks
         )
 
         return least_loaded
+
 
 class AIFailoverManager:
     """Failover manager for AI models."""
@@ -515,6 +532,7 @@ class AIFailoverManager:
         self.models[failed_model].availability = True
 
         return None
+
 
 async def main():
     """Main AI routing engine execution."""
@@ -566,10 +584,12 @@ async def main():
 
         for result in results:
             status_emoji = "✅" if result.success else "❌"
-            print(f"{status_emoji} Task {result.task_id}: {result.model_used} ({result.processing_time:.2f}s)")
+            print(
+                f"{status_emoji} Task {result.task_id}: {result.model_used} ({result.processing_time:.2f}s)")
 
         stats = routing_engine.get_routing_statistics()
-        print(f"\nSystem Utilization: {(stats['current_load'] / stats['total_capacity']) * 100:.1f}%")
+        print(
+            f"\nSystem Utilization: {(stats['current_load'] / stats['total_capacity']) * 100:.1f}%")
         print(f"Performance Report: {report_file}")
 
         print("\n" + "="*80)

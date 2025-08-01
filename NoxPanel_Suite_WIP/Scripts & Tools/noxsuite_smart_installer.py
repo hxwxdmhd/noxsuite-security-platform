@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -18,30 +19,31 @@ KB_REF: mcp/knowledgebase/deployment.json#installer_v2
 ENHANCED: 2025-07-29 - MCP autonomous orchestrator integration
 """
 
-import os
-import sys
-import json
-import subprocess
-import platform
-import shutil
-import requests
-import time
-import hashlib
-import chardet
 import codecs
+import hashlib
+import json
 import logging
-import tempfile
-import uuid
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any, Union
-from datetime import datetime, timezone
-from dataclasses import dataclass, asdict
-from enum import Enum, auto
-from contextlib import contextmanager
-import traceback
-import threading
+import os
+import platform
 import queue
 import re
+import shutil
+import subprocess
+import sys
+import tempfile
+import threading
+import time
+import traceback
+import uuid
+from contextlib import contextmanager
+from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
+from enum import Enum, auto
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import chardet
+import requests
 
 # Force UTF-8 encoding for consistent cross-platform behavior
 if sys.platform.startswith('win'):

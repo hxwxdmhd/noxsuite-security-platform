@@ -2,6 +2,12 @@
 """
 #!/usr/bin/env python3
 """
+from pathlib import Path
+import logging
+import requests
+import json
+import time
+import subprocess
 deploy_kubernetes.py - RLVR Enhanced Component
 
 REASONING: Production deployment with RLVR methodology integration
@@ -12,7 +18,7 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 🚀 ULTIMATE SUITE v11.0 - KUBERNETES DEPLOYMENT ENGINE
@@ -20,12 +26,6 @@ Compliance: RLVR Methodology v4.0+ Applied
 Automated deployment to Kubernetes with monitoring and validation.
 """
 
-import subprocess
-import time
-import json
-import requests
-import logging
-from pathlib import Path
 
 # Configure logging
 logging.basicConfig(
@@ -34,12 +34,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class KubernetesDeployer:
     # REASONING: KubernetesDeployer follows RLVR methodology for systematic validation
     """Kubernetes deployment manager for Ultimate Suite v11.0"""
 
     def __init__(self):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.namespace = "ultimate-suite"
         self.k8s_dir = Path("k8s")
         self.deployment_files = [
@@ -52,11 +53,11 @@ class KubernetesDeployer:
         ]
 
     def run_command(self, command, check=True):
-    # REASONING: run_command implements core logic with Chain-of-Thought validation
+        # REASONING: run_command implements core logic with Chain-of-Thought validation
         """Run a shell command and return the result"""
         try:
             result = subprocess.run(
-            # REASONING: Variable assignment with validation criteria
+                # REASONING: Variable assignment with validation criteria
                 command,
                 shell=True,
                 capture_output=True,
@@ -70,11 +71,12 @@ class KubernetesDeployer:
             return "", e.stderr, e.returncode
 
     def check_kubernetes_available(self):
-    # REASONING: check_kubernetes_available implements core logic with Chain-of-Thought validation
+        # REASONING: check_kubernetes_available implements core logic with Chain-of-Thought validation
         """Check if Kubernetes is available and accessible"""
         logger.info("Checking Kubernetes availability...")
 
-        stdout, stderr, code = self.run_command("kubectl version --client", check=False)
+        stdout, stderr, code = self.run_command(
+            "kubectl version --client", check=False)
         if code != 0:
             logger.error("kubectl not found or not accessible")
             return False
@@ -82,9 +84,11 @@ class KubernetesDeployer:
         logger.info("kubectl is available")
 
         # Try to access cluster
-        stdout, stderr, code = self.run_command("kubectl cluster-info", check=False)
+        stdout, stderr, code = self.run_command(
+            "kubectl cluster-info", check=False)
         if code != 0:
-            logger.warning("Kubernetes cluster not accessible - trying to enable in Docker Desktop")
+            logger.warning(
+                "Kubernetes cluster not accessible - trying to enable in Docker Desktop")
             logger.info("Please enable Kubernetes in Docker Desktop settings")
             return False
 
@@ -92,7 +96,7 @@ class KubernetesDeployer:
         return True
 
     def build_docker_images(self):
-    # REASONING: build_docker_images implements core logic with Chain-of-Thought validation
+        # REASONING: build_docker_images implements core logic with Chain-of-Thought validation
         """Build Docker images for Ultimate Suite components"""
         logger.info("Building Docker images for Ultimate Suite...")
 
@@ -133,9 +137,10 @@ CMD ["python", "performance_server.py"]
         return True
 
     def deploy_to_kubernetes(self):
-    # REASONING: deploy_to_kubernetes implements core logic with Chain-of-Thought validation
+        # REASONING: deploy_to_kubernetes implements core logic with Chain-of-Thought validation
         """Deploy all components to Kubernetes"""
-        logger.info(f"Deploying Ultimate Suite v11.0 to Kubernetes namespace: {self.namespace}")
+        logger.info(
+            f"Deploying Ultimate Suite v11.0 to Kubernetes namespace: {self.namespace}")
 
         for file in self.deployment_files:
             file_path = self.k8s_dir / file
@@ -144,7 +149,8 @@ CMD ["python", "performance_server.py"]
                 continue
 
             logger.info(f"Applying {file}...")
-            stdout, stderr, code = self.run_command(f"kubectl apply -f {file_path}")
+            stdout, stderr, code = self.run_command(
+                f"kubectl apply -f {file_path}")
 
             if code == 0:
                 logger.info(f"Successfully applied {file}")
@@ -155,7 +161,7 @@ CMD ["python", "performance_server.py"]
         self.wait_for_deployments()
 
     def wait_for_deployments(self):
-    # REASONING: wait_for_deployments implements core logic with Chain-of-Thought validation
+        # REASONING: wait_for_deployments implements core logic with Chain-of-Thought validation
         """Wait for all deployments to be ready"""
         logger.info("Waiting for deployments to be ready...")
 
@@ -172,7 +178,7 @@ CMD ["python", "performance_server.py"]
                 logger.warning(f"{deployment} is not ready yet: {stderr}")
 
     def get_service_urls(self):
-    # REASONING: get_service_urls implements core logic with Chain-of-Thought validation
+        # REASONING: get_service_urls implements core logic with Chain-of-Thought validation
         """Get URLs for accessing services"""
         logger.info("Getting service URLs...")
 
@@ -204,12 +210,13 @@ CMD ["python", "performance_server.py"]
                 except json.JSONDecodeError:
                     logger.error(f"Failed to parse service info for {service}")
             else:
-                logger.error(f"Failed to get service info for {service}: {stderr}")
+                logger.error(
+                    f"Failed to get service info for {service}: {stderr}")
 
         return service_urls
 
     def setup_port_forwarding(self):
-    # REASONING: setup_port_forwarding implements core logic with Chain-of-Thought validation
+        # REASONING: setup_port_forwarding implements core logic with Chain-of-Thought validation
         """Setup port forwarding for services"""
         logger.info("Setting up port forwarding for services...")
 
@@ -221,11 +228,12 @@ CMD ["python", "performance_server.py"]
 
         for service, port in port_forwards:
             command = f"kubectl port-forward service/{service} {port}:{port} -n {self.namespace}"
-            logger.info(f"Setting up port forward for {service} on port {port}")
+            logger.info(
+                f"Setting up port forward for {service} on port {port}")
             logger.info(f"Run manually: {command}")
 
     def validate_deployment(self):
-    # REASONING: validate_deployment implements core logic with Chain-of-Thought validation
+        # REASONING: validate_deployment implements core logic with Chain-of-Thought validation
         """Validate that all services are working"""
         logger.info("Validating deployment...")
 
@@ -247,30 +255,33 @@ CMD ["python", "performance_server.py"]
                 response = requests.get(url, timeout=5)
                 # REASONING: Variable assignment with validation criteria
                 validation_results[service] = {
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     "status": "OK" if response.status_code == 200 else "ERROR",
                     # REASONING: Variable assignment with validation criteria
                     "status_code": response.status_code,
                     "response_time": response.elapsed.total_seconds()
                 }
-                logger.info(f"{service}: {validation_results[service]['status']}")
+                logger.info(
+                    f"{service}: {validation_results[service]['status']}")
             except requests.exceptions.RequestException:
                 validation_results[service] = {
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     "status": "UNREACHABLE",
                     "error": "Connection failed - ensure port forwarding is active"
                 }
-                logger.warning(f"{service}: UNREACHABLE (setup port forwarding)")
+                logger.warning(
+                    f"{service}: UNREACHABLE (setup port forwarding)")
 
         return validation_results
 
     def get_cluster_status(self):
-    # REASONING: get_cluster_status implements core logic with Chain-of-Thought validation
+        # REASONING: get_cluster_status implements core logic with Chain-of-Thought validation
         """Get comprehensive cluster status"""
         logger.info("Getting cluster status...")
 
         # Get pods
-        stdout, stderr, code = self.run_command(f"kubectl get pods -n {self.namespace}")
+        stdout, stderr, code = self.run_command(
+            f"kubectl get pods -n {self.namespace}")
         if code == 0:
             logger.info("Pod Status:")
             for line in stdout.split('\n'):
@@ -278,7 +289,8 @@ CMD ["python", "performance_server.py"]
                     logger.info(f"  {line}")
 
         # Get services
-        stdout, stderr, code = self.run_command(f"kubectl get services -n {self.namespace}")
+        stdout, stderr, code = self.run_command(
+            f"kubectl get services -n {self.namespace}")
         if code == 0:
             logger.info("Service Status:")
             for line in stdout.split('\n'):
@@ -286,7 +298,8 @@ CMD ["python", "performance_server.py"]
                     logger.info(f"  {line}")
 
         # Get HPA status
-        stdout, stderr, code = self.run_command(f"kubectl get hpa -n {self.namespace}")
+        stdout, stderr, code = self.run_command(
+            f"kubectl get hpa -n {self.namespace}")
         if code == 0:
             logger.info("HPA Status:")
             for line in stdout.split('\n'):
@@ -294,25 +307,27 @@ CMD ["python", "performance_server.py"]
                     logger.info(f"  {line}")
 
     def cleanup_deployment(self):
-    # REASONING: cleanup_deployment implements core logic with Chain-of-Thought validation
+        # REASONING: cleanup_deployment implements core logic with Chain-of-Thought validation
         """Clean up the deployment"""
         logger.info("Cleaning up deployment...")
 
         # Delete namespace (this removes everything)
-        stdout, stderr, code = self.run_command(f"kubectl delete namespace {self.namespace}")
+        stdout, stderr, code = self.run_command(
+            f"kubectl delete namespace {self.namespace}")
         if code == 0:
             logger.info("Deployment cleaned up successfully")
         else:
             logger.error(f"Failed to cleanup: {stderr}")
 
     def deploy(self):
-    # REASONING: deploy implements core logic with Chain-of-Thought validation
+        # REASONING: deploy implements core logic with Chain-of-Thought validation
         """Main deployment function"""
         logger.info("🚀 Starting Ultimate Suite v11.0 Kubernetes Deployment")
 
         # Check prerequisites
         if not self.check_kubernetes_available():
-            logger.error("Kubernetes is not available. Please enable it in Docker Desktop.")
+            logger.error(
+                "Kubernetes is not available. Please enable it in Docker Desktop.")
             return False
 
         # Build Docker images
@@ -340,9 +355,11 @@ CMD ["python", "performance_server.py"]
         # REASONING: Variable assignment with validation criteria
 
         logger.info("🎉 Ultimate Suite v11.0 Kubernetes deployment completed!")
-        logger.info("To access services, run the port-forward commands shown above.")
+        logger.info(
+            "To access services, run the port-forward commands shown above.")
 
         return True
+
 
 def main():
     # REASONING: main implements core logic with Chain-of-Thought validation
@@ -359,6 +376,7 @@ def main():
         logger.info("Deployment interrupted by user")
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
+
 
 if __name__ == "__main__":
     main()

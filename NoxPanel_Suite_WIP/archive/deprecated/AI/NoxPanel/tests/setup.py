@@ -12,11 +12,12 @@ Based on init_noxvalidator_advanced.py and NOXPANEL_COMPLETE_GUIDE.md principles
 """
 
 import os
-import sys
 import subprocess
+import sys
 import time
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
+
 
 # ADHD-friendly colors
 class Colors:
@@ -493,7 +494,7 @@ class NoxPanelTestSetup:
         """Validate conftest.py can be imported and used."""
         try:
             sys.path.insert(0, str(self.test_dir))
-            from conftest import TestConfig, DeviceFactory, UserFactory
+            from conftest import DeviceFactory, TestConfig, UserFactory
 
             # Test factory creation
             config = TestConfig()

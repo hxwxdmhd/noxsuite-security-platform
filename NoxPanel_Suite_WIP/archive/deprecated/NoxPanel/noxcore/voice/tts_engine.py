@@ -1,12 +1,13 @@
 """Text-to-Speech Engine with J.A.R.V.I.S. Personality"""
 
-import pyttsx3
 import logging
 import threading
 import time
-from typing import Optional, Dict, List
 from datetime import datetime
 from queue import Queue
+from typing import Dict, List, Optional
+
+import pyttsx3
 
 logger = logging.getLogger(__name__)
 

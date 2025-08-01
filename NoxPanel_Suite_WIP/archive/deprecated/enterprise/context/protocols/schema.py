@@ -7,11 +7,12 @@ Version-specific protocol schemas for Model Context Protocol (MCP) compliance.
 Each version defines capabilities, message formats, and validation rules.
 """
 
-from typing import Dict, Any, List, Optional, Union
-from dataclasses import dataclass, field
-from enum import Enum
 import json
+from dataclasses import dataclass, field
 from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional, Union
+
 
 class MessageType(str, Enum):
     """MCP message types"""

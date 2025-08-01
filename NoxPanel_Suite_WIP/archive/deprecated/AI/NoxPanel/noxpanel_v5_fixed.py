@@ -3,17 +3,29 @@ NoxPanel v5.0 - Fixed and Enhanced Application
 Simplified version with working dependencies and enhanced features
 """
 
-import os
-import sys
-import logging
-import time
 import json
-import psutil
-from pathlib import Path
-from typing import Dict, Any, Optional, List
-from flask import Flask, render_template, request, jsonify, g, Response, session, redirect, url_for, flash
-from flask_cors import CORS
+import logging
+import os
 import secrets
+import sys
+import time
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import psutil
+from flask import (
+    Flask,
+    Response,
+    flash,
+    g,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
+from flask_cors import CORS
 
 # Setup logging
 log_dir = Path("data/logs")

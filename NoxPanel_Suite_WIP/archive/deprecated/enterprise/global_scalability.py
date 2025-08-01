@@ -4,19 +4,20 @@ Global Scalability Module for Heimnetz Enterprise
 Phase 3: Multi-region deployment, edge computing, and global infrastructure
 """
 
+import asyncio
+import json
+import logging
 import os
 import sys
-import json
-import time
-import logging
-import pymysql
-import asyncio
-from datetime import datetime
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass
-from pathlib import Path
 import threading
-from flask import Flask, request, jsonify
+import time
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import pymysql
+from flask import Flask, jsonify, request
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

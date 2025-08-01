@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Dict, List, Any
 from datetime import datetime
 
+
 class VersionTagger:
     """Manages version consistency across NoxPanel components"""
 
@@ -39,8 +40,8 @@ class VersionTagger:
 
     COMPLIANCE: STANDARD
     """
-        self.target_version = target_version
-        self.base_path = Path(".")
+      self.target_version = target_version
+       self.base_path = Path(".")
         self.updated_files = []
         self.errors = []
 
@@ -59,9 +60,9 @@ class VersionTagger:
 
     COMPLIANCE: STANDARD
     """
-        # Update webpanel/app_v5.py
-        app_file = self.base_path / "webpanel" / "app_v5.py"
-        if app_file.exists():
+      # Update webpanel/app_v5.py
+      app_file = self.base_path / "webpanel" / "app_v5.py"
+       if app_file.exists():
             try:
                 content = app_file.read_text(encoding='utf-8')
 
@@ -75,7 +76,8 @@ class VersionTagger:
                     self.updated_files.append(str(app_file))
                     print(f"✅ Updated version in {app_file}")
                 else:
-                    self.errors.append(f"Version pattern not found in {app_file}")
+                    self.errors.append(
+                        f"Version pattern not found in {app_file}")
 
             except Exception as e:
                 self.errors.append(f"Error updating {app_file}: {e}")
@@ -86,7 +88,7 @@ class VersionTagger:
         """Update version references in HTML templates"""
 
         template_dirs = [
-    """
+            """
     RLVR: Creates new entity with validation and error handling
 
     REASONING CHAIN:
@@ -116,9 +118,12 @@ class VersionTagger:
 
                     # Update version patterns in titles and text
                     version_patterns = [
-                        (r'NoxPanel v[0-9]+\.[0-9]+(\.[0-9]+)?', f'NoxPanel v{self.target_version}'),
-                        (r'v[0-9]+\.[0-9]+(\.[0-9]+)?\s*—', f'v{self.target_version} —'),
-                        (r'Version: [0-9]+\.[0-9]+(\.[0-9]+)?', f'Version: {self.target_version}'),
+                        (r'NoxPanel v[0-9]+\.[0-9]+(\.[0-9]+)?',
+                         f'NoxPanel v{self.target_version}'),
+                        (r'v[0-9]+\.[0-9]+(\.[0-9]+)?\s*—',
+                         f'v{self.target_version} —'),
+                        (r'Version: [0-9]+\.[0-9]+(\.[0-9]+)?',
+                         f'Version: {self.target_version}'),
                     ]
 
                     for pattern, replacement in version_patterns:
@@ -174,7 +179,8 @@ class VersionTagger:
                         print(f"✅ Created metadata.json in {subdir}")
 
                     except Exception as e:
-                        self.errors.append(f"Error creating metadata in {subdir}: {e}")
+                        self.errors.append(
+                            f"Error creating metadata in {subdir}: {e}")
 
             # Create a sample plugin if directory is empty
             if not subdirs:
@@ -191,21 +197,21 @@ class VersionTagger:
 
     COMPLIANCE: STANDARD
     """
-                sample_plugin.mkdir(exist_ok=True)
+      sample_plugin.mkdir(exist_ok=True)
 
-                # Create metadata
-                metadata_file = sample_plugin / "metadata.json"
-                metadata = {
-                    "name": "sample_plugin",
-                    "version": self.target_version,
-                    "description": "Sample plugin for NoxPanel",
-                    "author": "NoxPanel System",
-                    "enabled": False,
-                    "type": "sample",
-                    "dependencies": [],
-                    "created_at": datetime.now().isoformat(),
-                    "last_updated": datetime.now().isoformat()
-    """
+       # Create metadata
+       metadata_file = sample_plugin / "metadata.json"
+        metadata = {
+            "name": "sample_plugin",
+            "version": self.target_version,
+            "description": "Sample plugin for NoxPanel",
+            "author": "NoxPanel System",
+            "enabled": False,
+            "type": "sample",
+            "dependencies": [],
+            "created_at": datetime.now().isoformat(),
+            "last_updated": datetime.now().isoformat()
+            """
     RLVR: Creates new entity with validation and error handling
 
     REASONING CHAIN:
@@ -217,15 +223,15 @@ class VersionTagger:
 
     COMPLIANCE: STANDARD
     """
-                }
+        }
 
-                try:
-                    with open(metadata_file, 'w', encoding='utf-8') as f:
-                        json.dump(metadata, f, indent=2)
+        try:
+            with open(metadata_file, 'w', encoding='utf-8') as f:
+                json.dump(metadata, f, indent=2)
 
-                    # Create sample route file
-                    routes_file = sample_plugin / "routes.py"
-                    routes_content = f'''"""
+            # Create sample route file
+            routes_file = sample_plugin / "routes.py"
+            routes_content = f'''"""
 Sample Plugin for NoxPanel v{self.target_version}
 """
 
@@ -254,13 +260,13 @@ def status():
     return jsonify({{"status": "ok", "plugin": "sample", "version": "{self.target_version}"}})
 '''
 
-                    routes_file.write_text(routes_content, encoding='utf-8')
+            routes_file.write_text(routes_content, encoding='utf-8')
 
-                    self.updated_files.extend([str(metadata_file), str(routes_file)])
-                    print(f"✅ Created sample plugin in {sample_plugin}")
+            self.updated_files.extend([str(metadata_file), str(routes_file)])
+            print(f"✅ Created sample plugin in {sample_plugin}")
 
-                except Exception as e:
-                    self.errors.append(f"Error creating sample plugin: {e}")
+        except Exception as e:
+            self.errors.append(f"Error creating sample plugin: {e}")
 
     def update_readme(self):
         """Update README.md with current version"""
@@ -322,7 +328,8 @@ def status():
     def run_version_update(self):
         """Run complete version update process"""
 
-        print(f"🏷️ NoxPanel Version Tagger - Target Version: {self.target_version}")
+        print(
+            f"🏷️ NoxPanel Version Tagger - Target Version: {self.target_version}")
         print("=" * 60)
 
         # Update all components
@@ -356,8 +363,10 @@ def status():
             for error in self.errors:
                 print(f"  - {error}")
 
-        print(f"\\n🎯 Version synchronization {'completed' if not self.errors else 'completed with errors'}!")
+        print(
+            f"\\n🎯 Version synchronization {'completed' if not self.errors else 'completed with errors'}!")
         return len(self.errors) == 0
+
 
 def main():
     """
@@ -389,6 +398,7 @@ def main():
     success = tagger.run_version_update()
 
     sys.exit(0 if success else 1)
+
 
 if __name__ == "__main__":
     main()

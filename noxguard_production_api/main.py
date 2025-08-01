@@ -1,33 +1,39 @@
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse, HTMLResponse
-import time
 import json
+import time
 from datetime import datetime
+
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse, JSONResponse
 
 app = FastAPI(title="NoxGuard Production API", version="1.0.0")
 
 start_time = time.time()
 request_count = 0
 
+
 @app.get("/health")
 async def health_check():
     global request_count
     request_count += 1
-    
+
     uptime = time.time() - start_time
-    
-    return JSONResponse({
-        "status": "healthy",
-        "service": "noxguard-production-api",
-        "version": "1.0.0",
-        "uptime": uptime,
-        "requests_served": request_count,
-        "timestamp": datetime.now().isoformat()
-    })
+
+    return JSONResponse(
+        {
+            "status": "healthy",
+            "service": "noxguard-production-api",
+            "version": "1.0.0",
+            "uptime": uptime,
+            "requests_served": request_count,
+            "timestamp": datetime.now().isoformat(),
+        }
+    )
+
 
 @app.get("/")
 async def root():
-    return HTMLResponse("""
+    return HTMLResponse(
+        """
     <html>
     <head><title>NoxGuard Production API</title></head>
     <body style="font-family: Arial; margin: 40px;">
@@ -42,7 +48,9 @@ async def root():
         </ul>
     </body>
     </html>
-    """)
+    """
+    )
+
 
 @app.get("/api/status")
 async def api_status():
@@ -51,9 +59,11 @@ async def api_status():
         "status": "operational",
         "environment": "production",
         "uptime": time.time() - start_time,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now().isoformat(),
     }
+
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8080)

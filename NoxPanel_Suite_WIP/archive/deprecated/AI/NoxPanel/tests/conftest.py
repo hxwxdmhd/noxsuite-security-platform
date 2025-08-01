@@ -10,14 +10,15 @@ This module provides:
 - ADHD-friendly test helpers and utilities
 """
 
+import logging
 import os
 import tempfile
-import pytest
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 from unittest.mock import Mock
+
+import pytest
 from faker import Faker
-import logging
 
 # Initialize Faker for consistent test data
 fake = Faker()

@@ -1,3 +1,7 @@
+from emergency_copilot_fix import throttler
+from datetime import datetime
+import time
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -6,11 +10,6 @@ logger = get_logger(__name__)
 """
 Local System Validator - Alternative to ChatGPT for autonomous validation
 """
-import json
-import time
-from datetime import datetime
-
-from emergency_copilot_fix import throttler
 
 
 class LocalSystemValidator:
@@ -56,7 +55,8 @@ class LocalSystemValidator:
             }
 
             # Check Langflow health
-            langflow_data = audit_data.get("audit_results", {}).get("langflow", {})
+            langflow_data = audit_data.get(
+                "audit_results", {}).get("langflow", {})
             langflow_status = langflow_data.get("status")
             response_time = langflow_data.get("response_time", 0)
 
@@ -188,7 +188,8 @@ def validate_latest_audit():
 
     # Display results
     if validation_result.get("status") == "success":
-        logger.info(f"\n🔍 Risk Assessment: {validation_result['risk_assessment']}")
+        logger.info(
+            f"\n🔍 Risk Assessment: {validation_result['risk_assessment']}")
         logger.info(validation_result["analysis_summary"])
         logger.info(f"\n🔧 Tool usage: {throttler.tool_count}/120")
 
@@ -200,7 +201,8 @@ def validate_latest_audit():
             logger.info(
                 f"\n⚠️ LOCAL VALIDATION: {validation_result['risk_assessment']} RISK DETECTED"
             )
-            logger.info("🔄 Recommendations:", validation_result["recommendations"])
+            logger.info("🔄 Recommendations:",
+                        validation_result["recommendations"])
     else:
         logger.info(f"❌ Validation failed: {validation_result.get('error')}")
 

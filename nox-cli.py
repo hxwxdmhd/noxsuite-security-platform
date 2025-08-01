@@ -67,7 +67,8 @@ class NoxSuiteCLI:
         """Run docker-compose command"""
         compose_file = self.install_dir / "docker-compose.noxsuite.yml"
         if not compose_file.exists():
-            click.echo("❌ Docker compose file not found. Run installation first.")
+            click.echo(
+                "❌ Docker compose file not found. Run installation first.")
             return False
 
         cmd = ["docker-compose", "-f", str(compose_file)]
@@ -92,7 +93,8 @@ class NoxSuiteCLI:
         """Get status of all services"""
         try:
             # Check core API
-            api_status = self._check_endpoint("http://localhost:8000/api/health")
+            api_status = self._check_endpoint(
+                "http://localhost:8000/api/health")
             ui_status = self._check_endpoint("http://localhost:3000")
             grafana_status = self._check_endpoint("http://localhost:3001")
 
@@ -274,7 +276,8 @@ def status(output_json):
     core = status_data.get("core_services", {})
     click.echo(f"🌐 Web UI: {_status_icon(core.get('ui', {}).get('status'))}")
     click.echo(f"🔧 API: {_status_icon(core.get('api', {}).get('status'))}")
-    click.echo(f"📊 Grafana: {_status_icon(core.get('grafana', {}).get('status'))}")
+    click.echo(
+        f"📊 Grafana: {_status_icon(core.get('grafana', {}).get('status'))}")
 
     # Database
     db = status_data.get("database", {})
@@ -379,7 +382,8 @@ def backup(backup_name):
     config_backup.mkdir(exist_ok=True)
 
     # Copy config files
-    config_files = ["config/noxsuite.json", ".env", "docker-compose.noxsuite.yml"]
+    config_files = ["config/noxsuite.json",
+                    ".env", "docker-compose.noxsuite.yml"]
     for config_file in config_files:
         src = nox.install_dir / config_file
         if src.exists():
@@ -440,7 +444,8 @@ def restore(backup_name):
         click.echo("📊 Restoring database...")
         try:
             subprocess.run(
-                ["docker", "cp", str(db_backup), "noxsuite-postgres:/tmp/restore.sql"],
+                ["docker", "cp", str(db_backup),
+                 "noxsuite-postgres:/tmp/restore.sql"],
                 check=True,
             )
 
@@ -475,7 +480,8 @@ def health():
 
     # Check Docker
     try:
-        subprocess.run(["docker", "--version"], check=True, capture_output=True)
+        subprocess.run(["docker", "--version"],
+                       check=True, capture_output=True)
         click.echo("✅ Docker: Available")
     except:
         click.echo("❌ Docker: Not available")
@@ -498,7 +504,8 @@ def health():
                 if isinstance(status, dict) and status.get("status") == "healthy":
                     healthy_count += 1
 
-    health_score = (healthy_count / total_count * 100) if total_count > 0 else 0
+    health_score = (healthy_count / total_count *
+                    100) if total_count > 0 else 0
 
     click.echo(f"\n🎯 Overall Health Score: {health_score:.1f}%")
 

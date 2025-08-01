@@ -23,6 +23,7 @@ from flask import Flask, request, jsonify
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class AIRequest:
     """AI request data structure"""
@@ -32,6 +33,7 @@ class AIRequest:
     content: str
     context: Dict[str, Any]
     timestamp: datetime
+
 
 @dataclass
 class AIResponse:
@@ -43,29 +45,30 @@ class AIResponse:
     model_used: str
     metadata: Dict[str, Any]
 
+
 class LLMProvider:
     """Large Language Model provider interface"""
-    
+
     def __init__(self, provider_name: str, config: Dict[str, Any]):
         self.provider_name = provider_name
         self.config = config
         self.api_key = config.get('api_key')
         self.endpoint = config.get('endpoint')
         self.model = config.get('model', 'gpt-3.5-turbo')
-        
+
     async def generate_response(self, prompt: str, context: Dict[str, Any] = None) -> AIResponse:
         """Generate AI response"""
         start_time = time.time()
-        
+
         try:
             # Simulate AI processing for demo
             await asyncio.sleep(0.5)  # Simulate processing time
-            
+
             # In real implementation, this would call actual LLM API
             response_text = f"AI Response from {self.provider_name}: Processed '{prompt[:50]}...' with context analysis"
-            
+
             processing_time = time.time() - start_time
-            
+
             return AIResponse(
                 request_id=f"req_{int(time.time())}",
                 response=response_text,
@@ -78,7 +81,7 @@ class LLMProvider:
                     'context_keys': list(context.keys()) if context else []
                 }
             )
-            
+
         except Exception as e:
             logger.error(f"LLM error: {e}")
             return AIResponse(
@@ -90,14 +93,15 @@ class LLMProvider:
                 metadata={'error': str(e)}
             )
 
+
 class MLPipeline:
     """Machine Learning pipeline for data processing"""
-    
+
     def __init__(self, pipeline_config: Dict[str, Any]):
         self.config = pipeline_config
         self.models = {}
         self.initialize_models()
-        
+
     def initialize_models(self):
         """Initialize ML models"""
         # Simulate model initialization
@@ -121,17 +125,17 @@ class MLPipeline:
                 'last_trained': datetime.now()
             }
         }
-        
+
     async def process_data(self, data: Dict[str, Any], model_type: str) -> Dict[str, Any]:
         """Process data through ML pipeline"""
         start_time = time.time()
-        
+
         try:
             # Simulate ML processing
             await asyncio.sleep(0.3)
-            
+
             model_info = self.models.get(model_type, {})
-            
+
             result = {
                 'model_type': model_type,
                 'model_info': model_info,
@@ -141,9 +145,9 @@ class MLPipeline:
                 'processing_time': time.time() - start_time,
                 'timestamp': datetime.now().isoformat()
             }
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(f"ML Pipeline error: {e}")
             return {
@@ -152,21 +156,22 @@ class MLPipeline:
                 'processing_time': time.time() - start_time
             }
 
+
 class NLPEngine:
     """Natural Language Processing engine"""
-    
+
     def __init__(self, nlp_config: Dict[str, Any]):
         self.config = nlp_config
         self.supported_languages = ['en', 'de', 'es', 'fr', 'it']
-        
+
     async def analyze_text(self, text: str, analysis_type: str = 'full') -> Dict[str, Any]:
         """Analyze text using NLP"""
         start_time = time.time()
-        
+
         try:
             # Simulate NLP processing
             await asyncio.sleep(0.2)
-            
+
             analysis = {
                 'text': text,
                 'analysis_type': analysis_type,
@@ -187,9 +192,9 @@ class NLPEngine:
                 'processing_time': time.time() - start_time,
                 'timestamp': datetime.now().isoformat()
             }
-            
+
             return analysis
-            
+
         except Exception as e:
             logger.error(f"NLP Engine error: {e}")
             return {
@@ -197,30 +202,31 @@ class NLPEngine:
                 'processing_time': time.time() - start_time
             }
 
+
 class AIOrchestrator:
     """AI orchestration and management system"""
-    
+
     def __init__(self, workspace_path: str):
         self.workspace_path = workspace_path
         self.db_path = Path(workspace_path) / "ai_data.db"
         self.config = self.load_config()
-        
+
         # Initialize AI components
         self.llm_providers = {}
         self.ml_pipeline = MLPipeline(self.config.get('ml_pipeline', {}))
         self.nlp_engine = NLPEngine(self.config.get('nlp_engine', {}))
-        
+
         self.initialize_database()
         self.initialize_providers()
-        
+
     def load_config(self) -> Dict[str, Any]:
         """Load AI configuration"""
         config_path = Path(self.workspace_path) / "ai_config.json"
-        
+
         if config_path.exists():
             with open(config_path, 'r') as f:
                 return json.load(f)
-        
+
         # Default configuration
         config = {
             "llm_providers": {
@@ -251,17 +257,17 @@ class AIOrchestrator:
                 "enable_caching": True
             }
         }
-        
+
         with open(config_path, 'w') as f:
             json.dump(config, f, indent=2)
-            
+
         return config
-    
+
     def initialize_database(self):
         """Initialize AI database"""
         conn = pymysql.connect(str(self.db_path))
         cursor = conn.cursor()
-        
+
         # AI requests table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS ai_requests (
@@ -274,7 +280,7 @@ class AIOrchestrator:
                 timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         ''')
-        
+
         # AI responses table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS ai_responses (
@@ -289,7 +295,7 @@ class AIOrchestrator:
                 FOREIGN KEY (request_id) REFERENCES ai_requests (id)
             )
         ''')
-        
+
         # ML processing jobs table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS ml_jobs (
@@ -303,35 +309,36 @@ class AIOrchestrator:
                 completed_at DATETIME
             )
         ''')
-        
+
         conn.commit()
         conn.close()
-        
+
     def initialize_providers(self):
         """Initialize LLM providers"""
         provider_configs = self.config.get('llm_providers', {})
-        
+
         for provider_name, config in provider_configs.items():
-            self.llm_providers[provider_name] = LLMProvider(provider_name, config)
-            
+            self.llm_providers[provider_name] = LLMProvider(
+                provider_name, config)
+
         logger.info(f"Initialized {len(self.llm_providers)} LLM providers")
-    
+
     async def process_ai_request(self, ai_request: AIRequest) -> AIResponse:
         """Process AI request through orchestrator"""
         # Store request in database
         conn = pymysql.connect(str(self.db_path))
         cursor = conn.cursor()
-        
+
         cursor.execute('''
             INSERT INTO ai_requests (tenant_id, user_id, request_type, content, context)
             VALUES (?, ?, ?, ?, ?)
-        ''', (ai_request.tenant_id, ai_request.user_id, ai_request.request_type, 
+        ''', (ai_request.tenant_id, ai_request.user_id, ai_request.request_type,
               ai_request.content, json.dumps(ai_request.context)))
-        
+
         request_id = cursor.lastrowid
         conn.commit()
         conn.close()
-        
+
         # Process based on request type
         if ai_request.request_type == 'llm':
             provider = self.llm_providers.get('openai')  # Default provider
@@ -348,7 +355,7 @@ class AIOrchestrator:
                 )
         elif ai_request.request_type == 'ml':
             ml_result = await self.ml_pipeline.process_data(
-                {'content': ai_request.content}, 
+                {'content': ai_request.content},
                 ai_request.context.get('model_type', 'classification')
             )
             response = AIResponse(
@@ -378,33 +385,34 @@ class AIOrchestrator:
                 model_used="error",
                 metadata={}
             )
-        
+
         # Store response in database
         conn = pymysql.connect(str(self.db_path))
         cursor = conn.cursor()
-        
+
         cursor.execute('''
             INSERT INTO ai_responses (request_id, response, confidence, processing_time, model_used, metadata)
             VALUES (?, ?, ?, ?, ?, ?)
         ''', (request_id, response.response, response.confidence, response.processing_time,
               response.model_used, json.dumps(response.metadata)))
-        
+
         conn.commit()
         conn.close()
-        
+
         return response
+
 
 class AIWebInterface:
     """Web interface for AI services"""
-    
+
     def __init__(self, orchestrator: AIOrchestrator):
         self.orchestrator = orchestrator
         self.app = Flask(__name__)
         self.setup_routes()
-        
+
     def setup_routes(self):
         """Setup Flask routes for AI interface"""
-        
+
         @self.app.route('/ai/dashboard')
         def ai_dashboard():
             """AI dashboard"""
@@ -565,12 +573,12 @@ class AIWebInterface:
 </html>
             '''
             return template
-        
+
         @self.app.route('/ai/api/process', methods=['POST'])
         def api_process():
             """Process AI request via API"""
             data = request.get_json()
-            
+
             ai_request = AIRequest(
                 tenant_id=data.get('tenant_id', 'demo'),
                 user_id=data.get('user_id', 'demo_user'),
@@ -579,7 +587,7 @@ class AIWebInterface:
                 context=data.get('context', {}),
                 timestamp=datetime.now()
             )
-            
+
             # Process synchronously for demo
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
@@ -587,7 +595,7 @@ class AIWebInterface:
                 self.orchestrator.process_ai_request(ai_request)
             )
             loop.close()
-            
+
             return jsonify({
                 'request_id': response.request_id,
                 'response': response.response,
@@ -596,7 +604,7 @@ class AIWebInterface:
                 'model_used': response.model_used,
                 'metadata': response.metadata
             })
-        
+
         @self.app.route('/ai/api/providers')
         def api_providers():
             """Get LLM providers info"""
@@ -608,31 +616,31 @@ class AIWebInterface:
                     'endpoint': provider.endpoint,
                     'status': 'active'
                 })
-            
+
             return jsonify({'providers': providers})
-        
+
         @self.app.route('/ai/api/models')
         def api_models():
             """Get ML models info"""
             return jsonify({'models': self.orchestrator.ml_pipeline.models})
-        
+
         @self.app.route('/ai/api/stats')
         def api_stats():
             """Get AI processing statistics"""
             conn = pymysql.connect(str(self.orchestrator.db_path))
             cursor = conn.cursor()
-            
+
             cursor.execute("SELECT COUNT(*) FROM ai_requests")
             total_requests = cursor.fetchone()[0]
-            
+
             cursor.execute("SELECT COUNT(*) FROM ai_responses")
             total_responses = cursor.fetchone()[0]
-            
+
             cursor.execute("SELECT AVG(processing_time) FROM ai_responses")
             avg_processing_time = cursor.fetchone()[0] or 0
-            
+
             conn.close()
-            
+
             return jsonify({
                 'total_requests': total_requests,
                 'total_responses': total_responses,
@@ -640,20 +648,21 @@ class AIWebInterface:
                 'success_rate': 100.0 if total_requests > 0 else 0.0
             })
 
+
 def main():
     """Main AI integration demo"""
     workspace = Path(__file__).parent
-    
+
     logger.info("Starting Heimnetz AI/ML Integration")
     logger.info("=" * 60)
     logger.info("Phase 2: AI Integration - STARTING")
-    
+
     # Initialize AI orchestrator
     orchestrator = AIOrchestrator(str(workspace))
-    
+
     # Initialize web interface
     web_interface = AIWebInterface(orchestrator)
-    
+
     logger.info("AI Components Initialized:")
     logger.info(f"- LLM Providers: {len(orchestrator.llm_providers)}")
     logger.info(f"- ML Models: {len(orchestrator.ml_pipeline.models)}")
@@ -667,11 +676,12 @@ def main():
     logger.info("- Models: GET /ai/api/models")
     logger.info("- Statistics: GET /ai/api/stats")
     logger.info("=" * 60)
-    
+
     try:
         web_interface.app.run(host='0.0.0.0', port=5001, debug=False)
     except KeyboardInterrupt:
         logger.info("AI integration stopped by user")
+
 
 if __name__ == "__main__":
     main()

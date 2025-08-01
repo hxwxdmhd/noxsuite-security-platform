@@ -14,17 +14,17 @@ This system integrates all monitoring components:
 Production-ready monitoring for the Heimnetz plugin ecosystem
 """
 
+import json
+import logging
 import os
 import sys
-import time
-import logging
 import threading
-import json
-from typing import Dict, List, Optional, Any, Callable
-from datetime import datetime, timedelta
-from dataclasses import dataclass, field
-from collections import defaultdict
+import time
 import traceback
+from collections import defaultdict
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from typing import Any, Callable, Dict, List, Optional
 
 # Add project root to path
 project_root = os.path.dirname(os.path.abspath(__file__))
@@ -32,8 +32,12 @@ sys.path.insert(0, project_root)
 
 # Import monitoring components
 try:
-    from prometheus_metrics_system import MetricsCollector, PerformanceMonitor, StressTestSuite
-    from memory_leak_detector import MemoryLeakDetector, MemoryLeak
+    from memory_leak_detector import MemoryLeak, MemoryLeakDetector
+    from prometheus_metrics_system import (
+        MetricsCollector,
+        PerformanceMonitor,
+        StressTestSuite,
+    )
 except ImportError as e:
     logging.error(f"Failed to import monitoring components: {e}")
     sys.exit(1)

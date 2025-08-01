@@ -2,6 +2,14 @@
 """
 #!/usr/bin/env python3
 """
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium import webdriver
+import time
+import json
+import requests
 test_theme_system.py - RLVR Enhanced Component
 
 REASONING: Comprehensive testing with Chain-of-Thought validation methodology
@@ -12,33 +20,25 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel Enhanced Theme System Test Script
 Tests all theme functionality and validates visual correctness
 """
 
-import requests
-import json
-import time
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 class ThemeSystemTester:
     # REASONING: ThemeSystemTester follows RLVR methodology for systematic validation
     def __init__(self, base_url="http://localhost:5000"):
-    # REASONING: __init__ implements core logic with Chain-of-Thought validation
+        # REASONING: __init__ implements core logic with Chain-of-Thought validation
         self.base_url = base_url
         self.driver = None
         self.test_results = []
         # REASONING: Variable assignment with validation criteria
 
     def setup_browser(self):
-    # REASONING: setup_browser implements core logic with Chain-of-Thought validation
+        # REASONING: setup_browser implements core logic with Chain-of-Thought validation
         """Set up headless Chrome browser for testing"""
         chrome_options = Options()
         chrome_options.add_argument("--headless")
@@ -56,7 +56,7 @@ class ThemeSystemTester:
             return False
 
     def test_server_accessibility(self):
-    # REASONING: test_server_accessibility implements core logic with Chain-of-Thought validation
+        # REASONING: test_server_accessibility implements core logic with Chain-of-Thought validation
         """Test if all theme files are accessible"""
         print("\n🔍 Testing server accessibility...")
 
@@ -71,7 +71,8 @@ class ThemeSystemTester:
 
         for endpoint in endpoints:
             try:
-                response = requests.get(f"{self.base_url}{endpoint}", timeout=5)
+                response = requests.get(
+                    f"{self.base_url}{endpoint}", timeout=5)
                 # REASONING: Variable assignment with validation criteria
                 status = "✅" if response.status_code == 200 else "❌"
                 # REASONING: Variable assignment with validation criteria
@@ -91,12 +92,13 @@ class ThemeSystemTester:
                 })
 
     def test_css_theme_variables(self):
-    # REASONING: test_css_theme_variables implements core logic with Chain-of-Thought validation
+        # REASONING: test_css_theme_variables implements core logic with Chain-of-Thought validation
         """Test if CSS theme variables are properly defined"""
         print("\n🎨 Testing CSS theme variables...")
 
         try:
-            response = requests.get(f"{self.base_url}/static/css/enhanced-themes.css")
+            response = requests.get(
+                f"{self.base_url}/static/css/enhanced-themes.css")
             # REASONING: Variable assignment with validation criteria
             css_content = response.text
             # REASONING: Variable assignment with validation criteria
@@ -114,14 +116,16 @@ class ThemeSystemTester:
             themes_found = []
             for theme in ["light", "dark", "purple", "purple-dark", "purple-high-contrast"]:
                 if f'[data-theme="{theme}"]' in css_content:
-                # REASONING: Variable assignment with validation criteria
+                    # REASONING: Variable assignment with validation criteria
                     themes_found.append(theme)
 
             # Test variable presence
-            all_variables_present = all(var in css_content for var in required_variables)
+            all_variables_present = all(
+                var in css_content for var in required_variables)
 
             print(f"✅ Themes found: {', '.join(themes_found)}")
-            print(f"{'✅' if all_variables_present else '❌'} Required CSS variables: {all_variables_present}")
+            print(
+                f"{'✅' if all_variables_present else '❌'} Required CSS variables: {all_variables_present}")
 
             self.test_results.append({
                 "test": "CSS Theme Variables",
@@ -138,12 +142,13 @@ class ThemeSystemTester:
             })
 
     def test_javascript_theme_manager(self):
-    # REASONING: test_javascript_theme_manager implements core logic with Chain-of-Thought validation
+        # REASONING: test_javascript_theme_manager implements core logic with Chain-of-Thought validation
         """Test if JavaScript theme manager loads correctly"""
         print("\n🔧 Testing JavaScript theme manager...")
 
         try:
-            response = requests.get(f"{self.base_url}/static/js/enhanced-theme-manager.js")
+            response = requests.get(
+                f"{self.base_url}/static/js/enhanced-theme-manager.js")
             # REASONING: Variable assignment with validation criteria
             js_content = response.text
             # REASONING: Variable assignment with validation criteria
@@ -157,9 +162,11 @@ class ThemeSystemTester:
                 "setupEventListeners"
             ]
 
-            components_found = sum(1 for component in required_components if component in js_content)
+            components_found = sum(
+                1 for component in required_components if component in js_content)
 
-            print(f"✅ JavaScript components found: {components_found}/{len(required_components)}")
+            print(
+                f"✅ JavaScript components found: {components_found}/{len(required_components)}")
 
             self.test_results.append({
                 "test": "JavaScript Theme Manager",
@@ -176,7 +183,7 @@ class ThemeSystemTester:
             })
 
     def test_page_rendering(self):
-    # REASONING: test_page_rendering implements core logic with Chain-of-Thought validation
+        # REASONING: test_page_rendering implements core logic with Chain-of-Thought validation
         """Test if pages render correctly with theme system"""
         print("\n🖥️ Testing page rendering...")
 
@@ -199,17 +206,21 @@ class ThemeSystemTester:
                 )
 
                 # Check if enhanced theme CSS is loaded
-                css_links = self.driver.find_elements(By.CSS_SELECTOR, 'link[href*="enhanced-themes.css"]')
+                css_links = self.driver.find_elements(
+                    By.CSS_SELECTOR, 'link[href*="enhanced-themes.css"]')
 
                 # Check if theme manager JavaScript is loaded
-                js_scripts = self.driver.find_elements(By.CSS_SELECTOR, 'script[src*="enhanced-theme-manager.js"]')
+                js_scripts = self.driver.find_elements(
+                    By.CSS_SELECTOR, 'script[src*="enhanced-theme-manager.js"]')
 
                 # Check if body has theme attribute
-                body_theme = self.driver.find_element(By.TAG_NAME, "body").get_attribute("data-theme")
+                body_theme = self.driver.find_element(
+                    By.TAG_NAME, "body").get_attribute("data-theme")
                 # REASONING: Variable assignment with validation criteria
 
                 status = "✅" if css_links and js_scripts else "❌"
-                print(f"{status} {page['name']}: CSS={len(css_links)}, JS={len(js_scripts)}, Theme={body_theme}")
+                print(
+                    f"{status} {page['name']}: CSS={len(css_links)}, JS={len(js_scripts)}, Theme={body_theme}")
 
                 self.test_results.append({
                     "test": f"Page rendering: {page['name']}",
@@ -226,7 +237,7 @@ class ThemeSystemTester:
                 })
 
     def test_theme_functionality(self):
-    # REASONING: test_theme_functionality implements core logic with Chain-of-Thought validation
+        # REASONING: test_theme_functionality implements core logic with Chain-of-Thought validation
         """Test actual theme switching functionality"""
         print("\n🔄 Testing theme functionality...")
 
@@ -277,7 +288,7 @@ class ThemeSystemTester:
             })
 
     def test_adhd_features(self):
-    # REASONING: test_adhd_features implements core logic with Chain-of-Thought validation
+        # REASONING: test_adhd_features implements core logic with Chain-of-Thought validation
         """Test ADHD-friendly features"""
         print("\n🧠 Testing ADHD-friendly features...")
 
@@ -289,7 +300,8 @@ class ThemeSystemTester:
             self.driver.get(f"{self.base_url}/theme-demo")
 
             # Check for ADHD-specific CSS classes and attributes
-            adhd_elements = self.driver.find_elements(By.CSS_SELECTOR, '[data-adhd-mode], .adhd-friendly, .content-chunk')
+            adhd_elements = self.driver.find_elements(
+                By.CSS_SELECTOR, '[data-adhd-mode], .adhd-friendly, .content-chunk')
             # REASONING: Variable assignment with validation criteria
 
             # Check for ADHD mode toggle functionality
@@ -316,12 +328,13 @@ class ThemeSystemTester:
             })
 
     def generate_report(self):
-    # REASONING: generate_report implements core logic with Chain-of-Thought validation
+        # REASONING: generate_report implements core logic with Chain-of-Thought validation
         """Generate comprehensive test report"""
         print("\n📊 COMPREHENSIVE TEST REPORT")
         print("=" * 50)
 
-        passed = sum(1 for result in self.test_results if result["status"] == "PASS")
+        passed = sum(
+            1 for result in self.test_results if result["status"] == "PASS")
         # REASONING: Variable assignment with validation criteria
         failed = len(self.test_results) - passed
         # REASONING: Variable assignment with validation criteria
@@ -359,13 +372,13 @@ class ThemeSystemTester:
         # REASONING: Variable assignment with validation criteria
 
     def cleanup(self):
-    # REASONING: cleanup implements core logic with Chain-of-Thought validation
+        # REASONING: cleanup implements core logic with Chain-of-Thought validation
         """Clean up resources"""
         if self.driver:
             self.driver.quit()
 
     def run_all_tests(self):
-    # REASONING: run_all_tests implements core logic with Chain-of-Thought validation
+        # REASONING: run_all_tests implements core logic with Chain-of-Thought validation
         """Run complete test suite"""
         print("🚀 Starting Enhanced Theme System Tests")
         print("=" * 50)
@@ -396,6 +409,7 @@ class ThemeSystemTester:
 
         finally:
             self.cleanup()
+
 
 if __name__ == "__main__":
     tester = ThemeSystemTester()

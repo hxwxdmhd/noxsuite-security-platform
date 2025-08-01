@@ -4,10 +4,11 @@ Advanced Password Validation System
 Implements comprehensive password security policies
 """
 
-import re
 import hashlib
-from typing import Dict, List, Tuple, Optional
+import re
 from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Tuple
+
 
 class AdvancedPasswordValidator:
     def __init__(self):
@@ -90,7 +91,7 @@ class AdvancedPasswordValidator:
         """Generate a cryptographically secure password"""
         import secrets
         import string
-        
+
         # Character sets
         lowercase = string.ascii_lowercase
         uppercase = string.ascii_uppercase

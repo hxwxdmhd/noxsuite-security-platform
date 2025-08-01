@@ -20,12 +20,14 @@ from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
 from enum import Enum
 
+
 class TenantType(Enum):
     """Tenant type enumeration."""
     ENTERPRISE = "enterprise"
     PROFESSIONAL = "professional"
     STANDARD = "standard"
     DEVELOPER = "developer"
+
 
 @dataclass
 class TenantConfig:
@@ -38,6 +40,7 @@ class TenantConfig:
     created_date: datetime
     last_active: datetime
     is_active: bool = True
+
 
 class MultiTenantAdapter:
     """Multi-tenant adapter for workspace separation."""
@@ -120,7 +123,7 @@ class MultiTenantAdapter:
             conn.commit()
 
     def create_tenant(self, tenant_name: str, tenant_type: TenantType,
-                     custom_limits: Optional[Dict[str, int]] = None) -> str:
+                      custom_limits: Optional[Dict[str, int]] = None) -> str:
         """Create new tenant with isolation."""
         tenant_id = f"tenant_{hashlib.md5(tenant_name.encode()).hexdigest()[:8]}"
 
@@ -227,9 +230,10 @@ class MultiTenantAdapter:
 
         # Log tenant creation
         self.log_tenant_access(tenant_id, "CREATE_TENANT", "tenant_system", True,
-                              f"Created tenant: {tenant_name}")
+                               f"Created tenant: {tenant_name}")
 
-        print(f"Created tenant: {tenant_name} (ID: {tenant_id}, Type: {tenant_type.value})")
+        print(
+            f"Created tenant: {tenant_name} (ID: {tenant_id}, Type: {tenant_type.value})")
         return tenant_id
 
     def get_tenant_workspace(self, tenant_id: str) -> Optional[Path]:
@@ -242,27 +246,30 @@ class MultiTenantAdapter:
     def validate_tenant_access(self, tenant_id: str, resource: str, action: str) -> bool:
         """Validate tenant access to resource."""
         if tenant_id not in self.tenants:
-            self.log_tenant_access(tenant_id, action, resource, False, "Tenant not found")
+            self.log_tenant_access(
+                tenant_id, action, resource, False, "Tenant not found")
             return False
 
         tenant = self.tenants[tenant_id]
 
         if not tenant.is_active:
-            self.log_tenant_access(tenant_id, action, resource, False, "Tenant inactive")
+            self.log_tenant_access(
+                tenant_id, action, resource, False, "Tenant inactive")
             return False
 
         # Check security policies
         if not tenant.security_policies.get("cross_tenant_access", False):
             if "tenant_" in resource and tenant_id not in resource:
                 self.log_tenant_access(tenant_id, action, resource, False,
-                                     "Cross-tenant access denied")
+                                       "Cross-tenant access denied")
                 return False
 
-        self.log_tenant_access(tenant_id, action, resource, True, "Access granted")
+        self.log_tenant_access(
+            tenant_id, action, resource, True, "Access granted")
         return True
 
     def check_resource_usage(self, tenant_id: str, resource_type: str,
-                           requested_amount: int) -> bool:
+                             requested_amount: int) -> bool:
         """Check if tenant can use requested resources."""
         if tenant_id not in self.tenants:
             return False
@@ -284,7 +291,7 @@ class MultiTenantAdapter:
         return (current_usage + requested_amount) <= resource_limit
 
     def allocate_resources(self, tenant_id: str, resource_type: str,
-                          resource_name: str, amount: int) -> bool:
+                           resource_name: str, amount: int) -> bool:
         """Allocate resources to tenant."""
         if not self.check_resource_usage(tenant_id, resource_type, amount):
             return False
@@ -318,7 +325,7 @@ class MultiTenantAdapter:
                     (tenant_id, resource_type, resource_name, resource_usage, resource_limit, last_updated)
                     VALUES (?, ?, ?, ?, ?, ?)
                 ''', (tenant_id, resource_type, resource_name, amount, resource_limit,
-                     datetime.now().isoformat()))
+                      datetime.now().isoformat()))
 
             conn.commit()
 
@@ -339,7 +346,7 @@ class MultiTenantAdapter:
 
             for row in cursor.fetchall():
                 tenant_id, tenant_name, tenant_type, resource_limits, security_policies, \
-                created_date, last_active, is_active = row
+                    created_date, last_active, is_active = row
 
                 tenant_config = TenantConfig(
                     tenant_id=tenant_id,
@@ -355,7 +362,7 @@ class MultiTenantAdapter:
                 self.tenants[tenant_id] = tenant_config
 
     def log_tenant_access(self, tenant_id: str, action: str, resource: str,
-                         success: bool, details: str = ""):
+                          success: bool, details: str = ""):
         """Log tenant access."""
         with sqlite3.connect(str(self.tenant_db)) as conn:
             cursor = conn.cursor()
@@ -379,7 +386,8 @@ class MultiTenantAdapter:
         # Count tenant types
         for tenant in self.tenants.values():
             tenant_type = tenant.tenant_type.value
-            stats["tenant_types"][tenant_type] = stats["tenant_types"].get(tenant_type, 0) + 1
+            stats["tenant_types"][tenant_type] = stats["tenant_types"].get(
+                tenant_type, 0) + 1
 
         # Get resource usage from database
         with sqlite3.connect(str(self.tenant_db)) as conn:
@@ -454,6 +462,7 @@ Generated: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
         return str(report_file)
 
+
 def main():
     """Main multi-tenant adapter execution."""
     try:
@@ -461,17 +470,24 @@ def main():
         adapter = MultiTenantAdapter(str(workspace_path))
 
         # Create sample tenants
-        enterprise_tenant = adapter.create_tenant("Enterprise Corp", TenantType.ENTERPRISE)
-        professional_tenant = adapter.create_tenant("Professional Team", TenantType.PROFESSIONAL)
-        standard_tenant = adapter.create_tenant("Standard User", TenantType.STANDARD)
+        enterprise_tenant = adapter.create_tenant(
+            "Enterprise Corp", TenantType.ENTERPRISE)
+        professional_tenant = adapter.create_tenant(
+            "Professional Team", TenantType.PROFESSIONAL)
+        standard_tenant = adapter.create_tenant(
+            "Standard User", TenantType.STANDARD)
 
         # Test resource allocation
-        adapter.allocate_resources(enterprise_tenant, "cpu_cores", "main_process", 4)
-        adapter.allocate_resources(professional_tenant, "memory_gb", "cache", 8)
+        adapter.allocate_resources(
+            enterprise_tenant, "cpu_cores", "main_process", 4)
+        adapter.allocate_resources(
+            professional_tenant, "memory_gb", "cache", 8)
 
         # Test access validation
-        print(f"Enterprise access to own resources: {adapter.validate_tenant_access(enterprise_tenant, f'tenant_{enterprise_tenant}/data', 'READ')}")
-        print(f"Professional access to enterprise resources: {adapter.validate_tenant_access(professional_tenant, f'tenant_{enterprise_tenant}/data', 'READ')}")
+        print(
+            f"Enterprise access to own resources: {adapter.validate_tenant_access(enterprise_tenant, f'tenant_{enterprise_tenant}/data', 'READ')}")
+        print(
+            f"Professional access to enterprise resources: {adapter.validate_tenant_access(professional_tenant, f'tenant_{enterprise_tenant}/data', 'READ')}")
 
         # Generate report
         report_file = adapter.generate_tenant_report()
@@ -496,6 +512,7 @@ def main():
 
     except Exception as e:
         print(f"Multi-tenant adapter error: {str(e)}")
+
 
 if __name__ == "__main__":
     main()

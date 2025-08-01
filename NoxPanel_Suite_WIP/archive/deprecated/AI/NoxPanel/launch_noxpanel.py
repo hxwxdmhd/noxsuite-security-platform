@@ -4,16 +4,16 @@ NoxPanel Full Stack Launcher
 Complete application launcher with comprehensive error handling and system validation
 """
 
-import os
-import sys
-import logging
-import subprocess
-import time
 import json
-from pathlib import Path
-from typing import Dict, Any, Optional
-import threading
+import logging
+import os
 import signal
+import subprocess
+import sys
+import threading
+import time
+from pathlib import Path
+from typing import Any, Dict, Optional
 
 # Ensure proper Python path
 base_path = Path(__file__).parent
@@ -314,7 +314,7 @@ class NoxPanelLauncher:
     def create_fallback_app(self):
         """Create a simple fallback application"""
         try:
-            from flask import Flask, render_template, jsonify
+            from flask import Flask, jsonify, render_template
 
             self.app = Flask(__name__,
                            template_folder=str(self.base_path / "templates"),
@@ -445,8 +445,8 @@ class NoxPanelLauncher:
     def test_server_response(self) -> bool:
         """Test if server is responding"""
         try:
-            import urllib.request
             import urllib.error
+            import urllib.request
 
             # Try multiple health endpoints
             health_urls = [

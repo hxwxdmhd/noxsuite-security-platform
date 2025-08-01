@@ -1,3 +1,12 @@
+import docker
+import aiohttp
+from typing import Any, Dict, List, Optional
+from pathlib import Path
+from datetime import datetime
+import time
+import logging
+import json
+import asyncio
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -12,23 +21,13 @@ Manages multi-agent coordination between Supermaven, Langflow, and MCP agents.
 Provides context sharing, workflow orchestration, and inter-agent communication.
 """
 
-import asyncio
-import json
-import logging
-import time
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-import aiohttp
-
-import docker
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("agent_coordination.log"), logging.StreamHandler()],
+    handlers=[logging.FileHandler(
+        "agent_coordination.log"), logging.StreamHandler()],
 )
 logger = logging.getLogger(__name__)
 
@@ -291,7 +290,8 @@ async def main():
             indent=2,
         )
 
-    logger.info("📊 Coordination results saved to agent_coordination_results.json")
+    logger.info(
+        "📊 Coordination results saved to agent_coordination_results.json")
     return coordination_result
 
 

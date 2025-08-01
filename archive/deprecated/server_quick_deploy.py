@@ -54,6 +54,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class ServerConfig:
     """Quick deploy server configuration"""
@@ -67,9 +68,10 @@ class ServerConfig:
     cors_origins: List[str] = field(default_factory=lambda: ["*"])
     api_version: str = "v1"
 
+
 class QuickDeployServer:
     """Simplified unified server for quick deployment"""
-    
+
     def __init__(self, config: ServerConfig):
         self.config = config
         self.metrics = {
@@ -82,19 +84,20 @@ class QuickDeployServer:
             'cpu_usage': 0.0,
             'memory_usage': 0.0
         }
-        
+
         # Initialize Flask app
         self.app = Flask(__name__)
         self.app.config['SECRET_KEY'] = config.secret_key
-        
+
         # Initialize components
         if HAS_FLASK:
             self.cors = CORS(self.app, origins=config.cors_origins)
             if config.websocket_enabled:
-                self.socketio = SocketIO(self.app, cors_allowed_origins=config.cors_origins)
+                self.socketio = SocketIO(
+                    self.app, cors_allowed_origins=config.cors_origins)
             else:
                 self.socketio = None
-        
+
         # Initialize database
         self.db_manager = None
         if HAS_DB:
@@ -104,7 +107,7 @@ class QuickDeployServer:
                 logger.info("Database initialized successfully")
             except Exception as e:
                 logger.error(f"Database initialization failed: {e}")
-        
+
         # Initialize plugin manager
         self.plugin_manager = None
         if HAS_PLUGINS:
@@ -114,23 +117,24 @@ class QuickDeployServer:
                 logger.info("Plugin system initialized")
             except Exception as e:
                 logger.error(f"Plugin system initialization failed: {e}")
-        
+
         # WebSocket connections
         self.websocket_connections = {}
-        
+
         # Setup routes and handlers
         self._setup_routes()
         if self.socketio:
             self._setup_websocket_handlers()
-        
+
         # Start background tasks
         self._start_metrics_collector()
-        
-        logger.info(f"QuickDeployServer initialized - Version: {config.api_version}")
-    
+
+        logger.info(
+            f"QuickDeployServer initialized - Version: {config.api_version}")
+
     def _setup_routes(self):
         """Setup REST API routes"""
-        
+
         @self.app.route('/')
         def index():
             """Main dashboard"""
@@ -249,7 +253,7 @@ class QuickDeployServer:
             </html>
             """
             return render_template_string(html)
-        
+
         @self.app.route('/api/v1/health')
         def health():
             """Health check endpoint"""
@@ -265,7 +269,7 @@ class QuickDeployServer:
                     'websocket': 'enabled' if self.socketio else 'disabled'
                 }
             })
-        
+
         @self.app.route('/api/v1/status')
         def status():
             """System status endpoint"""
@@ -290,20 +294,20 @@ class QuickDeployServer:
                     'available': len(self.plugin_manager.loader.discovered_plugins) if self.plugin_manager else 0
                 }
             })
-        
+
         @self.app.route('/api/v1/metrics')
         def get_metrics():
             """Performance metrics endpoint"""
             uptime = datetime.utcnow() - self.metrics['uptime_start']
             self.metrics['uptime'] = str(uptime)
             return jsonify(self.metrics)
-        
+
         @self.app.route('/api/v1/plugins')
         def get_plugins():
             """Plugin status endpoint"""
             if not self.plugin_manager:
                 return jsonify({'error': 'Plugin system not available'}), 503
-            
+
             plugins = []
             for name, plugin in self.plugin_manager.get_all_plugins().items():
                 plugins.append({
@@ -311,37 +315,38 @@ class QuickDeployServer:
                     'metadata': plugin.metadata.to_dict() if hasattr(plugin, 'metadata') else {},
                     'status': 'active'
                 })
-            
+
             return jsonify({
                 'plugins': plugins,
                 'stats': self.plugin_manager.get_stats()
             })
-        
+
         @self.app.before_request
         def before_request():
             """Request middleware"""
             self.metrics['requests_total'] += 1
             request.start_time = time.time()
-        
+
         @self.app.after_request
         def after_request(response):
             """Response middleware"""
             if hasattr(request, 'start_time'):
                 response_time = time.time() - request.start_time
                 self.metrics['response_time_avg'] = (
-                    self.metrics['response_time_avg'] * 0.9 + response_time * 0.1
+                    self.metrics['response_time_avg'] *
+                    0.9 + response_time * 0.1
                 )
-            
+
             # Add CORS headers
             response.headers['Access-Control-Allow-Origin'] = '*'
             response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
             response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-            
+
             return response
-    
+
     def _setup_websocket_handlers(self):
         """Setup WebSocket handlers"""
-        
+
         @self.socketio.on('connect')
         def handle_connect():
             """Handle WebSocket connection"""
@@ -350,26 +355,28 @@ class QuickDeployServer:
                 'connected_at': datetime.utcnow(),
                 'ip': request.remote_addr
             }
-            self.metrics['active_connections'] = len(self.websocket_connections)
-            
+            self.metrics['active_connections'] = len(
+                self.websocket_connections)
+
             emit('connection_established', {
                 'client_id': client_id,
                 'server_time': datetime.utcnow().isoformat(),
                 'status': 'connected'
             })
-            
+
             logger.info(f"WebSocket connection: {client_id}")
-        
+
         @self.socketio.on('disconnect')
         def handle_disconnect():
             """Handle WebSocket disconnection"""
             client_id = request.sid
             if client_id in self.websocket_connections:
                 del self.websocket_connections[client_id]
-                self.metrics['active_connections'] = len(self.websocket_connections)
-            
+                self.metrics['active_connections'] = len(
+                    self.websocket_connections)
+
             logger.info(f"WebSocket disconnect: {client_id}")
-        
+
         @self.socketio.on('request_metrics')
         def handle_metrics_request():
             """Handle metrics request"""
@@ -377,7 +384,7 @@ class QuickDeployServer:
                 'metrics': self.metrics,
                 'timestamp': datetime.utcnow().isoformat()
             })
-    
+
     def _start_metrics_collector(self):
         """Start background metrics collection"""
         def collect_metrics():
@@ -386,40 +393,43 @@ class QuickDeployServer:
                     # Collect system metrics
                     self.metrics['cpu_usage'] = psutil.cpu_percent(interval=1)
                     self.metrics['memory_usage'] = psutil.virtual_memory().percent
-                    
+
                     # Log metrics to database
                     if self.db_manager:
                         self.db_manager.log_system_metrics(self.metrics)
-                    
+
                     # Broadcast to WebSocket clients
                     if self.socketio:
                         self.socketio.emit('metrics_update', {
                             'metrics': self.metrics,
                             'timestamp': datetime.utcnow().isoformat()
                         })
-                    
+
                     time.sleep(5)
-                    
+
                 except Exception as e:
                     logger.error(f"Metrics collection error: {e}")
                     time.sleep(5)
-        
+
         thread = threading.Thread(target=collect_metrics, daemon=True)
         thread.start()
         logger.info("Metrics collection started")
-    
+
     def run(self):
         """Start the server"""
         logger.info("=" * 60)
         logger.info("ULTIMATE SUITE v11.0 - QUICK DEPLOY SERVER")
         logger.info("=" * 60)
-        logger.info(f"Starting server on {self.config.host}:{self.config.port}")
+        logger.info(
+            f"Starting server on {self.config.host}:{self.config.port}")
         logger.info(f"Debug mode: {self.config.debug}")
         logger.info(f"WebSocket enabled: {self.config.websocket_enabled}")
-        logger.info(f"Database: {'Connected' if self.db_manager else 'Disabled'}")
-        logger.info(f"Plugins: {'Loaded' if self.plugin_manager else 'Disabled'}")
+        logger.info(
+            f"Database: {'Connected' if self.db_manager else 'Disabled'}")
+        logger.info(
+            f"Plugins: {'Loaded' if self.plugin_manager else 'Disabled'}")
         logger.info("=" * 60)
-        
+
         try:
             if self.socketio:
                 self.socketio.run(
@@ -440,18 +450,19 @@ class QuickDeployServer:
             logger.error(f"Server error: {e}")
             raise
 
+
 def main():
     """Main entry point"""
     if not HAS_FLASK:
         print("ERROR: Flask not available. Please install: pip install flask flask-socketio flask-cors")
         sys.exit(1)
-    
+
     # Create configuration
     config = ServerConfig()
-    
+
     # Create and start server
     server = QuickDeployServer(config)
-    
+
     try:
         server.run()
     except KeyboardInterrupt:
@@ -459,6 +470,7 @@ def main():
     except Exception as e:
         logger.error(f"Server failed: {e}")
         sys.exit(1)
+
 
 if __name__ == '__main__':
     main()

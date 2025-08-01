@@ -5,9 +5,9 @@ Text Summarization Script for NoxPanel v3.0
 Uses AI to summarize text files or input text
 """
 
-import sys
-import os
 import argparse
+import os
+import sys
 from pathlib import Path
 
 # Add the project root to Python path for imports
@@ -15,6 +15,7 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from noxcore.llm_integration import llm_manager
+
 
 def summarize_file(file_path: str, max_length: int = 200) -> str:
     """

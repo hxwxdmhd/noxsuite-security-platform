@@ -5,10 +5,11 @@
 Performance testing and validation after dependency installation
 """
 
-import time
-import sys
 import json
+import sys
+import time
 from datetime import datetime
+
 
 def validate_core_dependencies():
     """

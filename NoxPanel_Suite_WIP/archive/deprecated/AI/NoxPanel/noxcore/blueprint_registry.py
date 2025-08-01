@@ -4,9 +4,10 @@ Standardized blueprint management for consistent route registration
 """
 
 import logging
-from typing import Dict, List, Tuple, Optional, Any
-from flask import Flask, Blueprint
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
+
+from flask import Blueprint, Flask
 
 logger = logging.getLogger(__name__)
 

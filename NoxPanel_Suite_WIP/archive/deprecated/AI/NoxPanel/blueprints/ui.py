@@ -4,11 +4,19 @@
 Handles /ui/* routes for theme management, components, and frontend assets
 """
 
-import logging
 import json
+import logging
 from pathlib import Path
-from flask import Blueprint, render_template, request, jsonify, session, send_from_directory
-from flask_login import login_required, current_user
+
+from flask import (
+    Blueprint,
+    jsonify,
+    render_template,
+    request,
+    send_from_directory,
+    session,
+)
+from flask_login import current_user, login_required
 
 logger = logging.getLogger(__name__)
 

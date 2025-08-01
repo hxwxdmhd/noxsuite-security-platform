@@ -14,17 +14,18 @@ This system provides a centralized database for plugin management:
 SQLite-based for local plugin registry management
 """
 
+import hashlib
+import json
+import logging
 import os
 import sys
-import json
-import pymysql
-import logging
-import hashlib
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, field, asdict
+import uuid
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
-import uuid
+from typing import Any, Dict, List, Optional, Tuple
+
+import pymysql
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

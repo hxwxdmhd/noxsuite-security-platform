@@ -27,9 +27,9 @@ Usage Examples:
     python run_tests.py --coverage        # Run with coverage report
 """
 
-import sys
-import subprocess
 import argparse
+import subprocess
+import sys
 import time
 from pathlib import Path
 from typing import List, Optional

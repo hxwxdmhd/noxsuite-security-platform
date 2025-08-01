@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -7,15 +8,15 @@ NoxSuite Smart Self-Healing Auto-Installer
 Intelligent cross-platform setup with AI-powered error recovery and learning capabilities
 """
 
-import os
-import sys
+import codecs
+import hashlib
 import json
-import subprocess
+import os
 import platform
 import shutil
+import subprocess
+import sys
 import time
-import hashlib
-import codecs
 
 # Optional imports with fallbacks
 try:
@@ -32,18 +33,18 @@ except ImportError:
     HAS_CHARDET = False
     logger.info("Warning: chardet module not available. Using basic encoding detection.")
 import logging
-import tempfile
-import uuid
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any, Union
-from datetime import datetime, timezone
-from dataclasses import dataclass, asdict
-from enum import Enum, auto
-from contextlib import contextmanager
-import traceback
-import threading
 import queue
 import re
+import tempfile
+import threading
+import traceback
+import uuid
+from contextlib import contextmanager
+from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
+from enum import Enum, auto
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Force UTF-8 encoding for consistent cross-platform behavior
 if sys.platform.startswith('win'):
@@ -3923,6 +3924,7 @@ class InstallationValidator:
             # Check Windows version (Docker Desktop requirements)
             try:
                 import winreg
+
                 # This is a simplified check - real implementation would be more thorough
                 pass
             except ImportError:
@@ -5347,8 +5349,8 @@ class SmartNoxSuiteInstaller:
                     failed_urls.append(url)
         else:
             # Fallback to urllib for basic connectivity check
-            import urllib.request
             import urllib.error
+            import urllib.request
             
             for url in test_urls:
                 try:

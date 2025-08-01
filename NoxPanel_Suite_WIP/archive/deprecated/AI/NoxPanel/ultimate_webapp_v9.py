@@ -31,21 +31,32 @@ Major Enhancements in v9.0:
    - Device classification and fingerprinting
 """
 
+import asyncio
+import json
+import logging
 import os
 import sys
-import json
 import time
-import logging
-import asyncio
 import uuid
-import psutil
-from pathlib import Path
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple, Union
-from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import psutil
 
 # Flask and web dependencies
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory, Response
+from flask import (
+    Flask,
+    Response,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    session,
+    url_for,
+)
 from flask_cors import CORS
 from werkzeug.serving import WSGIRequestHandler
 
@@ -57,8 +68,11 @@ sys.path.insert(0, str(project_root / "AI" / "NoxPanel"))
 # Import our v8.0 components
 try:
     from ultimate_webapp_v8 import (
-        AdvancedAIManager, AdvancedNetworkScanner, 
-        AppConfig, AIModelConfig, NetworkConfig
+        AdvancedAIManager,
+        AdvancedNetworkScanner,
+        AIModelConfig,
+        AppConfig,
+        NetworkConfig,
     )
     V8_AVAILABLE = True
 except ImportError as e:
@@ -67,14 +81,19 @@ except ImportError as e:
 
 # Import new v9.0 components
 try:
-    from plugin_framework import PluginManager, PluginInterface, SecuritySandbox
+    from plugin_framework import PluginInterface, PluginManager, SecuritySandbox
     PLUGIN_FRAMEWORK_AVAILABLE = True
 except ImportError:
     PLUGIN_FRAMEWORK_AVAILABLE = False
     print("⚠️ Plugin framework not available")
 
 try:
-    from sysadmin_copilot import SysAdminCopilot, SystemHealthMonitor, ScriptGenerator, TaskExecutor
+    from sysadmin_copilot import (
+        ScriptGenerator,
+        SysAdminCopilot,
+        SystemHealthMonitor,
+        TaskExecutor,
+    )
     SYSADMIN_COPILOT_AVAILABLE = True
 except ImportError:
     SYSADMIN_COPILOT_AVAILABLE = False

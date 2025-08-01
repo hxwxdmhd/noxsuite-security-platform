@@ -19,8 +19,9 @@ API Bridge for Heimnetz Integration
 Connects frontend JavaScript with backend Flask APIs
 """
 
-from flask import Blueprint, jsonify, request
 import logging
+
+from flask import Blueprint, jsonify, request
 
 api_bridge = Blueprint('heimnetz_api', __name__, url_prefix='/api/heimnetz')
 logger = logging.getLogger(__name__)

@@ -35,29 +35,51 @@ Major Enhancements in v10.0:
    - Enhanced user experience with adaptive interfaces
 """
 
+import asyncio
+import json
+import logging
 import os
 import sys
-import json
 import time
-import logging
-import asyncio
 import uuid
-import psutil
-from pathlib import Path
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple, Union
-from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import psutil
 
 # Flask and web dependencies
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory, Response
+from flask import (
+    Flask,
+    Response,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    session,
+    url_for,
+)
 from flask_cors import CORS
 from werkzeug.serving import WSGIRequestHandler
 
 # Advanced AI and Analytics Integration
 try:
-    from AI.advanced_ai_orchestrator import initialize_ai_orchestrator, get_ai_orchestrator, AIModelType, TaskPriority
-    from AI.advanced_security_monitor import initialize_security_monitor, get_security_monitor
-    from AI.advanced_analytics_dashboard import initialize_analytics_dashboard, get_analytics_dashboard
+    from AI.advanced_ai_orchestrator import (
+        AIModelType,
+        TaskPriority,
+        get_ai_orchestrator,
+        initialize_ai_orchestrator,
+    )
+    from AI.advanced_analytics_dashboard import (
+        get_analytics_dashboard,
+        initialize_analytics_dashboard,
+    )
+    from AI.advanced_security_monitor import (
+        get_security_monitor,
+        initialize_security_monitor,
+    )
     ADVANCED_AI_AVAILABLE = True
 except ImportError:
     print("⚠️ Advanced AI features not available - basic functionality only")
@@ -65,21 +87,22 @@ except ImportError:
 
 # Voice Integration (Optional)
 try:
-    from AI.voxtral_service import VoxtralService
     from AI.voice_api import VoiceAPIManager
+    from AI.voxtral_service import VoxtralService
     VOICE_AVAILABLE = True
 except ImportError:
     print("⚠️ Voice integration not available - basic functionality only")
     VOICE_AVAILABLE = False
 
+import hashlib
+import ipaddress
+import platform
+
 # Standard imports
 import socket
 import subprocess
-import platform
 import threading
 from concurrent.futures import ThreadPoolExecutor
-import ipaddress
-import hashlib
 
 # Configure logging
 logging.basicConfig(

@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 analytics_bp = Blueprint('analytics', __name__, url_prefix='/analytics')
 
+
 @analytics_bp.route('/')
 @analytics_bp.route('/dashboard')
 def dashboard():
@@ -42,7 +43,7 @@ def dashboard():
         }
 
         return render_template('analytics/dashboard.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -54,8 +55,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             title="Analytics Dashboard",
-                             stats=stats)
+                               title="Analytics Dashboard",
+                               stats=stats)
     except Exception as e:
     """
     RLVR: Implements api_data with error handling and validation
@@ -69,12 +70,12 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"Analytics Dashboard dashboard error: {e}")
-        flash(f"Error loading analytics dashboard: {e}", 'error')
-        return render_template('analytics/dashboard.html',
-                             title="Analytics Dashboard",
-                             stats={},
-    """
+    logger.error(f"Analytics Dashboard dashboard error: {e}")
+    flash(f"Error loading analytics dashboard: {e}", 'error')
+    return render_template('analytics/dashboard.html',
+                           title="Analytics Dashboard",
+                           stats={},
+                           """
     RLVR: Implements api_metrics with error handling and validation
 
     REASONING CHAIN:
@@ -86,7 +87,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             error=str(e))
+                           error=str(e))
+
 
 @analytics_bp.route('/api/status')
 def api_status():
@@ -105,7 +107,7 @@ def api_status():
     """Analytics Dashboard status API"""
     try:
         status = {
-    """
+            """
     RLVR: Implements register_analytics_routes with error handling and validation
 
     REASONING CHAIN:
@@ -126,6 +128,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Analytics Dashboard status API error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @analytics_bp.route('/api/data')
 def api_data():

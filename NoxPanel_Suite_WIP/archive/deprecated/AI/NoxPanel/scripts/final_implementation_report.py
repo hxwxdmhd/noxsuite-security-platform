@@ -5,8 +5,9 @@ Comprehensive report of all optimization work completed
 """
 
 import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
 
 def generate_final_report():
     """

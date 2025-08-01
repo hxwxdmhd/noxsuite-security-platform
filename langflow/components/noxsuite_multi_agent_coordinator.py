@@ -11,6 +11,7 @@ from emergency_copilot_fix import throttler
 from langflow.custom import CustomComponent
 from langflow.field_typing import Bool, Data, DropDown, Number, Text
 
+
 class NoxSuiteMultiAgentCoordinator(CustomComponent):
     display_name = "NoxSuite Multi-Agent Coordinator"
     description = "Coordinate multiple agents with intelligent task distribution and tool usage management"
@@ -320,14 +321,16 @@ class NoxSuiteMultiAgentCoordinator(CustomComponent):
                 continue
 
             # Execute task
-            task_result = self._execute_agent_task(agent_name, task, tool_usage_aware)
+            task_result = self._execute_agent_task(
+                agent_name, task, tool_usage_aware)
             result["execution_log"].append(task_result)
 
             # Add delay between tasks
             time.sleep(1)
 
         completed_tasks = len(
-            [log for log in result["execution_log"] if log["status"] == "completed"]
+            [log for log in result["execution_log"]
+                if log["status"] == "completed"]
         )
         total_tasks = len(tasks)
 
@@ -354,7 +357,8 @@ class NoxSuiteMultiAgentCoordinator(CustomComponent):
         }
 
         # Sort tasks by priority
-        sorted_tasks = sorted(tasks.items(), key=lambda x: priorities.get(x[0], 5))
+        sorted_tasks = sorted(
+            tasks.items(), key=lambda x: priorities.get(x[0], 5))
 
         for agent_name, task in sorted_tasks:
             usage_check = self._check_tool_usage_limit(tool_usage_aware)
@@ -370,14 +374,16 @@ class NoxSuiteMultiAgentCoordinator(CustomComponent):
                 )
                 continue
 
-            task_result = self._execute_agent_task(agent_name, task, tool_usage_aware)
+            task_result = self._execute_agent_task(
+                agent_name, task, tool_usage_aware)
             task_result["priority"] = priorities.get(agent_name, 5)
             result["execution_log"].append(task_result)
 
             time.sleep(0.5)  # Shorter delay for priority mode
 
         completed_tasks = len(
-            [log for log in result["execution_log"] if log["status"] == "completed"]
+            [log for log in result["execution_log"]
+                if log["status"] == "completed"]
         )
 
         return {
@@ -404,7 +410,7 @@ class NoxSuiteMultiAgentCoordinator(CustomComponent):
         batch_size = min(max_concurrent, len(task_items))
 
         for i in range(0, len(task_items), batch_size):
-            batch = task_items[i : i + batch_size]
+            batch = task_items[i: i + batch_size]
 
             # Check tool usage before batch
             usage_check = self._check_tool_usage_limit(tool_usage_aware)
@@ -439,7 +445,8 @@ class NoxSuiteMultiAgentCoordinator(CustomComponent):
             time.sleep(0.5)  # Delay between batches
 
         completed_tasks = len(
-            [log for log in result["execution_log"] if log.get("status") == "completed"]
+            [log for log in result["execution_log"]
+                if log.get("status") == "completed"]
         )
 
         return {
@@ -471,7 +478,8 @@ class NoxSuiteMultiAgentCoordinator(CustomComponent):
         }
 
         # Sort by estimated load
-        sorted_tasks = sorted(tasks.items(), key=lambda x: task_weights.get(x[1], 1))
+        sorted_tasks = sorted(
+            tasks.items(), key=lambda x: task_weights.get(x[1], 1))
 
         current_load = 0
         max_load = max_concurrent * 2  # Arbitrary load limit
@@ -504,7 +512,8 @@ class NoxSuiteMultiAgentCoordinator(CustomComponent):
                 )
                 continue
 
-            task_result = self._execute_agent_task(agent_name, task, tool_usage_aware)
+            task_result = self._execute_agent_task(
+                agent_name, task, tool_usage_aware)
             task_result["weight"] = task_weight
             result["execution_log"].append(task_result)
 
@@ -512,7 +521,8 @@ class NoxSuiteMultiAgentCoordinator(CustomComponent):
             time.sleep(0.2)
 
         completed_tasks = len(
-            [log for log in result["execution_log"] if log.get("status") == "completed"]
+            [log for log in result["execution_log"]
+                if log.get("status") == "completed"]
         )
 
         return {
@@ -533,18 +543,21 @@ class NoxSuiteMultiAgentCoordinator(CustomComponent):
         emergency_tasks = {"monitor": "alerts", "docker": "health_check"}
 
         # Filter to only emergency-critical tasks
-        critical_tasks = {k: v for k, v in tasks.items() if k in emergency_tasks}
+        critical_tasks = {k: v for k,
+                          v in tasks.items() if k in emergency_tasks}
 
         for agent_name, task in critical_tasks.items():
             # In emergency mode, proceed even with high tool usage
-            task_result = self._execute_agent_task(agent_name, task, tool_usage_aware)
+            task_result = self._execute_agent_task(
+                agent_name, task, tool_usage_aware)
             task_result["emergency_mode"] = True
             result["execution_log"].append(task_result)
 
             time.sleep(0.1)  # Minimal delay in emergency
 
         completed_tasks = len(
-            [log for log in result["execution_log"] if log.get("status") == "completed"]
+            [log for log in result["execution_log"]
+                if log.get("status") == "completed"]
         )
         skipped_tasks = len(tasks) - len(critical_tasks)
 

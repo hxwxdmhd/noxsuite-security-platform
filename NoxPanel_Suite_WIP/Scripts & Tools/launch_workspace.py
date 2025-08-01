@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -10,12 +11,13 @@ Smart launcher for NoxPanel modular workspace system with performance optimizati
 and intelligent module detection.
 """
 
-import os
-import sys
-import json
-import subprocess
 import argparse
+import json
+import os
+import subprocess
+import sys
 from pathlib import Path
+
 
 class NoxPanelWorkspaceLauncher:
     """

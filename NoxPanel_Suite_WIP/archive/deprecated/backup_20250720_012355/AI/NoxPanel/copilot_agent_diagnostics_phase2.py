@@ -7,18 +7,18 @@ This system continues the diagnostic process by addressing the remaining 3,889 e
 and 2,952 warnings with intelligent categorization and prioritized fixes.
 """
 
+import asyncio
 import json
 import logging
-import asyncio
-import time
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
-import subprocess
-import sys
 import os
 import re
+import subprocess
+import sys
+import time
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(

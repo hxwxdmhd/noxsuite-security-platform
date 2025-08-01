@@ -7,11 +7,11 @@ This script implements the final optimizations needed to definitively achieve 95
 It focuses on comprehensive system validation and advanced optimizations.
 """
 
+import json
+import logging
 import os
 import sys
 import time
-import json
-import logging
 from pathlib import Path
 
 # Setup logging
@@ -173,8 +173,8 @@ class APITestUtils:
         # 3. Test API integration
         try:
             sys.path.insert(0, str(self.noxpanel_root))
-            from noxcore.app_factory import get_test_app
             from noxcore.api_test_utils import APITestUtils
+            from noxcore.app_factory import get_test_app
             
             app = get_test_app()
             if app and APITestUtils.validate_api_health(app):

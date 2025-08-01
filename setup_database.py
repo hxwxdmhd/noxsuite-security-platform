@@ -10,88 +10,109 @@ Author: NoxSuite Development Team
 Date: July 31, 2025
 """
 
-import os
-import sys
-import subprocess
-import time
 import json
-from pathlib import Path
+import os
+import subprocess
+import sys
+import time
 from datetime import datetime
+from pathlib import Path
+
 
 class DatabaseSetupManager:
     """Manages NoxSuite database setup and migration"""
-    
+
     def __init__(self):
         self.workspace_root = Path.cwd()
-        self.setup_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        self.setup_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.setup_log = []
-        
+
     def log_action(self, action: str, status: str = "INFO"):
         """Log setup actions"""
-        timestamp = datetime.now().strftime('%H:%M:%S')
+        timestamp = datetime.now().strftime("%H:%M:%S")
         log_entry = f"[{timestamp}] {status}: {action}"
         self.setup_log.append(log_entry)
         print(log_entry)
-    
+
     def setup_mariadb_docker(self):
         """Set up MariaDB using Docker"""
         self.log_action("Setting up MariaDB Docker container...")
-        
+
         # Check if Docker is available
         try:
-            subprocess.run(['docker', '--version'], check=True, capture_output=True)
+            subprocess.run(["docker", "--version"],
+                           check=True, capture_output=True)
             self.log_action("Docker is available")
         except (subprocess.CalledProcessError, FileNotFoundError):
-            self.log_action("Docker not found! Please install Docker first", "ERROR")
+            self.log_action(
+                "Docker not found! Please install Docker first", "ERROR")
             return False
-        
+
         # Stop existing container if running
         try:
-            subprocess.run(['docker', 'stop', 'noxsuite-mariadb'], 
-                         capture_output=True, check=False)
-            subprocess.run(['docker', 'rm', 'noxsuite-mariadb'], 
-                         capture_output=True, check=False)
+            subprocess.run(
+                ["docker", "stop", "noxsuite-mariadb"], capture_output=True, check=False
+            )
+            subprocess.run(
+                ["docker", "rm", "noxsuite-mariadb"], capture_output=True, check=False
+            )
             self.log_action("Cleaned up existing MariaDB container")
         except:
             pass
-        
+
         # Start new MariaDB container
         docker_cmd = [
-            'docker', 'run', '-d',
-            '--name', 'noxsuite-mariadb',
-            '-e', 'MYSQL_ROOT_PASSWORD=noxsuite_root_2025',
-            '-e', 'MYSQL_DATABASE=noxsuite',
-            '-e', 'MYSQL_USER=noxsuite_user',
-            '-e', 'MYSQL_PASSWORD=noxsuite_secure_pass_2025',
-            '-p', '3306:3306',
-            '--restart', 'unless-stopped',
-            'mariadb:10.6'
+            "docker",
+            "run",
+            "-d",
+            "--name",
+            "noxsuite-mariadb",
+            "-e",
+            "MYSQL_ROOT_PASSWORD=noxsuite_root_2025",
+            "-e",
+            "MYSQL_DATABASE=noxsuite",
+            "-e",
+            "MYSQL_USER=noxsuite_user",
+            "-e",
+            "MYSQL_PASSWORD=noxsuite_secure_pass_2025",
+            "-p",
+            "3306:3306",
+            "--restart",
+            "unless-stopped",
+            "mariadb:10.6",
         ]
-        
+
         try:
-            result = subprocess.run(docker_cmd, check=True, capture_output=True, text=True)
+            result = subprocess.run(
+                docker_cmd, check=True, capture_output=True, text=True
+            )
             container_id = result.stdout.strip()
             self.log_action(f"MariaDB container started: {container_id[:12]}")
-            
+
             # Wait for MariaDB to be ready
             self.log_action("Waiting for MariaDB to be ready...")
             self.wait_for_mariadb()
             return True
-            
+
         except subprocess.CalledProcessError as e:
             self.log_action(f"Failed to start MariaDB container: {e}", "ERROR")
             return False
-    
+
     def wait_for_mariadb(self, max_attempts=30):
         """Wait for MariaDB to be ready"""
         for attempt in range(max_attempts):
             try:
                 # Test connection using docker exec
                 test_cmd = [
-                    'docker', 'exec', 'noxsuite-mariadb',
-                    'mysql', '-u', 'noxsuite_user', 
-                    '-pnoxsuite_secure_pass_2025',
-                    '-e', 'SELECT 1;'
+                    "docker",
+                    "exec",
+                    "noxsuite-mariadb",
+                    "mysql",
+                    "-u",
+                    "noxsuite_user",
+                    "-pnoxsuite_secure_pass_2025",
+                    "-e",
+                    "SELECT 1;",
                 ]
                 subprocess.run(test_cmd, check=True, capture_output=True)
                 self.log_action("MariaDB is ready!")
@@ -104,11 +125,11 @@ class DatabaseSetupManager:
                     self.log_action("MariaDB failed to become ready", "ERROR")
                     return False
         return False
-    
+
     def create_database_config(self):
         """Create database configuration file"""
         self.log_action("Creating database configuration...")
-        
+
         config = {
             "database": {
                 "host": "localhost",
@@ -116,92 +137,100 @@ class DatabaseSetupManager:
                 "database": "noxsuite",
                 "username": "noxsuite_user",
                 "password": "noxsuite_secure_pass_2025",
-                "driver": "mariadb+pymysql"
+                "driver": "mariadb+pymysql",
             },
             "connection_string": "mysql+pymysql://noxsuite_user:noxsuite_secure_pass_2025@localhost:3306/noxsuite",
             "alembic_version": "1.12.0",
-            "created": self.setup_timestamp
+            "created": self.setup_timestamp,
         }
-        
+
         config_dir = self.workspace_root / "config"
         config_dir.mkdir(exist_ok=True)
-        
+
         config_file = config_dir / "database_config.json"
-        with open(config_file, 'w') as f:
+        with open(config_file, "w") as f:
             json.dump(config, f, indent=2)
-        
+
         self.log_action(f"Database config saved: {config_file}")
         return config
-    
+
     def setup_alembic(self):
         """Set up Alembic for database migrations"""
         self.log_action("Setting up Alembic...")
-        
+
         # Check if Alembic is installed
         try:
-            subprocess.run(['alembic', '--version'], check=True, capture_output=True)
+            subprocess.run(["alembic", "--version"],
+                           check=True, capture_output=True)
             self.log_action("Alembic is available")
         except (subprocess.CalledProcessError, FileNotFoundError):
             self.log_action("Installing Alembic...")
             try:
-                subprocess.run([sys.executable, '-m', 'pip', 'install', 'alembic', 'pymysql'], check=True)
+                subprocess.run(
+                    [sys.executable, "-m", "pip", "install", "alembic", "pymysql"],
+                    check=True,
+                )
                 self.log_action("Alembic installed successfully")
             except subprocess.CalledProcessError:
                 self.log_action("Failed to install Alembic", "ERROR")
                 return False
-        
+
         # Initialize Alembic if not already done
         alembic_ini = self.workspace_root / "alembic.ini"
         if not alembic_ini.exists():
             self.log_action("Initializing Alembic...")
             try:
-                subprocess.run(['alembic', 'init', 'migrations'], check=True, cwd=self.workspace_root)
+                subprocess.run(
+                    ["alembic", "init", "migrations"],
+                    check=True,
+                    cwd=self.workspace_root,
+                )
                 self.log_action("Alembic initialized successfully")
             except subprocess.CalledProcessError:
                 self.log_action("Failed to initialize Alembic", "ERROR")
                 return False
         else:
             self.log_action("Alembic already initialized")
-        
+
         # Update alembic.ini with database URL
         self.update_alembic_config()
         return True
-    
+
     def update_alembic_config(self):
         """Update Alembic configuration with MariaDB connection"""
         alembic_ini = self.workspace_root / "alembic.ini"
-        
+
         if alembic_ini.exists():
-            with open(alembic_ini, 'r') as f:
+            with open(alembic_ini, "r") as f:
                 content = f.read()
-            
+
             # Update database URL
             db_url = "mysql+pymysql://noxsuite_user:noxsuite_secure_pass_2025@localhost:3306/noxsuite"
-            
+
             # Replace the sqlalchemy.url line
-            lines = content.split('\n')
+            lines = content.split("\n")
             for i, line in enumerate(lines):
-                if line.startswith('sqlalchemy.url'):
+                if line.startswith("sqlalchemy.url"):
                     lines[i] = f"sqlalchemy.url = {db_url}"
                     break
-            
-            with open(alembic_ini, 'w') as f:
-                f.write('\n'.join(lines))
-            
+
+            with open(alembic_ini, "w") as f:
+                f.write("\n".join(lines))
+
             self.log_action("Updated Alembic configuration with MariaDB URL")
-    
+
     def create_database_models(self):
         """Create database models for NoxSuite"""
         self.log_action("Creating database models...")
-        
+
         models_dir = self.workspace_root / "backend" / "models"
         models_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Create __init__.py
         init_file = models_dir / "__init__.py"
-        with open(init_file, 'w') as f:
+        with open(init_file, "w") as f:
             f.write('"""NoxSuite Database Models"""\n')
-        
+
         # Create user.py model
         user_model = models_dir / "user.py"
         user_content = '''"""User model for NoxSuite authentication system"""
@@ -262,10 +291,10 @@ class User(Base):
             'last_login': self.last_login.isoformat() if self.last_login else None
         }
 '''
-        
-        with open(user_model, 'w') as f:
+
+        with open(user_model, "w") as f:
             f.write(user_content)
-        
+
         # Create roles.py model
         roles_model = models_dir / "roles.py"
         roles_content = '''"""Roles and permissions model for RBAC"""
@@ -321,10 +350,10 @@ class Permission(Base):
             'description': self.description
         }
 '''
-        
-        with open(roles_model, 'w') as f:
+
+        with open(roles_model, "w") as f:
             f.write(roles_content)
-        
+
         # Create audit_log.py model
         audit_model = models_dir / "audit_log.py"
         audit_content = '''"""Audit log model for security tracking"""
@@ -364,50 +393,57 @@ class AuditLog(Base):
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
 '''
-        
-        with open(audit_model, 'w') as f:
+
+        with open(audit_model, "w") as f:
             f.write(audit_content)
-        
+
         self.log_action("Database models created successfully")
         return True
-    
+
     def create_initial_migration(self):
         """Create initial Alembic migration"""
         self.log_action("Creating initial migration...")
-        
+
         try:
             # Create migration
-            subprocess.run([
-                'alembic', 'revision', '--autogenerate', 
-                '-m', 'Initial NoxSuite migration'
-            ], check=True, cwd=self.workspace_root)
-            
+            subprocess.run(
+                [
+                    "alembic",
+                    "revision",
+                    "--autogenerate",
+                    "-m",
+                    "Initial NoxSuite migration",
+                ],
+                check=True,
+                cwd=self.workspace_root,
+            )
+
             self.log_action("Initial migration created")
-            
+
             # Run migration
-            subprocess.run([
-                'alembic', 'upgrade', 'head'
-            ], check=True, cwd=self.workspace_root)
-            
+            subprocess.run(
+                ["alembic", "upgrade", "head"], check=True, cwd=self.workspace_root
+            )
+
             self.log_action("Initial migration applied successfully")
             return True
-            
+
         except subprocess.CalledProcessError as e:
             self.log_action(f"Migration failed: {e}", "ERROR")
             return False
-    
+
     def create_database_connection(self):
         """Create database connection module"""
         self.log_action("Creating database connection module...")
-        
+
         db_dir = self.workspace_root / "backend" / "database"
         db_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Create __init__.py
         init_file = db_dir / "__init__.py"
-        with open(init_file, 'w') as f:
+        with open(init_file, "w") as f:
             f.write('"""NoxSuite Database Package"""\n')
-        
+
         # Create connection.py
         connection_file = db_dir / "connection.py"
         connection_content = '''"""Database connection and session management"""
@@ -479,108 +515,113 @@ def test_connection():
         print(f"Database connection test failed: {e}")
         return False
 '''
-        
-        with open(connection_file, 'w') as f:
+
+        with open(connection_file, "w") as f:
             f.write(connection_content)
-        
+
         self.log_action("Database connection module created")
         return True
-    
+
     def update_requirements(self):
         """Update requirements with database dependencies"""
         self.log_action("Updating requirements.txt...")
-        
+
         requirements_file = self.workspace_root / "requirements.txt"
-        
+
         # Read existing requirements
         existing_requirements = set()
         if requirements_file.exists():
-            with open(requirements_file, 'r') as f:
-                existing_requirements = set(line.strip() for line in f if line.strip())
-        
+            with open(requirements_file, "r") as f:
+                existing_requirements = set(line.strip()
+                                            for line in f if line.strip())
+
         # Add database requirements
         db_requirements = {
-            'SQLAlchemy>=1.4.0',
-            'alembic>=1.12.0',
-            'PyMySQL>=1.0.0',
-            'cryptography>=3.4.0'
+            "SQLAlchemy>=1.4.0",
+            "alembic>=1.12.0",
+            "PyMySQL>=1.0.0",
+            "cryptography>=3.4.0",
         }
-        
+
         # Merge requirements
         all_requirements = existing_requirements.union(db_requirements)
-        
+
         # Write updated requirements
-        with open(requirements_file, 'w') as f:
+        with open(requirements_file, "w") as f:
             for req in sorted(all_requirements):
                 f.write(f"{req}\n")
-        
+
         self.log_action("Requirements updated with database dependencies")
-    
+
     def generate_setup_report(self):
         """Generate setup completion report"""
         report = {
-            'timestamp': self.setup_timestamp,
-            'setup_log': self.setup_log,
-            'database_config': {
-                'host': 'localhost',
-                'port': 3306,
-                'database': 'noxsuite',
-                'username': 'noxsuite_user'
+            "timestamp": self.setup_timestamp,
+            "setup_log": self.setup_log,
+            "database_config": {
+                "host": "localhost",
+                "port": 3306,
+                "database": "noxsuite",
+                "username": "noxsuite_user",
             },
-            'components_created': [
-                'MariaDB Docker container',
-                'Database models (User, Role, Permission, AuditLog)',
-                'Alembic migration system',
-                'Database connection module',
-                'Updated requirements.txt'
+            "components_created": [
+                "MariaDB Docker container",
+                "Database models (User, Role, Permission, AuditLog)",
+                "Alembic migration system",
+                "Database connection module",
+                "Updated requirements.txt",
             ],
-            'next_steps': [
-                'Test database connection',
-                'Create initial admin user',
-                'Update API routes to use database',
-                'Run integration tests'
-            ]
+            "next_steps": [
+                "Test database connection",
+                "Create initial admin user",
+                "Update API routes to use database",
+                "Run integration tests",
+            ],
         }
-        
-        report_file = self.workspace_root / f"database_setup_report_{self.setup_timestamp}.json"
-        with open(report_file, 'w') as f:
+
+        report_file = (
+            self.workspace_root /
+            f"database_setup_report_{self.setup_timestamp}.json"
+        )
+        with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
-        
+
         self.log_action(f"Setup report saved: {report_file}")
         return report
-    
+
     def run_setup(self):
         """Run complete database setup"""
         self.log_action("Starting NoxSuite Database Setup", "INFO")
         self.log_action("=" * 50)
-        
+
         try:
             # Step 1: Setup MariaDB
             if not self.setup_mariadb_docker():
                 return False
-            
+
             # Step 2: Create configuration
             self.create_database_config()
-            
+
             # Step 3: Setup Alembic
             if not self.setup_alembic():
                 return False
-            
+
             # Step 4: Create models
             self.create_database_models()
-            
+
             # Step 5: Create database connection
             self.create_database_connection()
-            
+
             # Step 6: Update requirements
             self.update_requirements()
-            
+
             # Step 7: Generate report
             report = self.generate_setup_report()
-            
+
             self.log_action("=" * 50)
-            self.log_action("Database setup completed successfully!", "SUCCESS")
-            
+            self.log_action(
+                "Database setup completed successfully!", "SUCCESS")
+
             # Print summary
             print("\nSETUP SUMMARY:")
             print(f"- MariaDB container: noxsuite-mariadb")
@@ -589,13 +630,15 @@ def test_connection():
             print(f"- Models created: 4 (User, Role, Permission, AuditLog)")
             print(f"- Setup report: {report_file}")
             print("\nNEXT STEPS:")
-            print("1. Test connection: python -c 'from backend.database.connection import test_connection; print(test_connection())'")
+            print(
+                "1. Test connection: python -c 'from backend.database.connection import test_connection; print(test_connection())'"
+            )
             print("2. Run migrations: alembic upgrade head")
             print("3. Create admin user")
             print("4. Update API routes")
-            
+
             return True
-            
+
         except Exception as e:
             self.log_action(f"Setup failed: {e}", "ERROR")
             return False
@@ -605,10 +648,10 @@ def main():
     """Main execution"""
     print("NoxSuite Database Setup")
     print("=" * 40)
-    
+
     setup_manager = DatabaseSetupManager()
     success = setup_manager.run_setup()
-    
+
     return 0 if success else 1
 
 

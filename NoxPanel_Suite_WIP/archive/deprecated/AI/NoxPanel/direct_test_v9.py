@@ -3,8 +3,10 @@
 Direct Flask app test for Ultimate Suite v9.0
 """
 
-from ultimate_webapp_v9 import UltimateSuiteV9
 import json
+
+from ultimate_webapp_v9 import UltimateSuiteV9
+
 
 def test_direct():
     print("🧪 Direct Ultimate Suite v9.0 Test")

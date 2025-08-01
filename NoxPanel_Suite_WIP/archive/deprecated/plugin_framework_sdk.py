@@ -15,22 +15,29 @@ Key Features:
 """
 
 import asyncio
+import inspect
 import json
 import logging
-import inspect
 import shutil
 import tempfile
 import zipfile
+from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Union, Callable, Type
-from dataclasses import asdict
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 # Import core framework components
 from plugin_framework_core import (
-    BasePlugin, PluginManager, PluginFramework, PluginMetadata, 
-    PluginType, PluginState, PluginDependency, DependencyType,
-    PluginExecutionContext, PluginInstallResult
+    BasePlugin,
+    DependencyType,
+    PluginDependency,
+    PluginExecutionContext,
+    PluginFramework,
+    PluginInstallResult,
+    PluginManager,
+    PluginMetadata,
+    PluginState,
+    PluginType,
 )
 
 # Configure logging
@@ -1184,7 +1191,7 @@ package:
         """Check if version follows semantic versioning"""
         
         import re
-        
+
         # Simple semantic versioning regex
         semver_pattern = r'^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$'
         

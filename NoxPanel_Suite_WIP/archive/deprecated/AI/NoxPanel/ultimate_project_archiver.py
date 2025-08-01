@@ -13,15 +13,15 @@ Features:
 - Optimizes project structure for 100/100 audit score
 """
 
-import os
-import sys
 import json
-import shutil
 import logging
-from pathlib import Path
+import os
+import shutil
+import sys
+from dataclasses import asdict, dataclass
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Set, Tuple
-from dataclasses import dataclass, asdict
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")

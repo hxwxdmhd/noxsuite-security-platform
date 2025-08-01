@@ -4,16 +4,17 @@ NoxPanel Infrastructure Discovery - Enhanced Edition with Plugin System
 Gate 4 Unlocked Capability - Revolutionary Infrastructure Intelligence
 """
 
-import os
-import sys
+import ipaddress
 import json
-import time
+import os
 import socket
 import subprocess
-import ipaddress
+import sys
 import threading
-from pathlib import Path
+import time
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
 from flask import Flask, jsonify, render_template_string, request
 
 # Import enhanced modules
@@ -26,7 +27,7 @@ except ImportError:
 
 # Import plugin system
 try:
-    from plugin_system import PluginManager, PluginAPI
+    from plugin_system import PluginAPI, PluginManager
     PLUGIN_SYSTEM_AVAILABLE = True
 except ImportError:
     print("Plugin system not available")

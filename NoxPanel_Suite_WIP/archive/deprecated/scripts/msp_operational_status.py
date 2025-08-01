@@ -8,14 +8,14 @@ import json
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
-from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
-from rich.text import Text
-from rich.layout import Layout
 from rich.columns import Columns
+from rich.console import Console
+from rich.layout import Layout
+from rich.panel import Panel
+from rich.table import Table
+from rich.text import Text
 
 console = Console()
 

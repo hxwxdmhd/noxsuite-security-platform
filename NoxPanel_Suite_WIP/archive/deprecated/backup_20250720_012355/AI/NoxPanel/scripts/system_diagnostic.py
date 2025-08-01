@@ -4,10 +4,12 @@ System Diagnostic Script for NoxPanel
 Provides basic system information and health checks
 """
 
-import psutil
-import platform
 import datetime
 import os
+import platform
+
+import psutil
+
 
 def main():
     """

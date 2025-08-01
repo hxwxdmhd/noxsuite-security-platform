@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 # Create blueprint
 security_bp = Blueprint('security', __name__, url_prefix='/security')
 
+
 @security_bp.route('/')
 @security_bp.route('/dashboard')
 def dashboard():
@@ -42,7 +43,7 @@ def dashboard():
         }
 
         return render_template('security/dashboard.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -54,8 +55,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             title="Security Center",
-                             stats=stats)
+                               title="Security Center",
+                               stats=stats)
     except Exception as e:
     """
     RLVR: Implements api_data with error handling and validation
@@ -69,12 +70,12 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"Security Center dashboard error: {e}")
-        flash(f"Error loading security center: {e}", 'error')
-        return render_template('security/dashboard.html',
-                             title="Security Center",
-                             stats={},
-    """
+    logger.error(f"Security Center dashboard error: {e}")
+    flash(f"Error loading security center: {e}", 'error')
+    return render_template('security/dashboard.html',
+                           title="Security Center",
+                           stats={},
+                           """
     RLVR: Implements api_logs with error handling and validation
 
     REASONING CHAIN:
@@ -86,7 +87,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             error=str(e))
+                           error=str(e))
+
 
 @security_bp.route('/api/status')
 def api_status():
@@ -105,7 +107,7 @@ def api_status():
     """Security Center status API"""
     try:
         status = {
-    """
+            """
     RLVR: Implements register_security_routes with error handling and validation
 
     REASONING CHAIN:
@@ -126,6 +128,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Security Center status API error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @security_bp.route('/api/data')
 def api_data():

@@ -7,21 +7,22 @@ Part of the Heimnetz Enterprise Suite
 
 import asyncio
 import json
+import threading
 import time
+from collections import defaultdict, deque
 from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
+
 import httpx
+import psutil
+from rich.align import Align
 from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
 from rich.layout import Layout
 from rich.live import Live
-from rich.progress import Progress, BarColumn, TextColumn, TimeElapsedColumn
-from rich.align import Align
+from rich.panel import Panel
+from rich.progress import BarColumn, Progress, TextColumn, TimeElapsedColumn
+from rich.table import Table
 from rich.text import Text
-import psutil
-import threading
-from collections import deque, defaultdict
 
 console = Console()
 

@@ -30,38 +30,38 @@ Modern CLI using typer + rich for managing all enter        cpu_percent = psutil
         return results
 """
 
-import typer
-from typing import Optional, List
+import asyncio
+import json
 import os
-import time
-import json
-import psutil
-import httpx
-from pathlib import Path
-from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn
-from rich.live import Live
-from rich.layout import Layout
-from rich.text import Text
-from rich.columns import Columns
-from rich.tree import Tree
-from rich.markdown import Markdown
-from rich import print as rprint
-from loguru import logger
-import httpx
-import psutil
-import json
-import time
 import subprocess
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
-import asyncio
+from typing import Any, Dict, List, Optional
+
+import httpx
+import psutil
+import typer
+from loguru import logger
 from pydantic import BaseModel, Field
-from typing import Dict, Any
-import os
+from rich import print as rprint
+from rich.columns import Columns
+from rich.console import Console
+from rich.layout import Layout
+from rich.live import Live
+from rich.markdown import Markdown
+from rich.panel import Panel
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    TimeElapsedColumn,
+)
+from rich.table import Table
+from rich.text import Text
+from rich.tree import Tree
 
 # Initialize Rich console
 console = Console(width=120)
@@ -603,7 +603,7 @@ def context():
     # Import ContextForge service
     try:
         from context.service_integration import contextforge_service
-        
+
         # Show service info
         service_info = contextforge_service.get_service_info()
         

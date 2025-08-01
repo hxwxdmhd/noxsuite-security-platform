@@ -14,21 +14,22 @@ import asyncio
 import sys
 import time
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
 # Add current directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
 try:
     from test_validator_advanced import (
+        Colors,
         NoxPanelTestValidator,
         print_banner,
+        print_info,
         print_section,
         print_success,
-        print_info,
         print_warning,
-        Colors
     )
+
     # Import simple test runner with fallback
     try:
         from run_tests import SimpleTestRunner

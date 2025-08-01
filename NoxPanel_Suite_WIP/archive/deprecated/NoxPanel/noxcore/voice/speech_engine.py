@@ -1,11 +1,12 @@
 """Speech Recognition Engine for Voice Interface"""
 
-import speech_recognition as sr
 import logging
 import threading
 import time
-from typing import Optional, Callable
 from datetime import datetime
+from typing import Callable, Optional
+
+import speech_recognition as sr
 
 logger = logging.getLogger(__name__)
 

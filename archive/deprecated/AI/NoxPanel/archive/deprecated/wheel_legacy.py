@@ -42,7 +42,7 @@ def format_command_result(
 
     COMPLIANCE: STANDARD
     """
-        text += "Command output: None"
+    text += "Command output: None"
     elif logger.getEffectiveLevel() > logging.DEBUG:
         text += "Command output: [use --verbose to show]"
     else:

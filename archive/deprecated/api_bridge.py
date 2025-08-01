@@ -2,6 +2,8 @@
 """
 #!/usr/bin/env python3
 """
+import logging
+from flask import Blueprint, jsonify, request
 api_bridge.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -12,18 +14,17 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 API Bridge for Heimnetz Integration
 Connects frontend JavaScript with backend Flask APIs
 """
 
-from flask import Blueprint, jsonify, request
-import logging
 
 api_bridge = Blueprint('heimnetz_api', __name__, url_prefix='/api/heimnetz')
 logger = logging.getLogger(__name__)
+
 
 @api_bridge.route('/status')
 def heimnetz_status():
@@ -46,6 +47,7 @@ def heimnetz_status():
     except Exception as e:
         logger.error(f"Status check error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @api_bridge.route('/devices')
 def heimnetz_devices():
@@ -85,6 +87,7 @@ def heimnetz_devices():
         logger.error(f"Devices endpoint error: {e}")
         return jsonify({"status": "error", "devices": [], "message": str(e)}), 500
 
+
 @api_bridge.route('/scan', methods=['POST'])
 def heimnetz_scan():
     # REASONING: heimnetz_scan implements core logic with Chain-of-Thought validation
@@ -95,7 +98,7 @@ def heimnetz_scan():
 
         # TODO: Implement actual network scanning with AI
         result = {
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             "status": "ok",
             "message": "Enhanced network scan started",
             "scanId": f"heimnetz_scan_{int(time.time())}",

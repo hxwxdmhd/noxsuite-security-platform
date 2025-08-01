@@ -20,41 +20,42 @@ Date: July 18, 2025
 """
 
 import asyncio
-import aiohttp
-import xml.etree.ElementTree as ET
+import base64
+import hashlib
 import json
 import logging
-import time
-import hashlib
-import base64
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, asdict
-
-# Import resilience framework
-from fritzwatcher_resilience import (
-    get_resilience_manager, 
-    configure_resilience, 
-    RetryConfig, 
-    FailoverConfig,
-    with_retry,
-    with_failover
-)
-from typing import Dict, List, Optional, Any, Tuple
-from urllib.parse import urljoin, urlparse
+import os
 import re
 
 # Import plugin framework
 import sys
-import os
+import time
+import xml.etree.ElementTree as ET
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional, Tuple
+from urllib.parse import urljoin, urlparse
+
+import aiohttp
+
+# Import resilience framework
+from fritzwatcher_resilience import (
+    FailoverConfig,
+    RetryConfig,
+    configure_resilience,
+    get_resilience_manager,
+    with_failover,
+    with_retry,
+)
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Try to import the plugin system
 try:
-    from unified_plugin_system_clean import ServicePlugin, PluginInfo
+    from unified_plugin_system_clean import PluginInfo, ServicePlugin
 except ImportError:
     try:
-        from NoxPanel.unified_plugin_system_clean import ServicePlugin, PluginInfo
+        from NoxPanel.unified_plugin_system_clean import PluginInfo, ServicePlugin
     except ImportError:
         # Create minimal stub classes for testing
         class ServicePlugin:
@@ -76,7 +77,11 @@ except ImportError:
                 self.category = category
                 self.dependencies = dependencies
 try:
-    from plugins.keepass_helper import KeePassHelper, FritzBoxCredentialManager, create_keepass_helper
+    from plugins.keepass_helper import (
+        FritzBoxCredentialManager,
+        KeePassHelper,
+        create_keepass_helper,
+    )
 except ImportError:
     # Create minimal stub classes for testing
     class KeePassHelper:

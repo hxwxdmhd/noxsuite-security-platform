@@ -3,18 +3,22 @@ Database Service for NoxGuard---NoxPanel
 High-level service that orchestrates database operations
 """
 
+import json
 import logging
 import os
-import json
-from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Optional, Dict, List, Any, Union
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 from .database import NoxDatabase
 from .migrations import MigrationManager
 from .repositories import (
-    UserRepository, KnowledgeRepository, TagRepository,
-    ConversationRepository, SessionRepository, AuditRepository
+    AuditRepository,
+    ConversationRepository,
+    KnowledgeRepository,
+    SessionRepository,
+    TagRepository,
+    UserRepository,
 )
 
 logger = logging.getLogger(__name__)

@@ -7,14 +7,15 @@ This script demonstrates the complete NoxPanel workflow in a non-interactive way
 so you can see what the experience looks like without having to manually input responses.
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add current directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from init_noxpanel import NoxPanelScaffolder, Colors
+from init_noxpanel import Colors, NoxPanelScaffolder
+
 
 def demo_interactive_experience():
     """

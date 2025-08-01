@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -8,20 +9,20 @@ Self-contained installer that bootstraps its own dependencies before launching t
 Uses only Python standard library modules to ensure maximum compatibility
 """
 
-import os
-import sys
 import json
-import subprocess
+import os
 import platform
-import tempfile
-import urllib.request
-import urllib.error
 import shutil
-import zipfile
+import subprocess
+import sys
 import tarfile
-from pathlib import Path
-from typing import Dict, List, Optional, Any
+import tempfile
 import traceback
+import urllib.error
+import urllib.request
+import zipfile
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Force UTF-8 output on Windows
 if sys.platform.startswith('win'):
@@ -605,9 +606,12 @@ class NoxSuiteBootstrap:
             sys.path.insert(0, str(Path.cwd()))
             
             try:
-                from noxsuite_smart_installer_complete import SmartNoxSuiteInstaller, InstallMode
                 from install_noxsuite import main as launcher_main
-                
+                from noxsuite_smart_installer_complete import (
+                    InstallMode,
+                    SmartNoxSuiteInstaller,
+                )
+
                 # Pass control to the launcher with original arguments
                 launcher_main()
                 return True

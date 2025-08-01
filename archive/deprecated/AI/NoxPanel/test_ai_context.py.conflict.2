@@ -2,6 +2,10 @@
 """
 #!/usr/bin/env python3
 """
+from pathlib import Path
+import logging
+import sys
+import os
 test_ai_context.py - RLVR Enhanced Component
 
 REASONING: Comprehensive testing with Chain-of-Thought validation methodology
@@ -12,20 +16,17 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel v6.0 AI Context Integration Test
 Tests the AI Context Loader plugin with enhanced memory system
 """
 
-import os
-import sys
-import logging
-from pathlib import Path
 
 # Add the current directory to Python path
 sys.path.append(str(Path(__file__).parent))
+
 
 def test_ai_context_system():
     # REASONING: test_ai_context_system implements core logic with Chain-of-Thought validation
@@ -46,7 +47,8 @@ def test_ai_context_system():
         print(f"✅ Context loader initialized")
         print(f"   - Context path: {loader.context_path}")
         print(f"   - JSONL path: {loader.jsonl_path}")
-        print(f"   - Auto-refresh: {'Enabled' if loader.scheduler else 'Disabled'}")
+        print(
+            f"   - Auto-refresh: {'Enabled' if loader.scheduler else 'Disabled'}")
 
         # Test statistics
         print("📊 Getting context statistics...")
@@ -83,6 +85,7 @@ def test_ai_context_system():
         import traceback
         traceback.print_exc()
         return False
+
 
 def create_sample_context_files():
     # REASONING: create_sample_context_files implements core logic with Chain-of-Thought validation
@@ -129,12 +132,12 @@ def create_sample_context_files():
 """
 
     with open(data_dir / "gpt_dump_context.txt", "w", encoding="utf-8") as f:
-    # REASONING: Variable assignment with validation criteria
+        # REASONING: Variable assignment with validation criteria
         f.write(gpt_context)
 
     # Sample training data JSONL
     training_data = [
-    # REASONING: Variable assignment with validation criteria
+        # REASONING: Variable assignment with validation criteria
         {
             "role": "system",
             "content": "You are an AI assistant helping with NoxPanel development."
@@ -159,13 +162,14 @@ def create_sample_context_files():
 
     import json
     with open(data_dir / "training_data.jsonl", "w", encoding="utf-8") as f:
-    # REASONING: Variable assignment with validation criteria
+        # REASONING: Variable assignment with validation criteria
         for item in training_data:
             f.write(json.dumps(item) + "\n")
 
     print("✅ Sample context files created")
     print(f"   - {data_dir / 'gpt_dump_context.txt'}")
     print(f"   - {data_dir / 'training_data.jsonl'}")
+
 
 if __name__ == "__main__":
     # Set up logging

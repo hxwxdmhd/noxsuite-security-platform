@@ -7,18 +7,18 @@ This system performs intelligent workspace-wide problem analysis and resolution
 using safe automation with intelligent prioritization and deferral strategies.
 """
 
+import asyncio
+import hashlib
 import json
 import logging
-import asyncio
-import time
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
-import hashlib
+import os
 import subprocess
 import sys
-import os
+import time
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(

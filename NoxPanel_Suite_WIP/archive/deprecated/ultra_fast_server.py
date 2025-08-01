@@ -4,12 +4,13 @@ Ultra-Fast Test Server for Gate 3 Performance Testing
 Optimized for <10ms response times with minimal overhead
 """
 
-from flask import Flask, jsonify, request, Response
-import time
-import os
-import json
 import gc
+import json
+import os
+import time
 from functools import lru_cache
+
+from flask import Flask, Response, jsonify, request
 
 # Disable Flask debug mode for maximum performance
 app = Flask(__name__)

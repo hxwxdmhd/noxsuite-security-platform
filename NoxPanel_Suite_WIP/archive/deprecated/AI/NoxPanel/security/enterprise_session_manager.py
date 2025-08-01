@@ -18,17 +18,18 @@ Enterprise-Grade Session Security Manager
 Zero-tolerance security for 5,000+ concurrent users
 """
 
-import secrets
 import hashlib
-import time
 import ipaddress
-from typing import Dict, Optional, List, Any
-from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
-from flask import Flask, session, request, g
-import redis
 import json
 import logging
+import secrets
+import time
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
+
+import redis
+from flask import Flask, g, request, session
 
 logger = logging.getLogger(__name__)
 

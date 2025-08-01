@@ -4,22 +4,23 @@ Comprehensive NoxPanel/Heimnetz Codebase Fix Script
 Performs systematic fixes across the entire codebase
 """
 
-import os
-import sys
 import json
+import os
 import shutil
 import subprocess
-from pathlib import Path
-from typing import List, Dict, Any, Optional
+import sys
 from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Add project root to path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-from NoxPanel.noxcore.utils.logging_config import setup_logging, get_logger
 from NoxPanel.noxcore.utils.datetime_utils import utc_now
 from NoxPanel.noxcore.utils.error_handling import handle_error
+from NoxPanel.noxcore.utils.logging_config import get_logger, setup_logging
+
 
 class ComprehensiveFixer:
     """

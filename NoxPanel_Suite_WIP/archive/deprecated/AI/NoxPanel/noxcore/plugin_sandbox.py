@@ -3,21 +3,22 @@ NoxPanel v5.0 - Plugin Sandboxing System
 Secure plugin execution environment with resource limits and permission validation
 """
 
-import os
-import sys
 import importlib
 import importlib.util
+import json
 import logging
-import traceback
+import os
+import shutil
+import sys
+import tempfile
 import threading
 import time
-import psutil
-from typing import Dict, List, Any, Optional, Set
+import traceback
 from dataclasses import dataclass
 from pathlib import Path
-import tempfile
-import shutil
-import json
+from typing import Any, Dict, List, Optional, Set
+
+import psutil
 
 logger = logging.getLogger(__name__)
 

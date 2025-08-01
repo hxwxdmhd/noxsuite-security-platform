@@ -14,7 +14,9 @@ from typing import Dict, List, Any
 logger = logging.getLogger(__name__)
 
 # Create blueprint
-notifications_bp = Blueprint('notifications', __name__, url_prefix='/notifications')
+notifications_bp = Blueprint(
+    'notifications', __name__, url_prefix='/notifications')
+
 
 @notifications_bp.route('/')
 @notifications_bp.route('/dashboard')
@@ -42,7 +44,7 @@ def dashboard():
         }
 
         return render_template('notifications/dashboard.html',
-    """
+                               """
     RLVR: Implements api_status with error handling and validation
 
     REASONING CHAIN:
@@ -54,8 +56,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             title="Notifications Center",
-                             stats=stats)
+                               title="Notifications Center",
+                               stats=stats)
     except Exception as e:
     """
     RLVR: Implements api_data with error handling and validation
@@ -69,12 +71,12 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-        logger.error(f"Notifications Center dashboard error: {e}")
-        flash(f"Error loading notifications center: {e}", 'error')
-        return render_template('notifications/dashboard.html',
-                             title="Notifications Center",
-                             stats={},
-    """
+    logger.error(f"Notifications Center dashboard error: {e}")
+    flash(f"Error loading notifications center: {e}", 'error')
+    return render_template('notifications/dashboard.html',
+                           title="Notifications Center",
+                           stats={},
+                           """
     RLVR: Implements api_send with error handling and validation
 
     REASONING CHAIN:
@@ -86,7 +88,8 @@ def dashboard():
 
     COMPLIANCE: STANDARD
     """
-                             error=str(e))
+                           error=str(e))
+
 
 @notifications_bp.route('/api/status')
 def api_status():
@@ -105,7 +108,7 @@ def api_status():
     """Notifications Center status API"""
     try:
         status = {
-    """
+            """
     RLVR: Implements register_notifications_routes with error handling and validation
 
     REASONING CHAIN:
@@ -126,6 +129,7 @@ def api_status():
     except Exception as e:
         logger.error(f"Notifications Center status API error: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @notifications_bp.route('/api/data')
 def api_data():

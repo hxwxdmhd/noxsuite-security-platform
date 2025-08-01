@@ -15,22 +15,23 @@ This system provides comprehensive analytics and reporting capabilities:
 Essential for system monitoring and business intelligence
 """
 
-import os
-import sys
-import json
-import time
 import asyncio
-import logging
-import threading
-from typing import Dict, List, Optional, Any, Union, Callable
-from datetime import datetime, timedelta
-from dataclasses import dataclass, field
-from enum import Enum
-import pymysql
 import hashlib
+import json
+import logging
+import os
+import statistics
+import sys
+import threading
+import time
 import uuid
 from collections import defaultdict, deque
-import statistics
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional, Union
+
+import pymysql
 
 # Optional imports with fallbacks
 try:
@@ -40,15 +41,15 @@ except ImportError:
     HAS_PANDAS = False
 
 try:
-    import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
     HAS_MATPLOTLIB = True
 except ImportError:
     HAS_MATPLOTLIB = False
 
 try:
-    import plotly.graph_objects as go
     import plotly.express as px
+    import plotly.graph_objects as go
     from plotly.subplots import make_subplots
     HAS_PLOTLY = True
 except ImportError:
@@ -1031,7 +1032,7 @@ class AnalyticsEngine:
         """Collect system performance metrics"""
         try:
             import psutil
-            
+
             # CPU usage
             cpu_percent = psutil.cpu_percent(interval=1)
             self.metrics_collector.collect_metric(

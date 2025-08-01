@@ -13,9 +13,9 @@ Returns:
 """
 
 import os
-from pathlib import Path
 import sys
 from datetime import datetime
+from pathlib import Path
 
 ARCHIVE_PATH = "K:\\Projects_Archives\\Project_Heimnetz"
 ARCHIVE_CATEGORIES = {

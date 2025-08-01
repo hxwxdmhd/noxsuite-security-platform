@@ -11,14 +11,16 @@ and strategic recommendations for enterprise-scale NoxPanel Suite development.
 """
 
 import json
-import time
-import subprocess
-import psutil
 import shutil
-from pathlib import Path
-from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+import subprocess
+import time
 from collections import defaultdict
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+import psutil
+
 
 @dataclass
 class PerformanceMetric:

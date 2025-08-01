@@ -17,6 +17,7 @@ Compliance: RLVR Methodology v4.0+ Applied
 import sys
 from pathlib import Path
 
+
 def create_robust_app():
     """
     RLVR: Creates new entity with validation and error handling

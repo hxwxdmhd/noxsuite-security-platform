@@ -18,11 +18,12 @@ NoxPanel Test Runner - Comprehensive System Validation
 Runs all tests with ADHD-friendly reporting
 """
 
+import json
 import subprocess
 import sys
-from pathlib import Path
-import json
 from datetime import datetime
+from pathlib import Path
+
 
 def run_command(cmd, description):
     # REASONING: run_command implements core logic with Chain-of-Thought validation

@@ -14,22 +14,23 @@ Features:
 - Step-by-step troubleshooting assistance
 """
 
-import os
-import sys
+import asyncio
 import json
+import logging
+import os
 import platform
 import subprocess
-import psutil
-import time
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Union, Tuple
-from dataclasses import dataclass, asdict
-from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
-import logging
-import asyncio
+import sys
 import tempfile
+import time
+from abc import ABC, abstractmethod
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import psutil
 
 logger = logging.getLogger(__name__)
 

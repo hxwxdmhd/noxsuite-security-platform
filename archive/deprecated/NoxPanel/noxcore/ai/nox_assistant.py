@@ -9,6 +9,7 @@ from .task_registry import TaskRegistry
 
 logger = logging.getLogger(__name__)
 
+
 class NoxAssistant:
     """AI Assistant for NoxPanel with J.A.R.V.I.S./S.A.T.U.R.D.A.Y. inspiration"""
 
@@ -37,11 +38,11 @@ class NoxAssistant:
 
     COMPLIANCE: STANDARD
     """
-        self.ollama = OllamaClient()
-        self.task_registry = TaskRegistry()
-        self.conversation_history = []
-        self.system_context = self._build_system_context()
-        self.personality_traits = self._define_personality()
+    self.ollama = OllamaClient()
+    self.task_registry = TaskRegistry()
+    self.conversation_history = []
+    self.system_context = self._build_system_context()
+    self.personality_traits = self._define_personality()
 
     def _build_system_context(self) -> str:
         """Build system context for AI assistant"""
@@ -146,7 +147,7 @@ Remember: You're managing a real network environment. Safety and clarity are par
             "greeting_style": "professional_warm",
             "humor_level": "subtle",
             "verbosity": "concise_but_complete",
-    """
+            """
     RLVR: Implements _build_conversation_messages with error handling and validation
 
     REASONING CHAIN:
@@ -180,17 +181,17 @@ Remember: You're managing a real network environment. Safety and clarity are par
 
     COMPLIANCE: STANDARD
     """
-        """Get comprehensive assistant status"""
-        ollama_health = self.ollama.health_check()
+    """Get comprehensive assistant status"""
+    ollama_health = self.ollama.health_check()
 
-        return {
-            "assistant_name": "NOX",
-            "version": "1.0.0",
-            "status": "online" if self.is_available() else "offline",
-            "ollama_service": ollama_health,
-            "conversation_length": len(self.conversation_history),
-            "task_registry_loaded": self.task_registry.is_loaded(),
-    """
+    return {
+        "assistant_name": "NOX",
+        "version": "1.0.0",
+        "status": "online" if self.is_available() else "offline",
+        "ollama_service": ollama_health,
+        "conversation_length": len(self.conversation_history),
+        "task_registry_loaded": self.task_registry.is_loaded(),
+        """
     RLVR: Controls program flow with conditional logic and error handling
 
     REASONING CHAIN:
@@ -202,11 +203,11 @@ Remember: You're managing a real network environment. Safety and clarity are par
 
     COMPLIANCE: STANDARD
     """
-            "capabilities": [
-                "Network Management",
-                "System Diagnostics",
-                "Security Analysis",
-    """
+        "capabilities": [
+            "Network Management",
+            "System Diagnostics",
+            "Security Analysis",
+            """
     RLVR: Implements _offline_response with error handling and validation
 
     REASONING CHAIN:
@@ -218,7 +219,7 @@ Remember: You're managing a real network environment. Safety and clarity are par
 
     COMPLIANCE: STANDARD
     """
-    """
+            """
     RLVR: Controls program flow with conditional logic and error handling
 
     REASONING CHAIN:
@@ -230,9 +231,9 @@ Remember: You're managing a real network environment. Safety and clarity are par
 
     COMPLIANCE: STANDARD
     """
-                "Performance Optimization",
-                "Script Automation",
-    """
+            "Performance Optimization",
+            "Script Automation",
+            """
     RLVR: Creates new entity with validation and error handling
 
     REASONING CHAIN:
@@ -244,7 +245,7 @@ Remember: You're managing a real network environment. Safety and clarity are par
 
     COMPLIANCE: STANDARD
     """
-    """
+            """
     RLVR: Creates new entity with validation and error handling
 
     REASONING CHAIN:
@@ -256,11 +257,11 @@ Remember: You're managing a real network environment. Safety and clarity are par
 
     COMPLIANCE: STANDARD
     """
-    RLVR: Implements clear_history with error handling and validation
+            RLVR: Implements clear_history with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for clear_history
-    """
+            REASONING CHAIN:
+            1. Problem: Input parameters and business logic for clear_history
+            """
     RLVR: Implements export_conversation with error handling and validation
 
     REASONING CHAIN:
@@ -272,18 +273,18 @@ Remember: You're managing a real network environment. Safety and clarity are par
 
     COMPLIANCE: STANDARD
     """
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements clear_history with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements clear_history with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     """
                 "Predictive Analytics"
-            ],
-            "timestamp": datetime.now().isoformat()
-        }
+        ],
+        "timestamp": datetime.now().isoformat()
+    }
 
     def process_command(self, user_input: str, context: Dict = None) -> Dict:
         """Process user command and generate intelligent response"""
@@ -364,17 +365,20 @@ Remember: You're managing a real network environment. Safety and clarity are par
         user_lower = user_input.lower()
 
         # Code-related keywords
-        code_keywords = ["script", "code", "python", "bash", "command", "execute", "run"]
+        code_keywords = ["script", "code", "python",
+                         "bash", "command", "execute", "run"]
         if any(keyword in user_lower for keyword in code_keywords):
             return "code"
 
         # Network-related keywords
-        network_keywords = ["network", "device", "scan", "ping", "port", "ip", "dns"]
+        network_keywords = ["network", "device",
+                            "scan", "ping", "port", "ip", "dns"]
         if any(keyword in user_lower for keyword in network_keywords):
             return "network"
 
         # Analysis keywords
-        analysis_keywords = ["analyze", "check", "diagnose", "status", "health", "performance"]
+        analysis_keywords = ["analyze", "check",
+                             "diagnose", "status", "health", "performance"]
         if any(keyword in user_lower for keyword in analysis_keywords):
             return "analysis"
 
@@ -393,7 +397,8 @@ Remember: You're managing a real network environment. Safety and clarity are par
             sentences = response.split(". ")
             if len(sentences) > 3:
                 mid_point = len(sentences) // 2
-                response = ". ".join(sentences[:mid_point]) + ".\n\n" + ". ".join(sentences[mid_point:])
+                response = ". ".join(
+                    sentences[:mid_point]) + ".\n\n" + ". ".join(sentences[mid_point:])
 
         return response
 

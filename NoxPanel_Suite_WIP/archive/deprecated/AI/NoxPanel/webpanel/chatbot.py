@@ -3,16 +3,17 @@ NoxPanel v3.0 - Chatbot Web Interface
 Provides AI-powered chat functionality for script assistance
 """
 
-import os
 import json
-from flask import Blueprint, request, jsonify, render_template
-from datetime import datetime
 import logging
+import os
+from datetime import datetime
+
+from flask import Blueprint, jsonify, render_template, request
 
 # Import our AI modules
 try:
-    from noxcore.nlp_processor import conversation_manager
     from noxcore.llm_integration import llm_manager
+    from noxcore.nlp_processor import conversation_manager
 except ImportError as e:
     logging.warning(f"AI modules not available: {e}")
     conversation_manager = None

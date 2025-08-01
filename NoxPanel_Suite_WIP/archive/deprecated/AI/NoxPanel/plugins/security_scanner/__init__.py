@@ -3,20 +3,22 @@ Advanced Security Scanner Plugin v2.0
 Comprehensive vulnerability assessment and threat detection
 """
 
-import sys
+import json
 import os
 import socket
-import json
+import sys
 import threading
-from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 
 # Fix plugin system import path
 plugin_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, plugin_dir)
 
+from typing import Any, Dict
+
 from plugin_system import PluginInterface, PluginMetadata
-from typing import Dict, Any
+
 
 class SecurityScannerPlugin(PluginInterface):
     """Advanced Security Scanner with vulnerability assessment"""

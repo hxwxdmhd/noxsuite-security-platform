@@ -2,8 +2,9 @@
 
 import json
 import logging
-from typing import Dict, List, Optional
 from datetime import datetime
+from typing import Dict, List, Optional
+
 from .ollama_client import OllamaClient
 from .task_registry import TaskRegistry
 

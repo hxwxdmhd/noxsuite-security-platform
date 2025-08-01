@@ -11,15 +11,15 @@ This module provides:
 - Real-time AI assistance for network management
 """
 
-import os
-import sys
 import json
-import time
-import socket
-import threading
-from datetime import datetime
-from typing import Dict, List, Any, Optional
 import logging
+import os
+import socket
+import sys
+import threading
+import time
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

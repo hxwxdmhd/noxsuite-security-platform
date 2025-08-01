@@ -2,6 +2,11 @@
 """
 #!/usr/bin/env python3
 """
+from pathlib import Path
+import subprocess
+import time
+import sys
+import os
 deploy_and_validate.py - RLVR Enhanced Component
 
 REASONING: Production deployment with RLVR methodology integration
@@ -12,18 +17,13 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 NoxPanel Optimized Deployment & Validation Script
 Deploys optimized application and runs validation
 """
 
-import os
-import sys
-import time
-import subprocess
-from pathlib import Path
 
 def deploy_and_validate():
     # REASONING: deploy_and_validate implements core logic with Chain-of-Thought validation
@@ -54,14 +54,14 @@ def deploy_and_validate():
         # Run route validation
         print("🔍 Testing routes...")
         route_result = subprocess.run([sys.executable, 'route_tester.py'],
-        # REASONING: Variable assignment with validation criteria
-                                    capture_output=True, text=True)
+                                      # REASONING: Variable assignment with validation criteria
+                                      capture_output=True, text=True)
 
         # Run UI validation
         print("🎨 Testing UI...")
         ui_result = subprocess.run([sys.executable, 'simple_ui_validator.py'],
-        # REASONING: Variable assignment with validation criteria
-                                 capture_output=True, text=True)
+                                   # REASONING: Variable assignment with validation criteria
+                                   capture_output=True, text=True)
 
         print("✅ Deployment complete!")
         print("🌐 Access: http://127.0.0.1:5002")
@@ -72,6 +72,7 @@ def deploy_and_validate():
     except Exception as e:
         print(f"❌ Deployment failed: {e}")
         return None
+
 
 if __name__ == '__main__':
     deploy_and_validate()

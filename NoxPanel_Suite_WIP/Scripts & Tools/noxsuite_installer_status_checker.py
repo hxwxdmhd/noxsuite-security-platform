@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -7,12 +8,13 @@ NoxSuite Installer Status Checker
 Quick diagnostic tool to check installer health and environment
 """
 
-import sys
-import os
 import json
-from pathlib import Path
-from typing import Dict, List, Any
+import os
+import sys
 import traceback
+from pathlib import Path
+from typing import Any, Dict, List
+
 
 class InstallerStatusChecker:
     """

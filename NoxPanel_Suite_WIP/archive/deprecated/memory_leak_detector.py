@@ -13,19 +13,19 @@ This system provides comprehensive memory leak detection:
 Essential for production stability and resource management
 """
 
-import os
 import gc
-import sys
-import time
-import threading
+import json
 import logging
+import os
+import sys
+import threading
+import time
 import traceback
-from typing import Dict, List, Optional, Any, Callable, Tuple
+import weakref
+from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
-from collections import defaultdict, deque
-import weakref
-import json
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

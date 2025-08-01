@@ -5,31 +5,52 @@
 Real-time monitoring, advanced security, and ML-powered optimization
 """
 
-import os
+import asyncio
+import hashlib
 import json
 import logging
-import asyncio
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, asdict
-import hashlib
+import os
+import socket
 import subprocess
-
-# Flask and extensions
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
-from flask import Blueprint, current_app, g, abort, send_from_directory
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from flask_wtf import FlaskForm, CSRFProtect
-from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField
-from wtforms.validators import DataRequired, Length, Email
-from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.middleware.proxy_fix import ProxyFix
-import pymysql
 import threading
 import time
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 import psutil
-import socket
+import pymysql
+
+# Flask and extensions
+from flask import (
+    Blueprint,
+    Flask,
+    abort,
+    current_app,
+    flash,
+    g,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    session,
+    url_for,
+)
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
+from flask_wtf import CSRFProtect, FlaskForm
+from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.security import check_password_hash, generate_password_hash
+from wtforms import PasswordField, SelectField, StringField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, Email, Length
 
 # Configure advanced logging
 logging.basicConfig(

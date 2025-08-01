@@ -14,16 +14,17 @@ This system provides standardized plugin manifest files:
 Essential for production-ready plugin ecosystem
 """
 
-import os
+import hashlib
 import json
-import jsonschema
-from typing import Dict, List, Optional, Any, Tuple, Union
-from dataclasses import dataclass, field, asdict
+import logging
+import os
+import re
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
-import re
-import hashlib
-import logging
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import jsonschema
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

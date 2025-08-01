@@ -5,13 +5,15 @@ AetherCore API Routes - Model Management
 Model management routes for loading, unloading, and managing AI models.
 """
 
-from fastapi import APIRouter, HTTPException, BackgroundTasks, Depends
-from pydantic import BaseModel
-from typing import List, Optional, Dict, Any
-from datetime import datetime
 import asyncio
 import logging
-from ..models.model_metadata import ModelMetadata, ModelType, ModelStatus
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from pydantic import BaseModel
+
+from ..models.model_metadata import ModelMetadata, ModelStatus, ModelType
 from ..services.model_service import ModelService
 
 router = APIRouter(prefix="/api/models", tags=["models"])

@@ -7,14 +7,14 @@ Consolidates fragmented web interfaces into a single production-ready applicatio
 This script addresses the web interface fragmentation identified in the audit.
 """
 
-import os
-import sys
-import shutil
 import json
-import time
 import logging
+import os
+import shutil
+import sys
+import time
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 # Setup logging
 logging.basicConfig(

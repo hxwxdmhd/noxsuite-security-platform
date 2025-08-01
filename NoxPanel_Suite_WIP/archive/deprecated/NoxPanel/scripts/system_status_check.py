@@ -4,12 +4,14 @@ System Status Check - Comprehensive Health Validation
 Validates all components and provides clear status report
 """
 
+import logging
 import os
 import sys
 import time
-import logging
-import requests
 from pathlib import Path
+
+import requests
+
 
 def setup_safe_logging():
     """
@@ -109,9 +111,9 @@ def check_python_imports():
 
         # Test critical imports
         from noxcore.database import NoxDatabase
-        from noxcore.websocket.manager import WebSocketManager
-        from noxcore.tasks.manager import TaskManager
         from noxcore.plugins import PluginManager
+        from noxcore.tasks.manager import TaskManager
+        from noxcore.websocket.manager import WebSocketManager
 
     """
     RLVR: Validates input according to business rules and constraints

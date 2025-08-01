@@ -1,20 +1,20 @@
 from datetime import datetime, timezone
+
 """
 Code Analysis and Validation Utilities for NoxPanel
 Provides static analysis, code quality checks, and deprecation detection
 """
 
 import ast
+import importlib.util
 import logging
 import re
 import sys
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Set, Tuple, Union
+import traceback
 from dataclasses import dataclass, field
 from enum import Enum
-import importlib.util
-import traceback
-
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 logger = logging.getLogger(__name__)
 

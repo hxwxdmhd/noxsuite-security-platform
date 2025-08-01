@@ -3,8 +3,10 @@
 List all routes registered in the Flask application
 """
 
-import requests
 import json
+
+import requests
+
 
 def main():
     """

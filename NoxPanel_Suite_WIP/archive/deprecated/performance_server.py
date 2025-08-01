@@ -20,16 +20,17 @@ Compliance: RLVR Methodology v4.0+ Applied
 High-performance async server to test optimization improvements
 """
 
-from fastapi import FastAPI, BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-import uvicorn
-import torch
-import time
 import asyncio
 import os
+import time
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any, Dict
+
+import torch
+import uvicorn
+from fastapi import BackgroundTasks, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 # Initialize FastAPI with optimization settings
 app = FastAPI(

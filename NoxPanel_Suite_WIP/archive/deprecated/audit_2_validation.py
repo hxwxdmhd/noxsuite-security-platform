@@ -6,8 +6,10 @@ Comprehensive validation of the Enhanced Plugin System for Audit 2 compliance
 """
 
 import sys
+
 sys.path.append('.')
 from unified_plugin_system_clean import UnifiedPluginSystem
+
 
 def main():
     """Main validation function"""

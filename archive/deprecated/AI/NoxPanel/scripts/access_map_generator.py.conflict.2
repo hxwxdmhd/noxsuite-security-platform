@@ -16,6 +16,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class AccessMapGenerator:
     def __init__(self, base_url: str = "http://127.0.0.1:5000"):
     """
@@ -76,9 +77,11 @@ class AccessMapGenerator:
                         ]
 
                         for pattern in nav_patterns:
-                            matches = re.findall(pattern, content, re.DOTALL | re.IGNORECASE)
+                            matches = re.findall(
+                                pattern, content, re.DOTALL | re.IGNORECASE)
                             for match in matches:
-                                links = re.findall(r'href=["\']([^"\']+)["\']', match)
+                                links = re.findall(
+                                    r'href=["\']([^"\']+)["\']', match)
                                 if links:
                                     nav_elements['menus'].append({
                                         'file': str(html_file.relative_to(project_root)),
@@ -93,7 +96,8 @@ class AccessMapGenerator:
                         ]
 
                         for pattern in button_patterns:
-                            matches = re.findall(pattern, content, re.IGNORECASE)
+                            matches = re.findall(
+                                pattern, content, re.IGNORECASE)
                             for match in matches:
                                 nav_elements['buttons'].append({
                                     'file': str(html_file.relative_to(project_root)),
@@ -101,8 +105,10 @@ class AccessMapGenerator:
                                 })
 
                         # Extract all links
-                        all_links = re.findall(r'href=["\']([^"\']+)["\']', content)
-                        internal_links = [link for link in all_links if link.startswith('/') or not ('://' in link)]
+                        all_links = re.findall(
+                            r'href=["\']([^"\']+)["\']', content)
+                        internal_links = [link for link in all_links if link.startswith(
+                            '/') or not ('://' in link)]
                         if internal_links:
                             nav_elements['links'].append({
                                 'file': str(html_file.relative_to(project_root)),
@@ -110,7 +116,8 @@ class AccessMapGenerator:
                             })
 
                         # Extract forms
-                        form_actions = re.findall(r'<form[^>]*action=["\']([^"\']+)["\']', content, re.IGNORECASE)
+                        form_actions = re.findall(
+                            r'<form[^>]*action=["\']([^"\']+)["\']', content, re.IGNORECASE)
                         if form_actions:
                             nav_elements['forms'].append({
                                 'file': str(html_file.relative_to(project_root)),
@@ -137,7 +144,8 @@ class AccessMapGenerator:
                         ]
 
                         for pattern in shortcut_patterns:
-                            matches = re.findall(pattern, content, re.IGNORECASE)
+                            matches = re.findall(
+                                pattern, content, re.IGNORECASE)
                             for match in matches:
                                 nav_elements['shortcuts'].append({
                                     'file': str(html_file.relative_to(project_root)),
@@ -187,11 +195,16 @@ class AccessMapGenerator:
 
         # Add manual core endpoints if not found
         core_endpoints = [
-            {'path': '/', 'method': 'GET', 'type': 'page', 'description': 'Main Dashboard', 'priority': 'high'},
-            {'path': '/chat', 'method': 'GET', 'type': 'page', 'description': 'AI Chat Interface', 'priority': 'high'},
-            {'path': '/admin', 'method': 'GET', 'type': 'page', 'description': 'Admin Panel', 'priority': 'medium'},
-            {'path': '/api/health', 'method': 'GET', 'type': 'api', 'description': 'System Health', 'priority': 'high'},
-            {'path': '/api/chat/status', 'method': 'GET', 'type': 'api', 'description': 'Chat Status', 'priority': 'high'},
+            {'path': '/', 'method': 'GET', 'type': 'page',
+                'description': 'Main Dashboard', 'priority': 'high'},
+            {'path': '/chat', 'method': 'GET', 'type': 'page',
+                'description': 'AI Chat Interface', 'priority': 'high'},
+            {'path': '/admin', 'method': 'GET', 'type': 'page',
+                'description': 'Admin Panel', 'priority': 'medium'},
+            {'path': '/api/health', 'method': 'GET', 'type': 'api',
+                'description': 'System Health', 'priority': 'high'},
+            {'path': '/api/chat/status', 'method': 'GET', 'type': 'api',
+                'description': 'Chat Status', 'priority': 'high'},
         ]
 
         # Add core endpoints if not already present
@@ -220,7 +233,8 @@ class AccessMapGenerator:
         ]
 
         for candidate in entry_candidates:
-            matching_endpoint = next((ep for ep in endpoints if ep['path'] == candidate['path']), None)
+            matching_endpoint = next(
+                (ep for ep in endpoints if ep['path'] == candidate['path']), None)
             if matching_endpoint:
                 flows['entry_points'].append({
                     'path': candidate['path'],
@@ -253,7 +267,8 @@ class AccessMapGenerator:
             for step in sequence['path']:
                 # Handle parameterized paths
                 step_pattern = step.replace('<', '{').replace('>', '}')
-                matching = next((ep for ep in endpoints if ep['path'].startswith(step.split('<')[0])), None)
+                matching = next(
+                    (ep for ep in endpoints if ep['path'].startswith(step.split('<')[0])), None)
                 available_steps.append({
                     'path': step,
                     'available': matching is not None,
@@ -288,7 +303,8 @@ class AccessMapGenerator:
     """
         for endpoint in endpoints:
             if endpoint['type'] == 'page':
-                has_outgoing_nav = any(endpoint['path'] in str(all_links) for link in all_links)
+                has_outgoing_nav = any(endpoint['path'] in str(
+                    all_links) for link in all_links)
                 if not has_outgoing_nav and endpoint['path'] not in ['/', '/chat']:
                     flows['dead_ends'].append({
                         'path': endpoint['path'],
@@ -304,7 +320,8 @@ class AccessMapGenerator:
                 'steps': [
                     {'step': 1, 'action': 'Visit dashboard', 'path': '/'},
                     {'step': 2, 'action': 'Explore AI chat', 'path': '/chat'},
-                    {'step': 3, 'action': 'Test chatbot', 'path': '/api/chat/message'},
+                    {'step': 3, 'action': 'Test chatbot',
+                        'path': '/api/chat/message'},
                     {'step': 4, 'action': 'Check system health', 'path': '/api/health'}
                 ]
             },
@@ -313,8 +330,10 @@ class AccessMapGenerator:
                 'description': 'System administrator tasks',
                 'steps': [
                     {'step': 1, 'action': 'Access admin panel', 'path': '/admin'},
-                    {'step': 2, 'action': 'Check system status', 'path': '/api/admin/system-info'},
-                    {'step': 3, 'action': 'Review processes', 'path': '/api/admin/processes'},
+                    {'step': 2, 'action': 'Check system status',
+                        'path': '/api/admin/system-info'},
+                    {'step': 3, 'action': 'Review processes',
+                        'path': '/api/admin/processes'},
                     {'step': 4, 'action': 'Manage plugins', 'path': '/plugins'}
                 ]
             },
@@ -323,8 +342,10 @@ class AccessMapGenerator:
                 'description': 'Advanced user interactions',
                 'steps': [
                     {'step': 1, 'action': 'Dashboard overview', 'path': '/'},
-                    {'step': 2, 'action': 'List available scripts', 'path': '/api/scripts'},
-                    {'step': 3, 'action': 'Execute system diagnostic', 'path': '/api/run/system_diagnostic'},
+                    {'step': 2, 'action': 'List available scripts',
+                        'path': '/api/scripts'},
+                    {'step': 3, 'action': 'Execute system diagnostic',
+                        'path': '/api/run/system_diagnostic'},
                     {'step': 4, 'action': 'AI-assisted analysis', 'path': '/chat'}
                 ]
             }

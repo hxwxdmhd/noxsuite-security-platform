@@ -19,6 +19,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 def create_app():
     """
     RLVR: Creates new entity with validation and error handling
@@ -327,8 +328,10 @@ def create_app():
                         return;
                     }
 
-                    document.getElementById('crawlResults').style.display = 'block';
-                    document.getElementById('resultContent').innerHTML = '🔄 Crawling in progress...';
+                    document.getElementById(
+                        'crawlResults').style.display = 'block';
+                    document.getElementById(
+                        'resultContent').innerHTML = '🔄 Crawling in progress...';
 
                     fetch('/api/crawler/crawl', {
                         method: 'POST',
@@ -358,11 +361,13 @@ def create_app():
                             displayResults(data.results);
                             updateStats();
                         } else {
-                            document.getElementById('resultContent').innerHTML = '❌ Crawl failed: ' + data.error;
+                            document.getElementById(
+                                'resultContent').innerHTML = '❌ Crawl failed: ' + data.error;
                         }
                     })
                     .catch(error => {
-                        document.getElementById('resultContent').innerHTML = '❌ Error: ' + error.message;
+                        document.getElementById(
+                            'resultContent').innerHTML = '❌ Error: ' + error.message;
                     });
                 }
 
@@ -372,20 +377,25 @@ def create_app():
                     html += '<p><strong>Title:</strong> ' + results.title + '</p>';
                     html += '<p><strong>Category:</strong> ' + results.category + '</p>';
                     html += '<p><strong>Quality Score:</strong> ' + results.quality_score + '</p>';
-                    html += '<p><strong>Content Length:</strong> ' + results.content_length + ' characters</p>';
+                    html += '<p><strong>Content Length:</strong> ' + \
+                        results.content_length + ' characters</p>';
                     html += '<p><strong>Links Found:</strong> ' + results.links_count + '</p>';
 
                     document.getElementById('resultContent').innerHTML = html;
                 }
 
                 function clearResults() {
-                    document.getElementById('crawlResults').style.display = 'none';
-                    document.getElementById('resultContent').innerHTML = 'No results yet.';
+                    document.getElementById(
+                        'crawlResults').style.display = 'none';
+                    document.getElementById(
+                        'resultContent').innerHTML = 'No results yet.';
                 }
 
                 function updateStats() {
-                    document.getElementById('totalSites').textContent = Math.floor(Math.random() * 50) + 1;
-                    document.getElementById('totalPages').textContent = Math.floor(Math.random() * 500) + 50;
+                    document.getElementById('totalSites').textContent = Math.floor(
+                        Math.random() * 50) + 1;
+                    document.getElementById('totalPages').textContent = Math.floor(
+                        Math.random() * 500) + 50;
                     document.getElementById('lastCrawl').textContent = new Date().toLocaleString();
                 }
 
@@ -394,7 +404,8 @@ def create_app():
                 }
 
                 function exportResults() {
-                    alert('Export functionality will download stored crawl data as JSON');
+                    alert(
+                        'Export functionality will download stored crawl data as JSON');
                 }
             </script>
         </body>
@@ -519,7 +530,8 @@ def create_app():
 
                     } catch (error) {
                         document.getElementById('systemStatus').innerHTML = `❌ Error: ${error.message}`;
-                        document.getElementById('systemStatus').className = 'status error';
+                        document.getElementById(
+                            'systemStatus').className = 'status error';
                     }
                 }
 
@@ -558,7 +570,8 @@ def create_app():
                             });
                         }
 
-                        document.getElementById('availablePlugins').innerHTML = html;
+                        document.getElementById(
+                            'availablePlugins').innerHTML = html;
 
                     } catch (error) {
                         document.getElementById('availablePlugins').innerHTML = `❌ Error loading plugins: ${error.message}`;
@@ -591,7 +604,8 @@ def create_app():
                             });
                         }
 
-                        document.getElementById('loadedPlugins').innerHTML = html;
+                        document.getElementById(
+                            'loadedPlugins').innerHTML = html;
 
                     } catch (error) {
                         document.getElementById('loadedPlugins').innerHTML = `❌ Error loading plugins: ${error.message}`;

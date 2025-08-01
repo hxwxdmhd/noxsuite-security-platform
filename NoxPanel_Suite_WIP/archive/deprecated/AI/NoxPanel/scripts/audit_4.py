@@ -17,19 +17,21 @@ Scoring: 100 points total (20 points per test)
 Passing: 80+ points required
 """
 
-import os
-import sys
-import time
-import json
-import pymysql
-import requests
+import base64
 import hashlib
 import hmac
-import base64
-from pathlib import Path
-from datetime import datetime
+import json
+import os
 import re
+import sys
+import time
+from datetime import datetime
+from pathlib import Path
 from urllib.parse import quote, unquote
+
+import pymysql
+import requests
+
 
 class APISecurityAuditor:
     def __init__(self):

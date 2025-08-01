@@ -6,18 +6,19 @@ Part of the Heimnetz Enterprise Suite
 """
 
 import asyncio
-import sys
+import json
 import os
 import subprocess
-import json
+import sys
+import time
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
+
 import httpx
 from rich.console import Console
-from rich.table import Table
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
-import time
+from rich.table import Table
 
 console = Console()
 

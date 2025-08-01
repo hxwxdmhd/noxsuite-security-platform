@@ -14,20 +14,20 @@ This system provides comprehensive text-to-speech and voice interface capabiliti
 Essential for advanced user interaction and accessibility features
 """
 
+import asyncio
+import io
+import json
+import logging
 import os
 import sys
-import json
-import time
-import asyncio
-import logging
-import threading
-from typing import Dict, List, Optional, Any, Union, Callable
-from datetime import datetime
-from dataclasses import dataclass, field
-from enum import Enum
-import wave
 import tempfile
-import io
+import threading
+import time
+import wave
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional, Union
 
 # Optional imports with fallbacks
 try:
@@ -236,7 +236,7 @@ class TextToSpeechEngine:
         """Initialize Azure Cognitive Services TTS"""
         try:
             import azure.cognitiveservices.speech as speechsdk
-            
+
             # Get Azure credentials from environment
             speech_key = os.getenv('AZURE_SPEECH_KEY')
             speech_region = os.getenv('AZURE_SPEECH_REGION', 'eastus')
@@ -266,7 +266,7 @@ class TextToSpeechEngine:
         """Initialize Google Cloud TTS"""
         try:
             from google.cloud import texttospeech
-            
+
             # Initialize client
             self.engine = texttospeech.TextToSpeechClient()
             
@@ -281,7 +281,7 @@ class TextToSpeechEngine:
         """Initialize OpenAI TTS"""
         try:
             import openai
-            
+
             # Get OpenAI API key
             api_key = os.getenv('OPENAI_API_KEY')
             if not api_key:

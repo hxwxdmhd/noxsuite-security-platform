@@ -15,27 +15,33 @@ This system provides comprehensive WebRTC capabilities for real-time communicati
 Essential for advanced collaboration and communication features
 """
 
-import os
-import sys
-import json
-import time
 import asyncio
-import logging
-import threading
-from typing import Dict, List, Optional, Any, Union, Callable, Set
-from datetime import datetime
-from dataclasses import dataclass, field
-from enum import Enum
-import uuid
 import base64
 import hashlib
 import hmac
+import json
+import logging
+import os
+import sys
+import threading
+import time
+import uuid
+from dataclasses import dataclass, field
+from datetime import datetime
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional, Set, Union
 
 # Optional imports with fallbacks
 try:
     import aiortc
-    from aiortc import RTCPeerConnection, RTCSessionDescription, RTCIceCandidate
-    from aiortc import MediaStreamTrack, RTCRtpSender, RTCRtpReceiver
+    from aiortc import (
+        MediaStreamTrack,
+        RTCIceCandidate,
+        RTCPeerConnection,
+        RTCRtpReceiver,
+        RTCRtpSender,
+        RTCSessionDescription,
+    )
     from aiortc.contrib.media import MediaBlackhole, MediaPlayer, MediaRecorder
     HAS_AIORTC = True
 except ImportError:

@@ -2,6 +2,7 @@
 """
 #!/usr/bin/env python3
 """
+from flask import Flask, jsonify
 test_server_simple.py - RLVR Enhanced Component
 
 REASONING: Comprehensive testing with Chain-of-Thought validation methodology
@@ -12,15 +13,15 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 Simple test server to verify VS Code browser functionality
 """
 
-from flask import Flask, jsonify
 
 app = Flask(__name__)
+
 
 @app.route('/')
 def test_page():
@@ -68,6 +69,7 @@ def test_page():
     </html>
     """
 
+
 @app.route('/api/test')
 def api_test():
     # REASONING: api_test implements core logic with Chain-of-Thought validation
@@ -76,6 +78,7 @@ def api_test():
         "message": "API is working",
         "timestamp": "2025-07-17"
     })
+
 
 if __name__ == '__main__':
     print("🧪 Starting simple test server on http://127.0.0.1:7000")

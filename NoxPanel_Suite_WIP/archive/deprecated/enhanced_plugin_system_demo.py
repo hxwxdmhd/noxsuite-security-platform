@@ -7,15 +7,16 @@ This script demonstrates the fully functional enhanced plugin system
 with all 12 enhanced methods and Audit 2 compliance features.
 """
 
-import sys
-import os
 import json
+import os
+import sys
 from datetime import datetime
 
 # Add current directory to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from unified_plugin_system_clean import UnifiedPluginSystem, BasePlugin, PluginInfo
+from unified_plugin_system_clean import BasePlugin, PluginInfo, UnifiedPluginSystem
+
 
 def main():
     """Main demonstration function"""

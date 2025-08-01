@@ -8,49 +8,66 @@ Date: July 18, 2025
 Version: v2.0-dev (Development)
 """
 
-import os
-import sys
-import json
-import time
-import hashlib
-import secrets
-import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass
-from functools import wraps
-import threading
 import asyncio
-from concurrent.futures import ThreadPoolExecutor
-
-# Core Flask and Extensions
-from flask import Flask, request, jsonify, render_template_string, session, g
-from flask_socketio import SocketIO, emit, join_room, leave_room
-from flask_cors import CORS
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from flask_caching import Cache
-
-# Database and ORM
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, Boolean, Text, Index
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.pool import StaticPool
-import pymysql
-
-# Security and Validation
-from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.middleware.proxy_fix import ProxyFix
-import bleach
+import hashlib
+import json
+import logging
+import os
 import re
+import secrets
+import sys
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from functools import wraps
+from typing import Any, Dict, List, Optional
+
+import bleach
 
 # Monitoring and Metrics
 import psutil
+import pymysql
+
+# Core Flask and Extensions
+from flask import Flask, g, jsonify, render_template_string, request, session
+from flask_caching import Cache
+from flask_cors import CORS
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    get_jwt_identity,
+    jwt_required,
+)
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_socketio import SocketIO, emit, join_room, leave_room
+
+# Database and ORM
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    Index,
+    Integer,
+    String,
+    Text,
+    create_engine,
+)
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.pool import StaticPool
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+# Security and Validation
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # Configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATABASE_URL = os.environ.get('DATABASE_URL', f'mysql+pymysql://{BASE_DIR}/heimnetz_dev.db')
+DATABASE_URL = os.environ.get(
+    'DATABASE_URL', f'mysql+pymysql://{BASE_DIR}/heimnetz_dev.db')
 SECRET_KEY = os.environ.get('SECRET_KEY', secrets.token_urlsafe(32))
 JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', secrets.token_urlsafe(32))
 
@@ -68,9 +85,10 @@ logger = logging.getLogger(__name__)
 # Database Models
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = 'users'
-    
+
     id = Column(Integer, primary_key=True)
     username = Column(String(80), unique=True, nullable=False)
     email = Column(String(120), unique=True, nullable=False)
@@ -79,15 +97,16 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     last_login = Column(DateTime)
-    
+
     __table_args__ = (
         Index('idx_username', 'username'),
         Index('idx_email', 'email'),
     )
 
+
 class SystemMetrics(Base):
     __tablename__ = 'system_metrics'
-    
+
     id = Column(Integer, primary_key=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
     cpu_percent = Column(Float)
@@ -98,14 +117,15 @@ class SystemMetrics(Base):
     active_connections = Column(Integer)
     request_count = Column(Integer)
     avg_response_time = Column(Float)
-    
+
     __table_args__ = (
         Index('idx_timestamp', 'timestamp'),
     )
 
+
 class AuditLog(Base):
     __tablename__ = 'audit_logs'
-    
+
     id = Column(Integer, primary_key=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
     user_id = Column(Integer)
@@ -114,10 +134,11 @@ class AuditLog(Base):
     details = Column(Text)
     ip_address = Column(String(45))
     user_agent = Column(String(500))
-    
+
     __table_args__ = (
         Index('idx_timestamp_user', 'timestamp', 'user_id'),
     )
+
 
 @dataclass
 class SecurityConfig:
@@ -132,46 +153,51 @@ class SecurityConfig:
     lockout_duration: int = 900  # 15 minutes
     jwt_expiration: int = 86400  # 24 hours
 
+
 class SecurityManager:
     """Development security management system"""
-    
+
     def __init__(self):
         self.config = SecurityConfig()
         self.failed_attempts = {}
         self.lockout_times = {}
-        
+
     def validate_password(self, password: str) -> Dict[str, Any]:
         """Validate password strength"""
         errors = []
-        
+
         if len(password) < self.config.password_min_length:
-            errors.append(f"Password must be at least {self.config.password_min_length} characters")
-        
+            errors.append(
+                f"Password must be at least {self.config.password_min_length} characters")
+
         if self.config.password_require_uppercase and not re.search(r'[A-Z]', password):
-            errors.append("Password must contain at least one uppercase letter")
-        
+            errors.append(
+                "Password must contain at least one uppercase letter")
+
         if self.config.password_require_lowercase and not re.search(r'[a-z]', password):
-            errors.append("Password must contain at least one lowercase letter")
-        
+            errors.append(
+                "Password must contain at least one lowercase letter")
+
         if self.config.password_require_digit and not re.search(r'[0-9]', password):
             errors.append("Password must contain at least one digit")
-        
+
         if self.config.password_require_special and not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-            errors.append("Password must contain at least one special character")
-        
+            errors.append(
+                "Password must contain at least one special character")
+
         return {
             'valid': len(errors) == 0,
             'errors': errors,
             'strength': self._calculate_strength(password)
         }
-    
+
     def _calculate_strength(self, password: str) -> int:
         """Calculate password strength score (0-100)"""
         score = 0
-        
+
         # Length bonus
         score += min(len(password) * 2, 20)
-        
+
         # Character variety bonus
         if re.search(r'[a-z]', password):
             score += 10
@@ -181,61 +207,63 @@ class SecurityManager:
             score += 10
         if re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
             score += 15
-        
+
         # Complexity bonus
         if len(set(password)) / len(password) > 0.7:
             score += 15
-        
+
         # Pattern penalty
         if re.search(r'(.)\1{2,}', password):
             score -= 10
         if re.search(r'(012|123|234|345|456|567|678|789|890)', password):
             score -= 5
-        
+
         return max(0, min(100, score))
-    
+
     def is_account_locked(self, identifier: str) -> bool:
         """Check if account is locked due to failed attempts"""
         if identifier not in self.lockout_times:
             return False
-        
+
         if datetime.utcnow() > self.lockout_times[identifier]:
             del self.lockout_times[identifier]
             if identifier in self.failed_attempts:
                 del self.failed_attempts[identifier]
             return False
-        
+
         return True
-    
+
     def record_failed_attempt(self, identifier: str):
         """Record failed login attempt"""
         if identifier not in self.failed_attempts:
             self.failed_attempts[identifier] = 0
-        
+
         self.failed_attempts[identifier] += 1
-        
+
         if self.failed_attempts[identifier] >= self.config.max_login_attempts:
-            self.lockout_times[identifier] = datetime.utcnow() + timedelta(seconds=self.config.lockout_duration)
-    
+            self.lockout_times[identifier] = datetime.utcnow(
+            ) + timedelta(seconds=self.config.lockout_duration)
+
     def reset_failed_attempts(self, identifier: str):
         """Reset failed attempts counter"""
         if identifier in self.failed_attempts:
             del self.failed_attempts[identifier]
         if identifier in self.lockout_times:
             del self.lockout_times[identifier]
-    
+
     def sanitize_input(self, text: str) -> str:
         """Sanitize user input"""
         return bleach.clean(text, tags=[], attributes={}, strip=True)
-    
+
     def validate_email(self, email: str) -> bool:
         """Validate email format"""
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return re.match(pattern, email) is not None
 
+
 class PerformanceMonitor:
     """Development performance monitoring system"""
-    
+
     def __init__(self):
         self.metrics_history = []
         self.alert_thresholds = {
@@ -244,7 +272,7 @@ class PerformanceMonitor:
             'disk': 90.0,
             'response_time': 1.0
         }
-        
+
     def collect_metrics(self) -> Dict[str, Any]:
         """Collect comprehensive system metrics"""
         try:
@@ -253,11 +281,11 @@ class PerformanceMonitor:
             memory = psutil.virtual_memory()
             disk = psutil.disk_usage('/')
             network = psutil.net_io_counters()
-            
+
             # Process metrics
             process = psutil.Process()
             process_memory = process.memory_info()
-            
+
             metrics = {
                 'timestamp': datetime.utcnow().isoformat(),
                 'cpu_percent': cpu_percent,
@@ -274,55 +302,56 @@ class PerformanceMonitor:
                 'active_connections': len(getattr(g, 'websocket_connections', [])),
                 'uptime': (datetime.utcnow() - getattr(g, 'server_start_time', datetime.utcnow())).total_seconds()
             }
-            
+
             # Store in history
             self.metrics_history.append(metrics)
             if len(self.metrics_history) > 1000:
                 self.metrics_history.pop(0)
-            
+
             # Check for alerts
             self._check_alerts(metrics)
-            
+
             return metrics
-            
+
         except Exception as e:
             logger.error(f"Error collecting metrics: {e}")
             return {}
-    
+
     def _check_alerts(self, metrics: Dict[str, Any]):
         """Check for performance alerts"""
         alerts = []
-        
+
         if metrics['cpu_percent'] > self.alert_thresholds['cpu']:
             alerts.append({
                 'type': 'cpu_high',
                 'message': f"High CPU usage: {metrics['cpu_percent']:.1f}%",
                 'severity': 'warning'
             })
-        
+
         if metrics['memory_percent'] > self.alert_thresholds['memory']:
             alerts.append({
                 'type': 'memory_high',
                 'message': f"High memory usage: {metrics['memory_percent']:.1f}%",
                 'severity': 'warning'
             })
-        
+
         if metrics['disk_percent'] > self.alert_thresholds['disk']:
             alerts.append({
                 'type': 'disk_high',
                 'message': f"High disk usage: {metrics['disk_percent']:.1f}%",
                 'severity': 'critical'
             })
-        
+
         if alerts:
             logger.warning(f"Performance alerts: {alerts}")
             # Emit alerts via WebSocket
             if hasattr(g, 'socketio'):
                 g.socketio.emit('performance_alert', {'alerts': alerts})
 
+
 class DevServer:
     """Ultimate Suite v11.0 - Development Server Implementation"""
-    
+
     def __init__(self):
         self.app = Flask(__name__)
         self.setup_configuration()
@@ -333,17 +362,17 @@ class DevServer:
         self.setup_websocket()
         self.setup_routes()
         self.setup_error_handlers()
-        
+
         # Initialize managers
         self.security_manager = SecurityManager()
         self.performance_monitor = PerformanceMonitor()
-        
+
         # Server state
         self.server_start_time = datetime.utcnow()
         self.websocket_connections = set()
-        
+
         logger.info("DevServer initialized successfully")
-    
+
     def setup_configuration(self):
         """Configure Flask application"""
         self.app.config.update({
@@ -355,32 +384,34 @@ class DevServer:
             'CACHE_TYPE': 'simple',
             'MAX_CONTENT_LENGTH': 16 * 1024 * 1024,  # 16MB max file size
         })
-        
+
         # Trust proxy headers
-        self.app.wsgi_app = ProxyFix(self.app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
-    
+        self.app.wsgi_app = ProxyFix(
+            self.app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
     def setup_database(self):
         """Initialize database connection and tables"""
         try:
-            self.engine = create_engine(DATABASE_URL, poolclass=StaticPool, connect_args={'check_same_thread': False})
+            self.engine = create_engine(DATABASE_URL, poolclass=StaticPool, connect_args={
+                                        'check_same_thread': False})
             self.db_session = scoped_session(sessionmaker(bind=self.engine))
-            
+
             # Create tables
             Base.metadata.create_all(self.engine)
             logger.info("Database initialized successfully")
-            
+
         except Exception as e:
             logger.error(f"Database initialization error: {e}")
             raise
-    
+
     def setup_security(self):
         """Setup security components"""
         # CORS
         CORS(self.app, origins=['*'], supports_credentials=True)
-        
+
         # JWT
         self.jwt = JWTManager(self.app)
-        
+
         # Rate limiting with memory storage
         self.limiter = Limiter(
             app=self.app,
@@ -388,7 +419,7 @@ class DevServer:
             default_limits=["1000 per day", "100 per hour"],
             storage_uri="memory://"
         )
-        
+
         # Security headers
         @self.app.after_request
         def set_security_headers(response):
@@ -398,9 +429,9 @@ class DevServer:
             response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
             response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
             return response
-        
+
         logger.info("Security components initialized")
-    
+
     def setup_caching(self):
         """Setup caching system"""
         try:
@@ -408,7 +439,7 @@ class DevServer:
             logger.info("Simple caching system initialized")
         except Exception as e:
             logger.warning(f"Cache initialization failed: {e}")
-    
+
     def setup_monitoring(self):
         """Setup monitoring and metrics"""
         @self.app.before_request
@@ -416,13 +447,13 @@ class DevServer:
             g.start_time = time.time()
             g.server_start_time = self.server_start_time
             g.websocket_connections = self.websocket_connections
-        
+
         @self.app.after_request
         def after_request(response):
             return response
-        
+
         logger.info("Monitoring system initialized")
-    
+
     def setup_websocket(self):
         """Setup WebSocket with Socket.IO"""
         self.socketio = SocketIO(
@@ -432,38 +463,38 @@ class DevServer:
             ping_timeout=60,
             ping_interval=25
         )
-        
+
         @self.socketio.on('connect')
         def handle_connect():
             self.websocket_connections.add(request.sid)
             logger.info(f"WebSocket connected: {request.sid}")
             emit('connected', {'status': 'success', 'sid': request.sid})
-        
+
         @self.socketio.on('disconnect')
         def handle_disconnect():
             if request.sid in self.websocket_connections:
                 self.websocket_connections.remove(request.sid)
             logger.info(f"WebSocket disconnected: {request.sid}")
-        
+
         @self.socketio.on('subscribe_metrics')
         def handle_subscribe_metrics():
             join_room('metrics')
             emit('subscribed', {'room': 'metrics'})
-        
+
         @self.socketio.on('unsubscribe_metrics')
         def handle_unsubscribe_metrics():
             leave_room('metrics')
             emit('unsubscribed', {'room': 'metrics'})
-        
+
         logger.info("WebSocket system initialized")
-    
+
     def setup_routes(self):
         """Setup API routes"""
-        
+
         @self.app.route('/')
         def index():
             return render_template_string(DASHBOARD_TEMPLATE)
-        
+
         @self.app.route('/api/v1/health')
         def health_check():
             """Health check endpoint"""
@@ -473,13 +504,13 @@ class DevServer:
                 'version': 'v2.0-dev',
                 'uptime': (datetime.utcnow() - self.server_start_time).total_seconds()
             })
-        
+
         @self.app.route('/api/v1/metrics')
         def get_metrics():
             """Get system metrics"""
             metrics = self.performance_monitor.collect_metrics()
             return jsonify(metrics)
-        
+
         @self.app.route('/api/v1/cache/stats')
         def cache_stats():
             """Get cache statistics"""
@@ -490,36 +521,36 @@ class DevServer:
                 'hit_rate': 0,
                 'total_requests': 0
             })
-        
+
         @self.app.route('/api/v1/auth/register', methods=['POST'])
         @self.limiter.limit("5 per minute")
         def register():
             """User registration endpoint"""
             data = request.get_json()
-            
+
             if not data or not data.get('username') or not data.get('email') or not data.get('password'):
                 return jsonify({'error': 'Missing required fields'}), 400
-            
+
             # Validate input
             username = self.security_manager.sanitize_input(data['username'])
             email = self.security_manager.sanitize_input(data['email'])
             password = data['password']
-            
+
             if not self.security_manager.validate_email(email):
                 return jsonify({'error': 'Invalid email format'}), 400
-            
+
             password_check = self.security_manager.validate_password(password)
             if not password_check['valid']:
                 return jsonify({'error': 'Password validation failed', 'details': password_check['errors']}), 400
-            
+
             # Check if user exists
             existing_user = self.db_session.query(User).filter(
                 (User.username == username) | (User.email == email)
             ).first()
-            
+
             if existing_user:
                 return jsonify({'error': 'User already exists'}), 409
-            
+
             # Create new user
             password_hash = generate_password_hash(password)
             user = User(
@@ -528,58 +559,61 @@ class DevServer:
                 password_hash=password_hash,
                 role=data.get('role', 'user')
             )
-            
+
             self.db_session.add(user)
             self.db_session.commit()
-            
+
             # Log audit event
-            self.log_audit_event(user.id, 'user_register', 'user', f"User {username} registered")
-            
+            self.log_audit_event(user.id, 'user_register',
+                                 'user', f"User {username} registered")
+
             return jsonify({
                 'message': 'User registered successfully',
                 'user_id': user.id,
                 'username': user.username
             }), 201
-        
+
         @self.app.route('/api/v1/auth/login', methods=['POST'])
         @self.limiter.limit("10 per minute")
         def login():
             """User login endpoint"""
             data = request.get_json()
-            
+
             if not data or not data.get('username') or not data.get('password'):
                 return jsonify({'error': 'Missing credentials'}), 400
-            
+
             username = self.security_manager.sanitize_input(data['username'])
             password = data['password']
-            
+
             # Check account lockout
             if self.security_manager.is_account_locked(username):
                 return jsonify({'error': 'Account temporarily locked due to failed login attempts'}), 423
-            
+
             # Find user
-            user = self.db_session.query(User).filter(User.username == username).first()
-            
+            user = self.db_session.query(User).filter(
+                User.username == username).first()
+
             if not user or not check_password_hash(user.password_hash, password):
                 self.security_manager.record_failed_attempt(username)
                 return jsonify({'error': 'Invalid credentials'}), 401
-            
+
             if not user.is_active:
                 return jsonify({'error': 'Account is disabled'}), 403
-            
+
             # Reset failed attempts
             self.security_manager.reset_failed_attempts(username)
-            
+
             # Update last login
             user.last_login = datetime.utcnow()
             self.db_session.commit()
-            
+
             # Create JWT token
             access_token = create_access_token(identity=user.id)
-            
+
             # Log audit event
-            self.log_audit_event(user.id, 'user_login', 'user', f"User {username} logged in")
-            
+            self.log_audit_event(user.id, 'user_login',
+                                 'user', f"User {username} logged in")
+
             return jsonify({
                 'access_token': access_token,
                 'user': {
@@ -589,17 +623,17 @@ class DevServer:
                     'role': user.role
                 }
             })
-        
+
         @self.app.route('/api/v1/auth/profile')
         @jwt_required()
         def get_profile():
             """Get user profile"""
             user_id = get_jwt_identity()
             user = self.db_session.query(User).get(user_id)
-            
+
             if not user:
                 return jsonify({'error': 'User not found'}), 404
-            
+
             return jsonify({
                 'id': user.id,
                 'username': user.username,
@@ -608,27 +642,27 @@ class DevServer:
                 'created_at': user.created_at.isoformat(),
                 'last_login': user.last_login.isoformat() if user.last_login else None
             })
-        
+
         logger.info("API routes initialized")
-    
+
     def setup_error_handlers(self):
         """Setup error handlers"""
-        
+
         @self.app.errorhandler(404)
         def not_found(error):
             return jsonify({'error': 'Not found'}), 404
-        
+
         @self.app.errorhandler(500)
         def internal_error(error):
             self.db_session.rollback()
             return jsonify({'error': 'Internal server error'}), 500
-        
+
         @self.app.errorhandler(429)
         def rate_limit_exceeded(error):
             return jsonify({'error': 'Rate limit exceeded'}), 429
-        
+
         logger.info("Error handlers initialized")
-    
+
     def log_audit_event(self, user_id: int, action: str, resource: str, details: str):
         """Log audit event"""
         try:
@@ -640,20 +674,20 @@ class DevServer:
                 ip_address=request.remote_addr,
                 user_agent=request.headers.get('User-Agent', '')
             )
-            
+
             self.db_session.add(audit_log)
             self.db_session.commit()
-            
+
         except Exception as e:
             logger.error(f"Audit logging error: {e}")
-    
+
     def start_background_tasks(self):
         """Start background monitoring tasks"""
         def metrics_collector():
             while True:
                 try:
                     metrics = self.performance_monitor.collect_metrics()
-                    
+
                     # Store metrics in database
                     db_metrics = SystemMetrics(
                         cpu_percent=metrics.get('cpu_percent'),
@@ -664,24 +698,26 @@ class DevServer:
                         active_connections=metrics.get('active_connections'),
                         avg_response_time=metrics.get('avg_response_time', 0)
                     )
-                    
+
                     self.db_session.add(db_metrics)
                     self.db_session.commit()
-                    
+
                     # Emit to WebSocket subscribers
-                    self.socketio.emit('metrics_update', metrics, room='metrics')
-                    
+                    self.socketio.emit(
+                        'metrics_update', metrics, room='metrics')
+
                 except Exception as e:
                     logger.error(f"Background metrics collection error: {e}")
-                
+
                 time.sleep(5)  # Collect metrics every 5 seconds
-        
+
         # Start metrics collection in background thread
-        metrics_thread = threading.Thread(target=metrics_collector, daemon=True)
+        metrics_thread = threading.Thread(
+            target=metrics_collector, daemon=True)
         metrics_thread.start()
-        
+
         logger.info("Background tasks started")
-    
+
     def run(self, host='127.0.0.1', port=5002, debug=False):
         """Run the development server"""
         logger.info("="*60)
@@ -692,10 +728,10 @@ class DevServer:
         logger.info(f"Database: {DATABASE_URL}")
         logger.info(f"Cache: Simple memory cache")
         logger.info("="*60)
-        
+
         # Start background tasks
         self.start_background_tasks()
-        
+
         # Run the server
         self.socketio.run(
             self.app,
@@ -705,6 +741,7 @@ class DevServer:
             use_reloader=False,
             log_output=True
         )
+
 
 # Development Dashboard Template
 DASHBOARD_TEMPLATE = """

@@ -5,15 +5,17 @@ AetherCore API Routes - Model Serving
 Model serving routes for inference requests and predictions.
 """
 
-from fastapi import APIRouter, HTTPException, Depends, Query
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any, Union
-from datetime import datetime
 import asyncio
+import logging
 import time
 import uuid
-import logging
-from ..models.model_metadata import ModelMetadata, ModelType, ModelStatus
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel, Field
+
+from ..models.model_metadata import ModelMetadata, ModelStatus, ModelType
 from ..services.inference_service import InferenceService
 
 router = APIRouter(prefix="/api/serve", tags=["serving"])

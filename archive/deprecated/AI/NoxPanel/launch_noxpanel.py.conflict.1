@@ -32,6 +32,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class NoxPanelLauncher:
     """Comprehensive NoxPanel application launcher"""
 
@@ -92,7 +93,8 @@ class NoxPanelLauncher:
 
     def signal_handler(self, signum, frame):
         """Handle shutdown signals"""
-        logger.info(f"[SHUTDOWN] Received signal {signum}, shutting down gracefully...")
+        logger.info(
+            f"[SHUTDOWN] Received signal {signum}, shutting down gracefully...")
         self.shutdown()
         sys.exit(0)
 
@@ -103,13 +105,15 @@ class NoxPanelLauncher:
         try:
             # Check Python version
             if sys.version_info < (3, 8):
-                logger.error(f"[FAIL] Python 3.8+ required, found {sys.version}")
+                logger.error(
+                    f"[FAIL] Python 3.8+ required, found {sys.version}")
                 return False
 
             logger.info(f"[OK] Python version: {sys.version}")
 
             # Check required directories
-            required_dirs = ['webpanel', 'noxcore', 'templates', 'data/db', 'data/logs']
+            required_dirs = ['webpanel', 'noxcore',
+                'templates', 'data/db', 'data/logs']
             for dir_name in required_dirs:
                 dir_path = self.base_path / dir_name
                 if not dir_path.exists():

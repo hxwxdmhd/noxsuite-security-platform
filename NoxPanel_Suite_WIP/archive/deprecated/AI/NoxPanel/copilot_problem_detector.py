@@ -8,21 +8,21 @@ This module implements the comprehensive problem detection and adaptive resoluti
 system for the Ultimate Suite v11.0, working in coordination with Gate 6 advancement.
 """
 
-import json
-import os
-import logging
 import asyncio
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Union, Tuple
-from pathlib import Path
+import hashlib
+import json
+import logging
+import os
+import re
 import secrets
 import subprocess
 import threading
 import time
-import re
-import hashlib
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Configure logging
 logging.basicConfig(

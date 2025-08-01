@@ -17,18 +17,18 @@ Author: MSP-Aware Development Team
 Date: July 18, 2025
 """
 
+import asyncio
 import json
 import logging
-import socket
-import asyncio
 import os
-import subprocess
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, asdict
-from pathlib import Path
-import xml.etree.ElementTree as ET
 import re
+import socket
+import subprocess
+import xml.etree.ElementTree as ET
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -262,7 +262,7 @@ class RouterDiscovery:
         try:
             import socket
             import subprocess
-            
+
             # Method 1: Get from network interfaces
             try:
                 if os.name == 'nt':  # Windows

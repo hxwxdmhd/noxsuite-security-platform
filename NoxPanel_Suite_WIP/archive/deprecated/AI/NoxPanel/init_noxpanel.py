@@ -19,16 +19,16 @@ Usage:
     python init_noxpanel.py --help             # Full options
 """
 
-import os
-import sys
+import argparse
 import json
+import os
 import shutil
 import subprocess
-import argparse
+import sys
+import time
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass
-import time
 
 # Add current directory to path for our imports
 sys.path.insert(0, str(Path(__file__).parent))

@@ -6,13 +6,14 @@ Implements complete schema with knowledge management, AI conversations, and sess
 import json
 import logging
 import os
-import pymysql
 import threading
 import time
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+
+import pymysql
 
 logger = logging.getLogger(__name__)
 

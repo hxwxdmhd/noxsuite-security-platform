@@ -11,6 +11,7 @@ import requests
 import logging
 from pathlib import Path
 
+
 def setup_logging():
     """
     RLVR: Implements setup_logging with error handling and validation
@@ -42,6 +43,7 @@ def setup_logging():
         format="%(asctime)s - [FINAL-VALIDATION] - %(message)s"
     )
     return logging.getLogger(__name__)
+
 
 def validate_sample_plugin():
     """Validate sample plugin exists and works"""
@@ -88,7 +90,8 @@ def validate_sample_plugin():
 
     COMPLIANCE: STANDARD
     """
-            logger.info(f"Sample plugin validation: PASS ({metadata['name']} v{metadata['version']})")
+            logger.info(
+                f"Sample plugin validation: PASS ({metadata['name']} v{metadata['version']})")
             return True
         else:
             logger.error(f"Sample plugin self-test failed: {self_test}")

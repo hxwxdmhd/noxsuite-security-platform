@@ -4,12 +4,13 @@
 Performs comprehensive analysis of actual vs documented system state
 """
 
-import os
+import importlib.util
 import json
+import os
 import re
 from pathlib import Path
-from typing import Dict, List, Any
-import importlib.util
+from typing import Any, Dict, List
+
 
 def load_file_content(filepath: Path) -> str:
     """

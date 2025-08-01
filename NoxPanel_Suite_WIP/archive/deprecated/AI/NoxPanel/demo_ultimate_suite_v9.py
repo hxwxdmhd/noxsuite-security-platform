@@ -10,10 +10,10 @@ This script demonstrates the key features of Ultimate Suite v9.0:
 - Real-time system monitoring
 """
 
-import sys
-import json
-import time
 import asyncio
+import json
+import sys
+import time
 from pathlib import Path
 
 # Add current directory to path
@@ -38,7 +38,11 @@ async def demonstrate_sysadmin_copilot():
     print("=" * 50)
     
     try:
-        from sysadmin_copilot import SysAdminCopilot, SystemHealthMonitor, ScriptGenerator
+        from sysadmin_copilot import (
+            ScriptGenerator,
+            SysAdminCopilot,
+            SystemHealthMonitor,
+        )
         
         print("✅ SysAdmin Copilot components loaded successfully")
         
@@ -95,7 +99,7 @@ def demonstrate_plugin_framework():
     print("=" * 50)
     
     try:
-        from plugin_framework import PluginManager, PluginInterface, SecuritySandbox
+        from plugin_framework import PluginInterface, PluginManager, SecuritySandbox
         
         print("✅ Plugin Framework components loaded successfully")
         

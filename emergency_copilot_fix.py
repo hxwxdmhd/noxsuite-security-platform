@@ -1,3 +1,6 @@
+from typing import Any, Dict, List
+import time
+import logging
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -6,9 +9,6 @@ logger = get_logger(__name__)
 """
 Emergency VS Code Copilot 128 Tools Limit Workaround
 """
-import logging
-import time
-from typing import Any, Dict, List
 
 
 class CopilotEmergencyThrottler:

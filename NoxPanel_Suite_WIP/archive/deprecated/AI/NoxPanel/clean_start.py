@@ -3,11 +3,12 @@ NoxPanel v5.0 - Clean Start Server
 Fixed version with proper knowledge management integration
 """
 
+import logging
 import os
 import sys
-import logging
-from flask import Flask, jsonify, request
 from datetime import datetime
+
+from flask import Flask, jsonify, request
 
 # Setup logging without Unicode issues
 logging.basicConfig(

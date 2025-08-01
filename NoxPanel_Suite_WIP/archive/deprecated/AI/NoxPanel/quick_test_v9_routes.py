@@ -3,10 +3,12 @@
 Quick test to check if v9.0 API routes are working
 """
 
-import time
 import subprocess
-import requests
 import sys
+import time
+
+import requests
+
 
 def test_webapp():
     print("🚀 Starting Ultimate Suite v9.0 for quick test...")

@@ -25,6 +25,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class NoxPanelDiagnostic:
     """Comprehensive diagnostic and repair system for NoxPanel"""
 
@@ -189,12 +190,15 @@ class NoxPanelDiagnostic:
         for dir_path in required_dirs:
             full_path = self.base_path / dir_path
             if not full_path.exists():
-                self.log_issue('WARNING', 'FileStructure', f"Missing directory: {dir_path}")
+                self.log_issue('WARNING', 'FileStructure',
+                               f"Missing directory: {dir_path}")
                 try:
                     full_path.mkdir(parents=True, exist_ok=True)
-                    self.log_repair('FileStructure', f'Created directory {dir_path}', 'SUCCESS')
+                    self.log_repair('FileStructure',
+                                    f'Created directory {dir_path}', 'SUCCESS')
                 except Exception as e:
-                    self.log_issue('CRITICAL', 'FileStructure', f"Failed to create {dir_path}: {e}")
+                    self.log_issue('CRITICAL', 'FileStructure',
+                                   f"Failed to create {dir_path}: {e}")
     """
     RLVR: Validates input according to business rules and constraints
 

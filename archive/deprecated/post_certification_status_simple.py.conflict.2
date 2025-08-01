@@ -14,6 +14,7 @@ from datetime import datetime
 from typing import Dict, Any, List
 import os
 
+
 def generate_status_report():
     """Generate complete system status report."""
 
@@ -90,6 +91,7 @@ def generate_status_report():
 
     return report
 
+
 def save_report(report: Dict[str, Any]) -> str:
     """Save the status report."""
     workspace_path = Path.cwd()
@@ -97,11 +99,13 @@ def save_report(report: Dict[str, Any]) -> str:
     reports_dir.mkdir(exist_ok=True)
 
     # Save JSON report
-    json_file = reports_dir / f"post_certification_status_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    json_file = reports_dir / \
+        f"post_certification_status_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     with open(json_file, 'w', encoding='utf-8') as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
 
     return str(json_file)
+
 
 def display_summary(report: Dict[str, Any]):
     """Display report summary."""
@@ -113,19 +117,25 @@ def display_summary(report: Dict[str, Any]):
     print(f"Certification Level: {cert_status['certification_level']}")
     print(f"Compliance: {cert_status['compliance_percentage']}%")
     print(f"Quality Gates: {cert_status['quality_gates_passed']}")
-    print(f"Production Ready: {'ACTIVE' if cert_status['production_ready'] else 'INACTIVE'}")
-    print(f"Enterprise Grade: {'ACTIVE' if cert_status['enterprise_grade'] else 'INACTIVE'}")
+    print(
+        f"Production Ready: {'ACTIVE' if cert_status['production_ready'] else 'INACTIVE'}")
+    print(
+        f"Enterprise Grade: {'ACTIVE' if cert_status['enterprise_grade'] else 'INACTIVE'}")
 
     print(f"\nSystem Status:")
     guardian = report['guardian_system']
-    print(f"  Guardian System: {'ACTIVE' if guardian['guardian_active'] else 'INACTIVE'}")
-    print(f"  Monitoring Stack: {'ACTIVE' if report['monitoring_stack']['monitoring_active'] else 'INACTIVE'}")
-    print(f"  Adaptive Intelligence: {'ENABLED' if guardian['adaptive_intelligence'] else 'DISABLED'}")
+    print(
+        f"  Guardian System: {'ACTIVE' if guardian['guardian_active'] else 'INACTIVE'}")
+    print(
+        f"  Monitoring Stack: {'ACTIVE' if report['monitoring_stack']['monitoring_active'] else 'INACTIVE'}")
+    print(
+        f"  Adaptive Intelligence: {'ENABLED' if guardian['adaptive_intelligence'] else 'DISABLED'}")
     print(f"  Health Score: {guardian['health_score']}%")
 
     print(f"\nFile Structure:")
     file_structure = report['file_structure']
-    print(f"  Structure Complete: {'YES' if file_structure['structure_complete'] else 'NO'}")
+    print(
+        f"  Structure Complete: {'YES' if file_structure['structure_complete'] else 'NO'}")
 
     print(f"\nSystem Metrics:")
     metrics = report['monitoring_stack']['system_metrics']
@@ -136,6 +146,7 @@ def display_summary(report: Dict[str, Any]):
     print("POST-CERTIFICATION STATUS REPORT COMPLETED SUCCESSFULLY")
     print("System is HEALTHY and MAINTAINING 94.54% COMPLIANCE")
     print("="*80)
+
 
 def main():
     """Main execution function."""
@@ -153,6 +164,7 @@ def main():
 
     except Exception as e:
         print(f"Status report error: {str(e)}")
+
 
 if __name__ == "__main__":
     main()

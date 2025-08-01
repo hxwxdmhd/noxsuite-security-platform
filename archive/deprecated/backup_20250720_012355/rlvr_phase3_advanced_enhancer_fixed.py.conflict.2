@@ -38,6 +38,7 @@ if sys.platform == "win32":
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
     sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)
 
+
 class AdvancedRLVRPattern(Enum):
     """Enterprise-grade RLVR enhancement patterns."""
     AI_DRIVEN_REASONING = "AI-driven reasoning validation"
@@ -60,6 +61,7 @@ class AdvancedRLVRPattern(Enum):
         }
         return weights.get(pattern, 10)
 
+
 @dataclass
 class AdvancedRLVRMetrics:
     """Advanced metrics tracking for Phase 3 enhancement."""
@@ -77,6 +79,7 @@ class AdvancedRLVRMetrics:
     enterprise_readiness: float
     cross_module_validation: float
     ai_enhancement_score: float
+
 
 class RLVRPhase3AdvancedEnhancer:
     """Phase 3 Advanced Enhancement System for RLVR methodology."""
@@ -113,9 +116,12 @@ class RLVRPhase3AdvancedEnhancer:
 
         # Windows-compatible print to console
         self.print_safe("Phase 3 Advanced Enhancement System initialized")
-        self.print_safe(f"Current compliance: {self.metrics.compliance_rate:.3f}%")
-        self.print_safe(f"Enterprise readiness: {self.metrics.enterprise_readiness:.1f}%")
-        self.print_safe(f"AI enhancement potential: {self.metrics.ai_enhancement_score:.1f}%")
+        self.print_safe(
+            f"Current compliance: {self.metrics.compliance_rate:.3f}%")
+        self.print_safe(
+            f"Enterprise readiness: {self.metrics.enterprise_readiness:.1f}%")
+        self.print_safe(
+            f"AI enhancement potential: {self.metrics.ai_enhancement_score:.1f}%")
         self.print_safe(f"Target compliance: 60%+")
 
     def print_safe(self, message: str):
@@ -127,7 +133,8 @@ class RLVRPhase3AdvancedEnhancer:
 
     def setup_advanced_logging(self):
         """Set up comprehensive logging for Phase 3 advanced enhancement."""
-        log_file = self.phase3_dir / "logs" / f"phase3_advanced_enhancement_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        log_file = self.phase3_dir / "logs" / \
+            f"phase3_advanced_enhancement_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
         # Configure logging with UTF-8 encoding for Windows compatibility
         logging.basicConfig(
@@ -267,7 +274,8 @@ class RLVRPhase3AdvancedEnhancer:
 
             # Process batch concurrently
             batch_results = await asyncio.gather(
-                *[self.enhance_module_advanced(file_path) for file_path in batch],
+                *[self.enhance_module_advanced(file_path)
+                  for file_path in batch],
                 return_exceptions=True
             )
 
@@ -275,7 +283,8 @@ class RLVRPhase3AdvancedEnhancer:
 
             # Progress update
             progress = ((i + len(batch)) / len(backend_files)) * 100
-            self.print_safe(f"Phase 3 Progress: {progress:.1f}% ({i + len(batch)}/{len(backend_files)} files)")
+            self.print_safe(
+                f"Phase 3 Progress: {progress:.1f}% ({i + len(batch)}/{len(backend_files)} files)")
 
         # Calculate final metrics
         advanced_metrics = self.calculate_advanced_metrics(enhancement_results)
@@ -312,9 +321,11 @@ class RLVRPhase3AdvancedEnhancer:
 
         # Remove duplicates and filter valid files
         backend_files = list(set(backend_files))
-        backend_files = [f for f in backend_files if f.exists() and f.suffix == '.py']
+        backend_files = [f for f in backend_files if f.exists()
+                         and f.suffix == '.py']
 
-        self.print_safe(f"Found {len(backend_files)} enterprise candidate files for Phase 3 enhancement")
+        self.print_safe(
+            f"Found {len(backend_files)} enterprise candidate files for Phase 3 enhancement")
         return backend_files
 
     async def enhance_module_advanced(self, file_path: Path) -> Dict[str, Any]:
@@ -327,7 +338,8 @@ class RLVRPhase3AdvancedEnhancer:
             advanced_patterns = self.analyze_advanced_patterns(content)
 
             # Calculate enhancement metrics
-            enhancement_metrics = self.calculate_enhancement_metrics(content, advanced_patterns)
+            enhancement_metrics = self.calculate_enhancement_metrics(
+                content, advanced_patterns)
 
             # Apply advanced enhancements
             enhanced_content = content
@@ -350,12 +362,14 @@ class RLVRPhase3AdvancedEnhancer:
                     file_path, content, advanced_patterns
                 )
 
-            self.print_safe(f"Advanced enhancement completed: {file_path.name} - Enterprise Score: {enhancement_metrics.get('enterprise_score', 0.0):.1f}%")
+            self.print_safe(
+                f"Advanced enhancement completed: {file_path.name} - Enterprise Score: {enhancement_metrics.get('enterprise_score', 0.0):.1f}%")
 
             return enhancement_result
 
         except Exception as e:
-            self.logger.error(f"Error in advanced enhancement {file_path}: {str(e)}")
+            self.logger.error(
+                f"Error in advanced enhancement {file_path}: {str(e)}")
             return {
                 "file_path": str(file_path),
                 "error": str(e),
@@ -381,7 +395,8 @@ class RLVRPhase3AdvancedEnhancer:
 
             # Apply enterprise validation patterns
             if "validate" in content.lower() or "check" in content.lower():
-                enterprise_enhancement = self.apply_enterprise_validation_pattern(content)
+                enterprise_enhancement = self.apply_enterprise_validation_pattern(
+                    content)
                 if enterprise_enhancement:
                     enhancements.append({
                         "pattern": "ENTERPRISE_VALIDATION",
@@ -391,17 +406,20 @@ class RLVRPhase3AdvancedEnhancer:
                     })
 
             enhancements_applied = len(enhancements)
-            self.print_safe(f"Applied {enhancements_applied} advanced enhancements to {file_path.name}")
+            self.print_safe(
+                f"Applied {enhancements_applied} advanced enhancements to {file_path.name}")
 
         except Exception as e:
-            self.logger.error(f"Error applying advanced enhancements to {file_path}: {str(e)}")
+            self.logger.error(
+                f"Error applying advanced enhancements to {file_path}: {str(e)}")
 
         return enhancements
 
     def apply_ai_reasoning_pattern(self, content: str) -> Optional[Dict[str, Any]]:
         """Apply AI-driven reasoning patterns."""
         # Simple pattern application for demonstration
-        lines_with_classes = len([line for line in content.split('\n') if 'class ' in line])
+        lines_with_classes = len(
+            [line for line in content.split('\n') if 'class ' in line])
         if lines_with_classes > 0:
             return {"lines": lines_with_classes * 3, "pattern": "AI_DRIVEN_REASONING"}
         return None
@@ -409,7 +427,8 @@ class RLVRPhase3AdvancedEnhancer:
     def apply_enterprise_validation_pattern(self, content: str) -> Optional[Dict[str, Any]]:
         """Apply enterprise validation patterns."""
         # Simple pattern application for demonstration
-        lines_with_validation = len([line for line in content.split('\n') if 'validate' in line.lower()])
+        lines_with_validation = len(
+            [line for line in content.split('\n') if 'validate' in line.lower()])
         if lines_with_validation > 0:
             return {"lines": lines_with_validation * 2, "pattern": "ENTERPRISE_VALIDATION"}
         return None
@@ -453,13 +472,18 @@ class RLVRPhase3AdvancedEnhancer:
 
         # Calculate base scores
         class_count = len([p for p in patterns if p.startswith('class:')])
-        function_count = len([p for p in patterns if p.startswith('function:')])
+        function_count = len(
+            [p for p in patterns if p.startswith('function:')])
 
         if total_lines > 0:
-            metrics["complexity_score"] = min(100.0, (class_count + function_count) / total_lines * 100)
-            metrics["enterprise_score"] = min(100.0, len(patterns) / total_lines * 500)
-            metrics["ai_score"] = min(100.0, function_count / max(1, total_lines) * 1000)
-            metrics["performance_score"] = min(100.0, class_count / max(1, total_lines) * 800)
+            metrics["complexity_score"] = min(
+                100.0, (class_count + function_count) / total_lines * 100)
+            metrics["enterprise_score"] = min(
+                100.0, len(patterns) / total_lines * 500)
+            metrics["ai_score"] = min(
+                100.0, function_count / max(1, total_lines) * 1000)
+            metrics["performance_score"] = min(
+                100.0, class_count / max(1, total_lines) * 800)
 
             # Calculate overall enhancement potential
             metrics["enhancement_potential"] = (
@@ -476,16 +500,22 @@ class RLVRPhase3AdvancedEnhancer:
     def calculate_advanced_metrics(self, enhancement_results: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Calculate comprehensive advanced metrics."""
         total_files = len(enhancement_results)
-        successful_enhancements = len([r for r in enhancement_results if not isinstance(r, Exception) and "error" not in r])
+        successful_enhancements = len([r for r in enhancement_results if not isinstance(
+            r, Exception) and "error" not in r])
 
         # Calculate aggregate scores
-        total_enterprise_score = sum(r.get("enterprise_score", 0.0) for r in enhancement_results if not isinstance(r, Exception))
-        total_ai_score = sum(r.get("ai_score", 0.0) for r in enhancement_results if not isinstance(r, Exception))
-        total_performance_score = sum(r.get("performance_score", 0.0) for r in enhancement_results if not isinstance(r, Exception))
+        total_enterprise_score = sum(r.get("enterprise_score", 0.0)
+                                     for r in enhancement_results if not isinstance(r, Exception))
+        total_ai_score = sum(r.get("ai_score", 0.0)
+                             for r in enhancement_results if not isinstance(r, Exception))
+        total_performance_score = sum(r.get("performance_score", 0.0)
+                                      for r in enhancement_results if not isinstance(r, Exception))
 
-        avg_enterprise_score = total_enterprise_score / max(1, successful_enhancements)
+        avg_enterprise_score = total_enterprise_score / \
+            max(1, successful_enhancements)
         avg_ai_score = total_ai_score / max(1, successful_enhancements)
-        avg_performance_score = total_performance_score / max(1, successful_enhancements)
+        avg_performance_score = total_performance_score / \
+            max(1, successful_enhancements)
 
         # Calculate compliance improvement
         base_compliance = 8.18  # From Phase 2
@@ -493,7 +523,8 @@ class RLVRPhase3AdvancedEnhancer:
         ai_improvement = avg_ai_score * 0.25  # 25% weight
         performance_improvement = avg_performance_score * 0.2  # 20% weight
 
-        new_compliance = base_compliance + enterprise_improvement + ai_improvement + performance_improvement
+        new_compliance = base_compliance + enterprise_improvement + \
+            ai_improvement + performance_improvement
 
         return {
             "total_files_processed": total_files,
@@ -527,11 +558,13 @@ class RLVRPhase3AdvancedEnhancer:
         }
 
         # Save report
-        report_file = self.phase3_dir / "reports" / f"phase3_advanced_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        report_file = self.phase3_dir / "reports" / \
+            f"phase3_advanced_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(report_file, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
         return report
+
 
 async def main():
     """Main execution function for Phase 3 Advanced Enhancement."""
@@ -550,16 +583,21 @@ async def main():
 
         summary = phase3_report.get("summary", {})
         print(f"Files Processed: {summary.get('files_processed', 0)}")
-        print(f"Enhancements Applied: {summary.get('enhancements_applied', 0)}")
-        print(f"Compliance Improvement: {summary.get('compliance_improvement', '0.00%')}")
-        print(f"New Compliance Rate: {summary.get('new_compliance_rate', '0.00%')}")
+        print(
+            f"Enhancements Applied: {summary.get('enhancements_applied', 0)}")
+        print(
+            f"Compliance Improvement: {summary.get('compliance_improvement', '0.00%')}")
+        print(
+            f"New Compliance Rate: {summary.get('new_compliance_rate', '0.00%')}")
         print(f"Target Achieved: {summary.get('target_achieved', False)}")
-        print(f"Improvement Factor: {summary.get('improvement_factor', '1.00x')}")
+        print(
+            f"Improvement Factor: {summary.get('improvement_factor', '1.00x')}")
 
         if summary.get("target_achieved", False):
             print("\nSUCCESS: Phase 3 target of 60%+ compliance achieved!")
         else:
-            print(f"\nPROGRESS: Phase 3 achieved {summary.get('new_compliance_rate', '0.00%')} compliance")
+            print(
+                f"\nPROGRESS: Phase 3 achieved {summary.get('new_compliance_rate', '0.00%')} compliance")
             print("Additional enhancement phases may be needed for 60%+ target")
 
         print("\nPhase 3 Advanced Enhancement System execution completed.")

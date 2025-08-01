@@ -7,12 +7,13 @@ Automated compliance validation for CI/CD pipelines.
 Fails builds if compliance drops below specified thresholds.
 """
 
+import argparse
 import json
 import sys
-import argparse
-from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any, Optional
+from pathlib import Path
+from typing import Any, Dict, Optional
+
 
 class RLVRComplianceChecker:
     """RLVR Compliance Score Checker for CI/CD."""

@@ -11,17 +11,18 @@ This script handles:
 - Development vs Production modes
 """
 
-import os
-import sys
 import json
-import time
-import subprocess
-import threading
+import os
 import shutil
+import subprocess
+import sys
+import threading
+import time
 from pathlib import Path
 from typing import Dict, List, Optional
-import requests
 from urllib.parse import urljoin
+
+import requests
 
 # Configuration
 BACKEND_URL = "http://127.0.0.1:5002"

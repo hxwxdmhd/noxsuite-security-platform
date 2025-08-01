@@ -3,8 +3,9 @@ Quick fix to remove Unicode characters from logging in NoxPanel
 This will make the server more stable on Windows terminals
 """
 
-import re
 import os
+import re
+
 
 def fix_unicode_in_file(file_path):
     """

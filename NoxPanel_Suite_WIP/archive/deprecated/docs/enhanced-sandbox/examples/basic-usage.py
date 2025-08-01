@@ -9,19 +9,15 @@ Isolation system. Each example is self-contained and can be run independently.
 import asyncio
 import time
 from datetime import datetime
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 # Import sandbox components
 try:
+    from plugin_framework_v2 import PluginLimitsV2, PluginPermissionsV2, SecurityLevel
     from plugin_sandbox_isolation_enhanced import (
         EnhancedPluginSandbox,
         IsolationConfig,
-        IsolationLevel
-    )
-    from plugin_framework_v2 import (
-        PluginLimitsV2,
-        PluginPermissionsV2,
-        SecurityLevel
+        IsolationLevel,
     )
     SANDBOX_AVAILABLE = True
 except ImportError:

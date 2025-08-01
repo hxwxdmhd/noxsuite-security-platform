@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -21,34 +22,34 @@ from datetime import datetime
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
+
 class SimpleMCPServer:
     """Simple MCP server for testing"""
-    
+
     def __init__(self, server_name: str):
         self.server_name = server_name
         self.running = True
-    
+
     async def run(self):
         """Main server loop"""
         logger.info(f"🚀 {self.server_name} MCP Server started")
-        
+
         try:
             heartbeat_count = 0
             while self.running:
                 await asyncio.sleep(10)  # 10 second heartbeat
                 heartbeat_count += 1
                 logger.info(f"💓 {self.server_name} heartbeat #{heartbeat_count}")
-                
+
                 # Stop after 6 heartbeats (1 minute) for testing
                 if heartbeat_count >= 6:
                     logger.info(f"🏁 {self.server_name} completing test run")
                     break
-                    
+
         except KeyboardInterrupt:
             logger.info(f"🛑 {self.server_name} shutting down...")
         except Exception as e:
@@ -56,6 +57,7 @@ class SimpleMCPServer:
             raise
         finally:
             logger.info(f"✅ {self.server_name} shutdown complete")
+
 
 async def main():
     """Main entry point"""
@@ -73,11 +75,12 @@ async def main():
             server_name = "CI/CD Monitor"
         else:
             server_name = "Simple MCP"
-        
+
         server = SimpleMCPServer(server_name)
         await server.run()
     else:
         logger.info("🔧 Simple MCP Server - use --server-mode to run as server")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

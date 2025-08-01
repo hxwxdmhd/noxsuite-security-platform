@@ -18,12 +18,12 @@ NoxPanel v3.0 - Natural Language Processing Module
 Processes user commands and maps them to script execution
 """
 
-import re
 import json
-import os
-from typing import Dict, List, Tuple, Optional, Any
-from difflib import SequenceMatcher
 import logging
+import os
+import re
+from difflib import SequenceMatcher
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 

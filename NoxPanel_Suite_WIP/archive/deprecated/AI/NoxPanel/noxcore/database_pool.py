@@ -18,15 +18,16 @@ NoxPanel v5.0 - Database Connection Pool Manager
 High-performance database connection management with pooling and context managers
 """
 
-import pymysql
-import threading
-import queue
 import logging
 import os
-from contextlib import contextmanager
-from typing import Optional, Generator
-from pathlib import Path
+import queue
+import threading
 import time
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Generator, Optional
+
+import pymysql
 
 logger = logging.getLogger(__name__)
 

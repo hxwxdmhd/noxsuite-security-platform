@@ -3,14 +3,15 @@ Database Migration System for NoxGuard---NoxPanel
 Handles schema versioning and automated migrations
 """
 
-import pymysql
-import logging
 import json
+import logging
 import os
-from pathlib import Path
-from datetime import datetime, timezone
-from typing import List, Dict, Any, Optional
 from contextlib import contextmanager
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import pymysql
 
 logger = logging.getLogger(__name__)
 
@@ -105,6 +106,7 @@ class InitialMigration(Migration):
     """
         """Create initial schema"""
         from .database import NoxDatabase
+
         # The schema is already created by NoxDatabase.init_database()
         # This migration just records that it was applied
         pass

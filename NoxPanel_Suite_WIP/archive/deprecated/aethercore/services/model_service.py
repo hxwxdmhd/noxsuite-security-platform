@@ -10,15 +10,22 @@ import json
 import logging
 import time
 from datetime import datetime
-from typing import Dict, List, Any, Optional, Union
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
+
+import numpy as np
+import onnxruntime as ort
 import psutil
 import torch
-import numpy as np
-from transformers import AutoTokenizer, AutoModel, AutoConfig
-import onnxruntime as ort
-from pathlib import Path
+from transformers import AutoConfig, AutoModel, AutoTokenizer
 
-from .model_metadata import ModelMetadata, ModelInstance, ModelType, ModelStatus, ModelFormat
+from .model_metadata import (
+    ModelFormat,
+    ModelInstance,
+    ModelMetadata,
+    ModelStatus,
+    ModelType,
+)
 
 logger = logging.getLogger(__name__)
 

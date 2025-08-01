@@ -13,23 +13,23 @@ import os
 import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 # Import sandbox components
 try:
+    from plugin_framework_v2 import (
+        PluginLimitsV2,
+        PluginMetadata,
+        PluginPermissionsV2,
+        SecurityLevel,
+    )
     from plugin_sandbox_isolation_enhanced import (
         EnhancedPluginSandbox,
         IsolationConfig,
         IsolationLevel,
-        SecurityEnforcer,
         ResourceMonitor,
-        SandboxEnvironment
-    )
-    from plugin_framework_v2 import (
-        PluginLimitsV2,
-        PluginPermissionsV2,
-        SecurityLevel,
-        PluginMetadata
+        SandboxEnvironment,
+        SecurityEnforcer,
     )
     SANDBOX_AVAILABLE = True
 except ImportError:
@@ -119,7 +119,7 @@ async def example_1_custom_security_policy():
                 import json
                 import math
                 from datetime import datetime
-                
+
                 # Process data securely
                 processed_data = {
                     "input_keys": list(data.keys()),
@@ -588,7 +588,7 @@ async def example_5_environment_customization():
                 import os
                 import tempfile
                 from pathlib import Path
-                
+
                 # Access custom environment variables
                 plugin_mode = os.environ.get("PLUGIN_MODE", "UNKNOWN")
                 max_iterations = int(os.environ.get("MAX_ITERATIONS", "1000"))
@@ -735,8 +735,8 @@ async def example_6_configuration_profiles():
     def profile_test_plugin(environment, profile_name: str):
         """Plugin to test different configuration profiles"""
         
-        import time
         import os
+        import time
         
         start_time = time.time()
         

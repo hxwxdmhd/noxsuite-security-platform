@@ -12,20 +12,20 @@ VALIDATION CHAIN:
 5. Validation: Continuous Chain-of-Thought integrity verification
 """
 
-import asyncio
-import logging
-import json
-import time
-import sys
-import traceback
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, Set
-from dataclasses import dataclass, asdict
 import ast
-import re
+import asyncio
 import hashlib
+import json
+import logging
+import re
 import subprocess
+import sys
+import time
+import traceback
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Dict, List, Optional, Set, Tuple
 
 # Configure logging for validator agent
 logging.basicConfig(

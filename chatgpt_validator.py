@@ -1,3 +1,9 @@
+from emergency_copilot_fix import throttler
+import requests
+from datetime import datetime
+import time
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,14 +13,6 @@ logger = get_logger(__name__)
 ChatGPT Cross-Validation Module for NoxSuite MCP Agent
 Provides external validation of system audits
 """
-import json
-import os
-import time
-from datetime import datetime
-
-import requests
-
-from emergency_copilot_fix import throttler
 
 
 class ChatGPTValidator:
@@ -133,7 +131,8 @@ def validate_latest_audit():
     audit_data["chatgpt_validation"] = validation_result
 
     # Save updated audit with validation
-    validated_file = latest_file.replace("autonomous_audit_", "validated_audit_")
+    validated_file = latest_file.replace(
+        "autonomous_audit_", "validated_audit_")
     with open(validated_file, "w") as f:
         json.dump(audit_data, f, indent=2)
 

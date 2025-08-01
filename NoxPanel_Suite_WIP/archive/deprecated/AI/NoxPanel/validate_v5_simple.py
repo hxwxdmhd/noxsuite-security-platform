@@ -3,10 +3,10 @@ NoxPanel v5.0 - Simple System Validation
 Quick validation of Phase 2A critical fixes
 """
 
+import logging
 import os
 import sys
 import time
-import logging
 from pathlib import Path
 
 # Add parent directory to path
@@ -172,7 +172,7 @@ def test_database_pool():
 def test_rate_limiter():
     """Test rate limiting system"""
     try:
-        from noxcore.rate_limiter import get_rate_limiter, RateLimitRule
+        from noxcore.rate_limiter import RateLimitRule, get_rate_limiter
 
         limiter = get_rate_limiter()
 

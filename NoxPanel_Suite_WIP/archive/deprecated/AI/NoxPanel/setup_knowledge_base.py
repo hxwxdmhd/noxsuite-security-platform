@@ -3,18 +3,21 @@ NoxPanel v5.0 Knowledge Management Setup Script
 Initializes the knowledge base and creates sample data for testing
 """
 
-import os
-import sys
 import json
 import logging
-from pathlib import Path
+import os
+import sys
 from datetime import datetime
+from pathlib import Path
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from noxcore.knowledge_manager import (
-    KnowledgeManager, KnowledgeItem, ContentType, ScriptLanguage
+    ContentType,
+    KnowledgeItem,
+    KnowledgeManager,
+    ScriptLanguage,
 )
 
 logging.basicConfig(level=logging.INFO)

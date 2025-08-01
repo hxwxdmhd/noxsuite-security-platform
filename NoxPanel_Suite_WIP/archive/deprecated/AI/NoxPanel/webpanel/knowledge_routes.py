@@ -3,17 +3,29 @@ NoxPanel v5.0 - Knowledge Management Web Interface
 Flask Blueprint for knowledge base management and documentation
 """
 
-from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for, current_app
-from werkzeug.utils import secure_filename
-import os
 import json
 import logging
+import os
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
-from noxcore.knowledge_manager import (
-    get_knowledge_manager, KnowledgeItem, ContentType, ScriptLanguage
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
 )
+from noxcore.knowledge_manager import (
+    ContentType,
+    KnowledgeItem,
+    ScriptLanguage,
+    get_knowledge_manager,
+)
+from werkzeug.utils import secure_filename
 
 logger = logging.getLogger(__name__)
 

@@ -9,6 +9,7 @@ Live push notifications to dashboard/alerting channels.
 import json
 from datetime import datetime
 
+
 class RLVRGuardianWebhook:
     def __init__(self, webhook_url: str = None):
         self.webhook_url = webhook_url or "http://localhost:8080/webhook"

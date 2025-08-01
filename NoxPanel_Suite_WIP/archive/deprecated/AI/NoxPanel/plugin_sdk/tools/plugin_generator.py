@@ -4,11 +4,12 @@ NoxPanel Plugin Generator
 Generates new plugin projects from templates
 """
 
-import os
-import json
 import argparse
-from pathlib import Path
+import json
+import os
 import shutil
+from pathlib import Path
+
 
 def generate_plugin(name: str, category: str, author: str, description: str):
     """Generate a new plugin from template"""

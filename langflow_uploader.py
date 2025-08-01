@@ -1,3 +1,9 @@
+import requests
+from typing import Dict, List
+from datetime import datetime
+import time
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,14 +13,6 @@ logger = get_logger(__name__)
 Langflow Workflow Uploader
 Uploads all NoxSuite workflows to Langflow platform
 """
-
-import json
-import os
-import time
-from datetime import datetime
-from typing import Dict, List
-
-import requests
 
 
 class LangflowUploader:
@@ -36,7 +34,8 @@ class LangflowUploader:
                 data = response.json()
                 return data.get("flows", [])
             else:
-                logger.info(f"⚠️ Could not fetch existing flows: {response.status_code}")
+                logger.info(
+                    f"⚠️ Could not fetch existing flows: {response.status_code}")
                 return []
         except Exception as e:
             logger.info(f"⚠️ Error fetching flows: {e}")
@@ -131,7 +130,8 @@ class LangflowUploader:
 
                     # Add Langflow node metadata
                     node["data"]["langflow_id"] = node["id"]
-                    node["data"]["display_name"] = node["id"].replace("_", " ").title()
+                    node["data"]["display_name"] = node["id"].replace(
+                        "_", " ").title()
 
                     # Ensure position data
                     if "position" not in node:
@@ -163,7 +163,8 @@ class LangflowUploader:
         """Upload all workflows to Langflow"""
         logger.info("🚀 LANGFLOW WORKFLOW UPLOADER")
         logger.info("=" * 60)
-        logger.info(f"🕐 Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        logger.info(
+            f"🕐 Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
         # Get list of workflow files
         workflow_files = [
@@ -188,7 +189,8 @@ class LangflowUploader:
             if response.status_code == 200:
                 logger.info("✅ Langflow: Connected and healthy")
             else:
-                logger.info(f"⚠️ Langflow health check failed: {response.status_code}")
+                logger.info(
+                    f"⚠️ Langflow health check failed: {response.status_code}")
                 return False
         except Exception as e:
             logger.info(f"❌ Cannot connect to Langflow: {e}")
@@ -197,7 +199,8 @@ class LangflowUploader:
         # Get existing flows
         logger.info("\n2. Checking existing flows...")
         existing_flows = self.get_existing_flows()
-        logger.info(f"📊 Found {len(existing_flows)} existing flows in Langflow")
+        logger.info(
+            f"📊 Found {len(existing_flows)} existing flows in Langflow")
 
         # Update workflow metadata
         logger.info("\n3. Updating workflow metadata...")
@@ -283,12 +286,14 @@ class LangflowUploader:
         if successful_uploads == total_workflows:
             logger.info("\n🎉 ALL WORKFLOWS SUCCESSFULLY UPLOADED TO LANGFLOW!")
             logger.info("🌐 Access your workflows at: http://localhost:7860")
-            logger.info("🔧 Login credentials: noxsuite_admin / noxsuite_secure_2024")
+            logger.info(
+                "🔧 Login credentials: noxsuite_admin / noxsuite_secure_2024")
         else:
             logger.info(
                 f"\n⚠️ {total_workflows - successful_uploads} workflows need attention"
             )
-            logger.info("💡 Check the upload report for detailed error information")
+            logger.info(
+                "💡 Check the upload report for detailed error information")
 
         return successful_uploads == total_workflows
 

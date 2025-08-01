@@ -6,23 +6,24 @@ Quick database setup for immediate sprint execution when Docker is unavailable.
 Creates production-ready SQLite database with Alembic migrations.
 """
 
-import os
-import sys
 import json
+import os
 import sqlite3
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
+
 class NoxSuiteSQLiteSetup:
     """SQLite database setup for immediate development"""
-    
+
     def __init__(self):
         self.base_dir = Path(__file__).parent
         self.db_dir = self.base_dir / "database"
         self.models_dir = self.base_dir / "backend" / "models"
         self.alembic_dir = self.base_dir / "alembic"
-        
+
     def setup_directories(self):
         """Create necessary directories"""
         print("📁 Creating directory structure...")
@@ -30,11 +31,11 @@ class NoxSuiteSQLiteSetup:
         for dir_path in dirs:
             dir_path.mkdir(parents=True, exist_ok=True)
             print(f"   ✅ {dir_path}")
-    
+
     def create_database_models(self):
         """Create SQLAlchemy models"""
         print("🗃️ Creating database models...")
-        
+
         # Database connection
         db_init = '''"""Database initialization and connection management"""
 from sqlalchemy import create_engine, MetaData
@@ -63,7 +64,7 @@ def create_tables():
     Base.metadata.create_all(bind=engine)
     print("✅ Database tables created successfully")
 '''
-        
+
         # User model
         user_model = '''"""User model with MFA and RBAC support"""
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, ForeignKey
@@ -169,22 +170,22 @@ class AuditLog(Base):
     # Relationships
     user = relationship("User", back_populates="audit_logs")
 '''
-        
+
         # Write files
         with open(self.models_dir / "__init__.py", "w") as f:
             f.write(db_init)
-        
+
         with open(self.models_dir / "user.py", "w") as f:
             f.write(user_model)
-        
+
         print("   ✅ Database models created")
-    
+
     def setup_alembic(self):
         """Initialize Alembic for migrations"""
         print("🔄 Setting up Alembic migrations...")
-        
+
         # Alembic configuration
-        alembic_ini = '''[alembic]
+        alembic_ini = """[alembic]
 script_location = alembic
 prepend_sys_path = .
 version_path_separator = os
@@ -225,14 +226,14 @@ formatter = generic
 [formatter_generic]
 format = %(levelname)-5.5s [%(name)s] %(message)s
 datefmt = %H:%M:%S
-'''
-        
+"""
+
         # Create alembic.ini
         with open(self.base_dir / "alembic.ini", "w") as f:
             f.write(alembic_ini)
-        
+
         # Create alembic env.py
-        env_py = '''from logging.config import fileConfig
+        env_py = """from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 import sys
@@ -280,16 +281,17 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
-'''
-        
+"""
+
         # Create alembic directory structure
         (self.alembic_dir / "versions").mkdir(exist_ok=True)
-        
+
         with open(self.alembic_dir / "env.py", "w") as f:
             f.write(env_py)
-        
+
         with open(self.alembic_dir / "script.py.mako", "w") as f:
-            f.write('''"""${message}
+            f.write(
+                '''"""${message}
 
 Revision ID: ${up_revision}
 Revises: ${down_revision | comma,n}
@@ -311,108 +313,136 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     ${downgrades if downgrades else "pass"}
-''')
-        
+'''
+            )
+
         print("   ✅ Alembic configuration created")
-    
+
     def create_initial_migration(self):
         """Create initial database migration"""
         print("📝 Creating initial migration...")
-        
+
         try:
             # Install alembic if not available
-            subprocess.run([sys.executable, "-m", "pip", "install", "alembic", "sqlalchemy", "bcrypt"], 
-                          check=True, capture_output=True)
-            
+            subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "pip",
+                    "install",
+                    "alembic",
+                    "sqlalchemy",
+                    "bcrypt",
+                ],
+                check=True,
+                capture_output=True,
+            )
+
             # Initialize alembic
-            result = subprocess.run([sys.executable, "-m", "alembic", "init", "alembic"], 
-                                  capture_output=True, text=True)
-            
+            result = subprocess.run(
+                [sys.executable, "-m", "alembic", "init", "alembic"],
+                capture_output=True,
+                text=True,
+            )
+
             # Create initial migration
-            result = subprocess.run([sys.executable, "-m", "alembic", "revision", "--autogenerate", 
-                                   "-m", "Initial migration"], capture_output=True, text=True)
-            
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "alembic",
+                    "revision",
+                    "--autogenerate",
+                    "-m",
+                    "Initial migration",
+                ],
+                capture_output=True,
+                text=True,
+            )
+
             print("   ✅ Initial migration created")
-            
+
         except subprocess.CalledProcessError as e:
             print(f"   ⚠️ Migration setup skipped: {e}")
-            print("   💡 Run manually: alembic revision --autogenerate -m 'Initial migration'")
-    
+            print(
+                "   💡 Run manually: alembic revision --autogenerate -m 'Initial migration'"
+            )
+
     def create_database(self):
         """Create SQLite database and tables"""
         print("🗄️ Creating SQLite database...")
-        
+
         # Create database file
         db_path = self.db_dir / "noxsuite.db"
-        
+
         # Import and create tables
         try:
             sys.path.append(str(self.base_dir))
             from backend.models.user import Base, engine
+
             Base.metadata.create_all(bind=engine)
-            
+
             print(f"   ✅ Database created: {db_path}")
             print(f"   📊 Tables: users, roles, user_roles, user_sessions, audit_logs")
-            
+
         except Exception as e:
             print(f"   ⚠️ Direct table creation failed: {e}")
             print("   💡 Tables will be created when first accessed")
-    
+
     def create_sample_data(self):
         """Create sample admin user and roles"""
         print("👤 Creating sample data...")
-        
+
         try:
             sys.path.append(str(self.base_dir))
-            from backend.models.user import User, Role, UserRole, SessionLocal
-            
+            from backend.models.user import Role, SessionLocal, User, UserRole
+
             db = SessionLocal()
-            
+
             # Create admin role
             admin_role = Role(
                 name="admin",
                 description="System Administrator",
-                permissions='["users:read", "users:write", "roles:read", "roles:write", "audit:read"]'
+                permissions='["users:read", "users:write", "roles:read", "roles:write", "audit:read"]',
             )
             db.add(admin_role)
-            
+
             # Create user role
             user_role = Role(
                 name="user",
                 description="Standard User",
-                permissions='["profile:read", "profile:write"]'
+                permissions='["profile:read", "profile:write"]',
             )
             db.add(user_role)
-            
+
             # Create admin user
             admin_user = User(
                 username="admin",
                 email="admin@noxsuite.local",
                 password_hash=User.hash_password("Admin123!"),
                 is_active=True,
-                is_verified=True
+                is_verified=True,
             )
             db.add(admin_user)
-            
+
             db.commit()
-            
+
             # Assign admin role
             user_role_assignment = UserRole(
-                user_id=admin_user.id,
-                role_id=admin_role.id
+                user_id=admin_user.id, role_id=admin_role.id
             )
             db.add(user_role_assignment)
             db.commit()
-            
+
             print("   ✅ Admin user created: admin@noxsuite.local / Admin123!")
             print("   ✅ Roles created: admin, user")
-            
+
             db.close()
-            
+
         except Exception as e:
             print(f"   ⚠️ Sample data creation failed: {e}")
             print("   💡 Create manually after first application run")
-    
+
     def generate_report(self):
         """Generate setup completion report"""
         report = {
@@ -424,7 +454,7 @@ def downgrade() -> None:
                 "Role (with permissions)",
                 "UserRole (many-to-many)",
                 "UserSession (JWT sessions)",
-                "AuditLog (security logging)"
+                "AuditLog (security logging)",
             ],
             "features": [
                 "Password hashing with bcrypt",
@@ -432,38 +462,42 @@ def downgrade() -> None:
                 "RBAC permissions system",
                 "Session management",
                 "Audit logging",
-                "Alembic migrations"
+                "Alembic migrations",
             ],
             "admin_credentials": {
                 "username": "admin",
                 "email": "admin@noxsuite.local",
                 "password": "Admin123!",
-                "note": "Change password on first login"
+                "note": "Change password on first login",
             },
             "next_steps": [
                 "Start FastAPI application",
                 "Test authentication endpoints",
                 "Configure MFA for admin user",
                 "Create additional users/roles",
-                "Set up backup strategy"
-            ]
+                "Set up backup strategy",
+            ],
         }
-        
-        report_path = self.base_dir / f"database_setup_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+
+        report_path = (
+            self.base_dir
+            / f"database_setup_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        )
         with open(report_path, "w") as f:
             json.dump(report, f, indent=2)
-        
+
         print(f"📋 Setup report saved: {report_path}")
         return report
+
 
 def main():
     """Main setup execution"""
     print("NoxSuite SQLite Database Setup")
     print("================================")
     print(f"[{datetime.now().strftime('%H:%M:%S')}] Starting database setup...")
-    
+
     setup = NoxSuiteSQLiteSetup()
-    
+
     try:
         setup.setup_directories()
         setup.create_database_models()
@@ -471,24 +505,25 @@ def main():
         setup.create_initial_migration()
         setup.create_database()
         setup.create_sample_data()
-        
+
         report = setup.generate_report()
-        
-        print("\n" + "="*50)
+
+        print("\n" + "=" * 50)
         print("✅ DATABASE SETUP COMPLETE!")
-        print("="*50)
+        print("=" * 50)
         print(f"📊 Database: {setup.db_dir / 'noxsuite.db'}")
         print(f"🔑 Admin Login: admin@noxsuite.local / Admin123!")
         print(f"📚 Models: User, Role, UserRole, UserSession, AuditLog")
         print(f"🛡️ Features: JWT, MFA, RBAC, Audit Logging")
         print("\n🚀 Ready for FastAPI integration!")
-        
+
         return True
-        
+
     except Exception as e:
         print(f"\n❌ Setup failed: {e}")
         print("💡 Check error details and retry")
         return False
+
 
 if __name__ == "__main__":
     success = main()

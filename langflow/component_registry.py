@@ -1,6 +1,8 @@
-from NoxPanel.noxcore.utils.logging_config import get_logger
-
+from typing import Any, Dict, List, Optional
+import importlib.util
 import logging
+
+from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = logging.getLogger(__name__)
 logger = get_logger(__name__)
@@ -10,8 +12,6 @@ NoxSuite Custom Components Registration System for Langflow
 Handles dynamic loading and registration of custom NoxSuite components
 """
 
-import importlib.util
-from typing import Any, Dict, List, Optional
 
 class NoxSuiteComponentRegistry:
     """Registry for managing custom NoxSuite components in Langflow"""
@@ -27,7 +27,8 @@ class NoxSuiteComponentRegistry:
         """Discover all NoxSuite components in the components directory"""
         components = []
         if not os.path.exists(self.components_dir):
-            logger.info(f"Components directory not found: {self.components_dir}")
+            logger.info(
+                f"Components directory not found: {self.components_dir}")
             return components
 
         for file in os.listdir(self.components_dir):
@@ -40,7 +41,8 @@ class NoxSuiteComponentRegistry:
     def load_component(self, component_name: str) -> Optional[Any]:
         """Load a specific component module"""
         try:
-            component_path = os.path.join(self.components_dir, f"{component_name}.py")
+            component_path = os.path.join(
+                self.components_dir, f"{component_name}.py")
             if not os.path.exists(component_path):
                 logger.info(f"Component file not found: {component_path}")
                 return None
@@ -78,7 +80,8 @@ class NoxSuiteComponentRegistry:
             return True
 
         except Exception as e:
-            logger.info(f"❌ Error registering component {component_name}: {str(e)}")
+            logger.info(
+                f"❌ Error registering component {component_name}: {str(e)}")
             return False
 
     def auto_register_all(self) -> Dict[str, bool]:
@@ -104,7 +107,8 @@ class NoxSuiteComponentRegistry:
                         results[component_name] = success
                         break
                 else:
-                    logger.info(f"⚠️ No valid component class found in {component_name}")
+                    logger.info(
+                        f"⚠️ No valid component class found in {component_name}")
                     results[component_name] = False
             else:
                 results[component_name] = False
@@ -172,6 +176,7 @@ class NoxSuiteComponentRegistry:
             logger.info(f"❌ Error saving registry state: {str(e)}")
             return False
 
+
 def initialize_noxsuite_components() -> NoxSuiteComponentRegistry:
     """Initialize and register all NoxSuite components for Langflow"""
     logger.info("🚀 Initializing NoxSuite Component Registry...")
@@ -187,7 +192,8 @@ def initialize_noxsuite_components() -> NoxSuiteComponentRegistry:
     total = len(registration_results)
 
     logger.info(f"\n📊 Registration Summary:")
-    logger.info(f"   ✅ Successfully registered: {successful}/{total} components")
+    logger.info(
+        f"   ✅ Successfully registered: {successful}/{total} components")
 
     for component_name, success in registration_results.items():
         status = "✅" if success else "❌"
@@ -198,9 +204,11 @@ def initialize_noxsuite_components() -> NoxSuiteComponentRegistry:
 
     logger.info(f"\n🎯 NoxSuite Component Registry initialized successfully!")
     logger.info(f"   📁 Components directory: {registry.components_dir}")
-    logger.info(f"   🔧 Registered components: {len(registry.registered_components)}")
+    logger.info(
+        f"   🔧 Registered components: {len(registry.registered_components)}")
 
     return registry
+
 
 def get_component_documentation() -> str:
     """Generate comprehensive documentation for all NoxSuite components"""
@@ -224,6 +232,7 @@ def get_component_documentation() -> str:
 
     return "\n".join(docs)
 
+
 if __name__ == "__main__":
     # Import required dependencies
     try:
@@ -244,7 +253,8 @@ if __name__ == "__main__":
 
     # Generate documentation
     documentation = get_component_documentation()
-    docs_file = os.path.join(registry.components_dir, "COMPONENTS_DOCUMENTATION.md")
+    docs_file = os.path.join(registry.components_dir,
+                             "COMPONENTS_DOCUMENTATION.md")
 
     try:
         with open(docs_file, "w") as f:

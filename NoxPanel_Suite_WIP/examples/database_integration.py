@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 """
@@ -6,18 +7,21 @@ Example usage and integration code for NoxGuard Database System
 Demonstrates how to integrate the database with existing NoxPanel components
 """
 
-import os
-import sys
 import json
 import logging
+import os
+import sys
 from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
 
 # Add the project root to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from NoxPanel.noxcore.database_service import get_database_service, close_database_service
 from NoxPanel.noxcore.database_admin import DatabaseAdmin
+from NoxPanel.noxcore.database_service import (
+    close_database_service,
+    get_database_service,
+)
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -308,8 +312,8 @@ def example_usage():
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
     """Example usage of the integrated database system"""
-    import tempfile
     import shutil
+    import tempfile
     
     temp_dir = tempfile.mkdtemp()
     try:

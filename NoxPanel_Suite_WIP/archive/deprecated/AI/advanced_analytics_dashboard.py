@@ -7,23 +7,27 @@ Advanced system monitoring, performance analytics, and predictive insights
 import asyncio
 import json
 import logging
-import time
-import threading
-import psutil
 import statistics
+import threading
+import time
+from collections import defaultdict, deque
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, asdict
 from enum import Enum
-from collections import deque, defaultdict
-import pymysql
+from typing import Any, Dict, List, Optional, Tuple
+
 import matplotlib
+import psutil
+import pymysql
+
 matplotlib.use('Agg')  # Non-interactive backend
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import io
 import base64
+import io
+
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 from flask import jsonify
+
 
 class MetricType(Enum):
     SYSTEM = "system"

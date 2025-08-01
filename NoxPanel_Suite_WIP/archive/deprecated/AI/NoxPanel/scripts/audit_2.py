@@ -7,14 +7,15 @@ This audit validates authentication, authorization, and basic security hardening
 Upon completion with Gates 1-2, unlocks: Database systems, Authentication APIs, Basic endpoints.
 """
 
-import os
-import sys
 import json
-import time
+import os
 import subprocess
-from pathlib import Path
+import sys
+import time
 from datetime import datetime
-from typing import Dict, List, Tuple, Any
+from pathlib import Path
+from typing import Any, Dict, List, Tuple
+
 
 class AuditGate2:
     """Basic security validation audit system"""

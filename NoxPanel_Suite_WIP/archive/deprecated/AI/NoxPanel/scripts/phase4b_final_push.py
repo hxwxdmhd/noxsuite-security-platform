@@ -7,11 +7,11 @@ Quick fix for the remaining performance testing issues to achieve 95+ score.
 Focuses on resolving the Flask app variable scope issues in performance testing.
 """
 
+import asyncio
+import logging
 import os
 import sys
 import time
-import asyncio
-import logging
 from pathlib import Path
 
 # Setup logging
@@ -140,7 +140,7 @@ if __name__ == "__main__":
         try:
             sys.path.insert(0, str(self.noxpanel_root))
             from webpanel.app_v5 import create_app
-            
+
             # Create app instance properly
             app = create_app()
             

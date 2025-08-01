@@ -5,10 +5,11 @@ One-click setup and launch for the complete system
 """
 
 import os
-import sys
 import subprocess
+import sys
 import time
 from pathlib import Path
+
 
 def print_header():
     """

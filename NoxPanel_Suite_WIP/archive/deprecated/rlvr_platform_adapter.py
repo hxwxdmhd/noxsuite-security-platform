@@ -13,16 +13,17 @@ Adaptive platform support for:
 Automatically detects and adapts to the current environment.
 """
 
-import os
-import sys
 import json
-import platform
-import subprocess
-import shutil
-from pathlib import Path
-from typing import Dict, List, Optional, Any
-from datetime import datetime
 import logging
+import os
+import platform
+import shutil
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 
 class PlatformAdapter:
     """Platform-specific adaptation system."""
@@ -33,7 +34,8 @@ class PlatformAdapter:
         self.platform_info = self.detect_platform()
         self.setup_logging()
 
-        print(f"Platform Adapter initialized for: {self.platform_info['platform']}")
+        print(
+            f"Platform Adapter initialized for: {self.platform_info['platform']}")
         print(f"Environment: {self.platform_info['environment']}")
         print(f"Container: {self.platform_info['container']}")
 
@@ -42,7 +44,8 @@ class PlatformAdapter:
         log_dir = self.workspace_path / "envs" / "logs"
         log_dir.mkdir(parents=True, exist_ok=True)
 
-        log_file = log_dir / f"platform_adapter_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        log_file = log_dir / \
+            f"platform_adapter_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
         logging.basicConfig(
             level=logging.INFO,
@@ -386,7 +389,8 @@ services:
             active_config.update(configs[cloud_provider])
 
         # Save platform-specific configuration
-        config_file = self.workspace_path / "envs" / f"{current_platform}_config.json"
+        config_file = self.workspace_path / "envs" / \
+            f"{current_platform}_config.json"
         with open(config_file, 'w', encoding='utf-8') as f:
             json.dump(active_config, f, indent=2)
 
@@ -455,6 +459,7 @@ services:
                 import yaml
                 yaml.dump(config["service"], f, default_flow_style=False)
 
+
 def main():
     """Main execution function."""
     try:
@@ -489,6 +494,7 @@ def main():
     except Exception as e:
         print(f"Platform adapter error: {str(e)}")
         logging.error(f"Platform adapter error: {str(e)}")
+
 
 if __name__ == "__main__":
     main()

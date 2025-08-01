@@ -5,13 +5,15 @@
 Intelligent auto-scaling service for Docker containers based on metrics.
 """
 
-import docker
-import requests
-import time
+import json
 import logging
 import os
+import time
 from datetime import datetime
-import json
+
+import requests
+
+import docker
 
 # Configure logging
 logging.basicConfig(

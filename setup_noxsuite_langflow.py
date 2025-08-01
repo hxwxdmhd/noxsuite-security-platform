@@ -1,3 +1,9 @@
+from pathlib import Path
+import sys
+import subprocess
+import shutil
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -6,13 +12,6 @@ logger = get_logger(__name__)
 NoxSuite Langflow Integration Setup Script
 Configures Langflow with NoxSuite custom components and workflows
 """
-
-import json
-import os
-import shutil
-import subprocess
-import sys
-from pathlib import Path
 
 
 class NoxSuiteLangflowSetup:
@@ -213,7 +212,8 @@ networks:
         with open(compose_file, "w") as f:
             f.write(compose_content)
 
-        logger.info(f"DOCKER: Docker Compose for Langflow created: {compose_file}")
+        logger.info(
+            f"DOCKER: Docker Compose for Langflow created: {compose_file}")
         return compose_file
 
     def create_startup_script(self):
@@ -247,13 +247,15 @@ networks:
             self.create_startup_script()
             self.create_powershell_startup()
 
-            logger.info("\nSUCCESS: NoxSuite Langflow Integration Setup Complete!")
+            logger.info(
+                "\nSUCCESS: NoxSuite Langflow Integration Setup Complete!")
             logger.info("\nNEXT STEPS:")
             logger.info(
                 "   1. Run: 'Start-NoxSuiteLangflow.ps1' (Windows) or './start_noxsuite_langflow.sh' (Linux/Mac)"
             )
             logger.info("   2. Access Langflow UI at: http://localhost:7860")
-            logger.info("   3. Login with: noxsuite_admin / noxsuite_secure_2024")
+            logger.info(
+                "   3. Login with: noxsuite_admin / noxsuite_secure_2024")
             logger.info("   4. Import workflow templates from langflow/flows/")
             logger.info("   5. Start building enhanced MCP workflows!")
 

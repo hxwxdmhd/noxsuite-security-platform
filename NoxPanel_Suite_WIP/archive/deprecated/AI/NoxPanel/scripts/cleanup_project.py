@@ -7,11 +7,12 @@ Safely organizes unnecessary files into logical archive directories
 without disrupting the core system functionality.
 """
 
+import json
 import os
 import shutil
-from pathlib import Path
 from datetime import datetime
-import json
+from pathlib import Path
+
 
 class ProjectCleaner:
     """Organizes project files into logical structure"""

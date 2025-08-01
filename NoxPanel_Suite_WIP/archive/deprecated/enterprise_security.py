@@ -25,40 +25,41 @@ Version: 11.0.0
 Sub-Milestone: 4/5 - Enterprise Security & Compliance
 """
 
-import os
-import sys
-import time
-import json
 import asyncio
-import logging
+import base64
 import hashlib
 import hmac
+import json
+import logging
+import os
 import secrets
-import base64
+import ssl
+import sys
+import time
+import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional, Set, Tuple, Union
-from enum import Enum
-import uuid
-import ssl
-import jwt
 from datetime import datetime, timedelta
+from enum import Enum
+from io import BytesIO
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
+
 import bcrypt
 import cryptography
-from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+import jwt
 import ldap3
-import sqlalchemy
-from sqlalchemy import create_engine, Column, String, DateTime, Boolean, Text, Integer
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-import redis
-from passlib.context import CryptContext
 import pyotp
 import qrcode
-from io import BytesIO
+import redis
+import sqlalchemy
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding, rsa
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from passlib.context import CryptContext
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 
 class AuthenticationMethod(Enum):

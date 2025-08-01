@@ -89,6 +89,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class AIModelConfig:
     """Configuration for AI model providers"""
@@ -100,6 +101,7 @@ class AIModelConfig:
     temperature: float = 0.7
     enabled: bool = True
 
+
 @dataclass
 class NetworkConfig:
     """Advanced network scanning and monitoring configuration"""
@@ -110,7 +112,8 @@ class NetworkConfig:
     topology_mapping: bool = True
     bandwidth_monitoring: bool = True
     deep_scan_enabled: bool = True
-    
+
+
 @dataclass
 class AppConfig:
     """Ultimate app configuration v8.0"""
@@ -120,48 +123,52 @@ class AppConfig:
     host: str = "127.0.0.1"
     port: int = 5000
     secret_key: str = "nox_ultimate_secret_v8_ai_network"
-    
+
     # Enhanced AI settings
     ai_models: List[AIModelConfig] = None
     ai_analysis_enabled: bool = True
     voice_interface: bool = True
     conversation_history: bool = True
-    
+
     # Enhanced network settings
     network_config: NetworkConfig = None
-    
+
     # Enhanced security settings
     security_level: str = "maximum"
     ai_threat_detection: bool = True
     automated_response: bool = True
-    
+
     def __post_init__(self):
         if self.ai_models is None:
             self.ai_models = [
-                AIModelConfig("ollama", "llama3.2", endpoint="http://localhost:11434"),
-                AIModelConfig("ollama", "codellama", endpoint="http://localhost:11434"),
-                AIModelConfig("ollama", "mistral", endpoint="http://localhost:11434"),
+                AIModelConfig("ollama", "llama3.2",
+                              endpoint="http://localhost:11434"),
+                AIModelConfig("ollama", "codellama",
+                              endpoint="http://localhost:11434"),
+                AIModelConfig("ollama", "mistral",
+                              endpoint="http://localhost:11434"),
             ]
         if self.network_config is None:
             self.network_config = NetworkConfig()
 
+
 class AdvancedAIManager:
     """Advanced AI integration manager supporting multiple LLM providers"""
-    
+
     def __init__(self, config: AppConfig):
         self.config = config
         self.models = {}
         self.conversation_history = []
         self.initialize_models()
-        
+
     def initialize_models(self):
         """Initialize all configured AI models"""
         logger.info("🧠 Initializing AI models...")
-        
+
         for model_config in self.config.ai_models:
             if not model_config.enabled:
                 continue
-                
+
             try:
                 if model_config.provider == "ollama":
                     self.models[f"{model_config.provider}_{model_config.model_name}"] = {
@@ -182,12 +189,13 @@ class AdvancedAIManager:
                         'client': anthropic.Anthropic(api_key=model_config.api_key),
                         'status': 'ready'
                     }
-                    
+
             except Exception as e:
-                logger.warning(f"Failed to initialize {model_config.provider}_{model_config.model_name}: {e}")
-                
+                logger.warning(
+                    f"Failed to initialize {model_config.provider}_{model_config.model_name}: {e}")
+
         logger.info(f"✅ Initialized {len(self.models)} AI models")
-        
+
     def _create_ollama_client(self, config: AIModelConfig):
         """Create Ollama client"""
         return {
@@ -195,15 +203,15 @@ class AdvancedAIManager:
             'model': config.model_name,
             'timeout': 30
         }
-        
+
     async def query_model(self, model_key: str, prompt: str, context: str = None) -> Dict[str, Any]:
         """Query a specific AI model"""
         if model_key not in self.models:
             return {'error': f'Model {model_key} not available'}
-            
+
         model_info = self.models[model_key]
         config = model_info['config']
-        
+
         try:
             if config.provider == "ollama":
                 return await self._query_ollama(model_info, prompt, context)
@@ -211,14 +219,14 @@ class AdvancedAIManager:
                 return await self._query_openai(model_info, prompt, context)
             elif config.provider == "anthropic":
                 return await self._query_anthropic(model_info, prompt, context)
-                
+
         except Exception as e:
             return {'error': f'Query failed: {str(e)}'}
-            
+
     async def _query_ollama(self, model_info: Dict, prompt: str, context: str = None) -> Dict[str, Any]:
         """Query Ollama model"""
         config = model_info['config']
-        
+
         try:
             payload = {
                 'model': config.model_name,
@@ -229,13 +237,13 @@ class AdvancedAIManager:
                     'num_predict': config.max_tokens
                 }
             }
-            
+
             response = requests.post(
                 f"{config.endpoint}/api/generate",
                 json=payload,
                 timeout=30
             )
-            
+
             if response.status_code == 200:
                 data = response.json()
                 return {
@@ -246,7 +254,7 @@ class AdvancedAIManager:
                 }
             else:
                 return {'error': f'Ollama request failed: {response.status_code}'}
-                
+
         except Exception as e:
             return {'error': f'Ollama query failed: {str(e)}'}
 
@@ -264,11 +272,12 @@ class AdvancedAIManager:
         3. Potential vulnerabilities
         4. Network optimization suggestions
         """
-        
+
         # Try to get analysis from available models
         for model_key in self.models:
             try:
-                result = asyncio.run(self.query_model(model_key, analysis_prompt))
+                result = asyncio.run(self.query_model(
+                    model_key, analysis_prompt))
                 if 'error' not in result:
                     return {
                         'analysis': result['response'],
@@ -279,7 +288,7 @@ class AdvancedAIManager:
             except Exception as e:
                 logger.warning(f"AI analysis failed with {model_key}: {e}")
                 continue
-                
+
         return {
             'analysis': 'AI analysis not available - no models responded',
             'model_used': 'none',
@@ -287,20 +296,21 @@ class AdvancedAIManager:
             'confidence': 'none'
         }
 
+
 class AdvancedNetworkScanner:
     """Advanced network scanning with deep analysis capabilities"""
-    
+
     def __init__(self, config: NetworkConfig):
         self.config = config
         self.scan_results = {}
         self.topology_map = {}
         self.vulnerability_data = {}
-        
+
     def perform_comprehensive_scan(self, target_range: str = None) -> Dict[str, Any]:
         """Perform comprehensive network scan with multiple techniques"""
         target = target_range or self.config.scan_range
         logger.info(f"🌐 Starting comprehensive network scan of {target}")
-        
+
         results = {
             'scan_timestamp': datetime.now().isoformat(),
             'target_range': target,
@@ -309,44 +319,44 @@ class AdvancedNetworkScanner:
             'vulnerabilities': [],
             'statistics': {}
         }
-        
+
         # Basic device discovery
         devices = self._discover_devices(target)
         results['devices'] = devices
-        
+
         # Enhanced scanning for each device
         if self.config.deep_scan_enabled:
             results['devices'] = self._perform_deep_scan(devices)
-            
+
         # Topology mapping
         if self.config.topology_mapping:
             results['topology'] = self._map_network_topology(devices)
-            
+
         # Vulnerability assessment
         if self.config.vulnerability_scan:
             results['vulnerabilities'] = self._assess_vulnerabilities(devices)
-            
+
         # Calculate statistics
         results['statistics'] = self._calculate_statistics(results)
-        
+
         logger.info(f"✅ Network scan completed - found {len(devices)} devices")
         return results
-        
+
     def _discover_devices(self, target_range: str) -> List[Dict[str, Any]]:
         """Discover devices using multiple methods"""
         devices = []
-        
+
         # Method 1: Simple ping scan for quick discovery
         devices.extend(self._ping_scan(target_range))
-        
+
         # Method 2: ARP scan if scapy is available
         if SCAPY_AVAILABLE:
             devices.extend(self._arp_scan(target_range))
-            
+
         # Method 3: Nmap scan if available
         if NMAP_AVAILABLE:
             devices.extend(self._nmap_discovery(target_range))
-            
+
         # Deduplicate devices
         unique_devices = {}
         for device in devices:
@@ -356,13 +366,13 @@ class AdvancedNetworkScanner:
                 unique_devices[ip].update(device)
             else:
                 unique_devices[ip] = device
-                
+
         return list(unique_devices.values())
-        
+
     def _ping_scan(self, target_range: str) -> List[Dict[str, Any]]:
         """Basic ping scan for device discovery"""
         devices = []
-        
+
         # Extract network info from CIDR or range
         if '/' in target_range:
             # CIDR notation like 192.168.1.0/24
@@ -371,7 +381,7 @@ class AdvancedNetworkScanner:
         else:
             # Assume format like 192.168.1.1-254
             base_ip = '.'.join(target_range.split('.')[:-1])
-            
+
         def ping_host(ip):
             try:
                 # Use Windows ping command
@@ -381,7 +391,7 @@ class AdvancedNetworkScanner:
                     text=True,
                     timeout=5
                 )
-                
+
                 if result.returncode == 0:
                     return {
                         'ip': ip,
@@ -395,52 +405,55 @@ class AdvancedNetworkScanner:
             except Exception as e:
                 logger.debug(f"Ping failed for {ip}: {e}")
             return None
-            
+
         # Parallel ping scanning
         with ThreadPoolExecutor(max_workers=50) as executor:
             futures = []
             for i in range(1, 255):
                 ip = f"{base_ip}.{i}"
                 futures.append(executor.submit(ping_host, ip))
-                
+
             for future in as_completed(futures):
                 result = future.result()
                 if result:
                     devices.append(result)
-                    
+
         return devices
-        
+
     def _perform_deep_scan(self, devices: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Perform deep scanning on discovered devices"""
         enhanced_devices = []
-        
+
         for device in devices:
             enhanced_device = device.copy()
-            
+
             # Port scanning
             enhanced_device['open_ports'] = self._scan_ports(device['ip'])
-            
+
             # Service detection
-            enhanced_device['services'] = self._detect_services(device['ip'], enhanced_device['open_ports'])
-            
+            enhanced_device['services'] = self._detect_services(
+                device['ip'], enhanced_device['open_ports'])
+
             # OS fingerprinting
             enhanced_device['os_info'] = self._fingerprint_os(device['ip'])
-            
+
             # Banner grabbing
-            enhanced_device['banners'] = self._grab_banners(device['ip'], enhanced_device['open_ports'])
-            
+            enhanced_device['banners'] = self._grab_banners(
+                device['ip'], enhanced_device['open_ports'])
+
             enhanced_devices.append(enhanced_device)
-            
+
         return enhanced_devices
-        
+
     def _scan_ports(self, ip: str, ports: List[int] = None) -> List[int]:
         """Scan common ports on a device"""
         if ports is None:
             # Common ports to scan
-            ports = [21, 22, 23, 25, 53, 80, 110, 135, 139, 143, 443, 993, 995, 1723, 3389, 5900, 8080, 8443]
-            
+            ports = [21, 22, 23, 25, 53, 80, 110, 135, 139, 143,
+                     443, 993, 995, 1723, 3389, 5900, 8080, 8443]
+
         open_ports = []
-        
+
         def scan_port(port):
             try:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -450,20 +463,20 @@ class AdvancedNetworkScanner:
                 return port if result == 0 else None
             except Exception:
                 return None
-                
+
         with ThreadPoolExecutor(max_workers=20) as executor:
             futures = [executor.submit(scan_port, port) for port in ports]
             for future in as_completed(futures):
                 result = future.result()
                 if result:
                     open_ports.append(result)
-                    
+
         return sorted(open_ports)
-        
+
     def _detect_services(self, ip: str, open_ports: List[int]) -> Dict[int, str]:
         """Detect services running on open ports"""
         services = {}
-        
+
         service_map = {
             21: 'FTP',
             22: 'SSH',
@@ -484,12 +497,12 @@ class AdvancedNetworkScanner:
             8080: 'HTTP-Alt',
             8443: 'HTTPS-Alt'
         }
-        
+
         for port in open_ports:
             services[port] = service_map.get(port, 'Unknown')
-            
+
         return services
-        
+
     def _get_hostname(self, ip: str) -> str:
         """Get hostname for IP address"""
         try:
@@ -497,73 +510,82 @@ class AdvancedNetworkScanner:
             return hostname
         except Exception:
             return 'unknown'
-            
+
     def _get_mac_address(self, ip: str) -> str:
         """Get MAC address for IP (Windows ARP table)"""
         try:
-            result = subprocess.run(['arp', '-a', ip], capture_output=True, text=True)
+            result = subprocess.run(
+                ['arp', '-a', ip], capture_output=True, text=True)
             if result.returncode == 0:
                 for line in result.stdout.split('\n'):
                     if ip in line:
                         parts = line.split()
                         for part in parts:
-                            if '-' in part and len(part) == 17:  # MAC format xx-xx-xx-xx-xx-xx
+                            # MAC format xx-xx-xx-xx-xx-xx
+                            if '-' in part and len(part) == 17:
                                 return part.replace('-', ':')
         except Exception:
             pass
         return 'unknown'
-        
+
     def _fingerprint_os(self, ip: str) -> Dict[str, Any]:
         """Simple OS fingerprinting"""
         os_info = {'os': 'unknown', 'confidence': 'low'}
-        
+
         try:
             # Try TTL-based detection
-            result = subprocess.run(['ping', '-n', '1', ip], capture_output=True, text=True)
+            result = subprocess.run(
+                ['ping', '-n', '1', ip], capture_output=True, text=True)
             if result.returncode == 0:
                 for line in result.stdout.split('\n'):
                     if 'TTL=' in line:
                         ttl = int(line.split('TTL=')[1].split()[0])
                         if ttl <= 64:
-                            os_info = {'os': 'Linux/Unix', 'confidence': 'medium', 'ttl': ttl}
+                            os_info = {'os': 'Linux/Unix',
+                                       'confidence': 'medium', 'ttl': ttl}
                         elif ttl <= 128:
-                            os_info = {'os': 'Windows', 'confidence': 'medium', 'ttl': ttl}
+                            os_info = {'os': 'Windows',
+                                       'confidence': 'medium', 'ttl': ttl}
                         else:
-                            os_info = {'os': 'Network Device', 'confidence': 'low', 'ttl': ttl}
+                            os_info = {'os': 'Network Device',
+                                       'confidence': 'low', 'ttl': ttl}
         except Exception:
             pass
-            
+
         return os_info
-        
+
     def _grab_banners(self, ip: str, open_ports: List[int]) -> Dict[int, str]:
         """Grab service banners from open ports"""
         banners = {}
-        
+
         for port in open_ports[:5]:  # Limit to first 5 ports
             try:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 sock.settimeout(3)
                 sock.connect((ip, port))
-                
+
                 # Try to receive banner
                 try:
-                    banner = sock.recv(1024).decode('utf-8', errors='ignore').strip()
+                    banner = sock.recv(1024).decode(
+                        'utf-8', errors='ignore').strip()
                     if banner:
                         banners[port] = banner[:200]  # Limit banner length
                 except Exception:
                     # Try sending HTTP request for web servers
                     if port in [80, 8080, 443, 8443]:
-                        sock.send(b'GET / HTTP/1.1\r\nHost: ' + ip.encode() + b'\r\n\r\n')
-                        banner = sock.recv(1024).decode('utf-8', errors='ignore').strip()
+                        sock.send(b'GET / HTTP/1.1\r\nHost: ' +
+                                  ip.encode() + b'\r\n\r\n')
+                        banner = sock.recv(1024).decode(
+                            'utf-8', errors='ignore').strip()
                         if banner:
                             banners[port] = banner[:200]
-                            
+
                 sock.close()
             except Exception:
                 pass
-                
+
         return banners
-        
+
     def _map_network_topology(self, devices: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Create network topology map"""
         topology = {
@@ -572,14 +594,14 @@ class AdvancedNetworkScanner:
             'gateway': None,
             'subnets': []
         }
-        
+
         # Identify gateway (usually .1 or device with most connections)
         for device in devices:
             ip = device['ip']
             if ip.endswith('.1'):
                 topology['gateway'] = ip
                 break
-                
+
         # Create nodes for visualization
         for device in devices:
             node = {
@@ -590,20 +612,20 @@ class AdvancedNetworkScanner:
                 'security_score': self._calculate_device_security_score(device)
             }
             topology['nodes'].append(node)
-            
+
         return topology
-        
+
     def _assess_vulnerabilities(self, devices: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Assess potential vulnerabilities"""
         vulnerabilities = []
-        
+
         for device in devices:
             device_vulns = []
-            
+
             # Check for common vulnerability indicators
             open_ports = device.get('open_ports', [])
             services = device.get('services', {})
-            
+
             # High-risk services
             if 23 in open_ports:  # Telnet
                 device_vulns.append({
@@ -612,7 +634,7 @@ class AdvancedNetworkScanner:
                     'severity': 'high',
                     'port': 23
                 })
-                
+
             if 21 in open_ports:  # FTP
                 device_vulns.append({
                     'type': 'Insecure Protocol',
@@ -620,7 +642,7 @@ class AdvancedNetworkScanner:
                     'severity': 'medium',
                     'port': 21
                 })
-                
+
             # Check for default ports in unusual places
             if 22 in open_ports and device.get('device_type') == 'unknown':
                 device_vulns.append({
@@ -629,7 +651,7 @@ class AdvancedNetworkScanner:
                     'severity': 'low',
                     'port': 22
                 })
-                
+
             # Too many open ports
             if len(open_ports) > 10:
                 device_vulns.append({
@@ -638,7 +660,7 @@ class AdvancedNetworkScanner:
                     'severity': 'medium',
                     'port_count': len(open_ports)
                 })
-                
+
             if device_vulns:
                 vulnerabilities.append({
                     'device': device['ip'],
@@ -646,16 +668,16 @@ class AdvancedNetworkScanner:
                     'vulnerabilities': device_vulns,
                     'risk_score': self._calculate_risk_score(device_vulns)
                 })
-                
+
         return vulnerabilities
-        
+
     def _calculate_device_security_score(self, device: Dict[str, Any]) -> int:
         """Calculate security score for a device (0-100)"""
         score = 100
-        
+
         open_ports = device.get('open_ports', [])
         services = device.get('services', {})
-        
+
         # Deduct points for risky services
         if 23 in open_ports:  # Telnet
             score -= 30
@@ -665,13 +687,13 @@ class AdvancedNetworkScanner:
             score -= 20
         if 'unknown' in str(device.get('device_type', '')):
             score -= 10
-            
+
         return max(0, score)
-        
+
     def _calculate_risk_score(self, vulnerabilities: List[Dict[str, Any]]) -> int:
         """Calculate risk score based on vulnerabilities"""
         score = 0
-        
+
         for vuln in vulnerabilities:
             severity = vuln.get('severity', 'low')
             if severity == 'high':
@@ -680,14 +702,14 @@ class AdvancedNetworkScanner:
                 score += 15
             elif severity == 'low':
                 score += 5
-                
+
         return min(100, score)
-        
+
     def _calculate_statistics(self, scan_results: Dict[str, Any]) -> Dict[str, Any]:
         """Calculate scan statistics"""
         devices = scan_results.get('devices', [])
         vulnerabilities = scan_results.get('vulnerabilities', [])
-        
+
         stats = {
             'total_devices': len(devices),
             'devices_with_services': len([d for d in devices if d.get('services')]),
@@ -697,61 +719,65 @@ class AdvancedNetworkScanner:
             'average_security_score': 0,
             'network_risk_level': 'low'
         }
-        
+
         if devices:
-            security_scores = [self._calculate_device_security_score(d) for d in devices]
-            stats['average_security_score'] = sum(security_scores) / len(security_scores)
-            
+            security_scores = [
+                self._calculate_device_security_score(d) for d in devices]
+            stats['average_security_score'] = sum(
+                security_scores) / len(security_scores)
+
         # Determine network risk level
         if stats['total_vulnerabilities'] > 5:
             stats['network_risk_level'] = 'high'
         elif stats['total_vulnerabilities'] > 2:
             stats['network_risk_level'] = 'medium'
-            
+
         return stats
+
 
 class UltimateWebAppV8:
     """Ultimate webapp v8.0 with advanced AI and network features"""
-    
+
     def __init__(self, config: AppConfig = None):
         self.config = config or AppConfig()
         self.app = None
         self.ai_manager = None
         self.network_scanner = None
-        
+
     def create_app(self) -> Flask:
         """Create the ultimate Flask application v8.0"""
         logger.info("🚀 Creating Ultimate Suite v8.0 - AI & Network Enhanced")
-        
+
         # Initialize Flask app
         self.app = Flask(__name__)
         self.app.config['SECRET_KEY'] = self.config.secret_key
-        
+
         # Enable CORS
         CORS(self.app)
-        
+
         # Initialize components
         self.ai_manager = AdvancedAIManager(self.config)
-        self.network_scanner = AdvancedNetworkScanner(self.config.network_config)
-        
+        self.network_scanner = AdvancedNetworkScanner(
+            self.config.network_config)
+
         # Setup routes
         self._setup_routes()
-        
+
         logger.info("✅ Ultimate webapp v8.0 created successfully")
         return self.app
-        
+
     def _setup_routes(self):
         """Setup all routes"""
-        
+
         @self.app.route('/')
         def index():
             return render_template('ultimate_dashboard_v8.html')
-            
+
         @self.app.route('/api/models')
         def get_ai_models():
             """Get available AI models and their status"""
             models_info = []
-            
+
             for model_key, model_info in self.ai_manager.models.items():
                 config = model_info['config']
                 models_info.append({
@@ -762,13 +788,13 @@ class UltimateWebAppV8:
                     'endpoint': config.endpoint,
                     'enabled': config.enabled
                 })
-                
+
             return jsonify({
                 'models': models_info,
                 'total': len(models_info),
                 'source': 'live'
             })
-            
+
         @self.app.route('/api/ai/query', methods=['POST'])
         def query_ai():
             """Query AI model with prompt"""
@@ -776,48 +802,53 @@ class UltimateWebAppV8:
             model_key = data.get('model')
             prompt = data.get('prompt')
             context = data.get('context', '')
-            
+
             if not model_key or not prompt:
                 return jsonify({'error': 'Model and prompt required'}), 400
-                
+
             try:
-                result = asyncio.run(self.ai_manager.query_model(model_key, prompt, context))
+                result = asyncio.run(self.ai_manager.query_model(
+                    model_key, prompt, context))
                 return jsonify(result)
             except Exception as e:
                 return jsonify({'error': str(e)}), 500
-                
+
         @self.app.route('/api/network/scan')
         def network_scan():
             """Perform comprehensive network scan"""
-            target = request.args.get('target', self.config.network_config.scan_range)
-            
+            target = request.args.get(
+                'target', self.config.network_config.scan_range)
+
             try:
-                scan_results = self.network_scanner.perform_comprehensive_scan(target)
-                
+                scan_results = self.network_scanner.perform_comprehensive_scan(
+                    target)
+
                 # Get AI analysis of the network
                 if self.config.ai_analysis_enabled:
-                    ai_analysis = self.ai_manager.analyze_network_with_ai(scan_results)
+                    ai_analysis = self.ai_manager.analyze_network_with_ai(
+                        scan_results)
                     scan_results['ai_analysis'] = ai_analysis
-                    
+
                 return jsonify(scan_results)
-                
+
             except Exception as e:
                 logger.error(f"Network scan failed: {e}")
                 return jsonify({'error': str(e)}), 500
-                
+
         @self.app.route('/api/network/devices')
         def get_network_devices():
             """Get simplified network devices list"""
             try:
-                devices = self.network_scanner._discover_devices(self.config.network_config.scan_range)
-                
+                devices = self.network_scanner._discover_devices(
+                    self.config.network_config.scan_range)
+
                 return jsonify({
                     'devices': devices,
                     'count': len(devices),
                     'timestamp': datetime.now().isoformat(),
                     'source': 'live_scan'
                 })
-                
+
             except Exception as e:
                 # Fallback to demo data
                 return jsonify({
@@ -841,7 +872,7 @@ class UltimateWebAppV8:
                     'timestamp': datetime.now().isoformat(),
                     'source': 'fallback_demo'
                 })
-                
+
         @self.app.route('/api/security/status')
         def get_security_status():
             """Get enhanced security status"""
@@ -869,38 +900,41 @@ class UltimateWebAppV8:
                 'overall_score': 92,
                 'source': 'live_enhanced'
             })
-            
+
         @self.app.route('/theme/<theme_name>', methods=['GET', 'POST'])
         def set_theme(theme_name):
             """Set theme"""
-            valid_themes = ['light', 'dark', 'purple', 'purple-dark', 'purple-light']
-            
+            valid_themes = ['light', 'dark', 'purple',
+                            'purple-dark', 'purple-light']
+
             if theme_name in valid_themes:
                 session['theme'] = theme_name
                 return jsonify({'success': True, 'theme': theme_name})
             else:
                 return jsonify({'success': False, 'error': 'Invalid theme'}), 400
-                
+
         @self.app.route('/static/<path:filename>')
         def static_files(filename):
             """Serve static files"""
             return send_from_directory('static', filename)
-            
+
     def run(self):
         """Run the ultimate webapp"""
-        logger.info(f"🌐 Starting Ultimate Suite v8.0 on http://{self.config.host}:{self.config.port}")
+        logger.info(
+            f"🌐 Starting Ultimate Suite v8.0 on http://{self.config.host}:{self.config.port}")
         self.app.run(
             host=self.config.host,
             port=self.config.port,
             debug=self.config.debug
         )
 
+
 if __name__ == '__main__':
     # Create and run the ultimate webapp v8.0
     config = AppConfig()
     webapp = UltimateWebAppV8(config)
     app = webapp.create_app()
-    
+
     try:
         webapp.run()
     except KeyboardInterrupt:

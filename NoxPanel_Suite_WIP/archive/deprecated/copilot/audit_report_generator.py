@@ -3,13 +3,15 @@ NOX Copilot Agent v2.1 - Comprehensive Audit Report Generator
 Hypercritical analysis with MAXX depth and intelligent refactoring suggestions
 """
 
-import os
-import json
-import yaml
 import hashlib
+import json
+import os
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional, Tuple
+
+import yaml
+
 
 class NoxAuditGenerator:
     """Comprehensive system audit with hypercritical analysis"""

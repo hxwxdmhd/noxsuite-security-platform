@@ -17,19 +17,21 @@ Scoring: 100 points total (20 points per test)
 Passing: 80+ points required
 """
 
-import os
-import sys
-import time
-import json
-import pymysql
-import threading
-import subprocess
-import psutil
-from pathlib import Path
-from datetime import datetime
 import concurrent.futures
-import requests
+import json
+import os
 import statistics
+import subprocess
+import sys
+import threading
+import time
+from datetime import datetime
+from pathlib import Path
+
+import psutil
+import pymysql
+import requests
+
 
 class PerformanceBenchmarkAuditor:
     def __init__(self):

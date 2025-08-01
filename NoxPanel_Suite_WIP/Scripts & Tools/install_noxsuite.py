@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -7,8 +8,8 @@ NoxSuite Smart Installer Launcher
 Simple launcher script that provides multiple installation modes
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add current directory to path to import our modules
@@ -200,7 +201,10 @@ def main():
     
     # Import the main installer
     try:
-        from noxsuite_smart_installer_complete import SmartNoxSuiteInstaller, InstallMode
+        from noxsuite_smart_installer_complete import (
+            InstallMode,
+            SmartNoxSuiteInstaller,
+        )
     except ImportError as e:
         logger.info(f"❌ Could not import installer modules: {e}")
         logger.info("This usually means required dependencies are missing.")

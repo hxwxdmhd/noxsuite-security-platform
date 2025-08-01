@@ -41,6 +41,7 @@ if sys.platform == "win32":
     sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
     sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer)
 
+
 @dataclass
 class SystemMetrics:
     """System runtime metrics for adaptive intelligence."""
@@ -55,6 +56,7 @@ class SystemMetrics:
     rlvr_compliance: float
     guardian_health: float
 
+
 @dataclass
 class ComplianceMonitoring:
     """Compliance monitoring and deviation tracking."""
@@ -64,6 +66,7 @@ class ComplianceMonitoring:
     critical_modules: List[str]
     regression_alerts: List[str]
     improvement_opportunities: List[str]
+
 
 class RLVRGuardian:
     """RLVR Guardian - Post-Certification Monitoring System."""
@@ -115,7 +118,8 @@ class RLVRGuardian:
 
     def setup_logging(self):
         """Set up Guardian logging system."""
-        log_file = self.workspace_path / "compliance" / f"rlvr_guardian_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        log_file = self.workspace_path / "compliance" / \
+            f"rlvr_guardian_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
         logging.basicConfig(
             level=logging.INFO,
@@ -134,7 +138,8 @@ class RLVRGuardian:
             timestamp=datetime.now().isoformat(),
             cpu_usage=psutil.cpu_percent(interval=1),
             memory_usage=psutil.virtual_memory().percent,
-            disk_usage=psutil.disk_usage('/').percent if os.name != 'nt' else psutil.disk_usage('C:').percent,
+            disk_usage=psutil.disk_usage(
+                '/').percent if os.name != 'nt' else psutil.disk_usage('C:').percent,
             network_available=self.check_network_connectivity(),
             gpu_available=self.check_gpu_availability(),
             platform=platform.system(),
@@ -256,7 +261,8 @@ class RLVRGuardian:
         with open(report_file, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
-        self.print_safe(f"✅ Compliance monitoring completed - Status: {report['compliance_status']}")
+        self.print_safe(
+            f"✅ Compliance monitoring completed - Status: {report['compliance_status']}")
         return report
 
     async def scan_logs_and_trigger_alerts(self) -> Dict[str, Any]:
@@ -291,22 +297,28 @@ class RLVRGuardian:
 
                         # Check for critical patterns
                         if 'critical' in content.lower() or 'fatal' in content.lower():
-                            log_analysis["critical_issues"].append(f"Critical issue detected in {log_file.name}")
+                            log_analysis["critical_issues"].append(
+                                f"Critical issue detected in {log_file.name}")
 
                     except Exception as e:
-                        self.logger.warning(f"Could not scan log file {log_file}: {e}")
+                        self.logger.warning(
+                            f"Could not scan log file {log_file}: {e}")
 
         # Generate recommendations
         if log_analysis["errors_detected"] > 50:
-            log_analysis["recommendations"].append("High error count detected - investigate error patterns")
+            log_analysis["recommendations"].append(
+                "High error count detected - investigate error patterns")
 
         if log_analysis["warnings_detected"] > 100:
-            log_analysis["recommendations"].append("High warning count - review and optimize warning sources")
+            log_analysis["recommendations"].append(
+                "High warning count - review and optimize warning sources")
 
         if log_analysis["critical_issues"]:
-            log_analysis["recommendations"].append("Critical issues detected - immediate attention required")
+            log_analysis["recommendations"].append(
+                "Critical issues detected - immediate attention required")
 
-        self.print_safe(f"📋 Log analysis completed - {log_analysis['logs_scanned']} logs scanned")
+        self.print_safe(
+            f"📋 Log analysis completed - {log_analysis['logs_scanned']} logs scanned")
         return log_analysis
 
     async def suggest_ui_enhancements(self) -> Dict[str, Any]:
@@ -408,7 +420,8 @@ class RLVRGuardian:
 
                     try:
                         # Check file modification time
-                        mod_time = datetime.fromtimestamp(test_file.stat().st_mtime)
+                        mod_time = datetime.fromtimestamp(
+                            test_file.stat().st_mtime)
                         days_old = (datetime.now() - mod_time).days
 
                         if days_old > 90:  # Consider tests older than 90 days as potentially stale
@@ -420,24 +433,28 @@ class RLVRGuardian:
                                 pruning_results["tests_pruned"] += 1
 
                     except Exception as e:
-                        self.logger.warning(f"Could not analyze test file {test_file}: {e}")
+                        self.logger.warning(
+                            f"Could not analyze test file {test_file}: {e}")
 
         # Simulate annotation retraining
         pruning_results["annotations_retrained"] = pruning_results["stale_tests_found"] // 2
 
         # Generate recommendations
         if pruning_results["stale_tests_found"] > 10:
-            pruning_results["recommendations"].append("High number of stale tests found - review test maintenance practices")
+            pruning_results["recommendations"].append(
+                "High number of stale tests found - review test maintenance practices")
 
         if pruning_results["test_files_analyzed"] > 0:
-            pruning_results["recommendations"].append("Consider implementing automated test freshness monitoring")
+            pruning_results["recommendations"].append(
+                "Consider implementing automated test freshness monitoring")
 
-        self.print_safe(f"🧹 Pruning completed - {pruning_results['tests_pruned']} stale tests removed")
+        self.print_safe(
+            f"🧹 Pruning completed - {pruning_results['tests_pruned']} stale tests removed")
         return pruning_results
 
     async def generate_monitoring_outputs(self, compliance_report: Dict, log_analysis: Dict,
-                                        ui_suggestions: Dict, migration_proposals: Dict,
-                                        pruning_results: Dict) -> Dict[str, Any]:
+                                          ui_suggestions: Dict, migration_proposals: Dict,
+                                          pruning_results: Dict) -> Dict[str, Any]:
         """Generate all monitoring outputs."""
         self.print_safe("📊 Generating monitoring outputs...")
 
@@ -583,7 +600,8 @@ if __name__ == "__main__":
             yaml.dump(ci_config, f, default_flow_style=False)
 
         # Also save GitHub Actions workflow
-        github_workflow = self.workspace_path / ".github" / "workflows" / "rlvr_validate.yml"
+        github_workflow = self.workspace_path / \
+            ".github" / "workflows" / "rlvr_validate.yml"
         with open(github_workflow, 'w', encoding='utf-8') as f:
             yaml.dump(ci_config, f, default_flow_style=False)
 
@@ -652,6 +670,7 @@ if __name__ == "__main__":
         self.print_safe("🔄 Adaptive strategy adjustments completed")
         return strategy_adjustments
 
+
 async def main():
     """Main execution function for RLVR Guardian."""
     try:
@@ -669,9 +688,11 @@ async def main():
 
         compliance_report = guardian_report["compliance_report"]
         print(f"📊 Compliance Status: {compliance_report['compliance_status']}")
-        print(f"📈 Current Compliance: {compliance_report['current_compliance']:.2f}%")
+        print(
+            f"📈 Current Compliance: {compliance_report['current_compliance']:.2f}%")
         print(f"🎯 Target Compliance: 98.0%")
-        print(f"📋 Improvement Opportunities: {len(compliance_report['improvement_opportunities'])}")
+        print(
+            f"📋 Improvement Opportunities: {len(compliance_report['improvement_opportunities'])}")
 
         monitoring_outputs = guardian_report["monitoring_outputs"]
         print(f"\n📊 Monitoring Outputs Generated:")
@@ -680,9 +701,12 @@ async def main():
 
         strategy_adjustments = guardian_report["strategy_adjustments"]
         print(f"\n🧠 Adaptive Strategy Adjustments:")
-        print(f"  Platform: {strategy_adjustments['current_context']['platform']}")
-        print(f"  Deployment: {strategy_adjustments['current_context']['deployment']}")
-        print(f"  Strategy Changes: {len(strategy_adjustments['strategy_changes'])}")
+        print(
+            f"  Platform: {strategy_adjustments['current_context']['platform']}")
+        print(
+            f"  Deployment: {strategy_adjustments['current_context']['deployment']}")
+        print(
+            f"  Strategy Changes: {len(strategy_adjustments['strategy_changes'])}")
 
         print("\n" + "="*80)
         print("✅ RLVR GUARDIAN MONITORING CYCLE COMPLETED SUCCESSFULLY")

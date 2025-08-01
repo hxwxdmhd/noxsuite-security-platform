@@ -1,9 +1,10 @@
 """Wake Word Detection for Voice Interface - 'Hey Nox' Activation"""
 
+import logging
 import threading
 import time
-import logging
 from typing import Callable, Optional
+
 from .speech_engine import SpeechEngine
 
 logger = logging.getLogger(__name__)

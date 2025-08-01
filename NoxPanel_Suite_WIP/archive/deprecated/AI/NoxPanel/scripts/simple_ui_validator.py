@@ -19,17 +19,18 @@ Compliance: RLVR Methodology v4.0+ Applied
 Basic UI validation using HTTP requests and HTML analysis
 """
 
-import os
 import json
-import time
-import requests
 import logging
-from pathlib import Path
-from typing import Dict, List, Optional
+import os
+import re
+import time
 from dataclasses import dataclass
 from datetime import datetime
-import re
+from pathlib import Path
+from typing import Dict, List, Optional
 from urllib.parse import urljoin
+
+import requests
 
 logger = logging.getLogger(__name__)
 

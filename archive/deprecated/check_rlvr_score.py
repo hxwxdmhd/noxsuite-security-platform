@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, Optional
 
+
 class RLVRComplianceChecker:
     """RLVR Compliance Score Checker for CI/CD."""
 
@@ -30,7 +31,8 @@ class RLVRComplianceChecker:
         compliance_report = self.load_latest_compliance_report()
 
         if compliance_report:
-            current_score = compliance_report.get("current_compliance", self.current_compliance)
+            current_score = compliance_report.get(
+                "current_compliance", self.current_compliance)
         else:
             current_score = self.current_compliance
 
@@ -58,7 +60,8 @@ class RLVRComplianceChecker:
             compliance_files = list(self.compliance_dir.glob("*.json"))
             if compliance_files:
                 # Get the most recent file
-                latest_file = max(compliance_files, key=lambda f: f.stat().st_mtime)
+                latest_file = max(compliance_files,
+                                  key=lambda f: f.stat().st_mtime)
                 with open(latest_file, 'r', encoding='utf-8') as f:
                     return json.load(f)
 
@@ -146,6 +149,7 @@ class RLVRComplianceChecker:
 
         return validations
 
+
 def main():
     """Main CLI interface."""
     parser = argparse.ArgumentParser(
@@ -205,6 +209,7 @@ Examples:
     except Exception as e:
         print(f"❌ Compliance checker error: {str(e)}")
         sys.exit(2)
+
 
 if __name__ == "__main__":
     main()

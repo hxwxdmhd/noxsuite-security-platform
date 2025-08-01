@@ -6,19 +6,20 @@ RESTful API endpoints for voice services including Voxtral integration,
 WebSocket support for real-time transcription, and ADHD-friendly features.
 """
 
-from flask import Flask, request, jsonify, websocket
 import asyncio
 import base64
 import json
 import logging
-from typing import Dict, Any, Optional
 import threading
 import time
 from pathlib import Path
+from typing import Any, Dict, Optional
+
+from flask import Flask, jsonify, request, websocket
 
 # Import our voice services
 try:
-    from .voxtral_service import VoxtralService, VoxtralConfig
+    from .voxtral_service import VoxtralConfig, VoxtralService
     VOXTRAL_AVAILABLE = True
 except ImportError:
     VOXTRAL_AVAILABLE = False

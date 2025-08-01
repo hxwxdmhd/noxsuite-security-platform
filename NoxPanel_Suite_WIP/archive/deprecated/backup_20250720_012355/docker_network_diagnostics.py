@@ -7,20 +7,22 @@ This script provides comprehensive Docker networking diagnostics
 and automated Redis connection management for local development.
 """
 
-import os
-import sys
 import json
-import time
+import logging
+import os
 import socket
 import subprocess
-import logging
-from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass, asdict
+import sys
+import time
+from dataclasses import asdict, dataclass
 from datetime import datetime
+from typing import Dict, List, Optional, Tuple
+
 import redis
-import docker
-from docker.models.networks import Network
 from docker.models.containers import Container
+from docker.models.networks import Network
+
+import docker
 
 # Configure logging
 logging.basicConfig(

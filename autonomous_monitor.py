@@ -1,3 +1,7 @@
+from emergency_copilot_fix import throttler
+from datetime import datetime
+import time
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,11 +11,6 @@ logger = get_logger(__name__)
 NoxSuite MCP Autonomous Monitoring System
 Continuous operation with 128-tools throttling
 """
-import json
-import time
-from datetime import datetime
-
-from emergency_copilot_fix import throttler
 
 
 class AutonomousMonitor:
@@ -38,7 +37,8 @@ class AutonomousMonitor:
 
             try:
                 # Quick Langflow check
-                response = requests.get("http://localhost:7860/health", timeout=3)
+                response = requests.get(
+                    "http://localhost:7860/health", timeout=3)
                 status["langflow"] = (
                     "healthy" if response.status_code == 200 else "degraded"
                 )
@@ -117,13 +117,15 @@ class AutonomousMonitor:
 
             # Check for issues
             if status["langflow"] != "healthy" or "unreachable" in status["docker"]:
-                logger.info("⚠️ Issues detected - would trigger emergency protocols")
+                logger.info(
+                    "⚠️ Issues detected - would trigger emergency protocols")
             else:
                 logger.info("✅ All systems operational")
 
             # Wait for next cycle (unless last cycle)
             if cycle < cycles - 1:
-                logger.info(f"⏳ Sleeping {self.monitor_interval}s until next check...")
+                logger.info(
+                    f"⏳ Sleeping {self.monitor_interval}s until next check...")
                 time.sleep(self.monitor_interval)
 
         logger.info(f"\n🏁 Monitoring cycle complete")

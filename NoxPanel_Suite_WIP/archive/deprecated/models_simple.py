@@ -4,19 +4,28 @@ Ultimate Suite v11.0 - Simplified Models for Quick Deployment
 ============================================================
 """
 
-import os
-import sys
 import json
 import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
+import os
+import sys
 import uuid
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
 
 # Use SQLite for initial deployment to avoid PostgreSQL dependency
 try:
-    from sqlalchemy import create_engine, Column, Integer, String, DateTime, Boolean, Text, Float
+    from sqlalchemy import (
+        Boolean,
+        Column,
+        DateTime,
+        Float,
+        Integer,
+        String,
+        Text,
+        create_engine,
+    )
     from sqlalchemy.ext.declarative import declarative_base
-    from sqlalchemy.orm import sessionmaker, Session
+    from sqlalchemy.orm import Session, sessionmaker
     HAS_SQLALCHEMY = True
 except ImportError:
     HAS_SQLALCHEMY = False

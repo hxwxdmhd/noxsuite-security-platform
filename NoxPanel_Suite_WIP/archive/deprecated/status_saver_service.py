@@ -6,10 +6,11 @@ Starts the automated status saver as a background service.
 """
 
 import asyncio
+import logging
 import signal
 import sys
+
 from auto_status_saver import UltimateSuiteStatusSaver
-import logging
 
 # Configure logging
 logging.basicConfig(

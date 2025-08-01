@@ -7,18 +7,19 @@ This system validates all automated fixes and ensures system integrity
 after the Copilot Agent diagnostic session.
 """
 
+import asyncio
 import json
 import logging
-import asyncio
-import time
+import os
 import subprocess
+import sys
+import time
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
+from typing import Any, Dict, List, Optional, Tuple
+
 import yaml
-import sys
-import os
 
 # Configure logging
 logging.basicConfig(

@@ -10,31 +10,32 @@ Version: 11.0.0
 Sub-Milestone: 2/5 - Microservices Architecture
 """
 
-import os
-import sys
-import time
-import json
 import asyncio
-import logging
-import threading
 import hashlib
+import json
+import logging
+import os
 import socket
+import ssl
+import sys
+import threading
+import time
+import uuid
+import weakref
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Dict, List, Any, Optional, Callable, Set
-from enum import Enum
-import uuid
-import aiohttp
-import aiofiles
-from aiohttp import web, ClientSession, ClientTimeout
-import ssl
-import jwt
 from datetime import datetime, timedelta
-import weakref
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional, Set
+
+import aiofiles
+import aiohttp
 import consul
 import etcd3
-from prometheus_client import Counter, Histogram, Gauge, start_http_server
+import jwt
 import zipkin
+from aiohttp import ClientSession, ClientTimeout, web
+from prometheus_client import Counter, Gauge, Histogram, start_http_server
 
 
 class ServiceType(Enum):
@@ -952,7 +953,7 @@ class BaseMicroservice:
 
     async def metrics_endpoint(self, request):
         """Prometheus metrics endpoint"""
-        from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+        from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
         return web.Response(body=generate_latest(), content_type=CONTENT_TYPE_LATEST)
 
     async def service_info(self, request):

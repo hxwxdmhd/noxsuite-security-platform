@@ -3,23 +3,25 @@ Comprehensive Security Test Suite
 Enterprise-grade security testing for 5,000+ concurrent users
 """
 
-import pytest
 import asyncio
-import aiohttp
-import time
-import json
-import secrets
-import hashlib
 import concurrent.futures
-from typing import List, Dict, Any, Optional
+import hashlib
+import json
+import re
+import secrets
+import socket
+import ssl
+import subprocess
+import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-import ssl
-import socket
-import subprocess
-import re
-import requests
+from typing import Any, Dict, List, Optional
 from urllib.parse import urljoin, urlparse
+
+import aiohttp
+import pytest
+import requests
+
 
 # Test configuration
 @dataclass

@@ -16,12 +16,12 @@ Usage:
     python main.py --test            # Run test suite
 """
 
-import sys
-import os
 import argparse
-from pathlib import Path
-import subprocess
+import os
 import platform
+import subprocess
+import sys
+from pathlib import Path
 
 # Add project root to Python path
 PROJECT_ROOT = Path(__file__).parent
@@ -371,7 +371,7 @@ def start_integrated_web():
         if (backend_path / "webpanel" / "app_v5.py").exists():
             sys.path.insert(0, str(backend_path))
             from webpanel.app_v5 import create_app
-            
+
             # Create Flask app with AI features
             app = create_app()
             

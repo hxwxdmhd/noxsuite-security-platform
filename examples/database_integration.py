@@ -1,3 +1,14 @@
+from NoxPanel.noxcore.database_service import (
+    close_database_service,
+    get_database_service,
+)
+from NoxPanel.noxcore.database_admin import DatabaseAdmin
+from typing import Any, Dict, List, Optional
+from datetime import datetime, timedelta
+import sys
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,21 +18,10 @@ Example usage and integration code for NoxGuard Database System
 Demonstrates how to integrate the database with existing NoxPanel components
 """
 
-import json
-import logging
-import os
-import sys
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
 
 # Add the project root to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from NoxPanel.noxcore.database_admin import DatabaseAdmin
-from NoxPanel.noxcore.database_service import (
-    close_database_service,
-    get_database_service,
-)
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -201,7 +201,8 @@ netstat -rn
                 content_type=item["content_type"],
                 search_keywords=item["search_keywords"],
             )
-            logger.info(f"Created knowledge item: {item['title']} (ID: {knowledge_id})")
+            logger.info(
+                f"Created knowledge item: {item['title']} (ID: {knowledge_id})")
 
     def _create_sample_tags(self):
         """Create sample tags"""
@@ -285,7 +286,8 @@ def example_usage():
         admin_user = integration.db.users.get_user(username="admin")
         if admin_user:
             # Search knowledge
-            results = integration.db.knowledge.search_knowledge_items("network")
+            results = integration.db.knowledge.search_knowledge_items(
+                "network")
             logger.info(f"Found {len(results)} knowledge items")
 
             # Create conversation

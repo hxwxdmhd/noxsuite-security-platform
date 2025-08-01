@@ -18,8 +18,8 @@ NoxPanel v2.0.0 - Main Application Launcher
 AI-Powered Network Management with J.A.R.V.I.S. Intelligence
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
 
 # Add project root to path

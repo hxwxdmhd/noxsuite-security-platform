@@ -1,10 +1,12 @@
 import os
-import jwt
-import bcrypt
 import secrets
-from functools import wraps
-from flask import request, jsonify, current_app
 from datetime import datetime, timedelta
+from functools import wraps
+
+import bcrypt
+import jwt
+from flask import current_app, jsonify, request
+
 
 def hash_password(password):
     """

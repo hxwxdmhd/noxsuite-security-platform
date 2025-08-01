@@ -1,9 +1,10 @@
-import os
-import shutil
 import glob
 import json
+import os
+import shutil
 import time
 from pathlib import Path
+
 from tqdm import tqdm
 
 BACKUP_DIR = f"backup_{time.strftime('%Y%m%d_%H%M%S')}"

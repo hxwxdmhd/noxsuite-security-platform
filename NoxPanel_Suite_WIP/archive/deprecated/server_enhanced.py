@@ -7,28 +7,42 @@ This server includes Docker networking detection and automatic
 Redis connection management with fallback mechanisms.
 """
 
-import os
-import sys
 import json
-import time
-import socket
 import logging
+import os
+import socket
+import sys
+import threading
+import time
+from contextlib import contextmanager
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
+
+import bleach
 import pymysql
-import threading
-from contextlib import contextmanager
 
 # Flask and extensions
-from flask import Flask, request, jsonify, render_template_string, session, redirect, url_for
+from flask import (
+    Flask,
+    jsonify,
+    redirect,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
 from flask_cors import CORS
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_socketio import SocketIO, emit
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.serving import make_server
-import bleach
 
 # Optional imports with fallbacks
 try:

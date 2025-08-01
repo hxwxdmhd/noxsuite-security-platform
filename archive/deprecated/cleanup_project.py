@@ -11,9 +11,12 @@ from datetime import datetime
 from collections import defaultdict
 from tqdm import tqdm
 
-EXCLUDE_DIRS = {'.git', 'node_modules', '__pycache__', 'venv', 'env', 'build', 'dist'}
-TARGET_EXTS = {'.py', '.js', '.ts', '.jsx', '.html', '.css', '.json', '.md', '.yml', '.yaml', '.toml'}
-LEGACY_PATTERNS = re.compile(r'(copy|backup|old|deprecated|archive|\d{8,}|\d{6,})', re.IGNORECASE)
+EXCLUDE_DIRS = {'.git', 'node_modules',
+                '__pycache__', 'venv', 'env', 'build', 'dist'}
+TARGET_EXTS = {'.py', '.js', '.ts', '.jsx', '.html',
+               '.css', '.json', '.md', '.yml', '.yaml', '.toml'}
+LEGACY_PATTERNS = re.compile(
+    r'(copy|backup|old|deprecated|archive|\d{8,}|\d{6,})', re.IGNORECASE)
 CONFIG_EXTS = {'.yml', '.yaml', '.toml', '.json'}
 
 REPORT_CATEGORIES = [
@@ -27,6 +30,8 @@ REPORT_CATEGORIES = [
 ARCHIVE_DIR = './archive/deprecated/'
 
 # --- Utility Functions ---
+
+
 def sha256sum(filepath):
     """Compute SHA256 hash of a file."""
     h = hashlib.sha256()
@@ -35,13 +40,16 @@ def sha256sum(filepath):
             h.update(chunk)
     return h.hexdigest()
 
+
 def get_last_modified(filepath):
     """Get last modified date as ISO string."""
     return datetime.fromtimestamp(os.path.getmtime(filepath)).isoformat()
 
+
 def is_legacy_name(filename):
     """Detect legacy naming patterns."""
     return bool(LEGACY_PATTERNS.search(filename))
+
 
 def parse_imports(filepath):
     """Parse import/require/include statements from file."""
@@ -60,7 +68,8 @@ def parse_imports(filepath):
                 m = re.match(r'\s*require\(["\"]([\w\-/\.]+)["\"]\)', line)
                 if m:
                     imports.add(m.group(1))
-                m = re.match(r'\s*import\s+.*from\s+["\"]([\w\-/\.]+)["\"]', line)
+                m = re.match(
+                    r'\s*import\s+.*from\s+["\"]([\w\-/\.]+)["\"]', line)
                 if m:
                     imports.add(m.group(1))
                 # HTML/CSS
@@ -75,6 +84,7 @@ def parse_imports(filepath):
         pass
     return imports
 
+
 def scan_files(root):
     """Recursively scan files, excluding EXCLUDE_DIRS."""
     file_list = []
@@ -86,6 +96,7 @@ def scan_files(root):
             if ext in TARGET_EXTS:
                 file_list.append(os.path.join(dirpath, fname))
     return file_list
+
 
 def analyze_file(filepath, all_imports, hash_map):
     """Analyze file for legacy, config, duplicate, and reference status."""
@@ -124,12 +135,14 @@ def analyze_file(filepath, all_imports, hash_map):
         'category': category
     }
 
+
 def call_ai_suggester(report):
     """Call Supermaven/Langflow/Ollama API to refine suggestions. Abstracted for future extension."""
     # Placeholder: try external API, fallback to local LLM
     # Example: requests.post('http://localhost:11434/api', json=report)
     # For now, just return report unchanged
     return report
+
 
 def generate_reports(results, metrics):
     """Write cleanup_report.json and cleanup_report.md with categorized entries and metrics."""
@@ -142,15 +155,18 @@ def generate_reports(results, metrics):
         for cat in REPORT_CATEGORIES:
             f.write(f"## {cat.replace('_', ' ').title()}\n")
             for entry in results.get(cat, []):
-                f.write(f"- `{entry['path']}`\n  - Last Modified: {entry['last_modified']}\n  - Hash: {entry['hash']}\n  - Reason: {', '.join(entry['reason'])}\n")
+                f.write(
+                    f"- `{entry['path']}`\n  - Last Modified: {entry['last_modified']}\n  - Hash: {entry['hash']}\n  - Reason: {', '.join(entry['reason'])}\n")
             f.write("\n")
         f.write("## Performance Metrics\n")
         for k, v in metrics.items():
             f.write(f"- {k}: {v}\n")
 
+
 def perform_cleanup(results, execute=False):
     """Delete or archive files in safe_to_delete and migration_candidate categories."""
-    candidates = results.get('safe_to_delete', []) + results.get('migration_candidate', [])
+    candidates = results.get('safe_to_delete', []) + \
+        results.get('migration_candidate', [])
     if not candidates:
         print("No files to delete or archive.")
         return
@@ -175,10 +191,15 @@ def perform_cleanup(results, execute=False):
             print(f"Failed to archive {entry['path']}: {e}")
 
 # --- Main CLI ---
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Advanced NoxPanel Suite Cleanup Tool")
-    parser.add_argument('--execute', action='store_true', help='Actually delete/archive files (default: dry-run)')
-    parser.add_argument('--root', type=str, default='.', help='Project root directory')
+    parser = argparse.ArgumentParser(
+        description="Advanced NoxPanel Suite Cleanup Tool")
+    parser.add_argument('--execute', action='store_true',
+                        help='Actually delete/archive files (default: dry-run)')
+    parser.add_argument('--root', type=str, default='.',
+                        help='Project root directory')
     args = parser.parse_args()
     start_time = time.time()
     print("\n=== NoxPanel Suite Cleanup ===\n")
@@ -209,6 +230,7 @@ def main():
     generate_reports(results, metrics)
     perform_cleanup(results, execute=args.execute)
     print("\nCleanup complete. See cleanup_report.json and cleanup_report.md for details.")
+
 
 if __name__ == '__main__':
     main()

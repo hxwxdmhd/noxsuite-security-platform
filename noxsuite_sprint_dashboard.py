@@ -12,223 +12,251 @@ Date: July 31, 2025
 
 import json
 import sys
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List
+
 
 class SprintDashboard:
     """Sprint progress dashboard for NoxSuite"""
-    
+
     def __init__(self):
         self.workspace_root = Path.cwd()
-        self.dashboard_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        
+        self.dashboard_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
     def load_audit_results(self) -> Dict:
         """Load latest audit results"""
         # Find latest audit report
-        audit_files = list(self.workspace_root.glob('noxsuite_audit_report_*.json'))
-        
+        audit_files = list(self.workspace_root.glob(
+            "noxsuite_audit_report_*.json"))
+
         if not audit_files:
             print("No audit reports found. Run noxsuite_audit_simplified.py first.")
             return {}
-        
+
         latest_audit = max(audit_files, key=lambda f: f.stat().st_mtime)
-        
+
         try:
-            with open(latest_audit, 'r') as f:
+            with open(latest_audit, "r") as f:
                 return json.load(f)
         except Exception as e:
             print(f"Error loading audit results: {e}")
             return {}
-    
+
     def generate_dashboard(self):
         """Generate comprehensive sprint dashboard"""
         audit_results = self.load_audit_results()
-        
+
         if not audit_results:
             return
-        
+
         print("=" * 60)
         print("🚀 NOXSUITE COMPREHENSIVE AUDIT & SPRINT DASHBOARD")
         print("=" * 60)
-        
+
         # Current Status
         self.display_current_status(audit_results)
-        
+
         # Workspace Health
         self.display_workspace_health(audit_results)
-        
+
         # Sprint Planning
         self.display_sprint_plan(audit_results)
-        
+
         # Action Items
         self.display_action_items(audit_results)
-        
+
         # Resources & Timeline
         self.display_resources_timeline()
-        
+
         # Generate HTML dashboard
         self.generate_html_dashboard(audit_results)
-    
+
     def display_current_status(self, audit_results: Dict):
         """Display current project status"""
         print("\n📊 CURRENT PROJECT STATUS")
         print("-" * 40)
-        
-        sprint_plan = audit_results.get('next_sprint_plan', {})
-        progress = sprint_plan.get('current_progress', {})
-        
-        print(f"Overall Progress: {progress.get('overall_completion', 'N/A')}%")
+
+        sprint_plan = audit_results.get("next_sprint_plan", {})
+        progress = sprint_plan.get("current_progress", {})
+
+        print(
+            f"Overall Progress: {progress.get('overall_completion', 'N/A')}%")
         print(f"Authentication:   {progress.get('authentication', 'N/A')}% ✅")
         print(f"API Endpoints:    {progress.get('api', 'N/A')}% ✅")
         print(f"Frontend:         {progress.get('frontend', 'N/A')}% ✅")
         print(f"Database:         {progress.get('database', 25)}% ⚠️")
         print(f"Production:       {progress.get('production', 45)}% ⚠️")
-        
+
         # Template Implementation Status
-        software_health = audit_results.get('software_health', {})
-        template_impl = software_health.get('template_implementation', {})
-        
+        software_health = audit_results.get("software_health", {})
+        template_impl = software_health.get("template_implementation", {})
+
         print("\n🔧 TEMPLATE IMPLEMENTATION STATUS")
         for component, details in template_impl.items():
-            score = details.get('score', 0)
-            status = details.get('status', 'unknown')
+            score = details.get("score", 0)
+            status = details.get("status", "unknown")
             icon = "✅" if score == 100 else "⚠️" if score > 0 else "❌"
             print(f"{component.title()}: {score}% ({status}) {icon}")
-    
+
     def display_workspace_health(self, audit_results: Dict):
         """Display workspace health metrics"""
         print("\n📁 WORKSPACE HEALTH AUDIT")
         print("-" * 40)
-        
-        workspace_audit = audit_results.get('workspace_audit', {})
-        
-        print(f"NoxSuite Files Found: {workspace_audit.get('noxsuite_files_found', 0)}")
-        print(f"Misplaced Files:      {len(workspace_audit.get('misplaced_files', []))} ⚠️")
-        print(f"Missing Files:        {len(workspace_audit.get('missing_files', []))} ❌")
-        print(f"Conflict Files:       {len(workspace_audit.get('conflict_files', []))} 🔥")
-        
-        if workspace_audit.get('misplaced_files'):
+
+        workspace_audit = audit_results.get("workspace_audit", {})
+
+        print(
+            f"NoxSuite Files Found: {workspace_audit.get('noxsuite_files_found', 0)}")
+        print(
+            f"Misplaced Files:      {len(workspace_audit.get('misplaced_files', []))} ⚠️"
+        )
+        print(
+            f"Missing Files:        {len(workspace_audit.get('missing_files', []))} ❌"
+        )
+        print(
+            f"Conflict Files:       {len(workspace_audit.get('conflict_files', []))} 🔥"
+        )
+
+        if workspace_audit.get("misplaced_files"):
             print("\n📍 Key Misplaced Files:")
-            for misplaced in workspace_audit['misplaced_files'][:5]:
+            for misplaced in workspace_audit["misplaced_files"][:5]:
                 print(f"  • {misplaced['file']} -> {misplaced['expected']}")
-        
-        if workspace_audit.get('missing_files'):
+
+        if workspace_audit.get("missing_files"):
             print("\n❌ Missing Critical Files:")
-            for missing in workspace_audit['missing_files']:
+            for missing in workspace_audit["missing_files"]:
                 print(f"  • {missing}")
-    
+
     def display_sprint_plan(self, audit_results: Dict):
         """Display next sprint planning"""
         print("\n🚀 NEXT SPRINT PLAN (2 WEEKS)")
         print("-" * 40)
-        
-        sprint_plan = audit_results.get('next_sprint_plan', {})
-        priority_items = sprint_plan.get('priority_items', [])
-        
-        print(f"Sprint Duration: {sprint_plan.get('sprint_duration', '2 weeks')}")
-        print(f"Target Completion: {sprint_plan.get('estimated_completion', 95)}%")
+
+        sprint_plan = audit_results.get("next_sprint_plan", {})
+        priority_items = sprint_plan.get("priority_items", [])
+
+        print(
+            f"Sprint Duration: {sprint_plan.get('sprint_duration', '2 weeks')}")
+        print(
+            f"Target Completion: {sprint_plan.get('estimated_completion', 95)}%")
         print(f"Priority Items: {len(priority_items)}")
-        
+
         print("\n🎯 SPRINT PRIORITIES:")
         for i, item in enumerate(priority_items, 1):
-            priority_icon = "🔴" if item['priority'] == 'HIGH' else "🟡" if item['priority'] == 'MEDIUM' else "🟢"
+            priority_icon = (
+                "🔴"
+                if item["priority"] == "HIGH"
+                else "🟡" if item["priority"] == "MEDIUM" else "🟢"
+            )
             print(f"{i}. {item['title']} {priority_icon}")
-            print(f"   Effort: {item['effort']} | Priority: {item['priority']}")
+            print(
+                f"   Effort: {item['effort']} | Priority: {item['priority']}")
             print(f"   Tasks: {len(item.get('tasks', []))} items")
             print()
-    
+
     def display_action_items(self, audit_results: Dict):
         """Display immediate action items"""
         print("⚡ IMMEDIATE ACTION ITEMS")
         print("-" * 40)
-        
-        workspace_audit = audit_results.get('workspace_audit', {})
-        database_validation = audit_results.get('database_validation', {})
-        
+
+        workspace_audit = audit_results.get("workspace_audit", {})
+        database_validation = audit_results.get("database_validation", {})
+
         actions = []
-        
+
         # Workspace cleanup
-        if workspace_audit.get('conflict_files'):
-            actions.append({
-                'priority': 'HIGH',
-                'action': f"Clean up {len(workspace_audit['conflict_files'])} conflict files",
-                'command': 'find . -name "*.conflict.*" -delete'
-            })
-        
+        if workspace_audit.get("conflict_files"):
+            actions.append(
+                {
+                    "priority": "HIGH",
+                    "action": f"Clean up {len(workspace_audit['conflict_files'])} conflict files",
+                    "command": 'find . -name "*.conflict.*" -delete',
+                }
+            )
+
         # Database setup
-        if not database_validation.get('mariadb_config', {}).get('configured'):
-            actions.append({
-                'priority': 'HIGH',
-                'action': 'Set up MariaDB database',
-                'command': 'python setup_database.py'
-            })
-        
+        if not database_validation.get("mariadb_config", {}).get("configured"):
+            actions.append(
+                {
+                    "priority": "HIGH",
+                    "action": "Set up MariaDB database",
+                    "command": "python setup_database.py",
+                }
+            )
+
         # Security audit
-        actions.append({
-            'priority': 'HIGH',
-            'action': 'Run comprehensive security audit',
-            'command': 'python security_audit.py'
-        })
-        
+        actions.append(
+            {
+                "priority": "HIGH",
+                "action": "Run comprehensive security audit",
+                "command": "python security_audit.py",
+            }
+        )
+
         # Migration
-        if workspace_audit.get('misplaced_files'):
-            actions.append({
-                'priority': 'MEDIUM',
-                'action': 'Migrate files to unified structure',
-                'command': 'Review migration plan and execute'
-            })
-        
+        if workspace_audit.get("misplaced_files"):
+            actions.append(
+                {
+                    "priority": "MEDIUM",
+                    "action": "Migrate files to unified structure",
+                    "command": "Review migration plan and execute",
+                }
+            )
+
         for i, action in enumerate(actions, 1):
-            priority_icon = "🔴" if action['priority'] == 'HIGH' else "🟡"
+            priority_icon = "🔴" if action["priority"] == "HIGH" else "🟡"
             print(f"{i}. {action['action']} {priority_icon}")
             print(f"   Command: {action['command']}")
             print()
-    
+
     def display_resources_timeline(self):
         """Display resource requirements and timeline"""
         print("📅 RESOURCE REQUIREMENTS & TIMELINE")
         print("-" * 40)
-        
+
         print("Team Requirements:")
         print("  • Backend Developer: 1 FTE")
         print("  • Frontend Developer: 0.5 FTE")
         print("  • DevOps Engineer: 0.5 FTE")
         print("  • QA Engineer: 0.5 FTE")
         print()
-        
+
         print("Infrastructure:")
         print("  • MariaDB Server (new)")
         print("  • CI/CD Pipeline")
         print("  • Monitoring Stack")
         print()
-        
+
         print("Timeline (2 weeks):")
         print("  Week 1: Database Integration + Security Audit")
         print("  Week 2: Production Deployment + Advanced Features")
         print()
-        
+
         print("Budget Estimate: $5,000 - $8,000")
-    
+
     def generate_html_dashboard(self, audit_results: Dict):
         """Generate HTML dashboard"""
         html_content = self.create_html_dashboard(audit_results)
-        
-        dashboard_file = self.workspace_root / f"noxsuite_dashboard_{self.dashboard_timestamp}.html"
-        with open(dashboard_file, 'w', encoding='utf-8') as f:
+
+        dashboard_file = (
+            self.workspace_root /
+            f"noxsuite_dashboard_{self.dashboard_timestamp}.html"
+        )
+        with open(dashboard_file, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         print(f"\n📊 HTML Dashboard: {dashboard_file}")
         print("   Open in browser for interactive view")
-    
+
     def create_html_dashboard(self, audit_results: Dict) -> str:
         """Create HTML dashboard content"""
-        workspace_audit = audit_results.get('workspace_audit', {})
-        software_health = audit_results.get('software_health', {})
-        sprint_plan = audit_results.get('next_sprint_plan', {})
-        progress = sprint_plan.get('current_progress', {})
-        
-        html = f'''<!DOCTYPE html>
+        workspace_audit = audit_results.get("workspace_audit", {})
+        software_health = audit_results.get("software_health", {})
+        sprint_plan = audit_results.get("next_sprint_plan", {})
+        progress = sprint_plan.get("current_progress", {})
+
+        html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -374,20 +402,20 @@ class SprintDashboard:
             </div>
             
             <div class="card">
-                <h2>🎯 Sprint Priorities</h2>'''
-        
-        priority_items = sprint_plan.get('priority_items', [])
+                <h2>🎯 Sprint Priorities</h2>"""
+
+        priority_items = sprint_plan.get("priority_items", [])
         for i, item in enumerate(priority_items, 1):
             priority_class = f"priority-{item['priority'].lower()}"
-            html += f'''
+            html += f"""
                 <div class="metric">
                     <span>{i}. {item['title']}</span>
                     <span class="{priority_class}">{item['priority']}</span>
                 </div>
                 <small>Effort: {item['effort']} | Tasks: {len(item.get('tasks', []))}</small>
-                <br><br>'''
-        
-        html += f'''
+                <br><br>"""
+
+        html += f"""
             </div>
         </div>
         
@@ -459,8 +487,8 @@ class SprintDashboard:
         </div>
     </div>
 </body>
-</html>'''
-        
+</html>"""
+
         return html
 
 
@@ -468,19 +496,19 @@ def main():
     """Main execution"""
     print("NoxSuite Sprint Dashboard Generator")
     print("=" * 40)
-    
+
     try:
         dashboard = SprintDashboard()
         dashboard.generate_dashboard()
-        
+
         print("\n✅ Dashboard generated successfully!")
         print("\nNext steps:")
         print("1. Review action items above")
         print("2. Execute high-priority tasks")
         print("3. Begin sprint planning")
-        
+
         return 0
-        
+
     except Exception as e:
         print(f"Dashboard generation failed: {e}")
         return 1

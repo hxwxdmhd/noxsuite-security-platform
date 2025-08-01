@@ -7,6 +7,7 @@ import json
 import time
 from pathlib import Path
 
+
 def validate_environment():
     """Validate current NoxPanel environment state"""
     project_root = Path("k:/Project Heimnetz")

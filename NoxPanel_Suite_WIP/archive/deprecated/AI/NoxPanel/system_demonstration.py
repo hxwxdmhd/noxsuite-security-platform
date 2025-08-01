@@ -4,14 +4,16 @@ NoxPanel System Status Checker & Demonstration Script
 Final validation and demonstration of all enhanced features
 """
 
+import json
 import os
 import sys
-import json
 import time
-import requests
-from pathlib import Path
-from datetime import datetime
 import webbrowser
+from datetime import datetime
+from pathlib import Path
+
+import requests
+
 
 def print_banner():
     """

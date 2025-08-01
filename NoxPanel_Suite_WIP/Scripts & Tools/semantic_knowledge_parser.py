@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -16,14 +17,14 @@ REASONING CHAIN:
 COMPLIANCE: ENHANCED - Knowledge Management System
 """
 
+import hashlib
 import json
 import logging
+import re
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, field
-import hashlib
-import re
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

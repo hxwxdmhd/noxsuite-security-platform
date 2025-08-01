@@ -18,15 +18,16 @@ NoxPanel Process Manager v4.1
 Emergency process management and system recovery
 """
 
-import psutil
-import os
-import sys
-import subprocess
-import signal
-import time
 import logging
+import os
+import signal
+import subprocess
+import sys
+import time
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
+
+import psutil
 
 logger = logging.getLogger(__name__)
 

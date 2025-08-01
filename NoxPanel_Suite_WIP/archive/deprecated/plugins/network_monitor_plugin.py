@@ -6,10 +6,12 @@ Example Plugin - Network Monitor
 This is a demonstration plugin showing enhanced features.
 """
 
-import time
 import random
-from typing import Dict, Any, List
-from unified_plugin_system_clean import ServicePlugin, PluginInfo
+import time
+from typing import Any, Dict, List
+
+from unified_plugin_system_clean import PluginInfo, ServicePlugin
+
 
 class NetworkMonitorPlugin(ServicePlugin):
     """Example network monitoring service plugin"""

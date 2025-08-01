@@ -4,12 +4,13 @@
 Automatically manages version consistency across all components
 """
 
+import json
 import os
 import re
-import json
-from pathlib import Path
-from typing import Dict, List, Any
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
+
 
 class VersionTagger:
     """Manages version consistency across NoxPanel components"""

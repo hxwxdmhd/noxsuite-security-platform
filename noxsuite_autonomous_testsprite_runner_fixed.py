@@ -1,3 +1,12 @@
+import requests
+from pathlib import Path
+from datetime import datetime
+import time
+import sys
+import subprocess
+import os
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,17 +16,6 @@ logger = get_logger(__name__)
 🧪 NoxSuite Autonomous TestSprite Testing Orchestrator (Fixed)
 Comprehensive testing with TestSprite MCP, MCP Auditor, and ChatGPT cross-validation
 """
-
-import json
-import logging
-import os
-import subprocess
-import sys
-import time
-from datetime import datetime
-from pathlib import Path
-
-import requests
 
 
 class NoxSuiteTestSpriteRunner:
@@ -62,7 +60,8 @@ class NoxSuiteTestSpriteRunner:
             if status == "SUCCESS"
             else "[FAIL]" if status == "FAILED" else "[RUN]"
         )
-        self.logger.info(f"{status_indicator} Phase: {phase} - Status: {status}")
+        self.logger.info(
+            f"{status_indicator} Phase: {phase} - Status: {status}")
         if details:
             self.logger.info(f"   Details: {details}")
 
@@ -83,13 +82,15 @@ class NoxSuiteTestSpriteRunner:
                 config = json.load(f)
                 if "TestSprite" in config.get("mcpServers", {}):
                     prerequisites["mcp_config"] = True
-                    self.log_phase("MCP Config", "SUCCESS", "TestSprite MCP configured")
+                    self.log_phase("MCP Config", "SUCCESS",
+                                   "TestSprite MCP configured")
         except Exception as e:
             self.log_phase("MCP Config", "FAILED", str(e))
 
         # Check Langflow health
         try:
-            response = requests.get(f"{self.endpoints['langflow']}/health", timeout=10)
+            response = requests.get(
+                f"{self.endpoints['langflow']}/health", timeout=10)
             if response.status_code == 200:
                 prerequisites["langflow_health"] = True
                 self.log_phase(
@@ -102,7 +103,8 @@ class NoxSuiteTestSpriteRunner:
 
         # Check TestSprite package availability (simulate)
         prerequisites["testsprite_package"] = "SIMULATION"
-        self.log_phase("TestSprite Package", "SUCCESS", "Using simulation mode")
+        self.log_phase("TestSprite Package", "SUCCESS",
+                       "Using simulation mode")
 
         # Check Docker containers
         try:
@@ -312,7 +314,8 @@ class NoxSuiteTestSpriteRunner:
                     }
 
         overall_pass_rate = (
-            round((passed_tests / total_tests) * 100, 1) if total_tests > 0 else 0
+            round((passed_tests / total_tests) *
+                  100, 1) if total_tests > 0 else 0
         )
 
         execution_summary = {
@@ -547,7 +550,8 @@ class NoxSuiteTestSpriteRunner:
         critical_tasks = len(
             [t for t in remediation_tasks if t["priority"] == "CRITICAL"]
         )
-        high_tasks = len([t for t in remediation_tasks if t["priority"] == "HIGH"])
+        high_tasks = len(
+            [t for t in remediation_tasks if t["priority"] == "HIGH"])
 
         # Determine overall health status
         pass_rate = execution_summary["pass_rate"]
@@ -688,7 +692,8 @@ class NoxSuiteTestSpriteRunner:
         }
 
         # Save comprehensive results
-        results_file = self.logs_dir / f"comprehensive_results_{self.timestamp}.json"
+        results_file = self.logs_dir / \
+            f"comprehensive_results_{self.timestamp}.json"
         with open(results_file, "w", encoding="utf-8") as f:
             json.dump(comprehensive_results, f, indent=2, ensure_ascii=False)
 
@@ -697,7 +702,8 @@ class NoxSuiteTestSpriteRunner:
         with open(summary_file, "w", encoding="utf-8") as f:
             f.write(self._generate_markdown_summary(adhd_report))
 
-        self.log_phase("Results Saving", "SUCCESS", f"Results saved to {results_file}")
+        self.log_phase("Results Saving", "SUCCESS",
+                       f"Results saved to {results_file}")
         return results_file
 
     def _generate_markdown_summary(self, adhd_report):
@@ -751,7 +757,8 @@ class NoxSuiteTestSpriteRunner:
             test_suites = self.generate_test_suites()
 
             # Phase 3: Cloud Test Execution
-            execution_results, execution_summary = self.execute_cloud_tests(test_suites)
+            execution_results, execution_summary = self.execute_cloud_tests(
+                test_suites)
 
             # Phase 4: Cross-Validation
             cross_validation = self.cross_validate_results(execution_results)
@@ -785,7 +792,8 @@ class NoxSuiteTestSpriteRunner:
             logger.info(
                 f"Overall Status: {adhd_report['EXECUTIVE_SUMMARY']['overall_status']}"
             )
-            logger.info(f"Pass Rate: {adhd_report['EXECUTIVE_SUMMARY']['pass_rate']}")
+            logger.info(
+                f"Pass Rate: {adhd_report['EXECUTIVE_SUMMARY']['pass_rate']}")
             logger.info(f"Remediation Tasks: {len(remediation_tasks)}")
             logger.info(f"Results: {results_file}")
             logger.info("=" * 60)

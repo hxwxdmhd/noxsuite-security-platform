@@ -5,12 +5,15 @@ Enhanced Plugin System Demo
 Comprehensive demonstration of all enhanced features
 """
 
-import sys
 import os
+import sys
+
 sys.path.append('.')
-from unified_plugin_system_clean import UnifiedPluginSystem
-import time
 import json
+import time
+
+from unified_plugin_system_clean import UnifiedPluginSystem
+
 
 def main():
     """Main demonstration function"""

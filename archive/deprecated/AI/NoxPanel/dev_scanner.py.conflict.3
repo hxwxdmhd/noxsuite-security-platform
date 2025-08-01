@@ -2,6 +2,13 @@
 """
 #!/usr/bin/env python3
 """
+import importlib.util
+from typing import Dict, List, Tuple, Set
+from datetime import datetime
+from pathlib import Path
+import logging
+import json
+import os
 dev_scanner.py - RLVR Enhanced Component
 
 REASONING: Component implementation following RLVR methodology v4.0+
@@ -12,24 +19,19 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 🔥 NoxPanel Development Scanner
 Hardcore project audit and auto-generation system
 """
 
-import os
-import json
-import logging
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Tuple, Set
-import importlib.util
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
 
 class NoxPanelDevScanner:
     # REASONING: NoxPanelDevScanner follows RLVR methodology for systematic validation
@@ -209,7 +211,8 @@ class NoxPanelDevScanner:
         self._generate_missing_plugins()
         self._generate_missing_configs()
 
-        logger.info(f"✅ Generated {len(self.scan_results['generated_files'])} files")
+        logger.info(
+            f"✅ Generated {len(self.scan_results['generated_files'])} files")
 
     def _generate_missing_routes(self):
     # REASONING: _generate_missing_routes implements core logic with Chain-of-Thought validation
@@ -1138,7 +1141,8 @@ class {plugin_name.title()}Utils:
         print(f"⏰ Scan Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print("\n📊 SUMMARY:")
         print(f"  • Missing Routes: {report['summary']['missing_routes']}")
-        print(f"  • Missing Templates: {report['summary']['missing_templates']}")
+        print(
+            f"  • Missing Templates: {report['summary']['missing_templates']}")
         print(f"  • Missing Plugins: {report['summary']['missing_plugins']}")
         print(f"  • Config Issues: {report['summary']['config_issues']}")
         print(f"  • Total Issues: {report['summary']['total_issues']}")
@@ -1163,7 +1167,8 @@ def main():
     if any(len(v) > 0 for v in results.values() if isinstance(v, list)):
         print("\n🛠️  Auto-generating missing components...")
         scanner.auto_generate_missing()
-        print(f"✅ Generated {len(scanner.scan_results['generated_files'])} files")
+        print(
+            f"✅ Generated {len(scanner.scan_results['generated_files'])} files")
 
     return scanner
 

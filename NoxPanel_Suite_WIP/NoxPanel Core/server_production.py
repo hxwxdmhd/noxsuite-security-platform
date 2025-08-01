@@ -10,32 +10,48 @@ This server includes:
 - Production-ready configuration
 """
 
-import os
-import sys
+import hashlib
 import json
+import logging
+import os
+import secrets
+import sys
+import threading
 import time
 import uuid
-import secrets
-import hashlib
-import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-import pymysql
-import threading
 from contextlib import contextmanager
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
 from functools import wraps
+from typing import Any, Dict, List, Optional
+
+import bleach
+import pymysql
 
 # Flask and extensions
-from flask import Flask, request, jsonify, render_template_string, session, redirect, url_for, g
+from flask import (
+    Flask,
+    g,
+    jsonify,
+    redirect,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
 from flask_cors import CORS
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    get_jwt,
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.serving import make_server
-import bleach
 
 # Production imports with fallbacks
 try:
@@ -52,16 +68,17 @@ except ImportError:
 
 try:
     import prometheus_client
-    from prometheus_client import Counter, Histogram, Gauge, generate_latest
+    from prometheus_client import Counter, Gauge, Histogram, generate_latest
     PROMETHEUS_AVAILABLE = True
 except ImportError:
     PROMETHEUS_AVAILABLE = False
 
 try:
+    import base64
+    from io import BytesIO
+
     import pyotp
     import qrcode
-    from io import BytesIO
-    import base64
     MFA_AVAILABLE = True
 except ImportError:
     MFA_AVAILABLE = False

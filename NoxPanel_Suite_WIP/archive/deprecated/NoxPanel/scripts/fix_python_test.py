@@ -19,10 +19,11 @@ Fix Python Test Failures
 Addresses the Flask-SocketIO compatibility issue found in auto-testing
 """
 
+import logging
 import os
 import sys
-import logging
 from pathlib import Path
+
 
 def fix_socketio_import():
     # REASONING: fix_socketio_import implements core logic with Chain-of-Thought validation

@@ -7,12 +7,13 @@ Smart launcher for NoxPanel modular workspace system with performance optimizati
 and intelligent module detection.
 """
 
-import os
-import sys
-import json
-import subprocess
 import argparse
+import json
+import os
+import subprocess
+import sys
 from pathlib import Path
+
 
 class NoxPanelWorkspaceLauncher:
     def __init__(self):

@@ -4,12 +4,14 @@ Network Health Check Script for NoxPanel
 Replaces healthcheck.ps1 with Python implementation
 """
 
-import subprocess
-import socket
-import time
 import json
+import socket
+import subprocess
+import time
 from datetime import datetime
+
 import psutil
+
 
 def ping_host(host, timeout=3):
     """

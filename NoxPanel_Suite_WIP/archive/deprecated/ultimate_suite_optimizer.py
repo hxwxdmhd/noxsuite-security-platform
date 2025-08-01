@@ -103,13 +103,14 @@ Current: >1,200ms for module imports
 =========================================
 """
 
+import asyncio
+import json
 import os
+import subprocess
 import sys
 import time
-import asyncio
-import subprocess
-import json
-from typing import Dict, List, Any
+from typing import Any, Dict, List
+
 
 class UltimateSuiteOptimizer:
     """Ultimate Suite v11.0 Performance Optimizer"""
@@ -195,7 +196,9 @@ class UltimateSuiteOptimizer:
         # Module import time
         start = time.time()
         try:
-            import flask, sqlalchemy, requests
+            import flask
+            import requests
+            import sqlalchemy
             metrics["core_import_ms"] = (time.time() - start) * 1000
         except ImportError:
             metrics["core_import_ms"] = -1

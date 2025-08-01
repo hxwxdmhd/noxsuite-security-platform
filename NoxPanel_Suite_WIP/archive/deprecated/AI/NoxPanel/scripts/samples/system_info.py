@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """System Information Script - Displays basic system information"""
 
+import os
 import platform
 import sys
-import os
 from datetime import datetime
+
 
 def main():
     """

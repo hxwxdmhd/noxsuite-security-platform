@@ -8,15 +8,17 @@ Handles load balancing, failover, and optimization for different AI models.
 """
 
 import asyncio
+import json
 import time
-from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass
 from enum import Enum
-import json
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
-from .index import ContextRequest, ModelType, AgentIntent, ContextForge
 from loguru import logger
+
+from .index import AgentIntent, ContextForge, ContextRequest, ModelType
+
 
 class RoutingStrategy(str, Enum):
     """Routing strategies for context delivery"""
@@ -459,7 +461,7 @@ class ContextRouter:
 # Test the router
 if __name__ == "__main__":
     from .index import contextforge
-    
+
     # Create router instance
     router = ContextRouter(contextforge)
     

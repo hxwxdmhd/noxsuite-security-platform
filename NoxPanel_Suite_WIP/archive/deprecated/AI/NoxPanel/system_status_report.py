@@ -4,8 +4,10 @@ Generated after full diagnostic and repair cycle
 """
 
 import json
-import requests
 from datetime import datetime
+
+import requests
+
 
 def test_noxpanel_endpoints():
     """

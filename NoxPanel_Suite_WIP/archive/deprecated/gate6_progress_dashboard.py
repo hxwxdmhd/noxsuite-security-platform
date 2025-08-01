@@ -16,7 +16,8 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+
 
 class Gate6ProgressDashboard:
     """Gate 6 progress dashboard and system orchestration."""

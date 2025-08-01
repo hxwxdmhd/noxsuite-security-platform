@@ -21,18 +21,19 @@ Production deployment using native Python services
 """
 
 import asyncio
+import json
 import logging
 import subprocess
 import sys
-import time
-import json
-import psutil
 import threading
-from pathlib import Path
+import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from pathlib import Path
+
+import psutil
 import requests
 import uvicorn
-from concurrent.futures import ThreadPoolExecutor
 
 # Configure logging
 logging.basicConfig(
@@ -83,9 +84,9 @@ class ProductionOrchestrator:
 
     async def create_load_balancer(self):
         """Create a simple load balancer using FastAPI"""
-        from fastapi import FastAPI, Request, HTTPException
-        from fastapi.responses import Response
         import httpx
+        from fastapi import FastAPI, HTTPException, Request
+        from fastapi.responses import Response
 
         app = FastAPI(title="Ultimate Suite Load Balancer")
 

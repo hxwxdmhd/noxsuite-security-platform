@@ -1,3 +1,9 @@
+from emergency_copilot_fix import throttler
+from pathlib import Path
+from datetime import datetime
+import time
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -8,13 +14,6 @@ ChatGPT Cross-Validation Simulator
 Simulates ChatGPT API cross-validation for TestSprite MCP results
 """
 
-import json
-import logging
-import time
-from datetime import datetime
-from pathlib import Path
-
-from emergency_copilot_fix import throttler
 
 logger = logging.getLogger("ChatGPTCrossValidator")
 

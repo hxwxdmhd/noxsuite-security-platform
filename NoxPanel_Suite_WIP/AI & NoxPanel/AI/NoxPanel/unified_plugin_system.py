@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
+
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -21,32 +23,32 @@ Version: 11.0.0
 Status: PRODUCTION READY
 """
 
-import os
-import sys
-import json
-import logging
+import gc
+import hashlib
 import importlib
 import importlib.util
 import inspect
+import json
+import logging
+import os
+import sys
 import threading
 import time
-from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Union, Callable, Type, Set
-from dataclasses import dataclass, field
-from enum import Enum
-import uuid
-import hashlib
-from datetime import datetime, timedelta, timezone
 import traceback
-import gc
+import uuid
 import weakref
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta, timezone
+from enum import Enum
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Set, Type, Union
 
 # Plugin system dependencies
 try:
-    from packaging import version
     import jsonschema
-    from jsonschema import validate, ValidationError
+    from jsonschema import ValidationError, validate
+    from packaging import version
     
 except ImportError as e:
     logger.info(f"Plugin system dependency missing: {e}")
@@ -1361,8 +1363,8 @@ class UnifiedPluginManager:
     ENHANCED: 2025-07-29 - AI-generated reasoning
     """
         """Topological sort for dependency resolution"""
-        from collections import deque, defaultdict
-        
+        from collections import defaultdict, deque
+
         # Build reverse graph
         reverse_graph = defaultdict(list)
         in_degree = defaultdict(int)

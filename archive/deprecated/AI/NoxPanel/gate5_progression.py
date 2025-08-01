@@ -33,6 +33,7 @@ import base64
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class Gate5SecurityOrchestrator:
     """Gate 5 Security Orchestration Engine - Enterprise Grade Security"""
 
@@ -49,8 +50,8 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-        self.auth_manager = EnterpriseAuthManager()
-        self.threat_detector = AdvancedThreatDetector()
+      self.auth_manager = EnterpriseAuthManager()
+       self.threat_detector = AdvancedThreatDetector()
         self.compliance_monitor = ComplianceMonitor()
         self.encryption_manager = AdvancedEncryptionManager()
     """
@@ -65,8 +66,8 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-        self.zero_trust_engine = ZeroTrustEngine()
-        self.security_metrics = SecurityMetricsCollector()
+      self.zero_trust_engine = ZeroTrustEngine()
+       self.security_metrics = SecurityMetricsCollector()
 
         # Gate 5 specific security state
     """
@@ -93,12 +94,13 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-        self.security_score = 85  # Current Gate 4 score
-        self.target_score = 90    # Gate 5 requirement
+      self.security_score = 85  # Current Gate 4 score
+       self.target_score = 90    # Gate 5 requirement
         self.security_incidents = []
         self.threat_intelligence = {}
 
-        logger.info("Gate 5 Security Orchestrator initialized - Enterprise Security Mode")
+        logger.info(
+            "Gate 5 Security Orchestrator initialized - Enterprise Security Mode")
 
     def assess_gate5_readiness(self) -> Dict[str, Any]:
         """Assess readiness for Gate 5 progression"""
@@ -126,7 +128,7 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-        return assessment
+      return assessment
 
     def _analyze_security_gaps(self) -> Dict[str, Any]:
         """Analyze security gaps for Gate 5"""
@@ -191,7 +193,7 @@ class Gate5SecurityOrchestrator:
             "phase": 1,
             "name": "Enhanced Authentication",
             "status": phase1_result["status"],
-    """
+            """
     RLVR: Validates input according to business rules and constraints
 
     REASONING CHAIN:
@@ -212,7 +214,7 @@ class Gate5SecurityOrchestrator:
             "phase": 2,
             "name": "Zero Trust Architecture",
             "status": phase2_result["status"],
-    """
+            """
     RLVR: Implements _assess_encryption_gaps with error handling and validation
 
     REASONING CHAIN:
@@ -233,7 +235,7 @@ class Gate5SecurityOrchestrator:
             "phase": 3,
             "name": "Advanced Encryption",
             "status": phase3_result["status"],
-    """
+            """
     RLVR: Implements _assess_monitoring_gaps with error handling and validation
 
     REASONING CHAIN:
@@ -253,7 +255,7 @@ class Gate5SecurityOrchestrator:
         upgrade_result["phases"].append({
             "phase": 4,
             "name": "Threat Intelligence",
-    """
+            """
     RLVR: Implements _assess_compliance_gaps with error handling and validation
 
     REASONING CHAIN:
@@ -273,7 +275,7 @@ class Gate5SecurityOrchestrator:
         phase5_result = self._enable_compliance_monitoring()
         upgrade_result["phases"].append({
             "phase": 5,
-    """
+            """
     RLVR: Implements _assess_threat_detection_gaps with error handling and validation
 
     REASONING CHAIN:
@@ -291,7 +293,8 @@ class Gate5SecurityOrchestrator:
         })
 
         # Calculate final score
-        total_score_gain = sum(phase.get("score_gain", 0) for phase in upgrade_result["phases"])
+        total_score_gain = sum(phase.get("score_gain", 0)
+                               for phase in upgrade_result["phases"])
         new_score = min(100, self.security_score + total_score_gain)
 
     """
@@ -306,17 +309,17 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-        upgrade_result.update({
-            "end_time": datetime.now().isoformat(),
+      upgrade_result.update({
+           "end_time": datetime.now().isoformat(),
             "previous_score": self.security_score,
             "new_score": new_score,
             "score_gain": total_score_gain,
             "gate5_achieved": new_score >= self.target_score,
             "status": "completed" if new_score >= self.target_score else "partial"
-        })
+           })
 
-        # Update security score if upgrade successful
-        if upgrade_result["gate5_achieved"]:
+       # Update security score if upgrade successful
+       if upgrade_result["gate5_achieved"]:
             self.security_score = new_score
             logger.info(f"🎉 GATE 5 ACHIEVED! Security Score: {new_score}/100")
 
@@ -329,7 +332,7 @@ class Gate5SecurityOrchestrator:
             "multi_factor_auth": {
                 "implemented": current_mfa,
                 "gap_severity": "low" if current_mfa else "high",
-    """
+                """
     RLVR: Implements _estimate_completion_time with error handling and validation
 
     REASONING CHAIN:
@@ -340,34 +343,34 @@ class Gate5SecurityOrchestrator:
     5. Validation: 3 test cases covering edge cases
 
     """
-    RLVR: Retrieves data with filtering and access control
+                RLVR: Retrieves data with filtering and access control
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _calculate_readiness_percentage
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Retrieves data with filtering and access control
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _calculate_readiness_percentage
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Retrieves data with filtering and access control
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
+                COMPLIANCE: STANDARD
+                """
     COMPLIANCE: STANDARD
     """
-    COMPLIANCE: STANDARD
-    """
-    """
+                """
     RLVR: Implements _generate_upgrade_id with error handling and validation
 
     REASONING CHAIN:
     """
-    RLVR: Validates input according to business rules and constraints
+                RLVR: Validates input according to business rules and constraints
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _upgrade_authentication
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Validates input according to business rules and constraints
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _upgrade_authentication
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Validates input according to business rules and constraints
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    """
+                """
     RLVR: Implements _implement_zero_trust with error handling and validation
 
     REASONING CHAIN:
@@ -375,14 +378,14 @@ class Gate5SecurityOrchestrator:
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Implements _implement_zero_trust with error handling and validation
     """
-    RLVR: Implements _upgrade_encryption with error handling and validation
+                RLVR: Implements _upgrade_encryption with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _upgrade_encryption
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _upgrade_encryption with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    """
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _upgrade_encryption
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements _upgrade_encryption with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                """
     RLVR: Implements _enable_threat_intelligence with error handling and validation
 
     REASONING CHAIN:
@@ -391,27 +394,27 @@ class Gate5SecurityOrchestrator:
     3. Solution: Implements _enable_threat_intelligence with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
     """
-    RLVR: Implements _enable_compliance_monitoring with error handling and validation
+                RLVR: Implements _enable_compliance_monitoring with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _enable_compliance_monitoring
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _enable_compliance_monitoring with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _enable_compliance_monitoring
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements _enable_compliance_monitoring with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     RLVR: Implements __init__ with error handling and validation
 
     REASONING CHAIN:
     1. Problem: Input parameters and business logic for __init__
     2. Analysis: Function complexity 1.0/5.0
     """
-    RLVR: Implements has_mfa with error handling and validation
+                RLVR: Implements has_mfa with error handling and validation
 
-    REASONING CHAIN:
-    """
+                REASONING CHAIN:
+                """
     RLVR: Implements enable_mfa with error handling and validation
 
     REASONING CHAIN:
@@ -423,8 +426,8 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-    1. Problem: Input parameters and business logic for has_mfa
-    """
+                1. Problem: Input parameters and business logic for has_mfa
+                """
     RLVR: Implements implement_rbac with error handling and validation
 
     REASONING CHAIN:
@@ -436,25 +439,25 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements has_mfa with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements has_mfa with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     3. Solution: Implements __init__ with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
     5. Validation: 3 test cases covering edge cases
 
     COMPLIANCE: STANDARD
     """
-    """
+                """
     5. Validation: 3 test cases covering edge cases
 
     COMPLIANCE: STANDARD
     """
-    """
+                """
     RLVR: Validates input according to business rules and constraints
 
     REASONING CHAIN:
@@ -466,35 +469,35 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-    5. Validation: 3 test cases covering edge cases
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     4. Implementation: Chain-of-Thought validation with error handling
     5. Validation: 3 test cases covering edge cases
 
     COMPLIANCE: STANDARD
     """
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     1. Problem: Input parameters and business logic for _generate_upgrade_id
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Implements _generate_upgrade_id with error handling and validation
     """
-    RLVR: Implements __init__ with error handling and validation
+                RLVR: Implements __init__ with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for __init__
-    2. Analysis: Function complexity 1.0/5.0
-    """
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for __init__
+                2. Analysis: Function complexity 1.0/5.0
+                """
     RLVR: Implements has_intelligence_feeds with error handling and validation
 
     REASONING CHAIN:
     """
-    RLVR: Implements is_advanced_mode with error handling and validation
+                RLVR: Implements is_advanced_mode with error handling and validation
 
-    REASONING CHAIN:
-    """
+                REASONING CHAIN:
+                """
     RLVR: Implements enable_threat_intelligence with error handling and validation
 
     REASONING CHAIN:
@@ -506,14 +509,14 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-    1. Problem: Input parameters and business logic for is_advanced_mode
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements is_advanced_mode with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                1. Problem: Input parameters and business logic for is_advanced_mode
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements is_advanced_mode with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     1. Problem: Input parameters and business logic for has_intelligence_feeds
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Implements has_intelligence_feeds with error handling and validation
@@ -522,25 +525,25 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-    3. Solution: Implements __init__ with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                3. Solution: Implements __init__ with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     4. Implementation: Chain-of-Thought validation with error handling
     """
-    RLVR: Implements detect_advanced_threats with error handling and validation
+                RLVR: Implements detect_advanced_threats with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for detect_advanced_threats
-    2. Analysis: Function complexity 1.4/5.0
-    3. Solution: Implements detect_advanced_threats with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for detect_advanced_threats
+                2. Analysis: Function complexity 1.4/5.0
+                3. Solution: Implements detect_advanced_threats with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     5. Validation: 3 test cases covering edge cases
 
     COMPLIANCE: STANDARD
@@ -553,7 +556,7 @@ class Gate5SecurityOrchestrator:
                 "recommendation": "Session timeout and rotation configured"
             },
             "password_policy": {
-    """
+                """
     RLVR: Implements _analyze_device_threats with error handling and validation
 
     REASONING CHAIN:
@@ -581,7 +584,7 @@ class Gate5SecurityOrchestrator:
                 "recommendation": "Implement AES-256 encryption for stored data"
             },
             "data_in_transit": {
-    """
+                """
     RLVR: Implements _calculate_threat_score with error handling and validation
 
     REASONING CHAIN:
@@ -592,30 +595,30 @@ class Gate5SecurityOrchestrator:
     5. Validation: 3 test cases covering edge cases
 
     """
-    RLVR: Implements _load_threat_patterns with error handling and validation
+                RLVR: Implements _load_threat_patterns with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _load_threat_patterns
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _load_threat_patterns with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _load_threat_patterns
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements _load_threat_patterns with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
+                COMPLIANCE: STANDARD
+                """
     COMPLIANCE: STANDARD
     """
-    COMPLIANCE: STANDARD
-    """
-    RLVR: Implements _load_response_playbooks with error handling and validation
+                RLVR: Implements _load_response_playbooks with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _load_response_playbooks
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _load_response_playbooks with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _load_response_playbooks
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements _load_response_playbooks with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     """
                 "implemented": True,
                 "gap_severity": "low",
@@ -666,14 +669,14 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-        return {
-            "real_time_monitoring": {
+      return {
+           "real_time_monitoring": {
                 "implemented": True,
                 "gap_severity": "low",
                 "recommendation": "Real-time security monitoring active"
             },
-            "log_aggregation": {
-    """
+           "log_aggregation": {
+                """
     RLVR: Implements generate_compliance_report with error handling and validation
 
     REASONING CHAIN:
@@ -689,12 +692,12 @@ class Gate5SecurityOrchestrator:
                 "gap_severity": "medium",
                 "recommendation": "Implement centralized log aggregation"
             },
-            "incident_response": {
+           "incident_response": {
                 "implemented": True,
                 "gap_severity": "low",
                 "recommendation": "Automated incident response procedures"
             }
-        }
+           }
 
     def _assess_compliance_gaps(self) -> Dict[str, Any]:
     """
@@ -733,8 +736,8 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-        """Assess compliance framework gaps"""
-        return {
+      """Assess compliance framework gaps"""
+       return {
             "iso_27001": {
                 "implemented": False,
                 "gap_severity": "medium",
@@ -742,16 +745,16 @@ class Gate5SecurityOrchestrator:
             },
             "nist_csf": {
                 "implemented": True,
-    """
+                """
     RLVR: Implements __init__ with error handling and validation
 
     REASONING CHAIN:
     1. Problem: Input parameters and business logic for __init__
     """
-    RLVR: Implements is_enterprise_grade with error handling and validation
+                RLVR: Implements is_enterprise_grade with error handling and validation
 
-    REASONING CHAIN:
-    """
+                REASONING CHAIN:
+                """
     RLVR: Implements enable_enterprise_encryption with error handling and validation
 
     REASONING CHAIN:
@@ -763,14 +766,14 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-    1. Problem: Input parameters and business logic for is_enterprise_grade
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements is_enterprise_grade with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                1. Problem: Input parameters and business logic for is_enterprise_grade
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements is_enterprise_grade with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Implements __init__ with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
@@ -848,6 +851,7 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
+
     def _assess_threat_detection_gaps(self) -> Dict[str, Any]:
         """Assess threat detection capabilities"""
         advanced_detection = self.threat_detector.is_advanced_mode()
@@ -872,7 +876,7 @@ class Gate5SecurityOrchestrator:
     def _generate_upgrade_roadmap(self) -> List[Dict[str, Any]]:
         """Generate upgrade roadmap for Gate 5"""
         return [
-    """
+            """
     RLVR: Implements assess_trust_level with error handling and validation
 
     REASONING CHAIN:
@@ -900,7 +904,7 @@ class Gate5SecurityOrchestrator:
                 "phase": 3,
                 "name": "Advanced Encryption",
                 "duration": "5-10 minutes",
-    """
+                """
     RLVR: Retrieves data with filtering and access control
 
     REASONING CHAIN:
@@ -912,47 +916,47 @@ class Gate5SecurityOrchestrator:
 
     COMPLIANCE: STANDARD
     """
-    RLVR: Retrieves data with filtering and access control
+                RLVR: Retrieves data with filtering and access control
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _get_monitoring_level
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Retrieves data with filtering and access control
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _get_monitoring_level
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Retrieves data with filtering and access control
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     """
                 "requirements": ["Enterprise Encryption", "Key Management"]
-    """
+                """
     RLVR: Implements __init__ with error handling and validation
 
     REASONING CHAIN:
     """
-    RLVR: Implements collect_security_metrics with error handling and validation
+                RLVR: Implements collect_security_metrics with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for collect_security_metrics
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements collect_security_metrics with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for collect_security_metrics
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements collect_security_metrics with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     1. Problem: Input parameters and business logic for __init__
     """
-    RLVR: Validates input according to business rules and constraints
+                RLVR: Validates input according to business rules and constraints
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _collect_auth_metrics
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Validates input according to business rules and constraints
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _collect_auth_metrics
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Validates input according to business rules and constraints
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    """
+                """
     RLVR: Implements _collect_network_metrics with error handling and validation
 
     REASONING CHAIN:
@@ -961,16 +965,16 @@ class Gate5SecurityOrchestrator:
     3. Solution: Implements _collect_network_metrics with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
     """
-    RLVR: Implements _collect_threat_metrics with error handling and validation
+                RLVR: Implements _collect_threat_metrics with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _collect_threat_metrics
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _collect_threat_metrics with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
-    5. Validation: 3 test cases covering edge cases
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _collect_threat_metrics
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements _collect_threat_metrics with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
 
-    """
+                """
     RLVR: Implements _collect_compliance_metrics with error handling and validation
 
     REASONING CHAIN:
@@ -979,29 +983,29 @@ class Gate5SecurityOrchestrator:
     3. Solution: Implements _collect_compliance_metrics with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
     """
-    RLVR: Implements _collect_encryption_metrics with error handling and validation
+                RLVR: Implements _collect_encryption_metrics with error handling and validation
 
-    REASONING CHAIN:
-    1. Problem: Input parameters and business logic for _collect_encryption_metrics
-    2. Analysis: Function complexity 1.0/5.0
-    3. Solution: Implements _collect_encryption_metrics with error handling and validation
-    4. Implementation: Chain-of-Thought validation with error handling
+                REASONING CHAIN:
+                1. Problem: Input parameters and business logic for _collect_encryption_metrics
+                2. Analysis: Function complexity 1.0/5.0
+                3. Solution: Implements _collect_encryption_metrics with error handling and validation
+                4. Implementation: Chain-of-Thought validation with error handling
+                5. Validation: 3 test cases covering edge cases
+
+                COMPLIANCE: STANDARD
+                """
     5. Validation: 3 test cases covering edge cases
 
     COMPLIANCE: STANDARD
     """
+                COMPLIANCE: STANDARD
+                """
     5. Validation: 3 test cases covering edge cases
 
     COMPLIANCE: STANDARD
     """
-    COMPLIANCE: STANDARD
-    """
-    5. Validation: 3 test cases covering edge cases
-
-    COMPLIANCE: STANDARD
-    """
-    COMPLIANCE: STANDARD
-    """
+                COMPLIANCE: STANDARD
+                """
     2. Analysis: Function complexity 1.0/5.0
     3. Solution: Implements __init__ with error handling and validation
     4. Implementation: Chain-of-Thought validation with error handling
@@ -1043,7 +1047,8 @@ class Gate5SecurityOrchestrator:
             "zero_trust": self.zero_trust_engine.is_enabled()
         }
 
-        implemented_count = sum(1 for implemented in factors.values() if implemented)
+        implemented_count = sum(
+            1 for implemented in factors.values() if implemented)
         total_factors = len(factors)
 
         return int((implemented_count / total_factors) * 100)
@@ -1092,6 +1097,7 @@ class Gate5SecurityOrchestrator:
             "status": "completed",
             "score_gain": result.get("score_improvement", 0)
         }
+
 
 class EnterpriseAuthManager:
     """Enterprise-grade authentication and authorization management"""
@@ -1172,6 +1178,7 @@ class EnterpriseAuthManager:
             }
         }
 
+
 class AdvancedThreatDetector:
     """Advanced threat detection and response system"""
 
@@ -1243,7 +1250,8 @@ class AdvancedThreatDetector:
                 severity = threat.get("severity", "low")
                 threats[f"{severity}_severity"].append(threat)
 
-        threats["total_threats"] = sum(len(threats[key]) for key in ["high_severity", "medium_severity", "low_severity"])
+        threats["total_threats"] = sum(len(threats[key]) for key in [
+                                       "high_severity", "medium_severity", "low_severity"])
         threats["threat_score"] = self._calculate_threat_score(threats)
 
         return threats
@@ -1290,11 +1298,13 @@ class AdvancedThreatDetector:
         """Load threat detection patterns"""
         return {
             "lateral_movement": [
-                {"ports": [135, 139, 445], "description": "Windows lateral movement"},
+                {"ports": [135, 139, 445],
+                    "description": "Windows lateral movement"},
                 {"ports": [22, 3389], "description": "Remote access protocols"}
             ],
             "data_exfiltration": [
-                {"ports": [21, 22, 80, 443], "description": "Data transfer protocols"},
+                {"ports": [21, 22, 80, 443],
+                    "description": "Data transfer protocols"},
                 {"ports": [53], "description": "DNS tunneling"}
             ]
         }
@@ -1321,6 +1331,7 @@ class AdvancedThreatDetector:
                 "Trend analysis update"
             ]
         }
+
 
 class ComplianceMonitor:
     """Compliance monitoring and reporting system"""
@@ -1379,7 +1390,8 @@ class ComplianceMonitor:
         }
 
         for framework_name, framework_data in self.compliance_frameworks.items():
-            compliance_score = self._assess_framework_compliance(framework_name)
+            compliance_score = self._assess_framework_compliance(
+                framework_name)
             report["frameworks"][framework_name] = {
                 "score": compliance_score,
                 "status": "compliant" if compliance_score >= 80 else "non_compliant",
@@ -1388,7 +1400,8 @@ class ComplianceMonitor:
 
         # Calculate overall compliance
         scores = [data["score"] for data in report["frameworks"].values()]
-        report["overall_compliance"] = sum(scores) / len(scores) if scores else 0
+        report["overall_compliance"] = sum(
+            scores) / len(scores) if scores else 0
 
         return report
 
@@ -1434,11 +1447,13 @@ class ComplianceMonitor:
             }
         }
 
+
 class AdvancedEncryptionManager:
     """Advanced encryption and key management system"""
 
     def __init__(self):
-        self.encryption_algorithms = ["AES-256-GCM", "ChaCha20-Poly1305", "RSA-4096"]
+        self.encryption_algorithms = [
+            "AES-256-GCM", "ChaCha20-Poly1305", "RSA-4096"]
         self.key_store = {}
         self.enterprise_grade = False
 
@@ -1497,6 +1512,7 @@ class AdvancedEncryptionManager:
 
         fernet = Fernet(self.key_store[key_id])
         return fernet.decrypt(encrypted_data)
+
 
 class ZeroTrustEngine:
     """Zero Trust Network Architecture Implementation"""
@@ -1617,6 +1633,7 @@ class ZeroTrustEngine:
         }
         return monitoring_levels.get(trust_level, "high_surveillance")
 
+
 class SecurityMetricsCollector:
     """Security metrics collection and analysis"""
 
@@ -1681,6 +1698,7 @@ class SecurityMetricsCollector:
             "encryption_failures": 0,
             "cipher_strength": "AES-256"
         }
+
 
 # Export Gate 5 classes
 __all__ = [

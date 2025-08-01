@@ -4,14 +4,16 @@ FastAPI implementation for HTTP access to ContextForge services
 Part of the Heimnetz Enterprise Suite
 """
 
-from fastapi import FastAPI, HTTPException, Query, Body
+import asyncio
+import json
+from typing import Any, Dict, List, Optional
+
+from fastapi import Body, FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from typing import Dict, Any, Optional, List
-import asyncio
+
 from .index import ContextForge
 from .service_integration import service_integration
-import json
 
 # Initialize FastAPI app
 app = FastAPI(

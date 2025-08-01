@@ -1,11 +1,12 @@
 from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 
 from auth.auth_service import get_current_user
-from auth.rbac_service import RBACService, Permission
-from backend.api.user_service import UserService
+from auth.rbac_service import Permission, RBACService
 from backend.api.admin_service import AdminService
+from backend.api.user_service import UserService
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -25,14 +26,16 @@ class UserUpdateRequest(BaseModel):
 
 def require_permission(permission: Permission):
     """Decorator factory for permission-based access control"""
+
     def permission_checker(current_user=Depends(get_current_user)):
         rbac = RBACService()
         if not rbac.check_permission(current_user["user_id"], permission):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Permission required: {permission.value}"
+                detail=f"Permission required: {permission.value}",
             )
         return current_user
+
     return permission_checker
 
 
@@ -44,7 +47,7 @@ async def health_check():
         "status": "healthy",
         "timestamp": datetime.utcnow().isoformat(),
         "version": "1.0.0",
-        "environment": "development"
+        "environment": "development",
     }
 
 
@@ -56,14 +59,10 @@ async def system_status():
             "auth": "operational",
             "database": "operational",
             "mfa": "operational",
-            "rbac": "operational"
+            "rbac": "operational",
         },
-        "metrics": {
-            "uptime": "99.9%",
-            "response_time_ms": 150,
-            "active_sessions": 5
-        },
-        "timestamp": datetime.utcnow().isoformat()
+        "metrics": {"uptime": "99.9%", "response_time_ms": 150, "active_sessions": 5},
+        "timestamp": datetime.utcnow().isoformat(),
     }
 
 
@@ -79,8 +78,7 @@ async def get_current_user_info(current_user=Depends(get_current_user)):
 
 @api_router.put("/users/me")
 async def update_current_user(
-    updates: UserUpdateRequest,
-    current_user=Depends(get_current_user)
+    updates: UserUpdateRequest, current_user=Depends(get_current_user)
 ):
     """Update current user profile"""
     update_data = updates.dict(exclude_unset=True)
@@ -89,23 +87,21 @@ async def update_current_user(
 
 
 @api_router.get("/users")
-async def list_users(
-    current_user=Depends(require_permission(Permission.USER_VIEW))
-):
+async def list_users(current_user=Depends(require_permission(Permission.USER_VIEW))):
     """List all users (requires USER_VIEW permission)"""
     return {
         "users": [
             UserService.get_user_by_id("admin"),
-            UserService.get_user_by_id("user1")
+            UserService.get_user_by_id("user1"),
         ],
-        "total": 2
+        "total": 2,
     }
 
 
 @api_router.post("/users")
 async def create_user(
     user_request: UserCreateRequest,
-    current_user=Depends(require_permission(Permission.USER_CREATE))
+    current_user=Depends(require_permission(Permission.USER_CREATE)),
 ):
     """Create new user (requires USER_CREATE permission)"""
     user_data = user_request.dict()
@@ -116,7 +112,7 @@ async def create_user(
 # Admin endpoints
 @api_router.get("/admin/dashboard")
 async def admin_dashboard(
-    current_user=Depends(require_permission(Permission.ADMIN_ACCESS))
+    current_user=Depends(require_permission(Permission.ADMIN_ACCESS)),
 ):
     """Admin dashboard data (requires ADMIN_ACCESS permission)"""
     AdminService.verify_admin_access(current_user)
@@ -130,14 +126,14 @@ async def admin_dashboard(
             "auth_service": "healthy",
             "mfa_service": "healthy",
             "rbac_service": "healthy",
-            "api_service": "healthy"
-        }
+            "api_service": "healthy",
+        },
     }
 
 
 @api_router.get("/admin/users/stats")
 async def get_user_statistics(
-    current_user=Depends(require_permission(Permission.ADMIN_ACCESS))
+    current_user=Depends(require_permission(Permission.ADMIN_ACCESS)),
 ):
     """Get detailed user statistics"""
     return UserService.get_user_stats()
@@ -151,7 +147,7 @@ async def get_mfa_status(current_user=Depends(get_current_user)):
     return {
         "mfa_enabled": user.get("mfa_enabled", False),
         "backup_codes_count": 0,  # Placeholder
-        "last_used": None
+        "last_used": None,
     }
 
 
@@ -164,5 +160,5 @@ async def get_my_permissions(current_user=Depends(get_current_user)):
     return {
         "user_id": current_user["user_id"],
         "permissions": permissions,
-        "role": current_user.get("role", "user")
+        "role": current_user.get("role", "user"),
     }

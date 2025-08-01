@@ -13,16 +13,16 @@ Features:
 - Offline voice recognition options
 """
 
+import logging
+import queue
 import threading
 import time
-import queue
-import logging
-from typing import Optional, Callable, Dict, Any
+from typing import Any, Callable, Dict, Optional
 
 # Voice dependencies (optional)
 try:
-    import speech_recognition as sr
     import pyttsx3
+    import speech_recognition as sr
     VOICE_AVAILABLE = True
 except ImportError:
     VOICE_AVAILABLE = False

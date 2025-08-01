@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -17,6 +18,7 @@ DASHBOARD CHAIN:
 
 import asyncio
 import json
+
 impo        // Add real-time log updates
         function addLogEntry(level, message) {{
             const logContainer = document.getElementById('systemLog');

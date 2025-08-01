@@ -4,13 +4,14 @@ Heimnetz Enterprise Master Dashboard
 Complete overview of all Audit 5 implementations
 """
 
+import json
+import logging
 import os
 import sys
-import json
 import time
-import logging
 from datetime import datetime
 from pathlib import Path
+
 from flask import Flask, render_template_string
 
 # Configure logging

@@ -3,8 +3,9 @@ NoxPanel v3.1 - Model Management API
 Provides endpoints for AI model detection and management
 """
 
-from flask import Blueprint, request, jsonify
 import logging
+
+from flask import Blueprint, jsonify, request
 
 # Import model detection (with fallback)
 try:

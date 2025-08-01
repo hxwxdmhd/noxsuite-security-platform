@@ -26,6 +26,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class SimpleStatusSaver:
     """Simple automated status saver"""
 

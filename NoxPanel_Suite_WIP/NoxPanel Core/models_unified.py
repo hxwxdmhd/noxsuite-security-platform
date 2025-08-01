@@ -1,4 +1,5 @@
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -16,16 +17,17 @@ This is the SINGLE, UNIFIED models implementation that consolidates:
 ARCHITECTURAL PRINCIPLE: ONE MODELS FILE FOR ALL DATA
 """
 
-import os
-import pymysql
+import hashlib
 import json
 import logging
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Union
-from dataclasses import dataclass, field
-from enum import Enum
-import hashlib
+import os
 import secrets
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Dict, List, Optional, Union
+
+import pymysql
 
 # Logging
 logger = logging.getLogger(__name__)
@@ -195,23 +197,38 @@ class User:
 
 # Database dependencies
 try:
-    from sqlalchemy import (
-        create_engine, Column, Integer, String, DateTime, Boolean, 
-        Text, JSON, Float, ForeignKey, Index, UniqueConstraint,
-        Table, MetaData, event, text
-    )
-    from sqlalchemy.ext.declarative import declarative_base
-    from sqlalchemy.orm import (
-        sessionmaker, relationship, scoped_session, Session,
-        validates
-    )
-    from sqlalchemy.dialects.postgresql import UUID, JSONB
-    from sqlalchemy.pool import QueuePool
-    from sqlalchemy.engine import Engine
-    from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-    
     import psycopg2
     from psycopg2.extras import RealDictCursor
+    from sqlalchemy import (
+        JSON,
+        Boolean,
+        Column,
+        DateTime,
+        Float,
+        ForeignKey,
+        Index,
+        Integer,
+        MetaData,
+        String,
+        Table,
+        Text,
+        UniqueConstraint,
+        create_engine,
+        event,
+        text,
+    )
+    from sqlalchemy.dialects.postgresql import JSONB, UUID
+    from sqlalchemy.engine import Engine
+    from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+    from sqlalchemy.ext.declarative import declarative_base
+    from sqlalchemy.orm import (
+        Session,
+        relationship,
+        scoped_session,
+        sessionmaker,
+        validates,
+    )
+    from sqlalchemy.pool import QueuePool
     
 except ImportError as e:
     logger.info(f"Critical database dependency missing: {e}")

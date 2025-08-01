@@ -3,10 +3,11 @@ NoxPanel Quick Restart Script
 Fixes critical issues and restarts the server with enhanced connection durability
 """
 
+import os
 import subprocess
 import sys
 import time
-import os
+
 
 def main():
     """

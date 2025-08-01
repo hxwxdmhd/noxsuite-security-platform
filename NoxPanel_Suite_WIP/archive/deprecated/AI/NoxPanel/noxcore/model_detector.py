@@ -18,14 +18,15 @@ NoxPanel v3.1 - AI Model Detection & Management
 Automatically discovers and manages local AI/LLM models
 """
 
-import os
 import json
-import requests
-import subprocess
-import platform
-from typing import Dict, List, Optional, Tuple
-from pathlib import Path
 import logging
+import os
+import platform
+import subprocess
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -260,6 +261,7 @@ class GPT4AllProvider(ModelProvider):
 
         try:
             import gpt4all
+
             # Get available models from GPT4All
             available_models = gpt4all.GPT4All.list_models()
             for model in available_models:

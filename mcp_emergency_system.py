@@ -1,3 +1,11 @@
+from emergency_copilot_fix import throttler
+import requests
+from typing import Any, Dict, List
+from datetime import datetime
+import time
+import subprocess
+import logging
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,16 +15,6 @@ logger = get_logger(__name__)
 NoxSuite MCP Emergency System - Handles both CVE and 128 Tools Limit
 Specifically designed for your Langflow MCP configuration
 """
-import json
-import logging
-import subprocess
-import time
-from datetime import datetime
-from typing import Any, Dict, List
-
-import requests
-
-from emergency_copilot_fix import throttler
 
 
 class MCPEmergencySystem:
@@ -47,7 +45,8 @@ class MCPEmergencySystem:
                             # Extract project ID from URL
                             parts = arg.split("project/")[1].split("/")
                             self.project_id = parts[0]
-                            self.logger.info(f"🆔 Found project ID: {self.project_id}")
+                            self.logger.info(
+                                f"🆔 Found project ID: {self.project_id}")
 
         except Exception as e:
             self.logger.error(f"❌ Failed to load MCP config: {e}")
@@ -57,7 +56,8 @@ class MCPEmergencySystem:
 
         def health_check():
             try:
-                response = requests.get(f"{self.langflow_url}/health", timeout=5)
+                response = requests.get(
+                    f"{self.langflow_url}/health", timeout=5)
                 return {
                     "status": "healthy" if response.status_code == 200 else "degraded",
                     "status_code": response.status_code,
@@ -84,7 +84,8 @@ class MCPEmergencySystem:
 
                 return {
                     "status": (
-                        "accessible" if response.status_code in [200, 404] else "error"
+                        "accessible" if response.status_code in [
+                            200, 404] else "error"
                     ),
                     "status_code": response.status_code,
                     "endpoint": mcp_url,
@@ -122,10 +123,12 @@ class MCPEmergencySystem:
                 if "noxsuite-langflow" in result.stdout:
                     # Stop container
                     self.logger.info("🛑 Stopping vulnerable container...")
-                    subprocess.run(["docker", "stop", "noxsuite-langflow"], check=True)
+                    subprocess.run(
+                        ["docker", "stop", "noxsuite-langflow"], check=True)
 
                     # Remove old container
-                    subprocess.run(["docker", "rm", "noxsuite-langflow"], check=True)
+                    subprocess.run(
+                        ["docker", "rm", "noxsuite-langflow"], check=True)
 
                 # Pull latest secure image
                 self.logger.info("⬇️ Pulling latest secure image...")

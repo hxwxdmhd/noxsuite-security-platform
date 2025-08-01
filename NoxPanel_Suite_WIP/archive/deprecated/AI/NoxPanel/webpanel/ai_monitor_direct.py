@@ -3,9 +3,10 @@ Simple AI Monitor API - Direct Route Registration
 Bypass blueprint issues with direct Flask route registration
 """
 
-from flask import jsonify, request
-from datetime import datetime
 import logging
+from datetime import datetime
+
+from flask import jsonify, request
 from noxcore.ai_monitor import get_monitor, heal_all_ai_models_now
 
 logger = logging.getLogger(__name__)

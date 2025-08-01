@@ -7,14 +7,14 @@ Leverages the discovered professional-grade testing infrastructure to achieve 90
 Executes comprehensive testing across all layers identified in the audit.
 """
 
+import asyncio
+import json
+import logging
 import os
 import sys
 import time
-import json
-import asyncio
-import logging
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
 
 # Setup logging
 logging.basicConfig(
@@ -245,7 +245,7 @@ class Phase3TestingExecutor:
         try:
             sys.path.insert(0, str(self.noxpanel_root))
             from noxcore.database_pool import DatabaseConnectionPool
-            
+
             # Test can be instantiated
             pool = DatabaseConnectionPool()
             logger.info("      ✅ Database pool initialization")
@@ -411,7 +411,7 @@ class Phase3TestingExecutor:
         try:
             sys.path.insert(0, str(self.noxpanel_root))
             from webpanel.app_v5 import create_app
-            
+
             # Create app instance using factory function
             app = create_app()
             
@@ -478,8 +478,8 @@ class Phase3TestingExecutor:
         """Test that all major components can be imported together"""
         try:
             sys.path.insert(0, str(self.noxpanel_root))
-            from noxcore.security_config import EnvironmentSecurityManager
             from noxcore.blueprint_registry import BlueprintRegistry
+            from noxcore.security_config import EnvironmentSecurityManager
             from noxcore.security_headers import SecurityHeadersManager
             return True
         except Exception:

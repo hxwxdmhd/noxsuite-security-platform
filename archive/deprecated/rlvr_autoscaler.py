@@ -12,6 +12,7 @@ import psutil
 from datetime import datetime, timedelta
 from typing import Dict, List
 
+
 class RLVRAutoScaler:
     # REASONING: RLVRAutoScaler follows RLVR methodology for systematic validation
     """Auto-scaler with reasoning validation for each decision"""

@@ -12,14 +12,15 @@ Usage:
     python scripts/audit_launcher.py --run-sequence  # Run available gates in sequence
 """
 
-import os
-import sys
-import json
-import subprocess
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Optional
 import argparse
+import json
+import os
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional
+
 
 class AuditSystemController:
     """Controls the 8-gate audit system with progressive unlocking"""

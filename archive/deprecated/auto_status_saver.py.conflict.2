@@ -31,6 +31,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class UltimateSuiteStatusSaver:
     """Automated status saving system for Ultimate Suite v11.0"""
 
@@ -61,7 +62,8 @@ class UltimateSuiteStatusSaver:
             self.docker_client = docker.from_env()
             logger.info("Docker client initialized successfully")
         except ImportError:
-            logger.warning("Docker package not found - container monitoring disabled")
+            logger.warning(
+                "Docker package not found - container monitoring disabled")
         except Exception as e:
             logger.warning(f"Docker client initialization failed: {e}")
 
@@ -170,12 +172,14 @@ class UltimateSuiteStatusSaver:
                                stats['precpu_stats']['cpu_usage']['total_usage']
                     system_delta = stats['cpu_stats']['system_cpu_usage'] - \
                                   stats['precpu_stats']['system_cpu_usage']
-                    cpu_percent = (cpu_delta / system_delta) * 100.0 if system_delta > 0 else 0.0
+                    cpu_percent = (cpu_delta / system_delta) * \
+                                   100.0 if system_delta > 0 else 0.0
 
                     # Calculate memory usage
                     memory_usage = stats['memory_stats'].get('usage', 0)
                     memory_limit = stats['memory_stats'].get('limit', 0)
-                    memory_percent = (memory_usage / memory_limit) * 100.0 if memory_limit > 0 else 0.0
+                    memory_percent = (memory_usage / memory_limit) * \
+                                      100.0 if memory_limit > 0 else 0.0
 
                     container_info = {
                         "name": container.name,
@@ -309,13 +313,16 @@ class UltimateSuiteStatusSaver:
         """Get performance metrics from the FastAPI server"""
         try:
             # Test basic health
-            health_response = requests.get("http://localhost:8000/health", timeout=5)
+            health_response = requests.get(
+                "http://localhost:8000/health", timeout=5)
 
             # Test GPU if available
-            gpu_test_response = requests.post("http://localhost:8000/ai/gpu-test", timeout=10)
+            gpu_test_response = requests.post(
+                "http://localhost:8000/ai/gpu-test", timeout=10)
 
             # Get module status
-            modules_response = requests.get("http://localhost:8000/modules/status", timeout=5)
+            modules_response = requests.get(
+                "http://localhost:8000/modules/status", timeout=5)
 
             return {
                 "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -413,7 +420,8 @@ class UltimateSuiteStatusSaver:
             await self.create_summary_report(status, timestamp)
 
             file_size = filepath.stat().st_size
-            logger.info(f"✅ Status snapshot saved: {filename} ({file_size} bytes)")
+            logger.info(
+                f"✅ Status snapshot saved: {filename} ({file_size} bytes)")
 
             self.last_save_time = datetime.now()
             return str(filepath)
@@ -450,9 +458,11 @@ class UltimateSuiteStatusSaver:
 ## 🐳 Container Status
 """
 
-            containers = status.get("container_status", {}).get("containers", [])
+            containers = status.get(
+                "container_status", {}).get("containers", [])
             for container in containers:
-                status_emoji = "🟢" if container.get("status") == "running" else "🔴"
+                status_emoji = "🟢" if container.get(
+                    "status") == "running" else "🔴"
                 report_content += f"- {status_emoji} **{container.get('name', 'Unknown')}**: {container.get('status', 'Unknown')}\n"
 
             report_content += f"""
@@ -461,7 +471,8 @@ class UltimateSuiteStatusSaver:
 
             services = status.get("service_health", {}).get("services", {})
             for service_name, service_info in services.items():
-                status_emoji = "🟢" if service_info.get("status") == "healthy" else "🔴"
+                status_emoji = "🟢" if service_info.get(
+                    "status") == "healthy" else "🔴"
                 response_time = service_info.get("response_time_ms", "N/A")
                 report_content += f"- {status_emoji} **{service_name}**: {service_info.get('status', 'Unknown')} ({response_time}ms)\n"
 
@@ -476,7 +487,8 @@ class UltimateSuiteStatusSaver:
     async def cleanup_old_snapshots(self, keep_count: int = 50):
         """Clean up old snapshot files, keeping only the most recent ones"""
         try:
-            snapshot_files = list(self.status_dir.glob("ultimate_suite_status_*.json"))
+            snapshot_files = list(self.status_dir.glob(
+                "ultimate_suite_status_*.json"))
             snapshot_files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
 
             if len(snapshot_files) > keep_count:
@@ -487,25 +499,30 @@ class UltimateSuiteStatusSaver:
 
                 # Also clean up corresponding summary files
                 for file_path in files_to_delete:
-                    timestamp = file_path.stem.replace("ultimate_suite_status_", "")
-                    summary_file = self.status_dir / f"status_summary_{timestamp}.md"
+                    timestamp = file_path.stem.replace(
+                        "ultimate_suite_status_", "")
+                    summary_file = self.status_dir / \
+                        f"status_summary_{timestamp}.md"
                     if summary_file.exists():
                         summary_file.unlink()
-                        logger.info(f"🗑️ Deleted old summary: {summary_file.name}")
+                        logger.info(
+                            f"🗑️ Deleted old summary: {summary_file.name}")
 
         except Exception as e:
             logger.error(f"❌ Error cleaning up old snapshots: {e}")
 
     async def status_loop(self):
         """Main loop for automatic status saving"""
-        logger.info(f"🔄 Starting automated status saver (interval: {self.interval/60:.0f} minutes)")
+        logger.info(
+            f"🔄 Starting automated status saver (interval: {self.interval/60:.0f} minutes)")
 
         while self.running:
             try:
                 # Save status snapshot
                 filepath = await self.save_status_snapshot()
                 if filepath:
-                    logger.info(f"✅ Status saved successfully: {Path(filepath).name}")
+                    logger.info(
+                        f"✅ Status saved successfully: {Path(filepath).name}")
 
     """
     RLVR: Implements start with error handling and validation
@@ -535,7 +552,8 @@ class UltimateSuiteStatusSaver:
                 await self.cleanup_old_snapshots()
 
                 # Wait for next interval
-                logger.info(f"⏰ Next status save in {self.interval/60:.0f} minutes...")
+                logger.info(
+                    f"⏰ Next status save in {self.interval/60:.0f} minutes...")
                 await asyncio.sleep(self.interval)
 
             except Exception as e:

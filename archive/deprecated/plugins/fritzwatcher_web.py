@@ -21,151 +21,170 @@ from typing import Dict, List, Any, Optional
 logger = logging.getLogger(__name__)
 
 # Create blueprint
-fritzwatcher_bp = Blueprint('fritzwatcher', __name__, url_prefix='/fritzwatcher')
+fritzwatcher_bp = Blueprint(
+    'fritzwatcher', __name__, url_prefix='/fritzwatcher')
 
 # Global plugin instance (will be set by main server)
 fritzwatcher_plugin = None
+
 
 def set_plugin_instance(plugin):
     """Set the plugin instance for the web interface"""
     global fritzwatcher_plugin
     fritzwatcher_plugin = plugin
 
+
 @fritzwatcher_bp.route('/')
 def dashboard():
     """Main FRITZWATCHER dashboard"""
     return render_template('fritzwatcher/dashboard.html')
+
 
 @fritzwatcher_bp.route('/api/status')
 def api_status():
     """Get router status"""
     if not fritzwatcher_plugin:
         return jsonify({'error': 'Plugin not available'}), 503
-        
+
     try:
         # Run async method
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        status = loop.run_until_complete(fritzwatcher_plugin.get_router_status())
+        status = loop.run_until_complete(
+            fritzwatcher_plugin.get_router_status())
         loop.close()
-        
+
         return jsonify(status)
     except Exception as e:
         logger.error(f"Status API error: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @fritzwatcher_bp.route('/api/devices')
 def api_devices():
     """Get all devices"""
     if not fritzwatcher_plugin:
         return jsonify({'error': 'Plugin not available'}), 503
-        
+
     try:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        devices = loop.run_until_complete(fritzwatcher_plugin.get_all_devices())
+        devices = loop.run_until_complete(
+            fritzwatcher_plugin.get_all_devices())
         loop.close()
-        
+
         return jsonify(devices)
     except Exception as e:
         logger.error(f"Devices API error: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @fritzwatcher_bp.route('/api/guest-wifi')
 def api_guest_wifi_status():
     """Get guest WiFi status"""
     if not fritzwatcher_plugin:
         return jsonify({'error': 'Plugin not available'}), 503
-        
+
     try:
         router_name = request.args.get('router')
-        
+
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        status = loop.run_until_complete(fritzwatcher_plugin.get_guest_wifi_status(router_name))
+        status = loop.run_until_complete(
+            fritzwatcher_plugin.get_guest_wifi_status(router_name))
         loop.close()
-        
+
         return jsonify(status)
     except Exception as e:
         logger.error(f"Guest WiFi status API error: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @fritzwatcher_bp.route('/api/guest-wifi/toggle', methods=['POST'])
 def api_guest_wifi_toggle():
     """Toggle guest WiFi"""
     if not fritzwatcher_plugin:
         return jsonify({'error': 'Plugin not available'}), 503
-        
+
     try:
         data = request.get_json()
         enabled = data.get('enabled', False)
         router_name = data.get('router')
-        
+
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        success = loop.run_until_complete(fritzwatcher_plugin.toggle_guest_wifi(enabled, router_name))
+        success = loop.run_until_complete(
+            fritzwatcher_plugin.toggle_guest_wifi(enabled, router_name))
         loop.close()
-        
+
         return jsonify({'success': success})
     except Exception as e:
         logger.error(f"Guest WiFi toggle API error: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @fritzwatcher_bp.route('/api/roaming-events')
 def api_roaming_events():
     """Get roaming events"""
     if not fritzwatcher_plugin:
         return jsonify({'error': 'Plugin not available'}), 503
-        
+
     try:
         hours = request.args.get('hours', 24, type=int)
-        
+
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        events = loop.run_until_complete(fritzwatcher_plugin.get_roaming_events(hours))
+        events = loop.run_until_complete(
+            fritzwatcher_plugin.get_roaming_events(hours))
         loop.close()
-        
+
         return jsonify(events)
     except Exception as e:
         logger.error(f"Roaming events API error: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @fritzwatcher_bp.route('/api/sync')
 def api_sync():
     """Force sync with routers"""
     if not fritzwatcher_plugin:
         return jsonify({'error': 'Plugin not available'}), 503
-        
+
     try:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         result = loop.run_until_complete(fritzwatcher_plugin.sync_now())
         loop.close()
-        
+
         return jsonify(result)
     except Exception as e:
         logger.error(f"Sync API error: {e}")
         return jsonify({'error': str(e)}), 500
+
 
 @fritzwatcher_bp.route('/routers')
 def routers():
     """Router management page"""
     return render_template('fritzwatcher/routers.html')
 
+
 @fritzwatcher_bp.route('/devices')
 def devices():
     """Device monitoring page"""
     return render_template('fritzwatcher/devices.html')
+
 
 @fritzwatcher_bp.route('/roaming')
 def roaming():
     """Roaming analysis page"""
     return render_template('fritzwatcher/roaming.html')
 
+
 @fritzwatcher_bp.route('/settings')
 def settings():
     """Settings page"""
     return render_template('fritzwatcher/settings.html')
+
 
 # Template for main dashboard
 DASHBOARD_TEMPLATE = """
@@ -568,17 +587,20 @@ DASHBOARD_TEMPLATE = """
 </html>
 """
 
+
 def create_web_interface():
     """Create the web interface files"""
-    templates_dir = Path(__file__).parent.parent / "webpanel" / "templates" / "fritzwatcher"
+    templates_dir = Path(__file__).parent.parent / \
+        "webpanel" / "templates" / "fritzwatcher"
     templates_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Create dashboard template
     dashboard_file = templates_dir / "dashboard.html"
     with open(dashboard_file, 'w') as f:
         f.write(DASHBOARD_TEMPLATE)
-    
+
     logger.info(f"Created FRITZWATCHER web interface at {templates_dir}")
+
 
 if __name__ == "__main__":
     create_web_interface()

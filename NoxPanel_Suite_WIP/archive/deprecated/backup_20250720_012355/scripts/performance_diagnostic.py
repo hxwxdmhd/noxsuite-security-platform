@@ -4,12 +4,14 @@ NoxPanel Suite Performance Diagnostic Tool
 Analyzes workspace structure and provides optimization recommendations
 """
 
-import os
 import json
+import os
 import time
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
+
 import psutil
+
 
 class NoxPanelPerformanceDiagnostic:
     def __init__(self, workspace_path):

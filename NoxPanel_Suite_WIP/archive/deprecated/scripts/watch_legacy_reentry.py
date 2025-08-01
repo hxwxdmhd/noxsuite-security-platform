@@ -12,14 +12,14 @@ Usage:
     python scripts/watch_legacy_reentry.py --monitor
 """
 
+import fnmatch
+import hashlib
 import os
 import sys
 import time
-import fnmatch
-import hashlib
-from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Set, Tuple
+from pathlib import Path
+from typing import Dict, List, Set, Tuple
 
 # Legacy patterns to monitor for
 LEGACY_PATTERNS = {
@@ -133,7 +133,7 @@ class LegacyWatchdog:
         
         try:
             import json
-            
+
             # Ensure logs directory exists
             os.makedirs(os.path.dirname(self.alert_log), exist_ok=True)
             

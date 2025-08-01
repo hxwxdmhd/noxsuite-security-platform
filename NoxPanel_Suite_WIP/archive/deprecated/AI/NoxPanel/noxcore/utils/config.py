@@ -1,6 +1,7 @@
-import os
 import json
+import os
 from pathlib import Path
+
 
 class NoxConfig:
     """Configuration management for NoxPanel"""

@@ -10,40 +10,42 @@ Main Flask application with all enhanced features and modules
 ✅ Complete platform coverage
 """
 
-from flask import Flask, render_template, jsonify, request, redirect, url_for
+import json
 import logging
 import sys
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
 import psutil
-import json
+from flask import Flask, jsonify, redirect, render_template, request, url_for
 
 # Add webpanel to path
 sys.path.insert(0, str(Path(__file__).parent / "webpanel"))
 
+from webpanel.admin_blueprint import admin_bp
+from webpanel.ai_monitor_api import ai_monitor_bp
+from webpanel.analytics_routes import analytics_bp
+from webpanel.api_docs_routes import api_docs_bp
+from webpanel.backups_routes import backups_bp
+from webpanel.chatbot import chatbot_bp
+from webpanel.job_scheduler import scheduler_bp
+
 # Import all blueprints
 from webpanel.knowledge_routes import knowledge_bp
-from webpanel.admin_blueprint import admin_bp
-from webpanel.job_scheduler import scheduler_bp
-from webpanel.plugin_loader import plugin_bp
-from webpanel.chatbot import chatbot_bp
+from webpanel.media_routes import media_bp
 from webpanel.models import models_bp
-from webpanel.ai_monitor_api import ai_monitor_bp
+from webpanel.notifications_routes import notifications_bp
+from webpanel.pi_routes import pi_bp
+from webpanel.platforms_routes import platforms_bp
+from webpanel.plugin_loader import plugin_bp
+from webpanel.proxy_routes import proxy_bp
+from webpanel.scripts_routes import scripts_bp
+from webpanel.security_routes import security_bp
+from webpanel.setup_routes import setup_bp
+from webpanel.updates_routes import updates_bp
 
 # Import newly generated blueprints
 from webpanel.vm_routes import vm_bp
-from webpanel.proxy_routes import proxy_bp
-from webpanel.scripts_routes import scripts_bp
-from webpanel.media_routes import media_bp
-from webpanel.pi_routes import pi_bp
-from webpanel.setup_routes import setup_bp
-from webpanel.analytics_routes import analytics_bp
-from webpanel.security_routes import security_bp
-from webpanel.platforms_routes import platforms_bp
-from webpanel.updates_routes import updates_bp
-from webpanel.backups_routes import backups_bp
-from webpanel.notifications_routes import notifications_bp
-from webpanel.api_docs_routes import api_docs_bp
 
 # Configure logging
 logging.basicConfig(

@@ -4,15 +4,16 @@
 Creates comprehensive navigation and access mapping for UX optimization
 """
 
-import os
 import json
+import logging
+import os
 import re
-import requests
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Set
-from datetime import datetime
 from urllib.parse import urljoin
-import logging
+
+import requests
 
 logger = logging.getLogger(__name__)
 

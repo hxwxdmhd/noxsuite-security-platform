@@ -9,7 +9,8 @@ identified during the Copilot Agent diagnostic session.
 
 import re
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
+
 
 class ManualFixAssistant:
     """Assistant for manual fix suggestions"""

@@ -1,7 +1,7 @@
 """NoxCore AI Module - Ollama Integration & AI Assistant System"""
 
-from .ollama_client import OllamaClient
 from .nox_assistant import NoxAssistant
+from .ollama_client import OllamaClient
 from .task_registry import TaskRegistry
 
 __version__ = "1.0.0"

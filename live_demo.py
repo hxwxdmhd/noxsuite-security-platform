@@ -1,3 +1,9 @@
+import requests
+from datetime import datetime, timedelta
+import time
+import threading
+import random
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -7,18 +13,10 @@ Real-Time Automation Scenario Demonstration
 Shows live automation in action with the NoxSuite system
 """
 
-import json
-import random
-import threading
-import time
-from datetime import datetime, timedelta
-
-import requests
-
 
 class LiveAutomationDemo:
     """Live demonstration of NoxSuite automation scenarios"""
-    
+
     def __init__(self):
         self.running = False
         self.langflow_endpoint = "http://localhost:7860"
@@ -30,20 +28,21 @@ class LiveAutomationDemo:
             "security_alerts": 0,
             "containers_running": 4
         }
-    
+
     def check_langflow_health(self):
         """Check if Langflow is responding"""
         try:
-            response = requests.get(f"{self.langflow_endpoint}/health", timeout=5)
+            response = requests.get(
+                f"{self.langflow_endpoint}/health", timeout=5)
             return response.status_code == 200
         except:
             return False
-    
+
     def simulate_traffic_spike(self):
         """Simulate a traffic spike scenario"""
         logger.info("\n=== SCENARIO 1: TRAFFIC SPIKE SIMULATION ===")
         logger.info("⏰ Starting normal load simulation...")
-        
+
         for minute in range(10):
             # Simulate increasing load
             if minute < 3:
@@ -66,9 +65,10 @@ class LiveAutomationDemo:
                 self.metrics["memory_usage"] = random.uniform(60, 80)
                 self.metrics["response_time"] = random.randint(180, 350)
                 self.metrics["active_users"] = random.randint(600, 800)
-                self.metrics["containers_running"] = min(8, self.metrics["containers_running"] + 1)
+                self.metrics["containers_running"] = min(
+                    8, self.metrics["containers_running"] + 1)
                 status = "AUTO-SCALED"
-            
+
             logger.info(f"Min {minute+1:2d}: CPU {self.metrics['cpu_usage']:5.1f}% | )
                   f"Memory {self.metrics['memory_usage']:5.1f}% | "
                   f"Response {self.metrics['response_time']:3d}ms | "

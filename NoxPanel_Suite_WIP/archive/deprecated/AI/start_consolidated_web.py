@@ -7,8 +7,8 @@ Unified entry point for all web interfaces after Phase 3 consolidation.
 This replaces all fragmented web servers with a single production-ready application.
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add NoxPanel to path

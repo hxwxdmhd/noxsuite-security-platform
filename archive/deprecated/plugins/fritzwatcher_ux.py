@@ -37,7 +37,7 @@ DEVICE_OUI_MAP = {
     "00:26:08": {"type": "laptop", "brand": "Apple", "icon": "💻"},
     "00:26:4A": {"type": "smartphone", "brand": "Apple", "icon": "📱"},
     "00:26:B0": {"type": "laptop", "brand": "Apple", "icon": "💻"},
-    
+
     # Samsung devices
     "00:12:FB": {"type": "smartphone", "brand": "Samsung", "icon": "📱"},
     "00:15:99": {"type": "smartphone", "brand": "Samsung", "icon": "📱"},
@@ -48,7 +48,7 @@ DEVICE_OUI_MAP = {
     "00:21:19": {"type": "smartphone", "brand": "Samsung", "icon": "📱"},
     "00:23:39": {"type": "smartphone", "brand": "Samsung", "icon": "📱"},
     "00:26:37": {"type": "smartphone", "brand": "Samsung", "icon": "📱"},
-    
+
     # Dell computers
     "00:08:74": {"type": "laptop", "brand": "Dell", "icon": "💻"},
     "00:0B:DB": {"type": "laptop", "brand": "Dell", "icon": "💻"},
@@ -58,7 +58,7 @@ DEVICE_OUI_MAP = {
     "00:13:72": {"type": "laptop", "brand": "Dell", "icon": "💻"},
     "00:14:22": {"type": "laptop", "brand": "Dell", "icon": "💻"},
     "00:15:C5": {"type": "laptop", "brand": "Dell", "icon": "💻"},
-    
+
     # HP devices
     "00:01:E6": {"type": "printer", "brand": "HP", "icon": "🖨️"},
     "00:04:EA": {"type": "laptop", "brand": "HP", "icon": "💻"},
@@ -68,20 +68,20 @@ DEVICE_OUI_MAP = {
     "00:10:E3": {"type": "printer", "brand": "HP", "icon": "🖨️"},
     "00:11:0A": {"type": "laptop", "brand": "HP", "icon": "💻"},
     "00:12:79": {"type": "laptop", "brand": "HP", "icon": "💻"},
-    
+
     # Smart TV manufacturers
     "00:09:DF": {"type": "tv", "brand": "LG", "icon": "📺"},
     "00:0D:AE": {"type": "tv", "brand": "Samsung", "icon": "📺"},
     "00:26:E2": {"type": "tv", "brand": "Sony", "icon": "📺"},
     "3C:F0:11": {"type": "tv", "brand": "LG", "icon": "📺"},
-    
+
     # Gaming consoles
     "00:13:12": {"type": "gaming", "brand": "Sony PlayStation", "icon": "🎮"},
     "00:15:5D": {"type": "gaming", "brand": "Microsoft Xbox", "icon": "🎮"},
     "00:17:AB": {"type": "gaming", "brand": "Nintendo", "icon": "🎮"},
     "00:19:FD": {"type": "gaming", "brand": "Sony PlayStation", "icon": "🎮"},
     "00:1B:EA": {"type": "gaming", "brand": "Microsoft Xbox", "icon": "🎮"},
-    
+
     # Smart home devices
     "18:B4:30": {"type": "iot", "brand": "Nest", "icon": "🏠"},
     "50:F5:DA": {"type": "iot", "brand": "Ring", "icon": "🔔"},
@@ -89,6 +89,7 @@ DEVICE_OUI_MAP = {
     "74:C2:46": {"type": "iot", "brand": "TP-Link", "icon": "💡"},
     "B4:E6:2D": {"type": "iot", "brand": "Philips Hue", "icon": "💡"},
 }
+
 
 @dataclass
 class DeviceCustomization:
@@ -104,7 +105,8 @@ class DeviceCustomization:
     created_at: datetime = None
     updated_at: datetime = None
 
-@dataclass 
+
+@dataclass
 class ThemeSettings:
     """Theme configuration for ADHD-friendly UX"""
     theme_name: str
@@ -116,19 +118,20 @@ class ThemeSettings:
     focus_indicators: bool = True
     sound_enabled: bool = False
 
+
 class DeviceCustomizationManager:
     """Manage device customization and labeling"""
-    
+
     def __init__(self, db_path: str = "fritzwatcher_customization.db"):
         self.db_path = db_path
         self._init_database()
-    
+
     def _init_database(self):
         """Initialize the customization database"""
         try:
             conn = pymysql.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS device_customizations (
                     mac_address TEXT PRIMARY KEY,
@@ -143,7 +146,7 @@ class DeviceCustomizationManager:
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
-            
+
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS theme_settings (
                     user_id TEXT PRIMARY KEY,
@@ -158,73 +161,73 @@ class DeviceCustomizationManager:
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
-            
+
             conn.commit()
             conn.close()
-            
+
         except Exception as e:
             logger.error(f"Error initializing customization database: {e}")
-    
+
     def get_device_info_from_oui(self, mac_address: str) -> Dict[str, str]:
         """Get device information from OUI (MAC address prefix)"""
         if not mac_address or len(mac_address) < 8:
             return {"type": "unknown", "brand": "Unknown", "icon": "❓"}
-        
+
         # Extract OUI (first 3 octets)
         oui = mac_address.upper()[:8]  # XX:XX:XX format
-        
+
         device_info = DEVICE_OUI_MAP.get(oui, {
-            "type": "unknown", 
-            "brand": "Unknown", 
+            "type": "unknown",
+            "brand": "Unknown",
             "icon": "❓"
         })
-        
+
         return device_info
-    
+
     def auto_detect_device_type(self, mac_address: str, hostname: str = "") -> Dict[str, str]:
         """Auto-detect device type using OUI and hostname hints"""
         # Start with OUI lookup
         device_info = self.get_device_info_from_oui(mac_address)
-        
+
         # Enhance with hostname analysis
         hostname_lower = hostname.lower()
-        
+
         # Smartphone indicators
         if any(word in hostname_lower for word in ['iphone', 'android', 'phone', 'mobile']):
             device_info.update({"type": "smartphone", "icon": "📱"})
-        
-        # Laptop/Computer indicators  
+
+        # Laptop/Computer indicators
         elif any(word in hostname_lower for word in ['laptop', 'macbook', 'thinkpad', 'pc', 'desktop']):
             device_info.update({"type": "laptop", "icon": "💻"})
-        
+
         # TV indicators
         elif any(word in hostname_lower for word in ['tv', 'roku', 'chromecast', 'appletv', 'firetv']):
             device_info.update({"type": "tv", "icon": "📺"})
-        
+
         # Printer indicators
         elif any(word in hostname_lower for word in ['printer', 'print', 'hp-', 'canon', 'epson']):
             device_info.update({"type": "printer", "icon": "🖨️"})
-        
+
         # Gaming console indicators
         elif any(word in hostname_lower for word in ['xbox', 'playstation', 'ps4', 'ps5', 'nintendo']):
             device_info.update({"type": "gaming", "icon": "🎮"})
-        
+
         # Smart home indicators
         elif any(word in hostname_lower for word in ['echo', 'alexa', 'nest', 'ring', 'hue', 'smart']):
             device_info.update({"type": "iot", "icon": "🏠"})
-        
+
         # Tablet indicators
         elif any(word in hostname_lower for word in ['ipad', 'tablet', 'surface']):
             device_info.update({"type": "tablet", "icon": "📟"})
-        
+
         return device_info
-    
+
     def save_device_customization(self, customization: DeviceCustomization):
         """Save device customization to database"""
         try:
             conn = pymysql.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute("""
                 INSERT OR REPLACE INTO device_customizations 
                 (mac_address, custom_name, custom_icon, device_type, brand, color, priority, notes, updated_at)
@@ -232,35 +235,36 @@ class DeviceCustomizationManager:
             """, (
                 customization.mac_address,
                 customization.custom_name,
-                customization.custom_icon, 
+                customization.custom_icon,
                 customization.device_type,
                 customization.brand,
                 customization.color,
                 customization.priority,
                 customization.notes
             ))
-            
+
             conn.commit()
             conn.close()
-            
-            logger.info(f"Saved customization for device {customization.mac_address}")
-            
+
+            logger.info(
+                f"Saved customization for device {customization.mac_address}")
+
         except Exception as e:
             logger.error(f"Error saving device customization: {e}")
-    
+
     def get_device_customization(self, mac_address: str) -> Optional[DeviceCustomization]:
         """Get device customization from database"""
         try:
             conn = pymysql.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute("""
                 SELECT * FROM device_customizations WHERE mac_address = ?
             """, (mac_address,))
-            
+
             row = cursor.fetchone()
             conn.close()
-            
+
             if row:
                 return DeviceCustomization(
                     mac_address=row[0],
@@ -271,21 +275,23 @@ class DeviceCustomizationManager:
                     color=row[5],
                     priority=row[6],
                     notes=row[7],
-                    created_at=datetime.fromisoformat(row[8]) if row[8] else None,
-                    updated_at=datetime.fromisoformat(row[9]) if row[9] else None
+                    created_at=datetime.fromisoformat(
+                        row[8]) if row[8] else None,
+                    updated_at=datetime.fromisoformat(
+                        row[9]) if row[9] else None
                 )
-            
+
             return None
-            
+
         except Exception as e:
             logger.error(f"Error getting device customization: {e}")
             return None
-    
+
     def get_enhanced_device_info(self, mac_address: str, hostname: str = "", ip_address: str = "") -> Dict[str, Any]:
         """Get enhanced device information with auto-detection and customization"""
         # Check for existing customization
         customization = self.get_device_customization(mac_address)
-        
+
         if customization:
             # Use customized information
             return {
@@ -304,7 +310,7 @@ class DeviceCustomizationManager:
         else:
             # Auto-detect device information
             auto_info = self.auto_detect_device_type(mac_address, hostname)
-            
+
             return {
                 "mac_address": mac_address,
                 "hostname": hostname,
@@ -319,9 +325,10 @@ class DeviceCustomizationManager:
                 "is_customized": False
             }
 
+
 class ThemeManager:
     """Manage ADHD-friendly theme settings"""
-    
+
     PREDEFINED_THEMES = {
         "spicy": ThemeSettings(
             theme_name="spicy",
@@ -354,17 +361,17 @@ class ThemeManager:
             sound_enabled=False
         )
     }
-    
+
     def __init__(self, db_path: str = "fritzwatcher_customization.db"):
         self.db_path = db_path
         self._init_database()
-    
+
     def _init_database(self):
         """Initialize the theme database"""
         try:
             conn = pymysql.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS theme_settings (
                     user_id TEXT PRIMARY KEY,
@@ -379,19 +386,19 @@ class ThemeManager:
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             """)
-            
+
             conn.commit()
             conn.close()
-            
+
         except Exception as e:
             logger.error(f"Error initializing theme database: {e}")
-    
+
     def save_theme_settings(self, user_id: str, settings: ThemeSettings):
         """Save theme settings for a user"""
         try:
             conn = pymysql.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute("""
                 INSERT OR REPLACE INTO theme_settings 
                 (user_id, theme_name, high_contrast, animated_elements, color_scheme, 
@@ -408,28 +415,28 @@ class ThemeManager:
                 settings.focus_indicators,
                 settings.sound_enabled
             ))
-            
+
             conn.commit()
             conn.close()
-            
+
             logger.info(f"Saved theme settings for user {user_id}")
-            
+
         except Exception as e:
             logger.error(f"Error saving theme settings: {e}")
-    
+
     def get_theme_settings(self, user_id: str) -> ThemeSettings:
         """Get theme settings for a user"""
         try:
             conn = pymysql.connect(self.db_path)
             cursor = conn.cursor()
-            
+
             cursor.execute("""
                 SELECT * FROM theme_settings WHERE user_id = ?
             """, (user_id,))
-            
+
             row = cursor.fetchone()
             conn.close()
-            
+
             if row:
                 return ThemeSettings(
                     theme_name=row[1],
@@ -444,11 +451,11 @@ class ThemeManager:
             else:
                 # Return default theme
                 return self.PREDEFINED_THEMES["default"]
-                
+
         except Exception as e:
             logger.error(f"Error getting theme settings: {e}")
             return self.PREDEFINED_THEMES["default"]
-    
+
     def apply_theme_preset(self, user_id: str, theme_name: str):
         """Apply a predefined theme preset"""
         if theme_name in self.PREDEFINED_THEMES:
@@ -456,16 +463,16 @@ class ThemeManager:
             self.save_theme_settings(user_id, settings)
             return True
         return False
-    
+
     def get_css_variables(self, settings: ThemeSettings) -> Dict[str, str]:
         """Generate CSS variables for theme application"""
         css_vars = {}
-        
+
         # Color scheme
         if settings.color_scheme == "high_contrast":
             css_vars.update({
                 "--primary-color": "#ffffff",
-                "--secondary-color": "#000000", 
+                "--secondary-color": "#000000",
                 "--background-color": "#000000",
                 "--text-color": "#ffffff",
                 "--border-color": "#ffffff",
@@ -489,11 +496,13 @@ class ThemeManager:
                 "--border-color": "#e5e7eb",
                 "--accent-color": "#10b981"
             })
-        
+
         # Font size
-        font_multiplier = {"small": "0.8", "normal": "1.0", "large": "1.2", "xl": "1.4"}
-        css_vars["--font-size-multiplier"] = font_multiplier.get(settings.font_size, "1.0")
-        
+        font_multiplier = {"small": "0.8",
+                           "normal": "1.0", "large": "1.2", "xl": "1.4"}
+        css_vars["--font-size-multiplier"] = font_multiplier.get(
+            settings.font_size, "1.0")
+
         # Animation settings
         if settings.animated_elements:
             css_vars["--animation-duration"] = "0.3s"
@@ -501,7 +510,7 @@ class ThemeManager:
         else:
             css_vars["--animation-duration"] = "0s"
             css_vars["--animation-easing"] = "linear"
-        
+
         # Focus indicators
         if settings.focus_indicators:
             css_vars["--focus-outline"] = "2px solid var(--accent-color)"
@@ -509,12 +518,14 @@ class ThemeManager:
         else:
             css_vars["--focus-outline"] = "none"
             css_vars["--focus-shadow"] = "none"
-        
+
         return css_vars
+
 
 # Global instances
 _device_manager = None
 _theme_manager = None
+
 
 def get_device_manager() -> DeviceCustomizationManager:
     """Get the global device customization manager"""
@@ -522,6 +533,7 @@ def get_device_manager() -> DeviceCustomizationManager:
     if _device_manager is None:
         _device_manager = DeviceCustomizationManager()
     return _device_manager
+
 
 def get_theme_manager() -> ThemeManager:
     """Get the global theme manager"""

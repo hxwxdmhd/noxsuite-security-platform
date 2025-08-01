@@ -2,6 +2,12 @@
 """
 #!/usr/bin/env python3
 """
+from typing import List, Optional
+from pathlib import Path
+import time
+import argparse
+import subprocess
+import sys
 run_tests.py - RLVR Enhanced Component
 
 REASONING: Comprehensive testing with Chain-of-Thought validation methodology
@@ -12,7 +18,7 @@ Chain-of-Thought Implementation:
 3. Logic Validation: Chain-of-Thought reasoning with evidence backing
 4. Evidence Backing: Systematic validation, compliance monitoring, automated testing
 
-Compliance: RLVR Methodology v4.0+ Applied
+Compliance: RLVR Methodology v4.0 + Applied
 """
 
 Simple Test Execution Scripts for NoxPanel
@@ -26,13 +32,6 @@ Usage Examples:
     python run_tests.py --quick           # Run quick smoke tests
     python run_tests.py --coverage        # Run with coverage report
 """
-
-import sys
-import subprocess
-import argparse
-import time
-from pathlib import Path
-from typing import List, Optional
 
 
 def run_command(cmd: List[str], description: str, timeout: int = 300) -> bool:
@@ -53,7 +52,7 @@ def run_command(cmd: List[str], description: str, timeout: int = 300) -> bool:
 
     try:
         result = subprocess.run(
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             cmd,
             capture_output=True,
             text=True,
@@ -63,7 +62,7 @@ def run_command(cmd: List[str], description: str, timeout: int = 300) -> bool:
         duration = time.time() - start_time
 
         if result.returncode == 0:
-        # REASONING: Variable assignment with validation criteria
+            # REASONING: Variable assignment with validation criteria
             print(f"✅ {description} completed in {duration:.1f}s")
             return True
         else:

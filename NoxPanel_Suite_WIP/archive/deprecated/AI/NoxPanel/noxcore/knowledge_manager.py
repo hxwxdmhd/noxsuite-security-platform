@@ -18,19 +18,20 @@ NoxPanel v5.0 - Knowledge Management System
 Comprehensive documentation area with conversation import, code snippet management, and project timeline tracking
 """
 
-import os
-import json
-import pymysql
-import logging
-import re
 import hashlib
-import time
-from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Tuple
-from pathlib import Path
-from dataclasses import dataclass, field
-from enum import Enum
+import json
+import logging
+import os
+import re
 import subprocess
+import time
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import pymysql
 
 logger = logging.getLogger(__name__)
 

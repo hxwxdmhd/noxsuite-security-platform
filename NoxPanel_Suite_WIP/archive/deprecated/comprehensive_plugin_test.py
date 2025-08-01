@@ -6,10 +6,10 @@ Comprehensive Plugin System Test
 This script thoroughly tests all enhanced plugin system features for Audit 2 compliance.
 """
 
-import os
-import sys
 import json
 import logging
+import os
+import sys
 import time
 from pathlib import Path
 
@@ -17,14 +17,14 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from unified_plugin_system_clean import (
-    UnifiedPluginSystem,
     BasePlugin,
-    ServicePlugin,
-    MiddlewarePlugin,
     FeaturePlugin,
-    SecurityPlugin,
+    MiddlewarePlugin,
     PluginInfo,
-    PluginState
+    PluginState,
+    SecurityPlugin,
+    ServicePlugin,
+    UnifiedPluginSystem,
 )
 
 # Setup logging

@@ -1,3 +1,9 @@
+import requests
+from pathlib import Path
+from datetime import datetime
+import subprocess
+import os
+import json
 from NoxPanel.noxcore.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -8,20 +14,13 @@ logger = get_logger(__name__)
 Syncs TestSprite results and auto-repair status to GitHub MCP
 """
 
-import json
-import os
-import subprocess
-from datetime import datetime
-from pathlib import Path
-
-import requests
-
 
 class GitHubMCPSync:
     def __init__(self):
         self.github_token = os.getenv("GITHUB_TOKEN")
         self.repo_owner = os.getenv("GITHUB_REPOSITORY_OWNER", "hxwxdmhd")
-        self.repo_name = os.getenv("GITHUB_REPOSITORY_NAME", "NoxPanel_Suite_WIP")
+        self.repo_name = os.getenv(
+            "GITHUB_REPOSITORY_NAME", "NoxPanel_Suite_WIP")
         self.github_api_base = "https://api.github.com"
 
         # MCP sync configuration
@@ -53,7 +52,8 @@ class GitHubMCPSync:
         if results_dir.exists():
             result_files = list(results_dir.glob("testsprite_results_*.json"))
             if result_files:
-                latest_file = max(result_files, key=lambda p: p.stat().st_mtime)
+                latest_file = max(
+                    result_files, key=lambda p: p.stat().st_mtime)
                 with open(latest_file, "r", encoding="utf-8") as f:
                     data["testsprite_results"] = json.load(f)
                 self.log(f"Loaded TestSprite results: {latest_file}")
@@ -63,7 +63,8 @@ class GitHubMCPSync:
         if repair_dir.exists():
             repair_files = list(repair_dir.glob("auto_repair_report_*.json"))
             if repair_files:
-                latest_repair = max(repair_files, key=lambda p: p.stat().st_mtime)
+                latest_repair = max(
+                    repair_files, key=lambda p: p.stat().st_mtime)
                 with open(latest_repair, "r", encoding="utf-8") as f:
                     data["auto_repair_results"] = json.load(f)
                 self.log(f"Loaded auto-repair results: {latest_repair}")
@@ -96,7 +97,8 @@ class GitHubMCPSync:
             health["critical_issues"] = adhd_report.get("EXECUTIVE_SUMMARY", {}).get(
                 "critical_issues", 0
             )
-            health["last_test_timestamp"] = tr.get("metadata", {}).get("timestamp")
+            health["last_test_timestamp"] = tr.get(
+                "metadata", {}).get("timestamp")
 
             # Determine overall status
             if health["pass_rate"] >= 95:
@@ -161,7 +163,8 @@ class GitHubMCPSync:
                 self.log(f"✅ GitHub issue created: #{issue['number']}")
                 return issue
             else:
-                self.log(f"❌ Failed to create GitHub issue: {response.status_code}")
+                self.log(
+                    f"❌ Failed to create GitHub issue: {response.status_code}")
                 return None
 
         except Exception as e:
@@ -275,7 +278,8 @@ View complete results in the [TestSprite logs](./logs/autonomous_testing/).
             for file_path in files_to_commit:
                 if Path(file_path).exists():
                     try:
-                        subprocess.run(["git", "add", "-f", file_path], check=True)
+                        subprocess.run(
+                            ["git", "add", "-f", file_path], check=True)
                         self.log(f"Added {file_path} to commit")
                     except subprocess.CalledProcessError:
                         self.log(f"Warning: Could not add {file_path}")
@@ -402,8 +406,10 @@ View complete results in the [TestSprite logs](./logs/autonomous_testing/).
             logger.info(f"System Health: {health['overall_status'].title()}")
             logger.info(f"Pass Rate: {health['pass_rate']}%")
             logger.info(f"Critical Issues: {health['critical_issues']}")
-            logger.info(f"GitHub Issue: {'Created' if github_issue else 'Not needed'}")
-            logger.info(f"Repository Sync: {'Success' if commit_result else 'Skipped'}")
+            logger.info(
+                f"GitHub Issue: {'Created' if github_issue else 'Not needed'}")
+            logger.info(
+                f"Repository Sync: {'Success' if commit_result else 'Skipped'}")
             logger.info("=" * 60)
 
             return {

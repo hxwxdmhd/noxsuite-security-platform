@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """API Blueprint - Consolidated API endpoints"""
 
-from flask import Blueprint, jsonify, request
 from datetime import datetime
+
+from flask import Blueprint, jsonify, request
 
 api_bp = Blueprint('api', __name__)
 

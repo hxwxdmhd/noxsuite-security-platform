@@ -1,3 +1,11 @@
+from typing import Any, Dict, List, Tuple
+from pathlib import Path
+import sys
+import shutil
+import re
+import logging
+import ast
+import argparse
 from datetime import datetime, timezone
 
 from NoxPanel.noxcore.utils.logging_config import get_logger
@@ -10,14 +18,6 @@ NoxPanel Codebase Improvement Script
 Automatically applies fixes for common issues and improvements
 """
 
-import argparse
-import ast
-import logging
-import re
-import shutil
-import sys
-from pathlib import Path
-from typing import Any, Dict, List, Tuple
 
 # Add the project root to Python path
 project_root = Path(__file__).parent
@@ -79,16 +79,19 @@ class CodeImprover:
             )
             changes_made = changes_made or changed
 
-            improved_content, changed = self._fix_print_statements(improved_content)
+            improved_content, changed = self._fix_print_statements(
+                improved_content)
             changes_made = changes_made or changed
 
             improved_content, changed = self._fix_bare_except(improved_content)
             changes_made = changes_made or changed
 
-            improved_content, changed = self._add_type_imports(improved_content)
+            improved_content, changed = self._add_type_imports(
+                improved_content)
             changes_made = changes_made or changed
 
-            improved_content, changed = self._improve_docstrings(improved_content)
+            improved_content, changed = self._improve_docstrings(
+                improved_content)
             changes_made = changes_made or changed
 
             improved_content, changed = self._fix_imports(improved_content)
@@ -409,7 +412,8 @@ class CodeImprover:
                         if not import_section_done:
                             result_lines.extend(new_order)
                             if new_order:
-                                result_lines.append("")  # Add blank line after imports
+                                # Add blank line after imports
+                                result_lines.append("")
                             import_section_done = True
                     else:
                         result_lines.append(line)
@@ -468,7 +472,8 @@ class CodeImprover:
 
 def main():
     """Main entry point for code improvement."""
-    parser = argparse.ArgumentParser(description="NoxPanel Code Improvement Tool")
+    parser = argparse.ArgumentParser(
+        description="NoxPanel Code Improvement Tool")
     parser.add_argument(
         "directory",
         nargs="?",
@@ -495,7 +500,8 @@ def main():
         ],
         help="Patterns to exclude",
     )
-    parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
+    parser.add_argument("--verbose", action="store_true",
+                        help="Enable verbose logging")
 
     args = parser.parse_args()
 
@@ -520,7 +526,8 @@ def main():
             logger.info("DRY RUN MODE: No changes will be made")
 
         # Run improvements
-        improver = CodeImprover(dry_run=args.dry_run, backup=not args.no_backup)
+        improver = CodeImprover(dry_run=args.dry_run,
+                                backup=not args.no_backup)
         directory = Path(args.directory)
 
         if not directory.exists():

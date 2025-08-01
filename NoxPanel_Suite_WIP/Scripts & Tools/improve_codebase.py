@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
+
 from NoxPanel.noxcore.utils.logging_config import get_logger
+
 logger = get_logger(__name__)
 
 #!/usr/bin/env python3
@@ -8,24 +10,28 @@ NoxPanel Codebase Improvement Script
 Automatically applies fixes for common issues and improvements
 """
 
-import sys
-import re
 import argparse
-from pathlib import Path
-import logging
-import shutil
-from typing import List, Dict, Any, Tuple
 import ast
+import logging
+import re
+import shutil
+import sys
+from pathlib import Path
+from typing import Any, Dict, List, Tuple
 
 # Add the project root to Python path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 try:
-    from NoxPanel.noxcore.utils.code_analysis import CodeAnalyzer, IssueType, IssueSeverity
-    from NoxPanel.noxcore.utils.logging_config import setup_logging, get_logger
+    from NoxPanel.noxcore.utils.code_analysis import (
+        CodeAnalyzer,
+        IssueSeverity,
+        IssueType,
+    )
     from NoxPanel.noxcore.utils.datetime_utils import utc_now
     from NoxPanel.noxcore.utils.error_handling import handle_error, safe_execute
+    from NoxPanel.noxcore.utils.logging_config import get_logger, setup_logging
 except ImportError as e:
     logger.info(f"Import error: {e}")
     logger.info("Please ensure the NoxPanel package is properly installed")

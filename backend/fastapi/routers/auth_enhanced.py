@@ -19,10 +19,12 @@ from pydantic import BaseModel, EmailStr, Field, validator
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 # Enhanced Authentication Schemas
 class UserCredentials(BaseModel):
     username: str = Field(..., min_length=3, max_length=50, regex=r"^[a-zA-Z0-9_]+$")
     password: str = Field(..., min_length=8, max_length=128)
+
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -32,6 +34,7 @@ class TokenResponse(BaseModel):
     user_id: str
     username: str
     roles: List[str]
+
 
 class UserProfile(BaseModel):
     id: str
@@ -43,9 +46,11 @@ class UserProfile(BaseModel):
     last_login: Optional[datetime] = None
     failed_attempts: int = 0
 
+
 class PasswordResetRequest(BaseModel):
     username: str
     new_password: str = Field(..., min_length=8)
+
 
 class EnhancedAuthManager:
     """Enhanced Authentication manager with security best practices"""
@@ -381,12 +386,14 @@ class EnhancedAuthManager:
             self.logger.warning(f"Could not decode token for blacklisting: {e}")
             self.blacklisted_tokens.add(token)
 
+
 # Global enhanced auth manager
 auth_manager = EnhancedAuthManager()
 security = HTTPBearer()
 
 # Authentication router
 router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
@@ -430,6 +437,7 @@ async def get_current_user(
             detail="Authentication failed",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
 
 # Enhanced Authentication Endpoints
 @router.post("/login", response_model=TokenResponse)
@@ -478,6 +486,7 @@ async def login(credentials: UserCredentials, request: Request):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Login failed"
         )
+
 
 @router.post("/refresh")
 async def refresh_token(refresh_token: str):
@@ -533,6 +542,7 @@ async def refresh_token(refresh_token: str):
             detail="Token refresh failed",
         )
 
+
 @router.post("/logout")
 async def logout(
     current_user: Dict[str, Any] = Depends(get_current_user),
@@ -552,6 +562,7 @@ async def logout(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Logout failed"
         )
+
 
 @router.get("/profile", response_model=UserProfile)
 async def get_profile(current_user: Dict[str, Any] = Depends(get_current_user)):
@@ -584,6 +595,7 @@ async def get_profile(current_user: Dict[str, Any] = Depends(get_current_user)):
             detail="Profile retrieval failed",
         )
 
+
 @router.get("/validate")
 async def validate_token(current_user: Dict[str, Any] = Depends(get_current_user)):
     """Validate current token"""
@@ -593,6 +605,7 @@ async def validate_token(current_user: Dict[str, Any] = Depends(get_current_user
         "roles": current_user.get("roles", []),
         "message": "Token is valid",
     }
+
 
 # Health check for authentication system
 @router.get("/health")

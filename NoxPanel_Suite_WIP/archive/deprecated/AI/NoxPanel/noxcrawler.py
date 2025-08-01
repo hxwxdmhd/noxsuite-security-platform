@@ -4,20 +4,21 @@ NoxCrawler - Intelligent Web Crawler for NoxPanel
 Automated web information gathering with AI-powered categorization and local storage
 """
 
+import hashlib
+import json
+import logging
+import re
+import threading
+import time
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from pathlib import Path
+from queue import Queue
+from typing import Any, Dict, List, Optional
+from urllib.parse import urljoin, urlparse
+
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
-import json
-import time
-import logging
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Any, Optional
-import hashlib
-import re
-from dataclasses import dataclass, asdict
-import threading
-from queue import Queue
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)

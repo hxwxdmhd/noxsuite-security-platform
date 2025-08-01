@@ -5,19 +5,20 @@ Advanced security implementations for Iteration 2 completion
 """
 
 import asyncio
+import hashlib
 import json
 import logging
-import time
-import hashlib
+import re
 import secrets
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Any, Optional
-import re
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 class SecurityEnhancementEngine:
     def __init__(self):
@@ -29,43 +30,44 @@ class SecurityEnhancementEngine:
                 "require_lowercase": True,
                 "require_numbers": True,
                 "require_special_chars": True,
-                "max_age_days": 90
+                "max_age_days": 90,
             },
             "jwt_policy": {
                 "access_token_expire_minutes": 30,
                 "refresh_token_expire_days": 7,
                 "algorithm": "HS256",
-                "require_audience": True
+                "require_audience": True,
             },
             "rate_limiting": {
                 "login_attempts_per_minute": 5,
                 "api_requests_per_minute": 100,
-                "lockout_duration_minutes": 15
+                "lockout_duration_minutes": 15,
             },
             "security_headers": {
                 "X-Content-Type-Options": "nosniff",
                 "X-Frame-Options": "DENY",
                 "X-XSS-Protection": "1; mode=block",
                 "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-                "Content-Security-Policy": "default-src 'self'"
-            }
+                "Content-Security-Policy": "default-src 'self'",
+            },
         }
-    
+
     async def enhance_authentication_security(self) -> Dict[str, Any]:
         """Enhance authentication security components"""
         logger.info("🔐 Enhancing Authentication Security...")
-        
+
         enhancements = {
             "password_validation": await self._create_password_validator(),
             "jwt_security": await self._enhance_jwt_security(),
             "session_security": await self._enhance_session_security(),
             "multi_factor_auth": await self._implement_mfa_framework(),
-            "brute_force_protection": await self._implement_brute_force_protection()
+            "brute_force_protection": await self._implement_brute_force_protection(),
         }
-        
-        success_count = sum(1 for result in enhancements.values() if result["success"])
+
+        success_count = sum(
+            1 for result in enhancements.values() if result["success"])
         total_count = len(enhancements)
-        
+
         return {
             "category": "authentication_security",
             "enhancements": enhancements,
@@ -73,10 +75,10 @@ class SecurityEnhancementEngine:
                 "total_enhancements": total_count,
                 "successful": success_count,
                 "success_rate": round((success_count / total_count) * 100, 1),
-                "security_level": "HIGH" if success_count >= 4 else "MEDIUM"
-            }
+                "security_level": "HIGH" if success_count >= 4 else "MEDIUM",
+            },
         }
-    
+
     async def _create_password_validator(self) -> Dict[str, Any]:
         """Create advanced password validation system"""
         password_validator_code = '''
@@ -206,21 +208,21 @@ class AdvancedPasswordValidator:
         import bcrypt
         return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 '''
-        
+
         # Write password validator to file
         validator_file = Path("backend/fastapi/core/password_validator.py")
         validator_file.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(validator_file, 'w', encoding='utf-8') as f:
+
+        with open(validator_file, "w", encoding="utf-8") as f:
             f.write(password_validator_code)
-        
+
         return {
             "success": True,
             "component": "password_validator",
             "file_created": str(validator_file),
-            "details": "Advanced password validation system implemented"
+            "details": "Advanced password validation system implemented",
         }
-    
+
     async def _enhance_jwt_security(self) -> Dict[str, Any]:
         """Enhance JWT security implementation"""
         jwt_security_code = '''
@@ -374,21 +376,21 @@ class EnhancedJWTManager:
         
         return len(expired)
 '''
-        
+
         # Write JWT manager to file
         jwt_file = Path("backend/fastapi/core/jwt_manager.py")
         jwt_file.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(jwt_file, 'w', encoding='utf-8') as f:
+
+        with open(jwt_file, "w", encoding="utf-8") as f:
             f.write(jwt_security_code)
-        
+
         return {
             "success": True,
             "component": "jwt_security",
             "file_created": str(jwt_file),
-            "details": "Enhanced JWT security manager implemented"
+            "details": "Enhanced JWT security manager implemented",
         }
-    
+
     async def _enhance_session_security(self) -> Dict[str, Any]:
         """Enhance session security"""
         session_security_code = '''
@@ -540,21 +542,21 @@ class EnhancedSessionManager:
         
         return active_sessions
 '''
-        
+
         # Write session manager to file
         session_file = Path("backend/fastapi/core/session_manager.py")
         session_file.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(session_file, 'w', encoding='utf-8') as f:
+
+        with open(session_file, "w", encoding="utf-8") as f:
             f.write(session_security_code)
-        
+
         return {
             "success": True,
             "component": "session_security",
             "file_created": str(session_file),
-            "details": "Enhanced session security manager implemented"
+            "details": "Enhanced session security manager implemented",
         }
-    
+
     async def _implement_mfa_framework(self) -> Dict[str, Any]:
         """Implement multi-factor authentication framework"""
         mfa_code = '''
@@ -701,21 +703,21 @@ class MultiFactorAuthManager:
             "backup_code_used": None
         }
 '''
-        
+
         # Write MFA manager to file
         mfa_file = Path("backend/fastapi/core/mfa_manager.py")
         mfa_file.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(mfa_file, 'w', encoding='utf-8') as f:
+
+        with open(mfa_file, "w", encoding="utf-8") as f:
             f.write(mfa_code)
-        
+
         return {
             "success": True,
             "component": "mfa_framework",
             "file_created": str(mfa_file),
-            "details": "Multi-factor authentication framework implemented"
+            "details": "Multi-factor authentication framework implemented",
         }
-    
+
     async def _implement_brute_force_protection(self) -> Dict[str, Any]:
         """Implement brute force protection"""
         brute_force_code = '''
@@ -908,25 +910,26 @@ class BruteForceProtector:
             return True
         return False
 '''
-        
+
         # Write brute force protector to file
-        brute_force_file = Path("backend/fastapi/core/brute_force_protector.py")
+        brute_force_file = Path(
+            "backend/fastapi/core/brute_force_protector.py")
         brute_force_file.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(brute_force_file, 'w', encoding='utf-8') as f:
+
+        with open(brute_force_file, "w", encoding="utf-8") as f:
             f.write(brute_force_code)
-        
+
         return {
             "success": True,
             "component": "brute_force_protection",
             "file_created": str(brute_force_file),
-            "details": "Brute force protection system implemented"
+            "details": "Brute force protection system implemented",
         }
-    
+
     async def create_security_configuration(self) -> Dict[str, Any]:
         """Create comprehensive security configuration"""
         logger.info("🔧 Creating Security Configuration...")
-        
+
         security_config = {
             "security_policy": {
                 "password_policy": self.security_config["password_policy"],
@@ -937,65 +940,68 @@ class BruteForceProtector:
                     "session_timeout_minutes": 120,
                     "max_sessions_per_user": 5,
                     "require_secure_cookies": True,
-                    "session_fingerprinting": True
+                    "session_fingerprinting": True,
                 },
                 "mfa_policy": {
                     "required_for_admin": True,
                     "backup_codes_count": 8,
-                    "totp_window_seconds": 30
+                    "totp_window_seconds": 30,
                 },
                 "brute_force_protection": {
                     "max_login_attempts": 5,
                     "lockout_duration_minutes": 15,
                     "ip_blocking_enabled": True,
-                    "rate_limiting_enabled": True
-                }
+                    "rate_limiting_enabled": True,
+                },
             },
             "monitoring": {
                 "log_failed_logins": True,
                 "log_successful_logins": True,
                 "log_security_events": True,
                 "alert_on_multiple_failures": True,
-                "alert_threshold": 10
+                "alert_threshold": 10,
             },
             "compliance": {
                 "gdpr_compliant": True,
                 "data_retention_days": 365,
                 "audit_log_retention_days": 2555,  # 7 years
                 "encryption_standards": ["AES-256", "RSA-2048"],
-                "password_standards": "NIST-800-63B"
-            }
+                "password_standards": "NIST-800-63B",
+            },
         }
-        
+
         # Write security configuration
         config_file = Path("config/security_config.json")
         config_file.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(config_file, 'w', encoding='utf-8') as f:
+
+        with open(config_file, "w", encoding="utf-8") as f:
             json.dump(security_config, f, indent=2, ensure_ascii=False)
-        
+
         return {
             "success": True,
             "component": "security_configuration",
             "file_created": str(config_file),
-            "details": "Comprehensive security configuration created"
+            "details": "Comprehensive security configuration created",
         }
-    
+
     async def run_comprehensive_security_enhancement(self) -> Dict[str, Any]:
         """Run comprehensive security enhancement process"""
         logger.info("🛡️ Starting Comprehensive Security Enhancement")
         logger.info("=" * 60)
-        
+
         # Enhance authentication security
         auth_results = await self.enhance_authentication_security()
-        
+
         # Create security configuration
         config_results = await self.create_security_configuration()
-        
+
         # Calculate overall results
-        total_components = len(auth_results["enhancements"]) + 1  # +1 for config
-        successful_components = auth_results["summary"]["successful"] + (1 if config_results["success"] else 0)
-        
+        total_components = len(
+            auth_results["enhancements"]) + 1  # +1 for config
+        successful_components = auth_results["summary"]["successful"] + (
+            1 if config_results["success"] else 0
+        )
+
         overall_results = {
             "timestamp": self.timestamp,
             "enhancement_type": "comprehensive_security",
@@ -1004,42 +1010,56 @@ class BruteForceProtector:
             "overall_summary": {
                 "total_components": total_components,
                 "successful_components": successful_components,
-                "success_rate": round((successful_components / total_components) * 100, 1),
-                "security_level": "HIGH" if successful_components >= total_components - 1 else "MEDIUM",
+                "success_rate": round(
+                    (successful_components / total_components) * 100, 1
+                ),
+                "security_level": (
+                    "HIGH"
+                    if successful_components >= total_components - 1
+                    else "MEDIUM"
+                ),
                 "enhancements_completed": [
                     "Advanced password validation",
                     "Enhanced JWT security",
-                    "Secure session management", 
+                    "Secure session management",
                     "Multi-factor authentication framework",
                     "Brute force protection",
-                    "Comprehensive security configuration"
-                ]
-            }
+                    "Comprehensive security configuration",
+                ],
+            },
         }
-        
+
         # Save results
         results_dir = Path("logs/security_enhancement")
         results_dir.mkdir(parents=True, exist_ok=True)
-        
-        results_file = results_dir / f"security_enhancement_{self.timestamp}.json"
-        with open(results_file, 'w', encoding='utf-8') as f:
+
+        results_file = results_dir / \
+            f"security_enhancement_{self.timestamp}.json"
+        with open(results_file, "w", encoding="utf-8") as f:
             json.dump(overall_results, f, indent=2, ensure_ascii=False)
-        
+
         logger.info("=" * 60)
         logger.info("🎉 SECURITY ENHANCEMENT COMPLETE")
-        logger.info(f"Components Enhanced: {successful_components}/{total_components}")
-        logger.info(f"Success Rate: {overall_results['overall_summary']['success_rate']}%")
-        logger.info(f"Security Level: {overall_results['overall_summary']['security_level']}")
+        logger.info(
+            f"Components Enhanced: {successful_components}/{total_components}")
+        logger.info(
+            f"Success Rate: {overall_results['overall_summary']['success_rate']}%"
+        )
+        logger.info(
+            f"Security Level: {overall_results['overall_summary']['security_level']}"
+        )
         logger.info(f"Results saved: {results_file}")
         logger.info("=" * 60)
-        
+
         return overall_results
+
 
 async def main():
     """Main execution function"""
     enhancer = SecurityEnhancementEngine()
     results = await enhancer.run_comprehensive_security_enhancement()
     return results
+
 
 if __name__ == "__main__":
     asyncio.run(main())

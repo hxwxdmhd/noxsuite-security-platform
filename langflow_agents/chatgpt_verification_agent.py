@@ -989,11 +989,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    api_key = (
-        args.api_key
-        or os.environ.get("OPENAI_API_KEY")
-        or ""
-    )
+    api_key = args.api_key or os.environ.get("OPENAI_API_KEY") or ""
 
     if not api_key:
         logger.info(

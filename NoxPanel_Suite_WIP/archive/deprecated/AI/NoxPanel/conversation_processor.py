@@ -4,23 +4,24 @@ NoxPanel Knowledge Base - Conversation Parser & AI Integration
 Comprehensive system to parse conversations.json and extract knowledge
 """
 
-import json
-import re
-import pymysql
 import argparse
-import logging
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass
 import hashlib
+import json
+import logging
+import re
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import pymysql
 
 # NLP/Text Processing (lightweight approach)
 try:
     import nltk
-    from nltk.tokenize import word_tokenize, sent_tokenize
     from nltk.corpus import stopwords
     from nltk.stem import PorterStemmer
+    from nltk.tokenize import sent_tokenize, word_tokenize
     NLTK_AVAILABLE = True
 except ImportError:
     NLTK_AVAILABLE = False

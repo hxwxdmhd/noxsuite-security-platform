@@ -5,17 +5,17 @@ Automatically discovers and imports network devices
 Replaces autoimport.ps1 with Python implementation
 """
 
-import subprocess
-import socket
-import threading
-import time
 import json
 import logging
+import os
+import re
+import socket
+import subprocess
+import sys
+import threading
+import time
 from datetime import datetime
 from pathlib import Path
-import re
-import sys
-import os
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))

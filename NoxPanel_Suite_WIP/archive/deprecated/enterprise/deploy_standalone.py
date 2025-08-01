@@ -4,18 +4,19 @@ Standalone Enterprise Multi-Tenant Deployment
 Deploys the complete enterprise architecture without Docker dependencies
 """
 
-import os
-import sys
 import json
-import time
-import subprocess
 import logging
-from pathlib import Path
-from datetime import datetime
-import pymysql
-import threading
 import multiprocessing
+import os
+import subprocess
+import sys
+import threading
+import time
+from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Optional
+
+import pymysql
 
 # Configure logging
 logging.basicConfig(

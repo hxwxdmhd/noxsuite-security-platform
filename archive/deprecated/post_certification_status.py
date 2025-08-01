@@ -15,6 +15,7 @@ from datetime import datetime
 from typing import Dict, Any, List
 import os
 
+
 class PostCertificationStatusReport:
     """Generate comprehensive post-certification status report."""
 
@@ -254,12 +255,14 @@ class PostCertificationStatusReport:
         reports_dir.mkdir(exist_ok=True)
 
         # Save JSON report
-        json_file = reports_dir / f"post_certification_status_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        json_file = reports_dir / \
+            f"post_certification_status_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(json_file, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
         # Save human-readable report
-        readable_file = reports_dir / f"post_certification_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+        readable_file = reports_dir / \
+            f"post_certification_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
         with open(readable_file, 'w', encoding='utf-8') as f:
             f.write(self.generate_markdown_report(report))
 
@@ -377,6 +380,7 @@ The system is **production-ready** and maintaining optimal performance levels.
 
         return md_content
 
+
 def main():
     """Main execution function."""
     try:
@@ -398,20 +402,28 @@ def main():
         print(f"Certification Level: {cert_status['certification_level']}")
         print(f"Compliance: {cert_status['compliance_percentage']}%")
         print(f"Quality Gates: {cert_status['quality_gates_passed']}")
-        print(f"Production Ready: {'ACTIVE' if cert_status['production_ready'] else 'INACTIVE'}")
-        print(f"Enterprise Grade: {'ACTIVE' if cert_status['enterprise_grade'] else 'INACTIVE'}")
+        print(
+            f"Production Ready: {'ACTIVE' if cert_status['production_ready'] else 'INACTIVE'}")
+        print(
+            f"Enterprise Grade: {'ACTIVE' if cert_status['enterprise_grade'] else 'INACTIVE'}")
 
         print(f"\nSystem Status:")
         guardian = report['guardian_system']
-        print(f"  Guardian System: {'ACTIVE' if guardian['guardian_active'] else 'INACTIVE'}")
-        print(f"  Monitoring Stack: {'ACTIVE' if report['monitoring_stack']['monitoring_active'] else 'INACTIVE'}")
-        print(f"  Security Systems: {'ACTIVE' if report['security_systems']['security_systems_active'] else 'INACTIVE'}")
-        print(f"  CI/CD Integration: {'ACTIVE' if report['ci_cd_integration']['ci_cd_integration'] else 'INACTIVE'}")
+        print(
+            f"  Guardian System: {'ACTIVE' if guardian['guardian_active'] else 'INACTIVE'}")
+        print(
+            f"  Monitoring Stack: {'ACTIVE' if report['monitoring_stack']['monitoring_active'] else 'INACTIVE'}")
+        print(
+            f"  Security Systems: {'ACTIVE' if report['security_systems']['security_systems_active'] else 'INACTIVE'}")
+        print(
+            f"  CI/CD Integration: {'ACTIVE' if report['ci_cd_integration']['ci_cd_integration'] else 'INACTIVE'}")
 
         print(f"\nFile Structure:")
         file_structure = report['file_structure']
-        print(f"  Critical Files: {'COMPLETE' if file_structure['file_structure_complete'] else 'INCOMPLETE'}")
-        print(f"  Critical Directories: {'COMPLETE' if file_structure['directory_structure_complete'] else 'INCOMPLETE'}")
+        print(
+            f"  Critical Files: {'COMPLETE' if file_structure['file_structure_complete'] else 'INCOMPLETE'}")
+        print(
+            f"  Critical Directories: {'COMPLETE' if file_structure['directory_structure_complete'] else 'INCOMPLETE'}")
 
         print(f"\nReport saved to: {report_file}")
         print("="*80)
@@ -421,6 +433,7 @@ def main():
 
     except Exception as e:
         print(f"Status report error: {str(e)}")
+
 
 if __name__ == "__main__":
     main()

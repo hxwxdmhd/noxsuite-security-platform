@@ -11,13 +11,14 @@ Solution: ASCII-only output while maintaining full reasoning validation
 """
 
 import asyncio
+import json
 import logging
 import sys
 import time
-import json
-import psutil
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
+import psutil
 
 # Configure Windows-compatible logging
 logging.basicConfig(

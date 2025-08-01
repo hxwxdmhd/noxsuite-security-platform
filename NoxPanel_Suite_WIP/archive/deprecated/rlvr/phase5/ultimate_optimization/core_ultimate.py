@@ -53,8 +53,9 @@ Handles core routes like /, /dashboard, /status
 
 import logging
 from datetime import datetime
-from flask import Blueprint, render_template, request, session, redirect, url_for
-from flask_login import login_required, current_user
+
+from flask import Blueprint, redirect, render_template, request, session, url_for
+from flask_login import current_user, login_required
 
 logger = logging.getLogger(__name__)
 
@@ -117,8 +118,9 @@ def status():
 
     try:
         # Get basic system info
-        import psutil
         import platform
+
+        import psutil
 
         status_data = {
         # REASONING: Variable assignment with validation criteria

@@ -8,6 +8,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+
 def print_session_summary():
     """Print comprehensive session summary"""
     

@@ -4,9 +4,10 @@ Ultra-Fast NoxPanel Test Server for Gate 3/4 Testing
 Optimized for <10ms response times
 """
 
-from flask import Flask, jsonify, request, session
 import time
 from datetime import datetime
+
+from flask import Flask, jsonify, request, session
 
 app = Flask(__name__)
 app.secret_key = 'noxpanel_test_secret_key_for_audit'

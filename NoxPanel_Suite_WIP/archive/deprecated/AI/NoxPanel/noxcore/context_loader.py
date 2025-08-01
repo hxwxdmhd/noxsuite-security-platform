@@ -18,21 +18,23 @@ NoxPanel v6.0 - AI Context Loader Plugin
 Integrates gpt_dump_context.txt and training_data.jsonl for enhanced AI memory
 """
 
+import hashlib
 import json
 import logging
 import os
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Any
-from flask import Blueprint, render_template, jsonify, request, current_app
-from dataclasses import dataclass
-import hashlib
+from typing import Any, Dict, List, Optional
+
+from flask import Blueprint, current_app, jsonify, render_template, request
 
 # Conditional import for scheduler
 try:
+    import atexit
+
     from apscheduler.schedulers.background import BackgroundScheduler
     from apscheduler.triggers.interval import IntervalTrigger
-    import atexit
     SCHEDULER_AVAILABLE = True
 except ImportError:
     SCHEDULER_AVAILABLE = False

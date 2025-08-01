@@ -2,32 +2,33 @@
 # Advanced Isolation System for NoxPanel/NoxGuard/Heimnetz Suite
 # Task 5 Implementation - Enhanced Security & Isolation
 
-import os
-import sys
-import json
-import time
-import logging
 import asyncio
-import threading
-import psutil
-import signal
-import tempfile
-import shutil
 import hashlib
+import json
+import logging
+import os
+import shutil
+import signal
 import subprocess
-from pathlib import Path
-from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional, Union, Callable
-from dataclasses import dataclass, field
-from enum import Enum
-from contextlib import asynccontextmanager
+import sys
+import tempfile
+import threading
+import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
+from contextlib import asynccontextmanager
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Union
+
+import psutil
 
 # Optional watchdog import
 try:
     import watchdog
-    from watchdog.observers import Observer
     from watchdog.events import FileSystemEventHandler
+    from watchdog.observers import Observer
     WATCHDOG_AVAILABLE = True
 except ImportError:
     WATCHDOG_AVAILABLE = False
@@ -46,8 +47,12 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 try:
     from plugin_framework_v2 import (
-        PluginFrameworkV2, PluginSandboxV2, PluginLimitsV2,
-        PluginPermissionsV2, SecurityLevel, PluginStatus
+        PluginFrameworkV2,
+        PluginLimitsV2,
+        PluginPermissionsV2,
+        PluginSandboxV2,
+        PluginStatus,
+        SecurityLevel,
     )
     PLUGIN_FRAMEWORK_AVAILABLE = True
 except ImportError:

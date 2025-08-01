@@ -4,6 +4,9 @@ Comprehensive NoxPanel/Heimnetz Codebase Fix Script
 Performs systematic fixes across the entire codebase
 """
 
+from NoxPanel.noxcore.utils.logging_config import get_logger, setup_logging
+from NoxPanel.noxcore.utils.error_handling import handle_error
+from NoxPanel.noxcore.utils.datetime_utils import utc_now
 import json
 import os
 import shutil
@@ -16,10 +19,6 @@ from typing import Any, Dict, List, Optional
 # Add project root to path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
-
-from NoxPanel.noxcore.utils.datetime_utils import utc_now
-from NoxPanel.noxcore.utils.error_handling import handle_error
-from NoxPanel.noxcore.utils.logging_config import get_logger, setup_logging
 
 
 class ComprehensiveFixer:
@@ -74,7 +73,8 @@ class ComprehensiveFixer:
                         with open(py_file, "w", encoding="utf-8") as f:
                             f.write(fixed_content)
                         fixes_count += 1
-                        self.fixes_applied.append(f"Fixed syntax error in {py_file}")
+                        self.fixes_applied.append(
+                            f"Fixed syntax error in {py_file}")
 
             except Exception as e:
                 self.logger.warning(f"Could not process {py_file}: {e}")
@@ -120,7 +120,8 @@ class ComprehensiveFixer:
                     with open(py_file, "w", encoding="utf-8") as f:
                         f.write(content)
                     fixes_count += 1
-                    self.fixes_applied.append(f"Fixed deprecated usage in {py_file}")
+                    self.fixes_applied.append(
+                        f"Fixed deprecated usage in {py_file}")
 
             except Exception as e:
                 self.logger.warning(f"Could not process {py_file}: {e}")
@@ -146,7 +147,8 @@ class ComprehensiveFixer:
         ]
 
         # This is a placeholder - real type annotation fixing requires AST manipulation
-        self.logger.info(f"Type annotation fixing is complex - skipping for now")
+        self.logger.info(
+            f"Type annotation fixing is complex - skipping for now")
         return fixes_count
 
     def fix_logging_statements(self) -> int:
@@ -173,7 +175,8 @@ class ComprehensiveFixer:
                 for line in lines:
                     if line.strip().startswith("print("):
                         # Convert print to logger
-                        print_content = line.strip()[6:-1]  # Remove print( and )
+                        # Remove print( and )
+                        print_content = line.strip()[6:-1]
                         new_line = line.replace(
                             line.strip(), f"logger.info({print_content})"
                         )
@@ -314,7 +317,8 @@ class ComprehensiveFixer:
                     archive_path = archive_dir / file_path.name
                     shutil.move(str(file_path), str(archive_path))
                     archived_count += 1
-                    self.fixes_applied.append(f"Archived empty file {file_path.name}")
+                    self.fixes_applied.append(
+                        f"Archived empty file {file_path.name}")
 
         # Create README in archive
         readme_path = archive_dir / "README.md"
@@ -494,7 +498,8 @@ def main():
         with open("comprehensive_fix_report.json", "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, default=str)
 
-        logger.info(f"Comprehensive fix completed: {report['total_fixes']} total fixes")
+        logger.info(
+            f"Comprehensive fix completed: {report['total_fixes']} total fixes")
 
     except Exception as e:
         logger.error(f"Comprehensive fix failed: {e}")

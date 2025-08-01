@@ -1,4 +1,6 @@
-import shutil, os
+import os
+import shutil
+
 BACKUP_DIR = 'backup_20250720_012355'
 for root, dirs, files in os.walk(BACKUP_DIR):
     for file in files:
