@@ -260,14 +260,30 @@ class MCPContinuousMonitor:
                 logger.debug(
                     f"🔧 Executing: {step.name} (attempt {attempt + 1})")
 
-                result = subprocess.run(
-                    step.command,
-                    shell=True,
-                    capture_output=True,
-                    text=True,
-                    timeout=step.timeout,
-                    cwd=self.workspace_root,
-                )
+                # Use safer command execution without shell
+                try:
+                    import shlex
+                    # Try to parse command safely first
+                    args = shlex.split(step.command)
+                    result = subprocess.run(
+                        args,
+                        shell=False,
+                        capture_output=True,
+                        text=True,
+                        timeout=step.timeout,
+                        cwd=self.workspace_root,
+                    )
+                except (ValueError, FileNotFoundError):
+                    # Fallback to shell for complex commands, but log warning
+                    logger.warning(f"Using shell=True for complex command: {step.command}")
+                    result = subprocess.run(
+                        step.command,
+                        shell=True,
+                        capture_output=True,
+                        text=True,
+                        timeout=step.timeout,
+                        cwd=self.workspace_root,
+                    )
 
                 duration = time.time() - start_time
 

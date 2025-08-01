@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 NoxSuite Development Integration Test
@@ -16,7 +17,7 @@ def test_auth_module():
     print("Testing Auth Module...")
 
     # Create JWT Manager
-    jwt_manager = JWTManager(secret_key="development-test-key")
+    jwt_manager = JWTManager(secret_key = os.getenv("JWT_SECRET_KEY", "development-test-key"))
 
     # Create a test payload
     payload = {"user_id": "test123", "username": "testuser", "role": "admin"}
@@ -54,7 +55,7 @@ def test_user_model():
     # Test UserCredentials model
     try:
         credentials = UserCredentials(
-            username="testuser", password="password123")
+            username="testuser", password=os.getenv("NOXSUITE_DEFAULT_PASSWORD", "password123"))
         print(f"UserCredentials model: {credentials.model_dump()}")
         print("✅ UserCredentials model created successfully")
     except Exception as e:

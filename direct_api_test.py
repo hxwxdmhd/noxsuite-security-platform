@@ -5,13 +5,14 @@ Direct API Test Client
 Tests FastAPI authentication directly without relying on user model imports.
 """
 
-import json
-import logging
-import os
-import sys
 from datetime import datetime
-
+import json
+import os
 import requests
+import sys
+
+import logging
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

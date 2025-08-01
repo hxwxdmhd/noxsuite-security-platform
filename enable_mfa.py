@@ -1,4 +1,6 @@
+
 import pymysql
+
 
 
 def enable_mfa_for_test_user():
@@ -17,9 +19,11 @@ def enable_mfa_for_test_user():
             print(f"Found user: {username} (ID: {user_id})")
 
             # Enable MFA for the user
+            import secrets
+            mfa_secret = os.environ.get('MFA_SECRET', secrets.token_urlsafe(32))
             cursor.execute(
-                "UPDATE users SET mfa_enabled = 1, mfa_secret = 'ABCDEFGHIJKLMNOP' WHERE id = ?",
-                (user_id,),
+                "UPDATE users SET mfa_enabled = 1, mfa_secret = ? WHERE id = ?",
+                (mfa_secret, user_id,),
             )
             conn.commit()
             print(f"MFA enabled for user {username}")

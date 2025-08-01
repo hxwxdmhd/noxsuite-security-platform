@@ -56,11 +56,25 @@ class NoxSuiteScenarioDemo:
 import subprocess
 import pickle
 import os
+import shlex
 
 def execute_command(user_input):
-    # Security vulnerability: Command injection
-    result = subprocess.run(user_input, shell=True, capture_output=True)
-    return result.stdout
+    # Security fix: Safe command execution with input validation
+    if not user_input or len(user_input.strip()) == 0:
+        return b"Error: Empty command"
+    
+    # Parse command safely
+    try:
+        cmd_parts = shlex.split(user_input)
+        # Allow only safe commands for demo purposes
+        safe_commands = ['echo', 'ls', 'pwd', 'date', 'whoami']
+        if cmd_parts[0] not in safe_commands:
+            return b"Error: Command not allowed in demo mode"
+        
+        result = subprocess.run(cmd_parts, capture_output=True, timeout=5)
+        return result.stdout
+    except (ValueError, subprocess.TimeoutExpired) as e:
+        return f"Error: {str(e)}".encode()
 
 def load_data(file_path):
     # Security vulnerability: Pickle deserialization
@@ -69,8 +83,8 @@ def load_data(file_path):
     return data
 
 def get_secret():
-    # Security vulnerability: Hardcoded credentials
-    api_key = "sk-1234567890abcdef"
+    # Security fixed: Use environment variables
+    api_key = os.getenv("OPENAI_API_KEY", "your-api-key-here")
     return api_key
 
 # Performance issue: Inefficient loop

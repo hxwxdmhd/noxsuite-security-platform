@@ -1,136 +1,16 @@
-import requests
-from pathlib import Path
-from datetime import datetime
-import time
-import sys
-import subprocess
-import os
-import json
+
 from NoxPanel.noxcore.utils.logging_config import get_logger
+from datetime import datetime
+from pathlib import Path
+import json
+import os
+import requests
+import sys
 
-logger = get_logger(__name__)
-
-#!/usr/bin/env python3
-"""
-🧪 NoxSuite TestSprite Autonomous Testing - Simplified Version
-"""
-
-
-class NoxSuiteTestRunner:
-    def __init__(self):
-        self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.logs_dir = Path("./logs/autonomous_testing")
-        self.logs_dir.mkdir(parents=True, exist_ok=True)
-
-        # Test results storage
-        self.results = {
-            "session_id": f"noxsuite_testsprite_{self.timestamp}",
-            "timestamp": self.timestamp,
-            "status": "RUNNING",
-        }
-
-    def log(self, message):
-        """Simple logging"""
-        logger.info(f"[{datetime.now().strftime('%H:%M:%S')}] {message}")
-
-        # Also save to file
-        log_file = self.logs_dir / f"testsprite_log_{self.timestamp}.txt"
-        with open(log_file, "a", encoding="utf-8") as f:
-            f.write(f"[{datetime.now().strftime('%H:%M:%S')}] {message}\n")
-
-    def check_system(self):
-        """Check system prerequisites"""
-        self.log("Checking system prerequisites...")
-
-        checks = {"mcp_config": False, "langflow": False, "docker": False}
-
-        # Check MCP config
-        try:
-            with open("mcp_config.json", "r") as f:
-                config = json.load(f)
-                if "TestSprite" in config.get("mcpServers", {}):
-                    checks["mcp_config"] = True
-                    self.log("✓ MCP Config: TestSprite configured")
-        except Exception as e:
-            self.log(f"✗ MCP Config: {e}")
-
-        # Check Langflow
-        try:
-            response = requests.get("http://localhost:7860/health", timeout=5)
-            if response.status_code == 200:
-                checks["langflow"] = True
-                self.log("✓ Langflow: Healthy")
-        except Exception as e:
-            self.log(f"✗ Langflow: {e}")
-
-        # Check Docker
-        try:
-            result = subprocess.run(
-                ["docker", "ps"], capture_output=True, text=True, timeout=10
-            )
-            if "noxsuite" in result.stdout.lower():
-                checks["docker"] = True
-                self.log("✓ Docker: NoxSuite containers running")
-        except Exception as e:
-            self.log(f"✗ Docker: {e}")
-
-        return checks
-
-    def generate_tests(self):
-        """Generate test cases"""
-        self.log("Generating test suites...")
-
-        tests = {
-            "frontend": [
-                "Login form validation",
-                "Dashboard loading",
-                "Navigation menu",
-                "User settings",
-                "Responsive design",
-            ],
-            "backend": [
-                "Authentication API",
-                "User management API",
-                "Panel management API",
-                "Database operations",
-                "Error handling",
-            ],
-            "integration": [
-                "User login flow",
-                "Panel creation workflow",
-                "Data synchronization",
-                "System monitoring",
-                "Performance testing",
-            ],
-            "security": [
-                "JWT token validation",
-                "Session management",
-                "Input sanitization",
-                "Access control",
-                "Rate limiting",
-            ],
-        }
-
-        self.log(
-            f"Generated {sum(len(suite) for suite in tests.values())} test cases")
-        return tests
-
-    def execute_tests(self, tests):
-        """Execute test suites (simulated)"""
-        self.log("Executing tests in TestSprite cloud...")
-
-        results = {}
-        total_tests = 0
-        passed_tests = 0
-
-        for suite_name, test_cases in tests.items():
-            suite_results = []
-
-            for test_case in test_cases:
-                total_tests += 1
-
-                # Simulate test execution (80% pass rate)
                 import random
+import subprocess
+import time
+
 
                 random.seed(hash(test_case))
                 status = "PASS" if random.random() > 0.2 else "FAIL"

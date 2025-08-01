@@ -69,11 +69,27 @@ def check_dependencies():
     """Quick dependency check"""
     logger.info("🔍 Checking dependencies...")
 
+    import subprocess
+    import shlex
+    
+    def safe_check_command(command):
+        """Safely check if command exists"""
+        try:
+            result = subprocess.run(
+                shlex.split(command), 
+                capture_output=True, 
+                check=False, 
+                timeout=10
+            )
+            return result.returncode == 0
+        except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+            return False
+
     dependencies = {
         "Python": sys.version_info >= (3, 8),
-        "Git": os.system("git --version > /dev/null 2>&1") == 0,
-        "Docker": os.system("docker --version > /dev/null 2>&1") == 0,
-        "Node.js": os.system("node --version > /dev/null 2>&1") == 0
+        "Git": safe_check_command("git --version"),
+        "Docker": safe_check_command("docker --version"),
+        "Node.js": safe_check_command("node --version")
     }
 
     logger.info("\n📋 Dependency Status:")

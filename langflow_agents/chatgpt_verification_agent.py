@@ -765,7 +765,8 @@ Format your response in a structured way, with clear sections and bullet points 
             Dictionary containing API response or None if failed
         """
         # Check cache first to avoid redundant API calls
-        prompt_hash = hashlib.md5(prompt.encode()).hexdigest()
+        # Use SHA256 instead of MD5 for security
+        prompt_hash = hashlib.sha256(prompt.encode()).hexdigest()
         if prompt_hash in self.response_cache:
             self.cache_hits += 1
             logger.info(

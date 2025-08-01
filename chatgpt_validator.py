@@ -1,114 +1,15 @@
-from emergency_copilot_fix import throttler
-import requests
-from datetime import datetime
-import time
-import os
-import json
-from NoxPanel.noxcore.utils.logging_config import get_logger
 
-logger = get_logger(__name__)
-
-#!/usr/bin/env python3
-"""
-ChatGPT Cross-Validation Module for NoxSuite MCP Agent
-Provides external validation of system audits
-"""
-
-
-class ChatGPTValidator:
-    def __init__(self):
-        self.api_key = os.environ.get("OPENAI_API_KEY", "")
-        self.base_url = "https://api.openai.com/v1/chat/completions"
-
-    def validate_system_audit(self, audit_data: dict) -> dict:
-        """Cross-validate system audit with ChatGPT"""
-
-        def chatgpt_validation():
-            try:
-                # Prepare concise summary for ChatGPT
-                summary = {
-                    "system": "NoxSuite MCP Autonomous Agent",
-                    "timestamp": audit_data.get("agent", {}).get("timestamp"),
-                    "tool_usage": audit_data.get("agent", {}).get("tool_usage"),
-                    "overall_status": audit_data.get("overall_status"),
-                    "docker_containers": len(
-                        audit_data.get("audit_results", {})
-                        .get("docker", {})
-                        .get("status", {})
-                    ),
-                    "langflow_health": audit_data.get("audit_results", {})
-                    .get("langflow", {})
-                    .get("status"),
-                    "mcp_integration": audit_data.get("audit_results", {})
-                    .get("mcp", {})
-                    .get("status"),
-                    "critical_issues": audit_data.get("critical_issues", []),
-                }
-
-                prompt = f"""
-                Analyze this autonomous agent system audit for a NoxSuite MCP deployment:
-                
-                {json.dumps(summary, indent=2)}
-                
-                Please provide:
-                1. Risk assessment (Low/Medium/High)
-                2. Any red flags or concerns
-                3. Recommendations for improvement
-                4. Validation of "operational" status
-                
-                Keep response concise (under 200 words).
-                """
-
-                response = requests.post(
-                    self.base_url,
-                    headers={
-                        "Authorization": f"Bearer {self.api_key}",
-                        "Content-Type": "application/json",
-                    },
-                    json={
-                        "model": "gpt-3.5-turbo",
-                        "messages": [
-                            {
-                                "role": "system",
-                                "content": "You are a system reliability expert analyzing autonomous agent deployments.",
-                            },
-                            {"role": "user", "content": prompt},
-                        ],
-                        "max_tokens": 300,
-                        "temperature": 0.3,
-                    },
-                    timeout=30,
-                )
-
-                if response.status_code == 200:
-                    result = response.json()
-                    return {
-                        "status": "success",
-                        "validation_timestamp": datetime.now().isoformat(),
-                        "chatgpt_analysis": result["choices"][0]["message"]["content"],
-                        "external_validation": "completed",
-                    }
-                else:
-                    return {
-                        "status": "error",
-                        "error": f"API Error: {response.status_code} - {response.text}",
-                        "external_validation": "failed",
-                    }
-
-            except Exception as e:
-                return {
-                    "status": "error",
-                    "error": str(e),
-                    "external_validation": "failed",
-                }
-
-        return throttler.execute_with_throttle(chatgpt_validation)
-
-
-def validate_latest_audit():
-    """Find and validate the latest audit report"""
-    import glob
     import os
+from NoxPanel.noxcore.utils.logging_config import get_logger
+from datetime import datetime
+import json
+import os
+import requests
+
+    import glob
+from emergency_copilot_fix import throttler
+import time
+
 
     # Find latest audit file
     audit_files = glob.glob("autonomous_audit_*.json")

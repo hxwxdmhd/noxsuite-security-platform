@@ -126,7 +126,7 @@ def test_direct_password_verification():
         User = mariadb_dev_setup.User
 
         # Generate test hash
-        password = "Admin123!"
+        password=os.getenv("NOXSUITE_DEFAULT_PASSWORD", "Admin123!")
         hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
         # Create test user

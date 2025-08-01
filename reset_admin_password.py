@@ -5,26 +5,14 @@ Reset NoxSuite Admin Password
 Reset the admin password to a known value
 """
 
-import logging
+from datetime import datetime
 import os
 import sys
-from datetime import datetime
 
-import bcrypt
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Add current directory to Python path
-sys.path.append(os.getcwd())
-
-
-def reset_admin_password():
-    """Reset admin password to Admin123!"""
-    try:
-        # Import models
         from mariadb_dev_setup import MariaDBDevSetup, User
+import bcrypt
+import logging
+
 
         # Create DB setup
         setup = MariaDBDevSetup()

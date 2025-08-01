@@ -13,17 +13,18 @@ Tests:
 - Rate limiting
 """
 
-import argparse
+from concurrent.futures import ThreadPoolExecutor
 import datetime
 import json
-import logging
 import os
-import sys
-import time
-from concurrent.futures import ThreadPoolExecutor
-
-import jwt
 import requests
+import sys
+
+import argparse
+import jwt
+import logging
+import time
+
 
 # Configure logging
 logging.basicConfig(
@@ -37,9 +38,9 @@ logger = logging.getLogger(__name__)
 # API Settings (defaults)
 API_URL = "http://localhost:8000"
 ADMIN_EMAIL = "admin@noxsuite.local"
-ADMIN_PASSWORD = "Admin123!"
+ADMIN_PASSWORD = os.getenv("NOXSUITE_DEFAULT_PASSWORD", "Admin123!")
 NORMAL_USER_EMAIL = "user@noxsuite.local"
-NORMAL_USER_PASSWORD = "User123!"
+NORMAL_USER_PASSWORD = os.getenv("NOXSUITE_DEFAULT_PASSWORD", "Admin123!")
 
 
 class SecurityTestSuite:
@@ -230,7 +231,7 @@ class SecurityTestSuite:
             f"{self.api_url}/api/auth/login",
             json={
                 "email": mfa_user["email"],
-                "password": "MfaUser123!",  # Assumed password, adjust as needed
+                ""password": os.getenv("NOXSUITE_DEFAULT_PASSWORD", "MfaUser123!"),  # Assumed password, adjust as needed
             },
         )
 
@@ -374,11 +375,11 @@ class SecurityTestSuite:
 
         # Try SQL injection in login
         sql_injection_attempts = [
-            {"email": "' OR 1=1 --", "password": "password"},
-            {"email": "admin@noxsuite.local' --", "password": "anything"},
+            {"email": "' OR 1=1 --", ""password": os.getenv("NOXSUITE_DEFAULT_PASSWORD", "MfaUser123!")},
+            {"email": "admin@noxsuite.local' --", ""password": os.getenv("NOXSUITE_DEFAULT_PASSWORD", "MfaUser123!")},
             {
                 "email": "admin@noxsuite.local'; DROP TABLE users; --",
-                "password": "password",
+                ""password": os.getenv("NOXSUITE_DEFAULT_PASSWORD", "MfaUser123!"),
             },
         ]
 
@@ -403,7 +404,7 @@ class SecurityTestSuite:
             json={
                 "username": f"user_{xss_payload}",
                 "email": f"xss_{int(time.time())}@test.com",
-                "password": "Password123!",
+                ""password": os.getenv("NOXSUITE_DEFAULT_PASSWORD", "MfaUser123!"),
             },
             headers={"Authorization": f"Bearer {self.admin_token}"},
         )
@@ -449,7 +450,7 @@ class SecurityTestSuite:
         num_requests = 20
         request_data = {
             "email": "nonexistent@example.com",
-            "password": "WrongPassword123!",
+            ""password": os.getenv("NOXSUITE_DEFAULT_PASSWORD", "MfaUser123!"),
         }
 
         status_codes = []

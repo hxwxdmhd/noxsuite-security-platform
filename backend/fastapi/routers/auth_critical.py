@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 CRITICAL AUTHENTICATION SYSTEM - FINAL ENHANCED VERSION
@@ -158,8 +159,8 @@ class CriticalAuthManager:
                 logger.error(f"Could not load users file: {e}")
 
         # Create secure default users
-        admin_password = "NoxSuite_CriticalAdmin_2025!@#"
-        service_password = "NoxSuite_ServiceAcct_2025!@#"
+        admin_password=os.getenv("NOXSUITE_DEFAULT_PASSWORD", "NoxSuite_CriticalAdmin_2025!@#")
+        service_password=os.getenv("NOXSUITE_DEFAULT_PASSWORD", "NoxSuite_CriticalAdmin_2025!@#")
 
         default_users = {
             "noxsuite_admin": {

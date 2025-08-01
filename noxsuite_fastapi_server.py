@@ -624,5 +624,5 @@ async def startup_event():
         port=8000,
         reload=True,
         log_level="debug",
-        debug=True,
+        debug=os.environ.get('FASTAPI_DEBUG', 'false').lower() == 'true',
     )

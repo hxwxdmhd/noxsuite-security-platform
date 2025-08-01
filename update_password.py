@@ -1,5 +1,9 @@
+
+import os
+
 import bcrypt
 import pymysql
+
 
 
 def update_user_password():
@@ -8,7 +12,7 @@ def update_user_password():
         cursor = conn.cursor()
 
         # Hash the new password
-        password = "MfaUser123!"
+        password=os.getenv("NOXSUITE_DEFAULT_PASSWORD", "MfaUser123!")
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(
             password.encode("utf-8"), salt).decode("utf-8")

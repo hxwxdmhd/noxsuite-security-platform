@@ -396,9 +396,14 @@ class AuthIntegrationService:
 
 # Example usage
 if __name__ == "__main__":
+    import os
     # Create integrated auth service
+    jwt_secret = os.getenv("JWT_SECRET", "PLEASE_SET_JWT_SECRET_IN_ENVIRONMENT")
+    if jwt_secret == "PLEASE_SET_JWT_SECRET_IN_ENVIRONMENT":
+        print("WARNING: Using default JWT secret. Set JWT_SECRET environment variable for production!")
+    
     auth_service = AuthIntegrationService(
-        jwt_secret="your-super-secret-key", mfa_enabled=True
+        jwt_secret=jwt_secret, mfa_enabled=True
     )
 
     # Set up RBAC roles for test users

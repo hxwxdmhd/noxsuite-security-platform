@@ -1,32 +1,13 @@
-from emergency_copilot_fix import throttler
-from datetime import datetime
-import time
-import json
-from NoxPanel.noxcore.utils.logging_config import get_logger
 
-logger = get_logger(__name__)
-
-#!/usr/bin/env python3
-"""
-NoxSuite MCP Autonomous Monitoring System
-Continuous operation with 128-tools throttling
-"""
-
-
-class AutonomousMonitor:
-    def __init__(self):
-        self.name = "NoxSuite MCP Autonomous Monitor"
-        self.monitor_interval = 300  # 5 minutes
-        self.is_monitoring = False
-        self.status_log = []
-
-    def quick_health_check(self) -> dict:
-        """Lightweight health check to preserve tool usage"""
-
-        def health_check():
             import requests
+from NoxPanel.noxcore.utils.logging_config import get_logger
+from datetime import datetime
+import json
 
             import docker
+from emergency_copilot_fix import throttler
+import time
+
 
             status = {
                 "timestamp": datetime.now().isoformat(),

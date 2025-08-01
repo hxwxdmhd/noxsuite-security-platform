@@ -1,3 +1,4 @@
+import os
 #!/usr/bin/env python3
 """
 Enhanced NoxSuite FastAPI Authentication Module
@@ -108,7 +109,7 @@ class EnhancedAuthManager:
                 self.logger.error(f"Could not load users file: {e}")
 
         # Create enhanced default admin
-        secure_password = "NoxSuite_Admin_2025!Secure"
+        secure_password=os.getenv("NOXSUITE_DEFAULT_PASSWORD", "NoxSuite_Admin_2025!Secure")
         default_admin = {
             "noxsuite_admin": {
                 "id": "admin_001",

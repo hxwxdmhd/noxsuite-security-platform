@@ -4,11 +4,13 @@ NoxSuite Iteration 2 Completion Report Generator
 Comprehensive analysis and validation of all improvements
 """
 
-import json
-import logging
 from datetime import datetime
 from pathlib import Path
+import json
+
 from typing import Any, Dict, List
+import logging
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
