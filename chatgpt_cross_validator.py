@@ -1,3 +1,4 @@
+import os
 from emergency_copilot_fix import throttler
 from pathlib import Path
 from datetime import datetime
@@ -22,7 +23,7 @@ class ChatGPTCrossValidationSimulator:
     """Simulates ChatGPT API cross-validation for test results"""
 
     def __init__(self):
-        self.api_key = "provided_earlier"  # User mentioned API key was provided
+        self.api_key = os.getenv("OPENAI_API_KEY", "your-api-key-here")  # Use environment variable
         self.logs_dir = Path("logs/mcp_agent/testsprite")
 
     def simulate_chatgpt_analysis(self, test_summary: dict) -> dict:

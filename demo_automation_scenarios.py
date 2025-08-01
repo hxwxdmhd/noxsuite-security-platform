@@ -69,8 +69,8 @@ def load_data(file_path):
     return data
 
 def get_secret():
-    # Security vulnerability: Hardcoded credentials
-    api_key = "sk-1234567890abcdef"
+    # Security fixed: Use environment variables
+    api_key = os.getenv("OPENAI_API_KEY", "your-api-key-here")
     return api_key
 
 # Performance issue: Inefficient loop

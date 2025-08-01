@@ -300,13 +300,13 @@ class MCPOrchestrator:
 
       security_patterns = [
            "eval(", "exec(", "os.system(", "subprocess.call(",
-            "shell=True", "password =", "secret =", "api_key ="
+            "shell=True", "password =", "secret =", "api_key = os.getenv("OPENAI_API_KEY", "
            ]
 
        for pattern in security_patterns:
             if pattern in content:
                 result.issues.append(
-                    f"Security concern: {pattern} found in code")
+                    f")Security concern: {pattern} found in code")
                 if result.risk_level == "LOW":
                     result.risk_level = "MEDIUM"
 
